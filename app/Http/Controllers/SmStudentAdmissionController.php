@@ -1052,6 +1052,7 @@ class SmStudentAdmissionController extends Controller
                 ->where('sm_jymembers.academic_id', getAcademicId())
                 ->where('sm_jymembers.school_id', Auth::user()->school_id)
                 ->get();
+                
 
             $students = SmStudent::where('academic_id', getAcademicId())
                 ->where('school_id', Auth::user()->school_id)
