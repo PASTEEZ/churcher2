@@ -1326,16 +1326,7 @@ class SmStudentAdmissionController extends Controller
     public function jymemberDetails(Request $request)
     {
         try {
-            $classes = SmClass::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
-                ->get();
-
-                $students = SmStudent::where('academic_id', getAcademicId())
-             ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
-                ->get();
-
+          
 
                 //$students = DB::table('sm_jymembers')
                // ->where('academic_id', getAcademicId())
@@ -1345,7 +1336,7 @@ class SmStudentAdmissionController extends Controller
                 ->where('school_id', Auth::user()->school_id)
                 ->get();
 
-            return view('backEnd.studentInformation.jymember_details', compact('classes', 'sessions'));
+            return view('backEnd.studentInformation.jymember_details', compact('sessions'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();

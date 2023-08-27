@@ -128,6 +128,7 @@ return [
     'select_lesson' => 'Select Lesson',
     'select_academic_year' => 'Select Financial Year',
     'select_student'=>'Select Member',
+    
     'select_exam_type' => 'Select Exam Type',
     'select_width' => 'Select Width',
     'select_one' => 'Select One',
@@ -138,6 +139,8 @@ return [
     'reference_no' => 'Reference No',
     'reference' => 'Reference',
     'student'   => 'Member',
+
+    'totalchildrenservice'   => 'Children Service',
     'room'   => 'Room',
     'photo'   => 'Photo',
     'user'=>'User',

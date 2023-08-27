@@ -178,6 +178,8 @@ return [
         App\Providers\BroadcastServiceProvider::class,
         App\Providers\TranslationServiceProvider::class,
         Benwilkins\FCM\FcmNotificationServiceProvider::class,
+      
+
         // Vimeo\Laravel\VimeoServiceProvider::class
 
 

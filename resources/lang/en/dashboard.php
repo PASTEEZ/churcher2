@@ -18,7 +18,10 @@ return[
     'student_admitted_message'=> 'Member Registered Message',
     'student_admission_progress'=> 'Member Registration In Progress',
     'teachers'=> 'Leaders',
-    'parents'=> 'Families',
+    'payments_of_Tithe'=> 'Payment of Tithe',
+    'total_payments_of_Tithe'=> 'Total No. of Members(This Month)',
+    'staffs'=> 'Worker',
+
     'staffs'=> 'Worker',
     'income_and_expenses_for'=> 'Income and Expenses for',
     'total_income'=> 'Total Income',
@@ -82,9 +85,15 @@ return[
     'fees_invoice_bulk_print'=> 'Payments invoice Bulk Print',
     'payroll_bulk_print'=> 'Payroll Bulk Print',
     'staff_id_card'=> 'Staff ID Card',
-    'total_students'=>'Total Members',
+    'total_memberships'=>'Total Membership(Including YPG, YAF)',
     'total_teachers'=>'Total Leaders',
-    'total_payments'=>'Total Payments',
+
+
+    'total_payments'=>'Total Payments this Month',
+    
+    'total_childrenservice'=>'Total Children Service Membership',
+    'total_junioryouth'=>'Total Junior Youth</br> Membership',
+    'total_jy'=>'J.Y',
     'total_parents'=>'Total Parents',
     'total_staffs'=>'Total Workers',
     'wallet_balance'=>'Wallet Balance',
@@ -93,5 +102,5 @@ return[
     'to_do_title'=>'To Do Title',
     'remain_days' => 'Remain Days',
     'active_package' => 'Active Package',
-    'students' => 'Members'
+    'members' => 'Adults Membership'
 ];

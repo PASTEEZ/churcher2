@@ -1,6 +1,8 @@
-sti<?php
+<?php
 
-namespace App\Http\Controllers\Admin\StudentInfo;
+namespace App\Http\Controllers\admin\studentinfo;
+
+
 
 use App\User;
 use App\SmClass;
@@ -9,9 +11,6 @@ use App\SmStaff;
 use App\SmParent;
 use App\SmSchool;
 use App\SmStudent;
-use App\SmJYMember;
-
-
 use App\SmVehicle;
 use App\SmExamType;
 use App\SmBaseSetup;
@@ -30,7 +29,7 @@ use App\CustomResultSetting;
 use App\Traits\CustomFields;
 use Illuminate\Http\Request;
 use App\Models\SmCustomField;
-use App\Models\StudentRecord;
+use App\Models\JyMemberRecord;
 use App\StudentBulkTemporary;
 use App\Imports\StudentsImport;
 use App\Traits\FeesAssignTrait;
@@ -61,14 +60,15 @@ use Modules\ParentRegistration\Entities\SmStudentField;
 use Modules\University\Entities\UnSubjectAssignStudent;
 use App\Http\Controllers\Admin\Hr\StaffAsParentController;
 use Modules\ParentRegistration\Entities\SmStudentRegistration;
-use App\Http\Requests\Admin\StudentInfo\SmMemberRegistrationRequest;
+use App\Http\Requests\Admin\StudentInfo\SmStudentAdmissionRequest;
 use Modules\University\Http\Controllers\UnStudentPromoteController;
 use Modules\University\Repositories\Interfaces\UnCommonRepositoryInterface;
 use Modules\University\Repositories\Interfaces\UnSubjectRepositoryInterface;
 use Modules\University\Repositories\Interfaces\UnDepartmentRepositoryInterface;
 use Modules\University\Repositories\Interfaces\UnSemesterLabelRepositoryInterface;
 
-class SmMemberRegistrationController extends Controller
+
+class JymembersRegistrationController extends Controller
 {
     use CustomFields;
     use FeesAssignTrait;
@@ -85,22 +85,22 @@ class SmMemberRegistrationController extends Controller
         try {
             if (isSubscriptionEnabled() && auth()->user()->school_id != 1) {
 
-                $active_student = SmJYMember::where('school_id', Auth::user()->school_id)->where('active_status', 1)->count();
+                $active_student = SmStudent::where('school_id', Auth::user()->school_id)->where('active_status', 1)->count();
 
                 if (\Modules\Saas\Entities\SmPackagePlan::student_limit() <= $active_student) {
 
-                    Toastr::error('Your member limit has been crossed.', 'Failed');
+                    Toastr::error('Your student limit has been crossed.', 'Failed');
                     return redirect()->back();
 
                 }
             }
            
             $data = $this->loadData();
-            $data['max_admission_id'] = SmJYMember::where('school_id', Auth::user()->school_id)->max('id');
-            $data['max_roll_id'] = SmJYMember::where('school_id', Auth::user()->school_id)->max('roll_no');
+            $data['max_admission_id'] = SmStudent::where('school_id', Auth::user()->school_id)->max('id');
+            $data['max_roll_id'] = SmStudent::where('school_id', Auth::user()->school_id)->max('roll_no');
 
-        
-            return view('backEnd.studentInformation.jy_registration', $data);
+         
+            return view('backEnd.studentInformation.jy_registration_form', $data);
 
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -108,7 +108,7 @@ class SmMemberRegistrationController extends Controller
         }
     }
 
-    public function store(SmMemberRegistrationRequest $request)
+    public function store(SmStudentAdmissionRequest $request)
     {
         // return $request->all();
         $validator = Validator::make($request->all(), $this->generateValidateRules("student_registration"));
@@ -297,7 +297,7 @@ class SmMemberRegistrationController extends Controller
                 $staff->update(['parent_id'=> $hasParent]);
                 $parent = SmParent::find($hasParent);
             }
-            $student = new SmJYMember();
+            $student = new SmStudent();
             $student->user_id = $user_stu->id;
             $student->parent_id = $exitStaffParent ? $exitStaffParent->id : ($request->parent_id == "" ? $hasParent : $request->parent_id);
             $student->role_id = 2;
@@ -491,12 +491,417 @@ class SmMemberRegistrationController extends Controller
         }
     }
 
+
+
+    public function jy_store(SmStudentAdmissionRequest $request)
+    {
+        // return $request->all();
+        $validator = Validator::make($request->all(), $this->generateValidateRules("student_registration"));
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            foreach ($errors->all() as $error) {
+                Toastr::error(str_replace('custom f.', '', $error), 'Failed');
+            }
+            return redirect()->back()->withInput();
+        }
+
+        $parentInfo = ($request->fathers_name || $request->fathers_phone || $request->mothers_name || $request->mothers_phone || $request->guardians_email || $request->guardians_phone )  ? true : false;
+        // add student record
+        if ($request->filled('phone_number') || $request->filled('email_address')) {
+            $user = User::where('school_id', auth()->user()->school_id)
+                ->when($request->filled('phone_number') && !$request->email_address, function ($q) use ($request) {
+                    $q->where(function ($q) use ($request) {
+                        return $q->where('phone_number', $request->phone_number)->orWhere('username', $request->phone_number);
+                    });
+                })
+                ->when($request->filled('email_address') && !$request->phone_number, function ($q) use ($request) {
+                    $q->where(function ($q) use ($request) {
+                        return $q->where('email', $request->email_address)->orWhere('username', $request->email_address);
+                    });
+                })
+                ->when($request->filled('email_address') && $request->filled('phone_number'), function ($q) use ($request) {
+                    $q->where('phone_number', $request->phone_number);
+                })
+
+                ->first();
+            if ($user) {
+                if ($user->role_id == 2) {
+                    if (moduleStatusCheck('University')) {
+                        $model = StudentRecord::query();
+                        $studentRecord = universityFilter($model, $request)->first();
+                    } else {
+                        $studentRecord = StudentRecord::where('class_id', $request->class)
+                        ->where('section_id', $request->section)
+                        ->where('academic_id', $request->session)
+                        ->where('student_id', $user->student->id)
+                        ->where('school_id', auth()->user()->school_id)
+                        ->first();
+                    }
+                    if (!$studentRecord) {
+                        if ($request->edit_info == "yes") {
+                            $this->updateStudentInfo($request->merge([
+                                'id' => $user->student->id,
+                            ]));
+                        }
+
+                        $this->insertStudentRecord($request->merge([
+                            'student_id' => $user->student->id,
+
+                        ]));
+                        if (moduleStatusCheck('Lead') == true && $request->lead_id) {
+                            Lead::where('id', $request->lead_id)->update(['is_converted' => 1]);
+                            Toastr::success('Operation successful', 'Success');
+                            return redirect()->route('lead.index');
+                        } else if ($request->has('parent_registration_student_id') && moduleStatusCheck('ParentRegistration') == true) {
+                            $registrationStudent = \Modules\ParentRegistration\Entities\SmStudentRegistration::find($request->parent_registration_student_id);
+                            if ($registrationStudent) {
+                                $registrationStudent->delete();
+                            }
+                            Toastr::success('Operation successful', 'Success');
+                            return redirect()->route('parentregistration.student-list');
+                        } else {
+                            Toastr::success('Operation successful', 'Success');
+                            return redirect()->back();
+                        }
+                    } else {
+                        Toastr::warning('Already Enroll', 'Warning');
+                        return redirect()->back();
+                    }
+
+                }
+            }
+        }
+        // end student record
+
+        // staff as parent
+        $guardians_phone = $request->guardians_phone;
+        $guardians_email = $request->guardians_email;
+
+        $staffParent = new StaffAsParentController();
+        $staff =  $staffParent->staff($guardians_email, $guardians_phone, $request->staff_parent);
+        $exitStaffParent = $staffParent->parent($guardians_email, $guardians_phone);
+        // end
+        
+        $destination = 'public/uploads/student/document/';
+        $student_file_destination = 'public/uploads/student/';
+
+        if ($request->relation == 'Father') {
+            $guardians_photo = session()->get('fathers_photo');
+        } elseif ($request->relation == 'Mother') {
+            $guardians_photo = session()->get('mothers_photo');
+        } else {
+            $guardians_photo = session()->get('guardians_photo');
+        }
+
+
+        DB::beginTransaction();
+
+        try {
+
+            if (moduleStatusCheck('University')) {
+                $academic_year = UnAcademicYear::find($request->un_academic_id);
+            } else {
+                $academic_year = SmAcademicYear::find($request->session);
+            }
+           
+            
+            $user_stu = new User();
+            $user_stu->role_id = 2;
+            $user_stu->full_name = $request->first_name . ' ' . $request->last_name;
+            $user_stu->username = $request->phone_number ?: ($request->email_address ?: $request->admission_number);
+            $user_stu->email = $request->email_address;
+            $user_stu->phone_number = $request->phone_number;
+            $user_stu->password = Hash::make(123456);
+            $user_stu->school_id = Auth::user()->school_id;
+            $user_stu->created_at = $academic_year->year . '-01-01 12:00:00';
+            $user_stu->save();
+            $user_stu->toArray();
+
+            if ($request->parent_id == "") {
+                    $userIdParent = null;
+                    $hasParent = null;
+                if ($request->filled('guardians_phone') || $request->filled('guardians_email')) {
+                    
+                    if (!$staff) {  
+                        $user_parent = new User();
+                        $user_parent->role_id = 3;
+                        $user_parent->username = $guardians_phone ? $guardians_phone : $guardians_email;
+                        $user_parent->full_name = $request->fathers_name;
+                        if (!empty($guardians_email)) {
+                            $user_parent->username = $guardians_phone ? $guardians_phone : $guardians_email;
+                        }
+                        $user_parent->email = $guardians_email;
+                        $user_parent->phone_number = $guardians_phone;
+                        $user_parent->password = Hash::make(123456);
+                        $user_parent->school_id = Auth::user()->school_id;
+                        $user_parent->created_at = $academic_year->year . '-01-01 12:00:00';
+                        $user_parent->save();
+                        $user_parent->toArray();
+                    }
+                    $userIdParent = $staff ? $staff->user_id: $user_parent->id;
+                }
+                
+
+                if ($parentInfo && !$request->staff_parent) {
+                    
+                    $parent = new SmParent();
+                    $parent->user_id = $staff ? $staff->user_id : $userIdParent;
+                    $parent->fathers_name = $request->fathers_name;
+                    $parent->fathers_mobile = $request->fathers_phone;
+                    $parent->fathers_occupation = $request->fathers_occupation;
+                    $parent->fathers_photo = session()->get('fathers_photo') ?? fileUpload($request->file('fathers_photo'), $student_file_destination);
+                    $parent->mothers_name = $request->mothers_name;
+                    $parent->mothers_mobile = $request->mothers_phone;
+                    $parent->mothers_occupation = $request->mothers_occupation;
+                    $parent->mothers_photo = session()->get('mothers_photo') ?? fileUpload($request->file('mothers_photo'), $student_file_destination);
+                    $parent->guardians_name = $request->guardians_name;
+                    $parent->guardians_mobile = $request->guardians_phone;
+                    $parent->guardians_email = $request->guardians_email;
+                    $parent->guardians_occupation = $request->guardians_occupation;
+                    $parent->guardians_relation = $request->relation;
+                    $parent->relation = $request->relationButton;
+                    $parent->guardians_photo = $guardians_photo;
+                    $parent->guardians_address = $request->guardians_address;
+                    $parent->is_guardian = $request->is_guardian;
+                    $parent->school_id = Auth::user()->school_id;
+                    $parent->academic_id = $request->session;
+                    $parent->created_at = $academic_year->year . '-01-01 12:00:00';
+                    $parent->save();
+                    $parent->toArray();
+                    $hasParent = $parent->id;
+                    if($staff) {
+                        $staff->update(['parent_id'=> $hasParent]);
+                    }
+                }
+            } else {
+                $parent = SmParent::find($request->parent_id);
+                $hasParent = $parent->id;
+            }
+            if($request->staff_parent) {
+                $hasParent = $staffParent->staffParentStore($staff, $request, $academic_year);
+                $staff->update(['parent_id'=> $hasParent]);
+                $parent = SmParent::find($hasParent);
+            }
+            $student = new SmStudent();
+            $student->user_id = $user_stu->id;
+            $student->parent_id = $exitStaffParent ? $exitStaffParent->id : ($request->parent_id == "" ? $hasParent : $request->parent_id);
+            $student->role_id = 2;
+            $student->admission_no = $request->admission_number;
+            if ($request->roll_number) {
+                $student->roll_no = $request->admission_number;
+            }
+
+            $student->first_name = $request->first_name;
+            $student->last_name = $request->last_name;
+            $student->full_name = $request->first_name . ' ' . $request->last_name;
+            $student->gender_id = $request->gender;
+            $student->date_of_birth = date('Y-m-d', strtotime($request->date_of_birth));
+            $student->caste = $request->caste;
+            $student->email = $request->email_address;
+            $student->mobile = $request->phone_number;
+            $student->admission_date = date('Y-m-d', strtotime($request->admission_date));
+            $student->student_photo = session()->get('student_photo') ?? fileUpload($request->photo, $student_file_destination);
+            $student->bloodgroup_id = $request->blood_group;
+            $student->religion_id = $request->religion;
+            $student->height = $request->height;
+            $student->weight = $request->weight;
+            $student->current_address = $request->current_address;
+            $student->permanent_address = $request->permanent_address;
+            $student->route_list_id = $request->route;
+            $student->dormitory_id = $request->dormitory_name;
+            $student->room_id = $request->room_number;
+
+            if (!empty($request->vehicle)) {
+                $driver = SmVehicle::where('id', '=', $request->vehicle)
+                    ->select('driver_id')
+                    ->first();
+                if (!empty($driver)) {
+                    $student->vechile_id = $request->vehicle;
+                    $student->driver_id = $driver->driver_id;
+                }
+            }
+
+            $student->national_id_no = $request->national_id_number;
+            $student->local_id_no = $request->local_id_number;
+            $student->bank_account_no = $request->bank_account_number;
+            $student->bank_name = $request->bank_name;
+            $student->previous_school_details = $request->previous_school_details;
+            $student->aditional_notes = $request->additional_notes;
+            $student->ifsc_code = $request->ifsc_code;
+            $student->document_title_1 = $request->document_title_1;
+
+            $student->date_of_baptism = $request->date_of_baptism;
+            $student->middle_name = $request->middle_name;
+            
+
+            $student->student_status = $request->student_status;
+            $student->student_school_name = $request->student_school_name;
+            $student->school_admission_date = $request->school_admission_date;
+            $student->school_completion_date = $request->school_completion_date;
+            $student->school_telephone = $request->school_telephone;
+            $student->school_location = $request->school_location;
+
+
+            
+            $student->confirmation_status = $request->confirmation_status;
+            $student->date_of_confirmation = $request->date_of_confirmation;
+            $student->ageconfirmed = $request->ageconfirmed;
+            $student->place_of_confirmation = $request->place_of_confirmation;
+            $student->bibleverseused = $request->bibleverseused;
+            $student->confirmation_cert_no = $request->confirmation_cert_no;
+            $student->confirmation_off_minister = $request->confirmation_off_minister;
+
+
+            $student->baptism_status = $request->baptism_status;
+            $student->baptism_off_minister = $request->baptism_off_minister;
+            $student->baptism_cert_no = $request->baptism_cert_no;
+       
+
+
+ 
+            $student->marriage_status = $request->marriage_status;
+            $student->date_of_marriage = $request->date_of_marriage;
+            $student->place_of_marriage = $request->place_of_marriage;
+            $student->marriage_type = $request->marriage_type;
+            $student->marriage_cert_no = $request->marriage_cert_no;
+            $student->marriage_off_minister = $request->marriage_off_minister;
+           
+            
+
+            $student->family_status = $request->family_status;
+            $student->spouse_name = $request->spouse_name;
+            $student->spouse_date_of_birth = $request->spouse_date_of_birth;
+            $student->spouse_chucrh = $request->spouse_chucrh;
+            $student->child_name1 = $request->child_name1;
+            $student->child_name2 = $request->child_name2;
+           
+            
+
+
+            $student->document_file_1 = fileUpload($request->file('document_file_1'), $destination);
+            $student->document_title_2 = $request->document_title_2;
+            $student->document_file_2 = fileUpload($request->file('document_file_2'), $destination);
+            $student->document_title_3 = $request->document_title_3;
+            $student->document_file_3 = fileUpload($request->file('document_file_3'), $destination);
+            $student->document_title_4 = $request->document_title_4;
+            $student->document_file_4 = fileUpload($request->file('document_file_4'), $destination);
+            $student->school_id = Auth::user()->school_id;
+            $student->academic_id = $request->session;
+            $student->student_category_id = $request->student_category_id;
+            $student->student_group_id = $request->student_group_id;
+            $student->created_at = $academic_year->year . '-01-01 12:00:00';
+
+            if ($request->customF) {
+                $dataImage = $request->customF;
+                foreach ($dataImage as $label => $field) {
+                    if (is_object($field) && $field != "") {
+                        $dataImage[$label] = fileUpload($field, 'public/uploads/customFields/');
+                    }
+                }
+
+                //Custom Field Start
+                $student->custom_field_form_name = "student_registration";
+                $student->custom_field = json_encode($dataImage, true);
+                //Custom Field End
+            }
+            //add by abu nayem for lead convert to student
+            if (moduleStatusCheck('Lead') == true) {
+                $student->lead_id = $request->lead_id;
+                $student->lead_city_id = $request->lead_city;
+                $student->source_id = $request->source_id;
+            }
+
+            //end lead convert to student
+
+            $student->save();
+            $student->toArray();
+            if (moduleStatusCheck('Lead') == true) {
+                Lead::where('id', $request->lead_id)->update(['is_converted' => 1]);
+            }
+            // insert Into student record
+            $this->insertStudentRecord($request->merge([
+                'student_id' => $student->id,
+                'is_default' => 1,
+
+            ]));
+            //end insert
+
+            if ($student) {
+                $compact['user_email'] = $request->email_address;
+                $compact['slug'] = 'student';
+                $compact['id'] = $student->id;
+                @send_mail($request->email_address, $request->first_name . ' ' . $request->last_name, "student_login_credentials", $compact);
+                @send_sms($request->phone_number, 'student_admission', $compact);
+            }
+            if($parentInfo) {
+
+                if ($parent) {
+                    $compact['user_email'] = $parent->guardians_email;
+                    $compact['slug'] = 'parent';
+                    $compact['id'] = $parent->id;
+                    @send_mail($parent->guardians_email, $request->fathers_name, "parent_login_credentials", $compact);
+                    @send_sms($request->guardians_phone, 'student_admission_for_parent', $compact);
+                }
+            }
+
+            //add by abu nayem for lead convert to student
+            if (moduleStatusCheck('Lead') == true && $request->lead_id) {
+                $lead = \Modules\Lead\Entities\Lead::find($request->lead_id);
+                $lead->class_id = $request->class;
+                $lead->section_id = $request->section;
+                $lead->save();
+            }
+            //end lead convert to student
+            DB::commit();
+            if ($request->has('parent_registration_student_id') && moduleStatusCheck('ParentRegistration') == true) {
+
+                $registrationStudent = \Modules\ParentRegistration\Entities\SmStudentRegistration::find($request->parent_registration_student_id);
+                if ($registrationStudent) {
+                    $registrationStudent->delete();
+                }
+                Toastr::success('Operation successful', 'Success');
+                return redirect()->route('parentregistration.student-list');
+            }
+            if (moduleStatusCheck('Lead') == true && $request->lead_id) {
+                Toastr::success('Operation successful', 'Success');
+                return redirect()->route('lead.index');
+            } else {
+                Toastr::success('Operation successful', 'Success');
+                return redirect()->back();
+            }
+        } catch (\Exception $e) {    
+            DB::rollback();           
+            Toastr::error('Operation Failed', 'Failed');
+            return redirect()->back();
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public function edit(Request $request, $id)
     {
         try {
             $data = $this->loadData();
-            $data['student'] = SmJYMember::with('sections')->select('sm_jymembers.*')->find($id);
-            $data['siblings'] = SmJYMember::where('parent_id', $data['student']->parent_id)->whereNotNull('parent_id')->where('id', '!=', $id)->get();
+            $data['student'] = SmStudent::with('sections')->select('sm_students.*')->find($id);
+            $data['siblings'] = SmStudent::where('parent_id', $data['student']->parent_id)->whereNotNull('parent_id')->where('id', '!=', $id)->get();
             $data['custom_filed_values'] = json_decode($data['student']->custom_field);
             if (moduleStatusCheck('University')) {
                 return view('university::admission.edit_student_admission', $data);
@@ -512,7 +917,7 @@ class SmMemberRegistrationController extends Controller
     {
 
         $parentInfo = ($request->fathers_name || $request->fathers_phone || $request->mothers_name || $request->mothers_phone || $request->guardians_email || $request->guardians_phone )  ? true : false;
-        $student_detail = SmJYMember::find($request->id);
+        $student_detail = SmStudent::find($request->id);
         $parentUserId = $student_detail->parents ? $student_detail->parents->user_id : null;
         // custom field validation start
         $validator = Validator::make($request->all(), $this->generateValidateRules("student_registration", $student_detail));
@@ -528,7 +933,7 @@ class SmMemberRegistrationController extends Controller
 
         $destination = 'public/uploads/student/document/';
         $student_file_destination = 'public/uploads/student/';
-        $student = SmJYMember::find($request->id);
+        $student = SmStudent::find($request->id);
         if ($request->relation == 'Father') {
             $guardians_photo = fileUpdate($student->parents->guardians_photo, $request->fathers_photo, $student_file_destination);
 
@@ -605,7 +1010,7 @@ class SmMemberRegistrationController extends Controller
                     $parent->save();
                 }
             }
-            $student = SmJYMember::find($request->id);
+            $student = SmStudent::find($request->id);
             if (($request->sibling_id == 0 || $request->sibling_id == 1) && $request->parent_id == "") {
                 $student->parent_id = @$parent->id ?? null;
             } elseif ($request->sibling_id == 0 && $request->parent_id != "") {
@@ -760,7 +1165,7 @@ class SmMemberRegistrationController extends Controller
         }
     }
 
-    public function update(SmMemberRegistrationRequest $request)
+    public function update(SmStudentAdmissionRequest $request)
     {
 
         try {
@@ -810,7 +1215,7 @@ class SmMemberRegistrationController extends Controller
     {
         try {
             $next_labels = null;
-            $student_detail = SmJYMember::withoutGlobalScope(StatusAcademicSchoolScope::class)->find($id);
+            $student_detail = SmStudent::withoutGlobalScope(StatusAcademicSchoolScope::class)->find($id);
 
             $records = studentRecords(null, $student_detail->id)->get();
             $siblings = SmStudent::where('parent_id', $student_detail->parent_id)->where('id', '!=', $id)->status()->whereNotNull('parent_id')->withoutGlobalScope(StatusAcademicSchoolScope::class)->get();
@@ -884,7 +1289,7 @@ class SmMemberRegistrationController extends Controller
                                                     });
                 }
                 $student_id = $student_detail->id;
-                $studentDetails = SmJYMember::find($student_id);
+                $studentDetails = SmStudent::find($student_id);
                 $studentRecordDetails = StudentRecord::where('student_id',$student_id);
                 $studentRecords = StudentRecord::where('student_id',$student_id)->groupBy('un_academic_id')->get();
                 return view('backEnd.studentInformation.student_view', compact('timelines','student_detail', 'driver_info', 'exams', 'siblings', 'grades', 'academic_year', 'exam_terms', 'max_gpa', 'fail_gpa_name', 'custom_field_values', 'sessions', 'records', 'next_labels', 'type','studentRecordDetails','studentDetails','studentRecords','result_setting'));
@@ -905,7 +1310,7 @@ class SmMemberRegistrationController extends Controller
                 ->where('school_id', Auth::user()->school_id)
                 ->get();
 
-            $students = SmJYMember::where('academic_id', getAcademicId())
+            $students = SmStudent::where('academic_id', getAcademicId())
                 ->where('school_id', Auth::user()->school_id)
                 ->get();
 
@@ -914,6 +1319,25 @@ class SmMemberRegistrationController extends Controller
                 ->get();
 
             return view('backEnd.studentInformation.student_details', compact('classes', 'sessions'));
+        } catch (\Exception $e) {
+            Toastr::error('Operation Failed', 'Failed');
+            return redirect()->back();
+        }
+    }
+    public function jymemberDetails(Request $request)
+    {
+        try {
+          
+
+                //$students = DB::table('sm_jymembers')
+               // ->where('academic_id', getAcademicId())
+              
+
+            $sessions = SmAcademicYear::where('active_status', 1)
+                ->where('school_id', Auth::user()->school_id)
+                ->get();
+
+            return view('backEnd.studentInformation.jymember_details', compact('sessions'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -1112,7 +1536,7 @@ class SmMemberRegistrationController extends Controller
             'academic_id' => $request->session,
             'school_id' => auth()->user()->school_id
             ])->get();
-        $student = SmJYMember::where('school_id', auth()->user()->school_id)->find($request->student_id);
+        $student = SmStudent::where('school_id', auth()->user()->school_id)->find($request->student_id);
         if($student){
             $user = $student->user;
             foreach($groups as $group){
@@ -1129,7 +1553,7 @@ class SmMemberRegistrationController extends Controller
                                 ->when(moduleStatusCheck('University'), function ($query) {
                                     $query->whereNull('class_id');
                                 })->get();
-        $data['student_detail'] = SmJYMember::where('id', $id)->first();
+        $data['student_detail'] = SmStudent::where('id', $id)->first();
         $data['classes'] = SmClass::get(['id', 'class_name']);
         $data['siblings'] = SmStudent::where('parent_id', $data['student_detail']->parent_id)->whereNotNull('parent_id')->where('id', '!=', $id)->status()->withoutGlobalScope(StatusAcademicSchoolScope::class)->get();
         return view('backEnd.studentInformation.assign_class', $data);
@@ -1153,7 +1577,7 @@ class SmMemberRegistrationController extends Controller
 
         $data['sessions'] = SmAcademicYear::get(['id', 'year', 'title']);
         $data['student_records'] = StudentRecord::where('student_id', $student_id)->get();
-        $data['student_detail'] = SmJYMember::where('id', $student_id)->first();
+        $data['student_detail'] = SmStudent::where('id', $student_id)->first();
         $data['classes'] = SmClass::get(['id', 'class_name']);
         $data['siblings'] = SmStudent::where('parent_id', $data['student_detail']->parent_id)->where('id', '!=', $student_id)->status()->withoutGlobalScope(StatusAcademicSchoolScope::class)->get();
         if (moduleStatusCheck('University')) {
@@ -1231,7 +1655,7 @@ class SmMemberRegistrationController extends Controller
             $phone = $request->phone;
             $student = null;
             if ($email || $phone) {
-                $x_student = SmJYMember::query();
+                $x_student = SmStudent::query();
                 if ($email && $phone) {
                     $x_student->where('mobile', $phone);
                 } else if ($email) {
@@ -1448,7 +1872,7 @@ class SmMemberRegistrationController extends Controller
                     foreach ($data as $key => $value) {
                         if (isSubscriptionEnabled()) {
 
-                            $active_student = SmJYMember::where('school_id', Auth::user()->school_id)->where('active_status', 1)->count();
+                            $active_student = SmStudent::where('school_id', Auth::user()->school_id)->where('active_status', 1)->count();
 
                             if (\Modules\Saas\Entities\SmPackagePlan::student_limit() <= $active_student) {
 
@@ -1506,7 +1930,7 @@ class SmMemberRegistrationController extends Controller
                         }
 
                         if ($value->email != "") {
-                            $chk = DB::table('sm_jymembers')->where('email', $value->email)->where('school_id', Auth::user()->school_id)->count();
+                            $chk = DB::table('sm_students')->where('email', $value->email)->where('school_id', Auth::user()->school_id)->count();
                             if ($chk >= 1) {
                                 DB::rollback();
                                 StudentBulkTemporary::where('user_id', Auth::user()->id)->delete();

@@ -30,13 +30,13 @@
                     @if(userPermission(2))
                         <div class="col-lg-3 col-md-6 col-sm-6">
                             <a href="{{ route('student_list') }}" class="d-block">
-                                <div class="white-box single-summery">
+                                <div class="white-box single-summery" style="background: #eb4d1c;">
                                     <div class="d-flex justify-content-between">
                                         <div>
-                                            <h3>@lang('dashboard.student')</h3>
-                                            <p class="mb-0">@lang('dashboard.total_students')</p>
+                                            <h3 style="color: white">@lang('dashboard.members')</h3>
+                                            <p style="color: white" class="mb-0">@lang('dashboard.total_memberships')</p>
                                         </div>
-                                        <h1 class="gradient-color2">
+                                        <h1 style="color: white">
                                             @if(isset($totalStudents))
                                                 {{($totalStudents)}}
                                             @endif
@@ -50,53 +50,35 @@
 
                         <div class="col-lg-3 col-md-6 col-sm-6">
                             <a href="{{ route('staff_directory') }}" class="d-block">
-                                <div class="white-box single-summery">
+                                <div class="white-box single-summery" style="background: #0a5f97;">
                                     <div class="d-flex justify-content-between">
                                         <div>
-                                            <h3>@lang('common.payments')</h3>
-                                            <p class="mb-0">@lang('dashboard.total_payments')</p>
+                                            <h3 style="color: white">@lang('common.totalchildrenservice')</h3>
+                                            <p style="color: white" class="mb-0">@lang('dashboard.total_childrenservice')</p>
                                         </div>
-                                        <h1 class="gradient-color2">
-                                            @if(isset($totalTeachers))
-                                                {{($totalTeachers)}}
+                                        <h1 style="color: white">
+                                            @if(isset($totalchildrenservice))
+                                                {{($totalchildrenservice)}}
                                             @endif</h1>
                                     </div>
                                 </div>
                             </a>
                         </div>
                     @endif
-                    @if(userPermission(4))
-                        {{-- mt-30-md --}}
-                        <div class="col-lg-3 col-md-6 col-sm-6">
-                            <a href="#" class="d-block">
-                                <div class="white-box single-summery">
-                                    <div class="d-flex justify-content-between">
-                                        <div>
-                                            <h3>@lang('dashboard.parents')</h3>
-                                            <p class="mb-0">@lang('dashboard.total_parents')</p>
-                                        </div>
-                                        <h1 class="gradient-color2">
-                                            @if(isset($totalParents))
-                                                {{($totalParents)}}
-                                            @endif</h1>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    @endif
+                
                     @if(userPermission(5))
 
                         <div class="col-lg-3 col-md-6 col-sm-6">
                             <a href="{{ route('staff_directory') }}" class="d-block">
-                                <div class="white-box single-summery">
+                                <div class="white-box single-summery" style="background: #026307;">
                                     <div class="d-flex justify-content-between">
                                         <div>
-                                            <h3>@lang('dashboard.staffs')</h3>
-                                            <p class="mb-0">@lang('dashboard.total_staffs')</p>
+                                            <h3 style="color: white">@lang('dashboard.total_jy')</h3>
+                                            <p style="color: white" class="mb-0">@lang('dashboard.total_junioryouth')</p>
                                         </div>
-                                        <h1 class="gradient-color2">
-                                            @if(isset($totalStaffs))
-                                                {{($totalStaffs)}}
+                                        <h1 style="color: white"  >
+                                            @if(isset($total_jy))
+                                                {{($total_jy)}}
 
                                             @endif
                                         </h1>
@@ -105,6 +87,26 @@
                             </a>
                         </div>
                     @endif
+
+                    @if(userPermission(4))
+                    {{-- mt-30-md --}}
+                    <div class="col-lg-3 col-md-6 col-sm-6"  >
+                        <a href="#" class="d-block">
+                            <div class="white-box single-summery" style="background: #17a2b8;">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h3 style="color: white">@lang('dashboard.payments_of_Tithe')</h3>
+                                        <p style="color: white" class="mb-0">@lang('dashboard.total_payments_of_Tithe')</p>
+                                    </div>
+                                    <h1 style="color: white">
+                                        @if(isset($totalParents))
+                                            {{($totalParents)}}
+                                        @endif</h1>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                @endif
                 </div>
             @endif
 

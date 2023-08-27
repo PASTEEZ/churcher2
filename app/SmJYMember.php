@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\JyMemberRecord;
 use App\Models\StudentRecord;
 use App\Scopes\SchoolScope;
 use Carbon\Carbon;
@@ -19,7 +20,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\FeesCollection\Entities\InfixAssignDiscount;
 use Modules\OnlineExam\Entities\InfixStudentTakeOnlineExam;
 
-class SmJYMember extends Model
+class SmJymember extends Model
 {
     use HasFactory;
     protected $fillable = [];
@@ -696,31 +697,31 @@ class SmJYMember extends Model
     }
     public function studentAllRecords()
     {
-        return $this->hasMany(StudentRecord::class, 'student_id', 'id')->where('is_promote', 0)->orderBy('id', 'DESC');
+        return $this->hasMany(JyMemberRecord::class, 'student_id', 'id')->where('is_promote', 0)->orderBy('id', 'DESC');
     }
     public function studentRecords()
     {
-        return $this->hasMany(StudentRecord::class, 'student_id', 'id')->where('is_promote', 0)->where('active_status', 1)->orderBy('id', 'DESC');
+        return $this->hasMany(JyMemberRecord::class, 'student_id', 'id')->where('is_promote', 0)->where('active_status', 1)->orderBy('id', 'DESC');
     }
 
     public function orderByStudentRecords()
     {
-        return $this->hasMany(StudentRecord::class, 'student_id', 'id')->where('is_promote', 0)->where('active_status', 1)->orderBy('id', 'DESC');
+        return $this->hasMany(JyMemberRecord::class, 'student_id', 'id')->where('is_promote', 0)->where('active_status', 1)->orderBy('id', 'DESC');
     }
     public function getClassRecord()
     {
-        return $this->hasMany(StudentRecord::class, 'student_id', 'id')->where('is_promote', 0)->groupBy('class_id');
+        return $this->hasMany(JyMemberRecord::class, 'student_id', 'id')->where('is_promote', 0)->groupBy('class_id');
     }
     public function studentRecord()
     {
-        return $this->hasOne(StudentRecord::class, 'student_id')->where('is_promote', 0)
+        return $this->hasOne(JyMemberRecord::class, 'student_id')->where('is_promote', 0)
         ->when(moduleStatusCheck('University')==false, function ($q) {
             $q->where('academic_id', getAcademicId());
         })->where('school_id', Auth::user()->school_id);
     }
     public function defaultClass()
     {        
-        return $this->hasOne(StudentRecord::class, 'student_id')->where('is_promote', 0)->latest()->where('is_default', 1)
+        return $this->hasOne(JyMemberRecord::class, 'student_id')->where('is_promote', 0)->latest()->where('is_default', 1)
         ->when(moduleStatusCheck('University'), function ($query) {
             $query->where('un_academic_id', getAcademicId());
         }, function ($query) {
@@ -729,20 +730,20 @@ class SmJYMember extends Model
     }
     public function recordClass()
     {
-        return $this->hasOne(StudentRecord::class, 'student_id')->where('is_promote', 0)->where('class_id', request()->class)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id);
+        return $this->hasOne(JyMemberRecord::class, 'student_id')->where('is_promote', 0)->where('class_id', request()->class)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id);
     }
     
     public function recordSection()
     {
-        return $this->hasOne(StudentRecord::class, 'student_id')->where('is_promote', 0)->where('class_id', request()->class)->where('section_id', request()->section)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id);
+        return $this->hasOne(JyMemberRecord::class, 'student_id')->where('is_promote', 0)->where('class_id', request()->class)->where('section_id', request()->section)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id);
     }
     public function recordClasses()
     {
-        return $this->hasMany(StudentRecord::class, 'student_id')->where('is_promote', 0)->where('class_id', request()->class)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id);
+        return $this->hasMany(JyMemberRecord::class, 'student_id')->where('is_promote', 0)->where('class_id', request()->class)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id);
     }
     public function recordStudentRoll()
     {
-        return $this->hasOne(StudentRecord::class, 'student_id')->where('is_promote', 0)->where('class_id', request()->current_class)->where('section_id', request()->current_section)->where('academic_id', request()->current_session)->where('school_id', Auth::user()->school_id);
+        return $this->hasOne(JyMemberRecord::class, 'student_id')->where('is_promote', 0)->where('class_id', request()->current_class)->where('section_id', request()->current_section)->where('academic_id', request()->current_session)->where('school_id', Auth::user()->school_id);
     }
 
     public function completeSubjects()
@@ -752,7 +753,7 @@ class SmJYMember extends Model
 
     public function lastRecord()
     {
-        return $this->hasOne(StudentRecord::class, 'student_id', 'id')->where('is_promote', 0)->latest();
+        return $this->hasOne(JyMemberRecord::class, 'student_id', 'id')->where('is_promote', 0)->latest();
     }
     
     public function getFullNameAttribute()

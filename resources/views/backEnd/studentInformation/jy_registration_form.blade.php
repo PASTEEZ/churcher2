@@ -1,6 +1,6 @@
 @extends('backEnd.master')
 @section('title') 
-@lang('student.jy_member_registration')
+@lang('student.student_admission')
 @endsection
 
 @section('css')
@@ -10,11 +10,11 @@
 <section class="sms-breadcrumb mb-40 up_breadcrumb white-box">
     <div class="container-fluid">
         <div class="row justify-content-between">
-            <h1>@lang('student.jy_member_registration')</h1>
+            <h1>@lang('student.student_admission')</h1>
             <div class="bc-pages">
                 <a href="{{route('dashboard')}}">@lang('common.dashboard')</a>
                 <a href="#">@lang('student.student_information')</a>
-                <a href="#">@lang('student.jy_member_registration')</a>
+                <a href="#">@lang('student.student_admission')</a>
             </div>
         </div>
     </div>
@@ -37,7 +37,7 @@
             @endif
         </div>
         @if(userPermission(65))
-            {{ Form::open(['class' => 'form-horizontal studentadmission', 'files' => true, 'route' => 'jy_member_store', 'method' => 'POST', 'enctype' => 'multipart/form-data', 'id' => 'student_form']) }}
+            {{ Form::open(['class' => 'form-horizontal studentadmission', 'files' => true, 'route' => 'student_store', 'method' => 'POST', 'enctype' => 'multipart/form-data', 'id' => 'student_form']) }}
         @endif
         <div class="row">
             <div class="col-lg-12">
@@ -190,7 +190,7 @@
                             <div class="col-lg-2">
                                 <div class="input-effect">
                                     <input class="primary-input  form-control{{ $errors->has('admission_number') ? ' is-invalid' : '' }}" type="text" onkeyup="GetAdmin(this.value)" name="admission_number"
-                                    value="{{$max_admission_id != ''?  "PMCB/".substr(date('Y'),-2)."/".date('m').$max_admission_id + 1 : 1}}" >
+                                    value="{{$max_admission_id != ''?  "JY/".substr(date('Y'),-2)."/".date('m').$max_admission_id + 1 : 1}}" >
 
                      
                                    <label>@lang('student.admission_number') @if(is_required('admission_number')==true) * @endif</label>

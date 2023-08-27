@@ -1,7 +1,12 @@
 <?php
 return [
-    'student_info' => 'Adult Membership',
-    'student' => 'Member',
+    'student_info' => 'Membership',
+    'jymember' => 'J.Y Member',
+
+    
+    'cs_information' => 'Children Service',
+    'jy_information' => 'Junior Youth',
+    'csmember' => 'CS Members',
     'profile_update' => 'Profile Update',
     'my_profile' => 'My Profile',
     'subject_wise_attendance' => 'Service Wise Attendance',
@@ -97,7 +102,7 @@ return [
     'no_payroll_data' => 'No Payroll Data',
     'not_leaves_data' => 'Not Leaves Data',
     'joining_letter' => 'Joining Letter',
-    'student_information' => 'Adult Membership',
+    'student_information' => 'Membership',
     'student_admission' => 'Member Registration',
     'jy_member_registration' => 'J.Y Registration',
     'jy_list' => 'J.Y Members List',

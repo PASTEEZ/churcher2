@@ -2256,6 +2256,7 @@ class SmSystemSettingController extends Controller
                 "sm_staff_attendance_imports",
                 "sm_staff_attendences",
                 "sm_students",
+                "sm_jymembers",
                 "sm_student_attendances",
                 "sm_student_attendance_imports",
                 "sm_student_categories",

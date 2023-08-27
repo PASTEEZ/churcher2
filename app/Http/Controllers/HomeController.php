@@ -109,6 +109,9 @@ class HomeController extends Controller
             $user_id = Auth::id();
             $school_id = Auth::user()->school_id;
 
+            $user = Auth::user();
+            $role_id = $user->role_id;
+
             if(isSubscriptionEnabled()){
                 $last_payment = SmSubscriptionPayment::where('school_id',Auth::user()->school_id)
                     ->where('start_date', '<=', Carbon::now())
@@ -300,14 +303,26 @@ class HomeController extends Controller
             $total_staffs= $staffs->where('role_id', '!=', 1)
                 ->where('school_id', $school_id)->count();
             $data =[
-                'totalStudents' => SmStudent::where('active_status', 1)
+                    'totalStudents' => SmStudent::where('active_status', 1)
                 
                     ->where('school_id', $school_id)
+                    ->where('type_of_member', 1)
+                    ->count(),
+                    
+                    'totalchildrenservice' => SmStudent::where('active_status', 1)
+                    ->where('school_id', $school_id)
+                    ->where('type_of_member', 2)
                     ->count(),
 
-                'totalParents' => SmStudent::whereNotNull('parent_id')
+
+                    'total_jy' => SmStudent::where('active_status', 1)
+                    ->where('school_id', $school_id)
+                    ->where('type_of_member', 3)
+                    ->count(),
+
+
+                    'totalParents' => SmStudent::whereNotNull('parent_id')
                     ->where('active_status', 1)
-                
                     ->where('school_id', $school_id)
                     ->select('parent_id')
                     ->distinct()

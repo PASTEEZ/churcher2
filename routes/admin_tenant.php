@@ -1114,7 +1114,7 @@ Route::group(['middleware' => ['XSS','subscriptionAccessUrl']], function () {
 
 
  // Member Module /Non-Adult Admission
-       Route::get('nonadult-registration', ['as' => 'jy_member_admission', 'uses' => 'Admin\StudentInfo\SmStudentAdmissionController@index'])->middleware('userRolePermission:62');
+       Route::get('jy_members_form', ['as' => 'jy_registration_form', 'uses' => 'Admin\StudentInfo\JymembersRegistrationController@index'])->middleware('userRolePermission:62');
     
 
 
@@ -1215,7 +1215,8 @@ Route::group(['middleware' => ['XSS','subscriptionAccessUrl']], function () {
         // student list
 
         Route::get('members_list', ['as' => 'student_list', 'uses' => 'Admin\StudentInfo\SmStudentAdmissionController@studentDetails'])->middleware('userRolePermission:64');
-        Route::get('jy-member-list', ['as' => 'jy_member_list', 'uses' => 'Admin\StudentInfo\SmStudentAdmissionController@jymemberDetails'])->middleware('userRolePermission:64');
+      Route::get('jy-member-list', ['as' => 'jy_member_list', 'uses' => 'Admin\StudentInfo\SmStudentAdmissionController@jymemberDetails'])->middleware('userRolePermission:64');
+      Route::get('jy-member-list_menu', ['as' => 'jy_member_list_menu', 'uses' => 'Admin\StudentInfo\JymembersRegistrationController@jymembersDetails'])->middleware('userRolePermission:64');
     
       
         Route::get('member-settings', ['as' => 'student_settings', 'uses' => 'Admin\StudentInfo\SmStudentAdmissionController@settings'])->middleware('userRolePermission:951');
@@ -1224,9 +1225,14 @@ Route::group(['middleware' => ['XSS','subscriptionAccessUrl']], function () {
 
     // student search
 
-        Route::post('member-list-search', 'DatatableQueryController@studentDetailsDatatable')->name('student-list-search');
+        Route::post('jymember-list-search', 'DatatableQueryController@jymemberDetailsDatatable')->name('jymember-list-search');
         Route::post('ajax-member-list-search', 'DatatableQueryController@searchStudentList')->name('ajax-student-list-search');
 
+
+
+        
+        Route::post('member-list-search', 'DatatableQueryController@studentDetailsDatatable')->name('student-list-search');
+        Route::post('ajax-member-list-search', 'DatatableQueryController@searchStudentList')->name('ajax-student-list-search');
       //  Route::get('member-list-search', 'SmStudentAdmissionController@studentDetails');
         Route::get('member-list-search', 'SmStudentAdmissionController@jymemberDetails');
         // student list

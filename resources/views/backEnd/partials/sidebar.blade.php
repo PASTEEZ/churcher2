@@ -127,8 +127,119 @@
                         </li>
                     @endif
 
+
+      {{-- student_information --}}
+      @if (userPermission(61) && menuStatus(61) && isMenuAllowToShow('student_info'))
+      <li data-position="{{ menuPosition(61) }}" class="sortable_li">
+          <a href="javascript:void(0)" class="has-arrow" aria-expanded="false">
+              <div class="nav_icon_small">
+                  <span class="flaticon-reading"></span>
+              </div>
+              <div class="nav_title">
+                  @lang('student.student_information')
+              </div>
+          </a>
+          <ul class="list-unstyled" id="subMenuStudent">
+          
+              @if (userPermission(62) && menuStatus(62))
+                  <li data-position="{{ menuPosition(62) }}">
+                      <a href="{{ route('student_admission') }}">@lang('student.add_student')</a>
+                  </li>
+              @endif
+
              
-                    {{-- student_information --}}
+              @if (userPermission(64) && menuStatus(64))
+                  <li data-position="{{ menuPosition(64) }}">
+                      <a href="{{ route('student_list') }}"> @lang('student.student_list')</a>
+                  </li>
+              @endif
+          
+                 
+            
+
+                
+              
+           
+              
+            
+              
+              @if (userPermission(15209) && menuStatus(15209))
+                  <li data-position="{{ menuPosition(15209) }}">
+                      <a href="{{ route('unassigned_student') }}">@lang('student.unassigned_student')</a>
+                  </li>
+              @endif
+
+              @if (userPermission(83) && menuStatus(83))
+              <li data-position="{{ menuPosition(83) }}">
+                  <a href="{{ route('disabled_student') }}">@lang('student.disabled_student')</a>
+              </li>
+              @endif
+
+              @if (userPermission(663) && menuStatus(663))
+                  <li data-position="{{ menuPosition(663) }}">
+                      <a href="{{ route('all-student-export') }}">@lang('student.student_export')</a>
+                  </li>
+              @endif
+
+              @if (userPermission(950) && menuStatus(950))
+                  <li data-position="{{ menuPosition(950) }}">
+                      <a href="{{ route('notification_time_setup') }}">@lang('student.sms_sending_time')</a>
+                  </li>
+              @endif
+
+              
+          </ul>
+      </li>
+  @endif
+
+ 
+
+
+
+             {{-- Junior Youth _information --}}
+             @if (userPermission(61) && menuStatus(61) && isMenuAllowToShow('student_info'))
+             <li data-position="{{ menuPosition(61) }}" class="sortable_li">
+                 <a href="javascript:void(0)" class="has-arrow" aria-expanded="false">
+                     <div class="nav_icon_small">
+                         <span class="flaticon-reading"></span>
+                     </div>
+                     <div class="nav_title">
+                         @lang('member.jy_information')
+                     </div>
+                 </a>
+                 <ul class="list-unstyled" id="subMenuStudent">
+                 
+                     @if (userPermission(62) && menuStatus(62))
+                         <li data-position="{{ menuPosition(62) }}">
+                             <a href="{{ route('jy_registration_form') }}">@lang('student.add_student')</a>
+                         </li>
+                     @endif
+
+                    
+                     @if (userPermission(64) && menuStatus(64))
+                         <li data-position="{{ menuPosition(64) }}">
+                             <a href="{{ route('student_list') }}"> @lang('student.student_list')</a>
+                         </li>
+                     @endif
+                      
+                     @if (userPermission(15209) && menuStatus(15209))
+                         <li data-position="{{ menuPosition(15209) }}">
+                             <a href="{{ route('unassigned_student') }}">@lang('student.unassigned_student')</a>
+                         </li>
+                     @endif
+
+                     
+
+                 
+
+                      
+
+                     
+                 </ul>
+             </li>
+         @endif
+
+                    {{-- Children_information --}}
                     @if (userPermission(61) && menuStatus(61) && isMenuAllowToShow('student_info'))
                         <li data-position="{{ menuPosition(61) }}" class="sortable_li">
                             <a href="javascript:void(0)" class="has-arrow" aria-expanded="false">
@@ -136,7 +247,7 @@
                                     <span class="flaticon-reading"></span>
                                 </div>
                                 <div class="nav_title">
-                                    @lang('student.student_information')
+                                    @lang('member.cs_information')
                                 </div>
                             </a>
                             <ul class="list-unstyled" id="subMenuStudent">
@@ -153,53 +264,14 @@
                                         <a href="{{ route('student_list') }}"> @lang('student.student_list')</a>
                                     </li>
                                 @endif
-                                @if (userPermission(62) && menuStatus(62))
-                                <li data-position="{{ menuPosition(62) }}">
-                                    <a href="{{ route('jy_member_admission') }}">@lang('student.add_nonadult')</a>
-                                </li>
-                                 @endif
-                                 
-                                @if (userPermission(64) && menuStatus(64))
-                                <li data-position="{{ menuPosition(64) }}">
-                                    <a href="{{ route('jy_member_list') }}"> @lang('student.jy_list')</a>
-                                </li>
-                            @endif
-                             
-                                @if (userPermission(68) && menuStatus(68))
-                                    <li data-position="{{ menuPosition(68) }}">
-                                        <a href="{{ route('student_attendance') }}">
-                                            @lang('student.student_attendance')</a>
-                                    </li>
-                                @endif
-                                @if (userPermission(70) && menuStatus(70))
-                                    <li data-position="{{ menuPosition(70) }}">
-                                        <a href="{{ route('student_attendance_report') }}">
-                                            @lang('student.student_attendance_report')</a>
-                                    </li>
-                                @endif
-                              
-                                 
-                              
-                                @if (userPermission(81) && menuStatus(81))
-                                    <li data-position="{{ menuPosition(81) }}">
-                                        @if (moduleStatusCheck('University'))
-                                            <a
-                                                    href="{{ route('university.student_promote') }}">@lang('student.student_promote')</a>
-                                                  @endif
-
-                                    </li>
-                                @endif
+                                
                                 @if (userPermission(15209) && menuStatus(15209))
                                     <li data-position="{{ menuPosition(15209) }}">
                                         <a href="{{ route('unassigned_student') }}">@lang('student.unassigned_student')</a>
                                     </li>
                                 @endif
 
-                                @if (userPermission(83) && menuStatus(83))
-                                <li data-position="{{ menuPosition(83) }}">
-                                    <a href="{{ route('disabled_student') }}">@lang('student.disabled_student')</a>
-                                </li>
-                                @endif
+                               
 
                                 @if (userPermission(663) && menuStatus(663))
                                     <li data-position="{{ menuPosition(663) }}">
@@ -207,11 +279,7 @@
                                     </li>
                                 @endif
 
-                                @if (userPermission(950) && menuStatus(950))
-                                    <li data-position="{{ menuPosition(950) }}">
-                                        <a href="{{ route('notification_time_setup') }}">@lang('student.sms_sending_time')</a>
-                                    </li>
-                                @endif
+                              
 
                                 
                             </ul>

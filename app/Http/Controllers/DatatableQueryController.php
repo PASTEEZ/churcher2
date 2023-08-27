@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\JyMemberRecord;
 use DataTables;
 use App\SmClass;
 use App\SmStaff;
@@ -18,12 +19,14 @@ use App\SmBankPaymentSlip;
 use App\SmStudentAttendance;
 use Illuminate\Http\Request;
 use App\Models\StudentRecord;
+
 use Illuminate\Support\Carbon;
 use App\SmTeacherUploadContent;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use App\Scopes\StatusAcademicSchoolScope;
+use App\SmJymember;
 use Illuminate\Support\Facades\Validator;
 
 class DatatableQueryController extends Controller
@@ -52,7 +55,8 @@ class DatatableQueryController extends Controller
         }
 
         if ($request->ajax()) {
-           
+             
+        
             $records = StudentRecord::query();
             $records->where('school_id',auth()->user()->school_id);
             $records->when(moduleStatusCheck('University') && $request->filled('un_academic_id'), function ($u_query) use ($request) {
@@ -136,11 +140,11 @@ class DatatableQueryController extends Controller
                         $query->where('academic_id', getAcademicId());
                     });
 
-            }])->select('sm_students.*');
-            $students->where('sm_students.active_status', 1);
+            }])->select('sm_jymembers.*');
+            $students->where('sm_jymembers.active_status', 1);
 
              
-            $students = $students->where('sm_students.school_id', Auth::user()->school_id)
+            $students = $students->where('sm_jymembers.school_id', Auth::user()->school_id)
                 ->with(array('parents' => function ($query) {
                     $query->select('id', 'fathers_name');
                 }))
@@ -248,8 +252,10 @@ class DatatableQueryController extends Controller
         }
 
         if ($request->ajax()) {
+             //$students = DB::table('sm_jymembers')
+               // ->where('academic_id', getAcademicId())
            
-            $records = StudentRecord::query();
+               $records = StudentRecord::query();
             $records->where('school_id',auth()->user()->school_id);
             $records->when(moduleStatusCheck('University') && $request->filled('un_academic_id'), function ($u_query) use ($request) {
                 $u_query->where('un_academic_id', $request->un_academic_id);
