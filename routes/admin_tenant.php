@@ -1114,8 +1114,12 @@ Route::group(['middleware' => ['XSS','subscriptionAccessUrl']], function () {
 
 
  // Member Module /Non-Adult Admission
-       Route::get('jy_members_form', ['as' => 'jy_registration_form', 'uses' => 'Admin\StudentInfo\JymembersRegistrationController@index'])->middleware('userRolePermission:62');
+    Route::get('jy_members_form', ['as' => 'jy_registration_form', 'uses' => 'Admin\StudentInfo\JymembersRegistrationController@index'])->middleware('userRolePermission:62');
     
+    Route::get('cs_members_form', ['as' => 'cs_registration_form', 'uses' => 'Admin\StudentInfo\CsmembersRegistrationController@index'])->middleware('userRolePermission:62');
+    
+
+
 
 
 
@@ -1156,7 +1160,11 @@ Route::group(['middleware' => ['XSS','subscriptionAccessUrl']], function () {
 
            //student store
            Route::post('jy-store', ['as' => 'jy_member_store', 'uses' => 'Admin\StudentInfo\SmStudentAdmissionController@jystore'])->middleware('userRolePermission:65');
+          
 
+           Route::post('cs-store', ['as' => 'cs_member_store', 'uses' => 'Admin\StudentInfo\SmStudentAdmissionController@csstore'])->middleware('userRolePermission:65');
+       
+           
 
         //Student details document
 

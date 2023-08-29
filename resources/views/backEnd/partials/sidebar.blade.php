@@ -254,7 +254,7 @@
                             
                                 @if (userPermission(62) && menuStatus(62))
                                     <li data-position="{{ menuPosition(62) }}">
-                                        <a href="{{ route('student_admission') }}">@lang('student.add_student')</a>
+                                        <a href="{{ route('cs_registration_form') }}">@lang('student.add_student')</a>
                                     </li>
                                 @endif
 

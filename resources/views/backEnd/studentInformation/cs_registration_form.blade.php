@@ -37,7 +37,7 @@
             @endif
         </div>
         @if(userPermission(65))
-            {{ Form::open(['class' => 'form-horizontal studentadmission', 'files' => true, 'route' => 'jy_member_store', 'method' => 'POST', 'enctype' => 'multipart/form-data', 'id' => 'student_form']) }}
+            {{ Form::open(['class' => 'form-horizontal studentadmission', 'files' => true, 'route' => 'cs_member_store', 'method' => 'POST', 'enctype' => 'multipart/form-data', 'id' => 'student_form']) }}
         @endif
         <div class="row">
             <div class="col-lg-12">
@@ -188,7 +188,7 @@
                             <div class="col-lg-2">
                                 <div class="input-effect">
                                     <input class="primary-input  form-control{{ $errors->has('admission_number') ? ' is-invalid' : '' }}" type="text" onkeyup="GetAdmin(this.value)" name="admission_number"
-                                    value="{{$max_admission_id != ''?  "JY/".substr(date('Y'),-2)."/".date('m').$max_admission_id + 1 : 1}}" >
+                                    value="{{$max_admission_id != ''?  "CS/".substr(date('Y'),-2)."/".date('m').$max_admission_id + 1 : 1}}" >
 
                      
                                    <label>@lang('student.admission_number') @if(is_required('admission_number')==true) * @endif</label>

@@ -70,7 +70,7 @@ use Modules\University\Repositories\Interfaces\UnDepartmentRepositoryInterface;
 use Modules\University\Repositories\Interfaces\UnSemesterLabelRepositoryInterface;
 
 
-class JymembersRegistrationController extends Controller
+class CsmembersRegistrationController extends Controller
 {
     use CustomFields;
     use FeesAssignTrait;
@@ -102,7 +102,7 @@ class JymembersRegistrationController extends Controller
             $data['max_roll_id'] = SmStudent::where('school_id', Auth::user()->school_id)->max('roll_no');
 
          
-            return view('backEnd.studentInformation.jy_registration_form', $data);
+            return view('backEnd.studentInformation.cs_registration_form', $data);
 
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
