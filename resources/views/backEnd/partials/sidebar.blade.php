@@ -218,7 +218,7 @@
                     
                      @if (userPermission(64) && menuStatus(64))
                          <li data-position="{{ menuPosition(64) }}">
-                             <a href="{{ route('student_list') }}"> @lang('student.student_list')</a>
+                             <a href="{{ route('jymember_list') }}"> @lang('student.student_list')</a>
                          </li>
                      @endif
                       
@@ -261,7 +261,7 @@
                                
                                 @if (userPermission(64) && menuStatus(64))
                                     <li data-position="{{ menuPosition(64) }}">
-                                        <a href="{{ route('student_list') }}"> @lang('student.student_list')</a>
+                                        <a href="{{ route('csmember_list') }}"> @lang('student.student_list')</a>
                                     </li>
                                 @endif
                                 

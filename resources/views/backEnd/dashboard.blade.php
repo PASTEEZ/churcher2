@@ -19,9 +19,11 @@
                                 @lang('common.staff') : {{@($totalStaffs)}} out {{@$package_info['staff_quantity']}}
                             </h3>
                         @else
-                            <h3 class="mb-0">@lang('dashboard.welcome') - {{@Auth::user()->school->school_name}} | {{@Auth::user()->roles->name}}</h3>
-                        @endif
+                         <h3 class="mb-0">@lang('dashboard.welcome') - {{@Auth::user()->school->school_name}} | {{@Auth::user()->roles->name}}</h3>
+                      
+                   @endif
                     </div>
+                      <h1>TOTAL MEMBERSHIP: {{($totalStudents + $totalchildrenservice + $total_jy )}}</h1>
                 </div>
             </div>
 
@@ -49,7 +51,7 @@
                     @if(userPermission(3))
 
                         <div class="col-lg-3 col-md-6 col-sm-6">
-                            <a href="{{ route('staff_directory') }}" class="d-block">
+                            <a href="{{ route('csmember_list') }}" class="d-block">
                                 <div class="white-box single-summery" style="background: #0a5f97;">
                                     <div class="d-flex justify-content-between">
                                         <div>
@@ -69,7 +71,7 @@
                     @if(userPermission(5))
 
                         <div class="col-lg-3 col-md-6 col-sm-6">
-                            <a href="{{ route('staff_directory') }}" class="d-block">
+                            <a href="{{ route('jymember_list') }}" class="d-block">
                                 <div class="white-box single-summery" style="background: #026307;">
                                     <div class="d-flex justify-content-between">
                                         <div>

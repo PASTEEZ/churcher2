@@ -20,7 +20,7 @@
 
 
 {{-- disable student  --}}
-    <div class="modal fade admin-query" id="deleteStudentModal" >student_details.blade.php
+    <div class="modal fade admin-query" id="deleteStudentModal" > 
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">

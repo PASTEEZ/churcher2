@@ -1216,15 +1216,21 @@ Route::group(['middleware' => ['XSS','subscriptionAccessUrl']], function () {
         //Datatables
         Route::get('student-list-datatable', ['as' => 'student_list_datatable', 'uses' => 'DatatableQueryController@studentDetailsDatatable'])->middleware('userRolePermission:64');
        
+        Route::get('csmember-list-datatable', ['as' => 'csmember_list_datatable', 'uses' => 'DatatableQueryController@csmemberDetailsDatatable'])->middleware('userRolePermission:64');
+       
+     
 
-        Route::get('jymembers-list-datatable', ['as' => 'jymembers_list_datatable', 'uses' => 'DatatableQueryController@jymemberDetailsDatatable'])->middleware('userRolePermission:64');
+
+        Route::get('jymember-list-datatable', ['as' => 'jymember_list_datatable', 'uses' => 'DatatableQueryController@jymemberDetailsDatatable'])->middleware('userRolePermission:64');
        
         
         // student list
 
         Route::get('members_list', ['as' => 'student_list', 'uses' => 'Admin\StudentInfo\SmStudentAdmissionController@studentDetails'])->middleware('userRolePermission:64');
-      Route::get('jy-member-list', ['as' => 'jy_member_list', 'uses' => 'Admin\StudentInfo\SmStudentAdmissionController@jymemberDetails'])->middleware('userRolePermission:64');
-      Route::get('jy-member-list_menu', ['as' => 'jy_member_list_menu', 'uses' => 'Admin\StudentInfo\JymembersRegistrationController@jymembersDetails'])->middleware('userRolePermission:64');
+        Route::get('csmembers_list', ['as' => 'csmember_list', 'uses' => 'Admin\StudentInfo\SmStudentAdmissionController@csmemberDetails'])->middleware('userRolePermission:64');
+        Route::get('jymembers_list', ['as' => 'jymember_list', 'uses' => 'Admin\StudentInfo\SmStudentAdmissionController@jymemberDetails'])->middleware('userRolePermission:64');
+      
+        Route::get('jy-member-list_menu', ['as' => 'jy_member_list_menu', 'uses' => 'Admin\StudentInfo\JymembersRegistrationController@jymembersDetails'])->middleware('userRolePermission:64');
     
       
         Route::get('member-settings', ['as' => 'student_settings', 'uses' => 'Admin\StudentInfo\SmStudentAdmissionController@settings'])->middleware('userRolePermission:951');

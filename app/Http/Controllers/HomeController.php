@@ -304,7 +304,6 @@ class HomeController extends Controller
                 ->where('school_id', $school_id)->count();
             $data =[
                     'totalStudents' => SmStudent::where('active_status', 1)
-                
                     ->where('school_id', $school_id)
                     ->where('type_of_member', 1)
                     ->count(),

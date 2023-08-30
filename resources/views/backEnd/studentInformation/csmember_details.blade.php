@@ -232,7 +232,7 @@
                 processing: true,
                 serverSide: true,
                 "ajax": $.fn.dataTable.pipeline( {
-                    url: "{{url('jymember-list-datatable')}}",
+                    url: "{{url('csmember-list-datatable')}}",
                     data: {
                         academic_year: $('#academic_id').val(),
                         class: $('#class').val(),

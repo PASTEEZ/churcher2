@@ -1705,6 +1705,7 @@ class SmStudentAdmissionController extends Controller
 
             $students = SmStudent::where('academic_id', getAcademicId())
                 ->where('school_id', Auth::user()->school_id)
+                ->where('school_id', Auth::user()->school_id)
                 ->get();
 
             $sessions = SmAcademicYear::where('active_status', 1)
@@ -1717,25 +1718,59 @@ class SmStudentAdmissionController extends Controller
             return redirect()->back();
         }
     }
-    public function jymemberDetails(Request $request)
+ 
+
+    public function csmemberDetails(Request $request)
     {
         try {
-          
+            $classes = SmClass::where('active_status', 1)
+                ->where('academic_id', getAcademicId())
+                ->where('school_id', Auth::user()->school_id)
+                ->get();
 
-                //$students = DB::table('sm_jymembers')
-               // ->where('academic_id', getAcademicId())
-              
+            $students = SmStudent::where('academic_id', getAcademicId())
+                ->where('school_id', Auth::user()->school_id)
+                ->where('school_id', Auth::user()->school_id)
+                ->get();
 
             $sessions = SmAcademicYear::where('active_status', 1)
                 ->where('school_id', Auth::user()->school_id)
                 ->get();
 
-            return view('backEnd.studentInformation.jymember_details', compact('sessions'));
+            return view('backEnd.studentInformation.csmember_details', compact('classes', 'sessions'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
         }
     }
+ 
+
+
+    public function jymemberDetails(Request $request)
+    {
+        try {
+            $classes = SmClass::where('active_status', 1)
+                ->where('academic_id', getAcademicId())
+                ->where('school_id', Auth::user()->school_id)
+                ->get();
+
+            $students = SmStudent::where('academic_id', getAcademicId())
+                ->where('school_id', Auth::user()->school_id)
+                ->where('school_id', Auth::user()->school_id)
+                ->get();
+
+            $sessions = SmAcademicYear::where('active_status', 1)
+                ->where('school_id', Auth::user()->school_id)
+                ->get();
+
+            return view('backEnd.studentInformation.jymember_details', compact('classes', 'sessions'));
+        } catch (\Exception $e) {
+            Toastr::error('Operation Failed', 'Failed');
+            return redirect()->back();
+        }
+    }
+ 
+
 
     public function settings()
     {
