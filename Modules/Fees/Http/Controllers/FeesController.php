@@ -295,6 +295,20 @@ class FeesController extends Controller
         return view('fees::feesInvoice.feesInvoiceList', compact('studentInvoices'));
     }
 
+
+    
+    public function MonthlyTitheList()
+    {
+        $studentInvoices = FmFeesInvoice::where('type', 'fees')
+            ->where('school_id', Auth::user()->school_id)
+            ->where('academic_id', getAcademicId())
+            ->orderBy('id', 'DESC')
+            ->get();
+
+        return view('fees::feesInvoice.MonthlyTithePaymentList', compact('studentInvoices'));
+    }
+
+
     public function feesInvoice()
     {
         try {
@@ -340,6 +354,8 @@ class FeesController extends Controller
             return redirect()->back();
         }
     }
+
+
 
     public function feesInvoiceStore(Request $request)
     {

@@ -29,32 +29,7 @@
             @endif
 
           
-
-            @if(userPermission(1152) && menuStatus(1152))
-                <li data-position="{{menuPosition(1152)}}">
-                    <a href="{{ route('fees.fees-invoice-settings') }}">@lang('fees::feesModule.fees_invoice_settings')</a>
-                </li>
-            @endif
-
-            <li>
-                <a href="javascript:void(0)" class="has-arrow" aria-expanded="false">
-                    @lang('reports.report')
-                </a>
-                <ul class="list-unstyled">
-                    @if(userPermission(1155) && menuStatus(1155))
-                        <li data-position="{{menuPosition(1155)}}">
-                            <a href="{{ route('fees.due-fees') }}">
-                                @lang('fees::feesModule.fees_due_report')
-                            </a>
-                        </li>
-                    @endif
-                    @if(userPermission(1158) && menuStatus(1158))
-                        <li data-position="{{menuPosition(1158)}}">
-                            <a href="{{ route('fees.fine-report')}}">
-                                @lang('accounts.fine_report')
-                            </a>
-                        </li>
-                    @endif
+   
                     @if(userPermission(1159) && menuStatus(1159))
                         <li data-position="{{menuPosition(1159)}}">
                             <a href="{{ route('fees.payment-report')}}">
@@ -62,22 +37,18 @@
                             </a>
                         </li>
                     @endif
-                    @if(userPermission(1160) && menuStatus(1160))
-                        <li data-position="{{menuPosition(1160)}}">
-                            <a href="{{ route('fees.balance-report')}}">
-                                @lang('fees::feesModule.balance_report')
-                            </a>
-                        </li>
-                    @endif
-                    @if(userPermission(1161) && menuStatus(1161))
-                        <li data-position="{{menuPosition(1161)}}">
-                            <a href="{{ route('fees.waiver-report')}}">
-                                @lang('fees::feesModule.waiver_report')
-                            </a>
-                        </li>
-                    @endif
-                </ul>
-            </li>
+
+           {{--      <li>
+                        <a href="javascript:void(0)" class="has-arrow" aria-expanded="false">
+                            @lang('reports.report')
+                        </a>
+                        <ul class="list-unstyled">
+                        
+                        
+                            
+                            
+                        </ul>
+                    </li>--}}
         </ul>
     </li>
 @endif

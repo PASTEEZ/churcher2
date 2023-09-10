@@ -89,11 +89,11 @@
                             </a>
                         </div>
                     @endif
-
+                    
                     @if(userPermission(4))
                     {{-- mt-30-md --}}
                     <div class="col-lg-3 col-md-6 col-sm-6"  >
-                        <a href="#" class="d-block">
+                        <a  href="{{ route('fees.fees-invoice-list') }}" class="d-block">
                             <div class="white-box single-summery" style="background: #17a2b8;">
                                 <div class="d-flex justify-content-between">
                                     <div>

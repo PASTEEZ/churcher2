@@ -45,7 +45,7 @@
                                 @lang('student.roll_number')
                             </div>
                             <div class="value">
-                                {{ @$student_detail->roll_no }}
+                                {{ @$student_detail->weight }}
                             </div>
                         </div>
                     </div>

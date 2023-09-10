@@ -165,6 +165,7 @@ Route::group(['middleware' => ['XSS','subscriptionAccessUrl']], function () {
         Route::get('membership-type-delete/{id}', ['as' => 'class_delete', 'uses' => 'Admin\Academics\SmClassController@delete'])->middleware('userRolePermission:264');
 
 
+ 
         //*********************************************** START SUBJECT WISE ATTENDANCE ****************************************************** */
         Route::get('subject-wise-attendance',  'Admin\StudentInfo\SmSubjectAttendanceController@index')->name('subject-wise-attendance')->middleware('userRolePermission:533');
         Route::post('subject-wise-attendance',  'Admin\StudentInfo\SmSubjectAttendanceController@search')->name('subject-attendance-search');
@@ -1229,7 +1230,8 @@ Route::group(['middleware' => ['XSS','subscriptionAccessUrl']], function () {
         Route::get('members_list', ['as' => 'student_list', 'uses' => 'Admin\StudentInfo\SmStudentAdmissionController@studentDetails'])->middleware('userRolePermission:64');
         Route::get('csmembers_list', ['as' => 'csmember_list', 'uses' => 'Admin\StudentInfo\SmStudentAdmissionController@csmemberDetails'])->middleware('userRolePermission:64');
         Route::get('jymembers_list', ['as' => 'jymember_list', 'uses' => 'Admin\StudentInfo\SmStudentAdmissionController@jymemberDetails'])->middleware('userRolePermission:64');
-      
+       
+       
         Route::get('jy-member-list_menu', ['as' => 'jy_member_list_menu', 'uses' => 'Admin\StudentInfo\JymembersRegistrationController@jymembersDetails'])->middleware('userRolePermission:64');
     
       
@@ -2143,3 +2145,7 @@ Route::group(['middleware' => ['XSS','subscriptionAccessUrl']], function () {
         
     });
 });
+
+ 
+      
+ 

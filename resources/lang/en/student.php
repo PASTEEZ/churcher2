@@ -279,7 +279,7 @@ return [
     'title' => 'Title',
     'action' => 'Action',
     'actions' => 'Actions',
-    'roll_number' => 'Moible Number(Work)',
+    'roll_number' => 'Highest Edu. Qualification',
     'september' => 'September',
     'october' => 'October',
     'november' => 'November',

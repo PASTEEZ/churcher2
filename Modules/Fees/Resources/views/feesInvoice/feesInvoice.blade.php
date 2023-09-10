@@ -37,8 +37,6 @@
     </section>
     <section class="admin-visitor-area up_st_admin_visitor">
         <div class="container-fluid p-0">
-
-            
             @if (isset($invoiceInfo))
                 {{ Form::open(['class' => 'form-horizontal', 'method' => 'POST', 'route' => 'fees.fees-invoice-update']) }}
                 <input type="hidden" name="id" class="editValue" value="{{$invoiceInfo->id}}">
@@ -62,32 +60,8 @@
                                     <input type="hidden" name="url" id="url" value="{{URL::to('/')}}">
                                 <div class="white-box">
                                     <div class="add-visitor">                              
-                                        
-
-                                    @if (moduleStatusCheck('University'))
-                                        @includeIf('university::common.session_faculty_depart_academic_semester_level',
-                                        ['required' => 
-                                            ['USN', 'UD', 'UA', 'US', 'USL','USEC'],'hide'=> ['USUB'],
-                                            'div'=>'col-lg-12','row'=>1,
-                                             'mt'=>'mt-0','disabled'=>true
-                                        ])
-                    
-                                        <div class="row">
-                                            <div class="col-lg-12 mt-30" id="select_un_student_div">
-                                                {{ Form::select('student_id', @$students ?? [""=>__('common.select_student').'*'], $invoiceInfo ? $invoiceInfo->student_id : null , ['class' => 'niceSelect w-100 bb form-control'. ($errors->has('student_id') ? ' is-invalid' : ''), 'id'=>'select_un_student',  isset($invoiceInfo) ? 'disabled' : '']) }}
-
-                                                <span class="focus-border"></span>
-                                                <div class="pull-right loader loader_style" id="select_un_student_loader">
-                                                    <img class="loader_img_style" src="{{asset('public/backEnd/img/demo_wait.gif')}}" alt="loader">
-                                                </div>
-                                                @if ($errors->has('student_id'))
-                                                    <span class="invalid-feedback custom-error-message" role="alert">
-                                                        {{ @$errors->first('student_id') }}
-                                                    </span>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    @else
+                                         
+                                
                                         <div class="row">
                                             <div class="col-lg-12 mt-25">
                                                 <select class="niceSelect w-100 bb form-control{{ $errors->has('class') ? ' is-invalid' : '' }}" name="class" id="selectClass">
@@ -111,7 +85,7 @@
                                                 @if (isset($invoiceInfo))
                                                 @dump($students)
                                                     @foreach ($students as $student)
-                                                        <option value="{{$student->id}}" {{($student->id == $invoiceInfo->record_id)? 'selected':''}}>{{$student->studentDetail->full_name}} ({{$student->section->section_name}} - {{$student->roll_no}})</option>
+                                                        <option value="{{$student->id}}">{{$student->studentDetail->full_name}} ({{$student->section->section_name}} - {{$student->roll_no}})</option>
                                                     @endforeach
                                                 @endif
                                             </select>
@@ -125,7 +99,7 @@
                                             @endif
                                             </div>
                                         </div>
-                                    @endif
+                                 
                                         <div class="row no-gutters input-right-icon mt-30">
                                             <div class="col">
                                                 <div class="input-effect">
@@ -170,7 +144,6 @@
                                             <div class="col-lg-12">
                                                 <select class="niceSelect w-100 bb form-control{{ $errors->has('payment_status') ? ' is-invalid' : '' }}" name="payment_status" id="paymentStatus">
                                                     <option data-display="@lang('fees.payment_status') *" value="">@lang('fees.payment_status') *</option>
-                                                    <option value="not" {{isset($invoiceInfo)? ($invoiceInfo->payment_status == "not"?'selected':''):(old('payment_status') == 'not' ? 'selected' : '')}}>@lang('fees.not_paid')</option>
                                                     <option value="partial" {{isset($invoiceInfo)? ($invoiceInfo->payment_status == "partial"?'selected':''):(old('payment_status') == 'partial' ? 'selected' : '')}}>@lang('fees.partial_paid')</option>
                                                     <option value="full" {{isset($invoiceInfo)? ($invoiceInfo->payment_status == "full"?'selected':''):(old('payment_status') == 'full' ? 'selected' : '')}}>@lang('fees.full_paid')</option>
                                                 </select>
@@ -275,7 +248,7 @@
                                             @endif
                                         </div>
                                     </div>
-                                     
+                                
                                 </div>
                                 <input type="hidden" class="weaverType" value="amount">
                                 <div class="big-table">
@@ -285,7 +258,7 @@
                                                 <th>@lang('common.sl')</th>
                                                 <th>@lang('fees.fees_type')</th>
                                                 <th>@lang('accounts.amount')</th>
-                                                 
+                                                <th>@lang('exam.waiver')</th>
                                                 <th>@lang('fees.sub_total')</th>
                                                 <th>@lang('fees.paid_amount')</th>
                                                 <th>@lang('common.action')</th>
@@ -309,7 +282,17 @@
                                                                 @endif
                                                             </div>
                                                         </td>
-                                                        
+                                                        <td>
+                                                            <div class="input-effect">
+                                                                <input class="primary-input form-control weaver{{ $errors->has('weaver') ? ' is-invalid' : '' }}" type="text" name="weaver[]" autocomplete="off" value="{{isset($invoiceDetail)? $invoiceDetail->weaver: old('weaver')}}">
+                                                                <span class="focus-border"></span>
+                                                                @if ($errors->has('weaver'))
+                                                                <span class="invalid-feedback" role="alert">
+                                                                    <strong>{{ $errors->first('weaver') }}</strong>
+                                                                </span>
+                                                                @endif
+                                                            </div>
+                                                        </td>
                                                         <td class="subTotal">{{isset($invoiceDetail)? $invoiceDetail->sub_total: ""}}</td>
                                                         <input type="hidden" name="sub_total[]" class="inputSubTotal" value="{{isset($invoiceDetail)? $invoiceDetail->sub_total: ""}}">
                                                         <td>
@@ -475,7 +458,7 @@
                                 $("#select_un_student").append(
                                     $("<option>", {
                                         value: 'all_student',
-                                        text: "",
+                                        text: "All Student",
                                     })
                                 );
 

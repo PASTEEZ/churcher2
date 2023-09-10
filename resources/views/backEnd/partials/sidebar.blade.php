@@ -468,17 +468,7 @@
                         @includeIf('fees::sidebar.adminSidebar')
                     @endif
 
-                    {{-- check module link permission --}}
-                    @if (moduleStatusCheck('University'))
-                        @include('university::un_menu')
-                    @endif
-                    @if(isMenuAllowToShow('wallet'))
-                        @includeIf('wallet::menu.sidebar')
-                    @endif
-                    @if (moduleStatusCheck('Lms') == true)
-                        @include('lms::menu.lms_sidebar')
-                    @endif
-
+                     
 
 
 

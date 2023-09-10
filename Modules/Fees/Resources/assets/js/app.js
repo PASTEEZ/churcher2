@@ -50,7 +50,7 @@ window.paymentValue = $('#paymentMethodAddFees').val();
                                         $("#selectStudent").append(
                                             $("<option>", {
                                                 value: allStudent.id,
-                                                text: allStudent.student_detail.full_name +" "+"(- " +rollno+")",
+                                                text: allStudent.student_detail.full_name +" "+"("+section+ " - " +rollno+")",
                                             })
                                         );
                                     }
@@ -595,9 +595,9 @@ window.paymentValue = $('#paymentMethodAddFees').val();
             let postionValueShow = $('#'+id).val();
             let defaultValue = new Object({
                 uniq_id : '0011',
-                class : 'Church',
+                class : 'One',
                 section : 'A',
-                prefix : 'Presby',
+                prefix : 'infixEdu',
                 admission_no : '123',
             })
 
@@ -742,7 +742,7 @@ window.paymentValue = $('#paymentMethodAddFees').val();
                                         $("#selectStudent").append(
                                             $("<option>", {
                                                 value: allStudent.id,
-                                                text: allStudent.student_detail.full_name +" "+"( - " +rollno+")",
+                                                text: allStudent.student_detail.full_name +" "+"("+section+ " - " +rollno+")",
                                             })
                                         );
                                     }
@@ -803,7 +803,7 @@ window.paymentValue = $('#paymentMethodAddFees').val();
                                         $("#selectStudent").append(
                                             $("<option>", {
                                                 value: allStudent.id,
-                                                text: allStudent.student_detail.full_name +" "+"( - " +rollno+")",
+                                                text: allStudent.student_detail.full_name +" "+"("+section+ " - " +rollno+")",
                                             })
                                         );
                                     }
