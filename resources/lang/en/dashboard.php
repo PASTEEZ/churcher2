@@ -19,7 +19,7 @@ return[
     'student_admission_progress'=> 'Member Registration In Progress',
     'teachers'=> 'Leaders',
     'payments_of_Tithe'=> 'Payment of Tithe',
-    'total_payments_of_Tithe'=> 'No. of Members(This Month)',
+    'total_payments_of_Tithe'=> 'Number of Members(This Month)',
     'staffs'=> 'Worker',
 
     'staffs'=> 'Worker',

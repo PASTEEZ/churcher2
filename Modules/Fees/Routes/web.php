@@ -7,7 +7,7 @@ use Modules\Fees\Http\Controllers\FeesReportController;
 use Modules\Fees\Http\Controllers\StudentFeesController;
 
 Route::group(['middleware' => ['subdomain']], function () {
-    Route::prefix('tithe')->middleware('auth')->group(function () {
+    Route::prefix('fees')->middleware('auth')->group(function () {
         //Fees Group
         Route::get('pay-group', [FeesController::class, 'feesGroup'])->name('fees.fees-group')->middleware('userRolePermission:1131');
         Route::post('fees-group-store', [FeesController::class, 'feesGroupStore'])->name('fees.fees-group-store')->middleware('userRolePermission:1132');
@@ -22,6 +22,12 @@ Route::group(['middleware' => ['subdomain']], function () {
         Route::post('pay-type-update', [FeesController::class, 'feesTypeUpdate'])->name('fees.fees-type-update')->middleware('userRolePermission:1137');
         Route::post('pay-type-delete', [FeesController::class, 'feesTypeDelete'])->name('fees.fees-type-delete')->middleware('userRolePermission:1138');
 
+
+
+
+
+
+        
         //Fees invoice
         Route::get('Monthly-tithe-list', [FeesController::class, 'MonthlyTithePaymentList'])->name('fees.fees-invoice-list')->middleware('userRolePermission:1139');
      

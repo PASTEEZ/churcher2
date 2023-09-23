@@ -295,27 +295,14 @@ class FeesController extends Controller
         return view('fees::feesInvoice.feesInvoiceList', compact('studentInvoices'));
     }
 
-
-    
-    public function MonthlyTitheList()
-    {
-        $studentInvoices = FmFeesInvoice::where('type', 'fees')
-            ->where('school_id', Auth::user()->school_id)
-            ->where('academic_id', getAcademicId())
-            ->orderBy('id', 'DESC')
-            ->get();
-
-        return view('fees::feesInvoice.MonthlyTithePaymentList', compact('studentInvoices'));
-    }
-
-
     public function feesInvoice()
     {
         try {
             $classes = SmClass::where('school_id', Auth::user()->school_id)
                 ->where('academic_id', getAcademicId())
                 ->get();
-
+           $students = SmStudent::where('school_id', Auth::user()->school_id)
+                ->get();
             $feesGroups = FmFeesGroup::where('school_id', Auth::user()->school_id)
                 ->where('academic_id', getAcademicId())
                 ->get();
@@ -347,7 +334,7 @@ class FeesController extends Controller
                 $invoiceSettings->save();
             }
 
-            return view('fees::feesInvoice.feesInvoice', compact('classes', 'feesGroups', 'feesTypes', 'paymentMethods', 'bankAccounts', 'invoiceSettings'));
+            return view('fees::feesInvoice.feesInvoice', compact('classes', 'students' , 'feesGroups', 'feesTypes', 'paymentMethods', 'bankAccounts', 'invoiceSettings'));
 
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -355,12 +342,10 @@ class FeesController extends Controller
         }
     }
 
-
-
     public function feesInvoiceStore(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'class' => 'required',
+             
             'student' => 'required',
             'create_date' => 'required',
             'due_date' => 'required',
@@ -474,7 +459,7 @@ class FeesController extends Controller
                 ->whereHas('studentDetail', function($q){
                     return $q->where('active_status', 1);
                 })
-                    ->where('class_id', $request->class)
+               
                     ->where('school_id', Auth::user()->school_id)
                     ->where('is_promote', 0)
                     ->where('academic_id', getAcademicId())

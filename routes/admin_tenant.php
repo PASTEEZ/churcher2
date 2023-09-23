@@ -1332,6 +1332,13 @@ Route::group(['middleware' => ['XSS','subscriptionAccessUrl']], function () {
         Route::post('member-report', ['as' => 'student_report', 'uses' => 'Admin\StudentInfo\SmStudentReportController@studentReportSearch']);
 
 
+
+             //Membership Type report
+             Route::get('membershiptype-report', ['as' => 'membershiptype_report', 'uses' => 'Admin\StudentInfo\SmStudentReportController@membershipReport'])->middleware('userRolePermission:377');
+             Route::post('membershiptype-report-search', ['as' => 'membershiptype_report_search', 'uses' => 'Admin\StudentInfo\SmStudentReportController@membershipReportSearch']);
+             Route::get('membershiptype-report-search', ['as' => 'membershiptype_report_search', 'uses' => 'Admin\StudentInfo\SmStudentReportController@membershipReport']);
+     
+
         //guardian report
         Route::get('guardian-report', ['as' => 'guardian_report', 'uses' => 'Admin\StudentInfo\SmStudentReportController@guardianReport'])->middleware('userRolePermission:377');
         Route::post('guardian-report-search', ['as' => 'guardian_report_search', 'uses' => 'Admin\StudentInfo\SmStudentReportController@guardianReportSearch']);

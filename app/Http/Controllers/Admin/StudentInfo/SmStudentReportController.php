@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin\StudentInfo;
 
 use App\User;
 use App\SmClass;
+use App\Models\Membershiptype;
+use App\Models\Gender;
 use App\SmStaff;
 use App\SmSection;
 use App\SmStudent;
@@ -220,6 +222,12 @@ class SmStudentReportController extends Controller
             }
         }
 
+
+
+
+
+
+
         public function guardianReport(Request $request)
         {
             try {
@@ -278,6 +286,54 @@ class SmStudentReportController extends Controller
                     $data += $interface->getCommonData($request);
                 }
                 return view('backEnd.studentInformation.guardian_report',$data);
+            } catch (\Exception $e) {
+                Toastr::error('Operation Failed', 'Failed');
+                return redirect()->back();
+            }
+        }
+    
+
+
+
+
+
+
+
+        public function membershipReport(Request $request)
+        {
+            try {
+                $memberstypes = Membershiptype::get();
+                return view('backEnd.studentInformation.membershiptype_report', compact('memberstypes'));
+            } catch (\Exception $e) {
+                Toastr::error('Operation Failed', 'Failed');
+                return redirect()->back();
+            }
+        }
+    
+        public function membershipReportSearch(Request $request)
+        {
+           
+     
+            try {
+                $student_records = StudentRecord::query();
+                $student_records->where('school_id',Auth::user()->school_id);
+                if($request->memberstype){
+                    $student_records->where('class_id',$request->class);
+                }
+                if($request->gender){
+                    $student_records->where('section_id',$request->gender);
+                }
+                
+
+                $students =  $student_records->with('student')->get();
+                $data = [];
+                $data['student_records'] =  $students;
+                $data['classes'] = Membershiptype::get();
+                $data['class_id'] = $request->class;
+                $data['clas'] = Membershiptype::find($request->class);
+                $data['section_id'] = $request->gender;
+                 
+                return view('backEnd.studentInformation.membershiptype_report',$data);
             } catch (\Exception $e) {
                 Toastr::error('Operation Failed', 'Failed');
                 return redirect()->back();
