@@ -1188,7 +1188,7 @@ $(document).ready(function () {
                             // $("#selectSectionsDiv ul").append("<li data-value='"+section.id+"' class='option'>"+section.section_name+"</li>");
                         });
                     } else {
-                        $('#selectSectionsDiv .current').html('SELECT EMPLOYMENT STATUS*');
+                        $('#selectSectionsDiv .current').html('SELECT GROUP*');
                         $('#selectSectionss').find('option').not(':first').remove();
                         $('#selectSectionsDiv ul').find('li').not(':first').remove();
                     }

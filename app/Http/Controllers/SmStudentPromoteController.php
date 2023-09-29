@@ -75,7 +75,7 @@ class SmStudentPromoteController extends Controller
 
             $students = SmStudent::query()->with('class', 'section');
             $students = $students->whereIn('id', $student_ids)->where('active_status', 1)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('school_id', Auth::user()->school_id)->where('type_of_member', 1)
                 ->withOutGlobalScope(StatusAcademicSchoolScope::class)
                 ->get();
 
@@ -189,7 +189,7 @@ class SmStudentPromoteController extends Controller
                 } else {
                     $roll_number = StudentRecord::where('class_id', (int)gv($student_data, 'class'))
                             ->where('section_id', (int)gv($student_data, 'section'))->where('academic_id', $request->promote_session)
-                            ->where('school_id', Auth::user()->school_id)->max('roll_no') + 1;
+                            ->where('school_id', Auth::user()->school_id)->max('id') + 1;
                 }        
 
                 $current_student = SmStudent::where('id', $student_id)->first();

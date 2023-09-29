@@ -1285,7 +1285,7 @@ Route::group(['middleware' => ['XSS','subscriptionAccessUrl']], function () {
         // Route::get('student-promote-store', 'SmStudentAdmissionController@studentPromote');
         // Route::post('student-proadminmote-store', 'SmStudentAdmissionController@studentPromoteStore')->name('student-promote-store')->middleware('userRolePermission:82');
 
-        Route::get('student-promote', ['as' => 'student_promote', 'uses' => 'SmStudentPromoteController@index'])->middleware('userRolePermission:81');
+        Route::get('member-promote', ['as' => 'student_promote', 'uses' => 'SmStudentPromoteController@index'])->middleware('userRolePermission:81');
         Route::get('member-current-search', 'SmStudentPromoteController@studentCurrentSearch')->name('student-current-search');
         Route::post('member-current-search', 'SmStudentPromoteController@studentCurrentSearch');
         Route::get('ajaxStudentRollCheck', 'SmStudentPromoteController@rollCheck');

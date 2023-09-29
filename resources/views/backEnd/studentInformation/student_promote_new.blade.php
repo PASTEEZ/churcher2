@@ -163,10 +163,10 @@
                                         <th>@lang('student.name')</th>   
                                         {{-- <th>@lang('student.photo')</th>  --}}
                                         {{-- <th>@lang('common.class_Sec')</th>                                                                         --}}
-                                                                            
+                                        <th>@lang('student.age')</th>                           
                                         <th>@lang('student.promote_class')</th>           
                                         <th>@lang('student.promote_section')</th>                           
-                                        <th>@lang('student.next_roll_number')</th>
+                                        
                                     </tr>
                                 </thead>
 
@@ -181,7 +181,8 @@
                                         </td>
                                         <td> <a href="{{route('student_view',[$student->id]) }}"  target="_blank" rel="noopener noreferrer">  <h5 style="color:#A235EC">{{$student->recordStudentRoll->roll_no}}</h5></a> </td>
                                         <td>{{  $student->first_name .' '.$student->last_name }}</td>
-                                       
+                                        <td>      {{ \Carbon\Carbon::parse($student->date_of_birth)->diff(\Carbon\Carbon::now())->format('%y years') }}
+                                        </td>
                                         {{-- <td></td> --}}
 
                                         <td>
@@ -231,19 +232,7 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td> 
-                                            <div class="row">
-                                                <div class="col-lg-12"> 
-                                                    <div class="input-effect">
-                                                    <input class="primary-input form-control{{ @$errors->has('name') ? ' is-invalid' : '' }} promote_roll_number" type="number" name="promote[{{$student->id}}][roll_number]" autocomplete="off">
-                                                      
-                                                    <span class="text-danger errorExitRoll"></span>  
-                                                    {{-- <span class="focus-border"></span> --}}
-                                                    
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
+                                         
                                        
                                     </tr>
                                     @endforeach
