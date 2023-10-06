@@ -114,20 +114,75 @@ class SmFeesController extends Controller
         }
     }
 
+   /* public function sendmessage($famount, $fstudent) 
+    {
+        $endPoint = env('MNOTIFY_SMS');
+        $apiKey = env('MNOTIFY_KEY');
+        $sender = env('MNOTIFY_SENDER_ID');
+        $numbers = '0242724849';
+        return  $famount . $fstudent;
+          // message to send, must be string
+        $message = "Thank you" .$fstudent. " You have paid an amount of GHS".$famount. "as your tithe";
+    
+        $url = $endPoint  . "?key=" .  $apiKey . "&to=" . $numbers . "&msg=" . $message . "&sender_id=" . $sender;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
+        $result = curl_exec($ch);
+        curl_close ($ch);
+        return $this->interpret($result);
+       }
+  */
+       
+      private function interpret($code)
+      {
+          $status = '';
+          switch ($code) {
+              case '1000':
+                  $status = 'Messages has been sent successfully';
+                  return $status;
+                  break;
+              case '1002':
+                  $status = 'SMS sending failed. Might be due to server error or other reason';
+                  return $status;
+                  break;
+              case '1003':
+                  $status = 'Insufficient SMS credit balance';
+                  return $status;
+                  break;
+              case '1004':
+                  $status = 'Invalid API Key';
+                  return $status;
+                  break;
+              case '1005':
+                  $status = 'Invalid recipient\'s phone number';
+                  return $status;
+                  break;
+              case '1006':
+                  $status = 'Invalid sender id. Sender id must not be more than 11 characters. Characters include white space';
+                  return $status;
+                  break;
+              case '1007':
+                  $status = 'Message scheduled for later delivery';
+                  return $status;
+                  break;
+              case '1008':
+                  $status = 'Empty Message';
+                  return $status;
+                  break;
+              default:
+                  return $status;
+                  break;
+          }
+        }
 
     public function feesPaymentStore(Request $request)
     {
       
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         try {
-            $fileName = "";
-            if ($request->file('slip') != "") {
-                $file = $request->file('slip');
-                $fileName = md5($file->getClientOriginalName() . time()) . "." . $file->getClientOriginalExtension();
-                $file->move('public/uploads/bankSlip/', $fileName);
-                $fileName = 'public/uploads/bankSlip/' . $fileName;
-            }
-
+           
 
             $discount_group = explode('-', $request->discount_group);
             $user = Auth::user();
@@ -145,111 +200,19 @@ class SmFeesController extends Controller
             $fees_payment->note = $request->note;
             $fees_payment->fine_title = $request->fine_title;
             $fees_payment->school_id = Auth::user()->school_id;
-            $fees_payment->slip = $fileName;
+          
             $fees_payment->record_id = $request->record_id;
             $fees_payment->academic_id = getAcademicid();
-            if(moduleStatusCheck('University')){
-                $fees_payment->un_academic_id = getAcademicId();
-                $fees_payment->un_fees_installment_id  = $request->installment_id;
-                $fees_payment->un_semester_label_id = $request->un_semester_label_id;
-                $installment = UnFeesInstallmentAssign::find($fees_payment->un_fees_installment_id);
-                $payable_amount =  discountFeesAmount($installment->id);
-                $sub_payment = $installment->payments->sum('paid_amount');
-                $direct_payment =  $installment->paid_amount;
-                $total_paid =  $sub_payment + $direct_payment;
-                $installment->payment_date = date('Y-m-d', strtotime($request->date));
-         
-  
-                    $last_inovoice = UnFeesInstallAssignChildPayment::where('school_id',auth()->user()->school_id)->max('invoice_no');
-                    $new_subPayment = new UnFeesInstallAssignChildPayment();
-                    $new_subPayment->un_fees_installment_assign_id = $installment->id;
-                    $new_subPayment->invoice_no = ( $last_inovoice +1 ) ?? 1;
-                    $new_subPayment->amount = $request->amount;
-                    $new_subPayment->paid_amount = $request->amount;
-                    $new_subPayment->payment_date = $fees_payment->payment_date;
-                    $new_subPayment->payment_mode =  $fees_payment->payment_mode;
-                    $new_subPayment->note = $request->note;
-                    $new_subPayment->slip = $fileName;
-                    $new_subPayment->active_status = 1;
-                    $new_subPayment->bank_id = $request->bank_id;
-                    $new_subPayment->discount_amount = 0;
-                    $new_subPayment->fees_type_id =  $installment->fees_type_id;
-                    $new_subPayment->student_id = $request->student_id;
-                    $new_subPayment->record_id = $request->record_id;
-                    $new_subPayment->un_semester_label_id = $request->un_semester_label_id;;
-                    $new_subPayment->un_academic_id = getAcademicId();
-                    $new_subPayment->created_by = Auth::user()->id;
-                    $new_subPayment->updated_by =  Auth::user()->id;
-                    $new_subPayment->school_id = Auth::user()->school_id;
-                    $new_subPayment->balance_amount = ( $payable_amount - ($sub_payment + $request->amount) ); 
-                    $new_subPayment->save();
-                    $fees_payment->installment_payment_id = $new_subPayment->id;
-
-                    if(($sub_payment + $request->amount) == $payable_amount){
-                        $installment->active_status = 1;
-                    }else{
-                        $installment->active_status = 2;
-                    }
-                    $installment->paid_amount = $sub_payment + $request->amount;
-                    $installment->save();
-                
-            }elseif(directFees()){
-                $installment = DirectFeesInstallmentAssign::find($request->installment_id);
-                $payable_amount =  discountFees($installment->id);
-                $sub_payment = $installment->payments->sum('paid_amount');
-                $direct_payment =  $installment->paid_amount;
-                $total_paid =  $sub_payment + $direct_payment;
-                $fees_payment->direct_fees_installment_assign_id = $installment->id;
-                $fees_payment->academic_id = getAcademicId();
-
-                    $last_inovoice = DireFeesInstallmentChildPayment::where('school_id',auth()->user()->school_id)->max('invoice_no');
-                    $new_subPayment = new DireFeesInstallmentChildPayment();
-                    $new_subPayment->direct_fees_installment_assign_id = $installment->id;
-                    $new_subPayment->invoice_no = ( $last_inovoice +1 ) ?? 1;
-                    $new_subPayment->direct_fees_installment_assign_id = $installment->id;
-                    $new_subPayment->amount = $request->amount;
-                    $new_subPayment->paid_amount = $request->amount;
-                    $new_subPayment->payment_date = $fees_payment->payment_date;
-                    $new_subPayment->payment_mode =  $fees_payment->payment_mode;
-                    $new_subPayment->note = $request->note;
-                    $new_subPayment->slip = $fileName;
-                    $new_subPayment->active_status = 1;
-                    $new_subPayment->bank_id = $request->bank_id;
-                    $new_subPayment->discount_amount = 0;
-                    $new_subPayment->fees_type_id =  $installment->fees_type_id;
-                    $new_subPayment->student_id = $request->student_id;
-                    $new_subPayment->record_id = $request->record_id;
-                    
-                    $new_subPayment->created_by = Auth::user()->id;
-                    $new_subPayment->updated_by =  Auth::user()->id;
-                    $new_subPayment->school_id = Auth::user()->school_id;
-                    $new_subPayment->balance_amount = ( $payable_amount - ($sub_payment + $request->amount) ); 
-                    $new_subPayment->save();
-                    $fees_payment->installment_payment_id = $new_subPayment->id;
-
-                    if(($sub_payment + $request->amount) == $payable_amount){
-                        $installment->active_status = 1;
-                    }else{
-                        $installment->active_status = 2;
-                    }
-                    $installment->paid_amount = $sub_payment + $request->amount;
-                    $installment->save();
-                // }
-
-
-            }
-            else{
+            
             $fees_payment->fees_type_id = $request->fees_type_id;
-            $fees_payment->academic_id = getAcademicId();
-            }
-
+            
             $result = $fees_payment->save();
             $payment_mode_name=ucwords($request->payment_mode);
             $payment_method=SmPaymentMethhod::where('method',$payment_mode_name)->first();
             $income_head= generalSetting();
 
             $add_income = new SmAddIncome();
-            $add_income->name = 'Fees Collect';
+            $add_income->name = 'Tithe Collection';
             $add_income->date = date('Y-m-d', strtotime($request->date));
             $add_income->amount = $fees_payment->amount;
             $add_income->fees_collection_id = $fees_payment->id;
@@ -259,12 +222,26 @@ class SmFeesController extends Controller
             $add_income->account_id = $request->bank_id;
             $add_income->created_by = Auth()->user()->id;
             $add_income->school_id = Auth::user()->school_id;
-            if(moduleStatusCheck('University')){
-                $add_income->un_academic_id = getAcademicId();
-            }
-            $add_income->save();
+            $endPoint = env('MNOTIFY_SMS');
+            $apiKey = env('MNOTIFY_KEY');
+            $sender = env('MNOTIFY_SENDER_ID');
+            $numbers = '0242724849';
+             
+              // message to send, must be string
+            $message = "Thank you  You have paid an amount of GHS as your tithe";
+        
+            $url = $endPoint  . "?key=" .  $apiKey . "&to=" . $numbers . "&msg=" . $message . "&sender_id=" . $sender;
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
+            $result = curl_exec($ch);
+            curl_close ($ch);
+            return $this->interpret($result);
 
-            if($payment_method->id==3){
+            $add_income->save();
+ 
+          if($payment_method->id==3){
                     $bank=SmBankAccount::where('id',$request->bank_id)
                     ->where('school_id',Auth::user()->school_id)
                     ->first();
@@ -272,8 +249,8 @@ class SmFeesController extends Controller
                     
                     $bank_statement= new SmBankStatement();
                     $bank_statement->amount = $request->amount;
-                    $bank_statement->after_balance= $after_balance;
-                    $bank_statement->type= 1;
+              $bank_statement->after_balance= $after_balance;
+              $bank_statement->type= 1;
                     $bank_statement->details= "Fees Payment";
                     $bank_statement->payment_date= date('Y-m-d', strtotime($request->date));
                     $bank_statement->bank_id= $request->bank_id;
@@ -306,8 +283,8 @@ class SmFeesController extends Controller
                 ->first();
                 $fees_assign->fees_amount-=floatval($request->amount);
                 $fees_assign->save();
-
-                if (!empty($request->fine)) {
+             
+           if (!empty($request->fine)) {
                     $fees_assign = SmFeesAssign::where('fees_master_id',$request->master_id)
                                 ->where('student_id',$request->student_id)
                                 ->where('record_id',$request->record_id)
@@ -320,7 +297,10 @@ class SmFeesController extends Controller
             }
             if ($result) {
                 Toastr::success('Operation successful', 'Success');
+              
+               
                 return redirect()->back();
+
                // return Redirect::route('fees_collect_student_wise', array('id' => $request->record_id));
             } else {
                 Toastr::error('Operation Failed', 'Failed');
@@ -332,6 +312,7 @@ class SmFeesController extends Controller
         }
     }
     
+   
     public function feesPaymentDelete(Request $request)
     {
         try {
