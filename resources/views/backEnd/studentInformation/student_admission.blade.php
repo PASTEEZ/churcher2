@@ -819,6 +819,7 @@
                                         <option value="Mother">Mother</option>
                                         <option value="Brother">Brother</option>
                                         <option value="Sister">Sister</option>
+                                        <option value="Sister">Uncle</option>
                                     
                                     </select>
                                     <label>@lang('student.relation_with_guardian') @if(is_required('relation')==true) <span> *</span> @endif </label>
@@ -834,8 +835,8 @@
                             @if(is_show('guardians_email')) 
                             <div class="col-lg-3">
                                 <div class="input-effect sm2_mb_20 md_mb_20">
-                                    <input oninput="emailCheck(this)" class="primary-input form-control{{ $errors->has('guardians_email') ? ' is-invalid' : '' }}" type="text" name="guardians_email" id="guardians_email" value="{{old('guardians_email')}}">
-                                    <label>@lang('student.guardian_email') @if(is_required('guardians_email')==true) <span> *</span> @endif</label>
+                                    <input  class="primary-input form-control{{ $errors->has('guardians_email') ? ' is-invalid' : '' }}" type="text" name="guardians_email" id="guardians_email" value="{{old('guardians_email')}}">
+                                    <label>@lang('student.guardian_email')</label>
                                     <span class="focus-border"></span>
                                     @if ($errors->has('guardians_email'))
                                     <span class="invalid-feedback" role="alert">

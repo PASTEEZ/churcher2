@@ -19,7 +19,7 @@ return[
     'student_admission_progress'=> 'Member Registration In Progress',
     'teachers'=> 'Leaders',
     'payments_of_Tithe'=> 'Payment of Tithe',
-    'total_payments_of_Tithe'=> 'Number of Members(This Month)',
+    'total_payments_of_Tithe'=> 'Number of Members </br>(This Month)',
     'staffs'=> 'Worker',
 
     'staffs'=> 'Worker',
@@ -85,15 +85,15 @@ return[
     'fees_invoice_bulk_print'=> 'Payments invoice Bulk Print',
     'payroll_bulk_print'=> 'Payroll Bulk Print',
     'staff_id_card'=> 'Staff ID Card',
-    'total_memberships'=>'Total Membership(Including YPG, YAF)',
+    'total_memberships'=>'Total Membership</br> (Including YPG, YAF)',
     'total_teachers'=>'Total Leaders',
 
 
     'total_payments'=>'Total Payments this Month',
     
-    'total_childrenservice'=>'Total Children Service Membership',
-    'total_junioryouth'=>'Total Junior Youth</br> Membership',
-    'total_jy'=>'J.Y',
+    'total_childrenservice'=>'Total C.S Membership </br> (C.S Only)',
+    'total_junioryouth'=>'Total J.Y Membership </br> (J.Y Only)',
+    'total_jy'=>'Junior Youth',
     'total_parents'=>'Total Parents',
     'total_staffs'=>'Total Workers',
     'wallet_balance'=>'Wallet Balance',
