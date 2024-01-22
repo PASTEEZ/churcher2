@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers\Admin\Academics;
 
+
+
+
+
 use App\SmClass;
 use App\SmSection;
 use App\SmStudent;
@@ -26,6 +30,9 @@ class AcademicController extends Controller
         // // User::checkAuth();
     }
 
+
+
+
     public function classRoutine()
     {
         try {
@@ -36,6 +43,9 @@ class AcademicController extends Controller
             return redirect()->back();
         }
     }
+
+
+
     public function classRoutineCreate()
     {
         try {

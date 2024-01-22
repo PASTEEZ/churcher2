@@ -2,6 +2,12 @@
 
 namespace App\Http\Controllers\Admin\StudentInfo;
 
+
+use Carbon\Carbon;
+use App\Models\MemberData;
+
+
+
 use App\User;
 use App\SmClass;
 use App\SmRoute;
@@ -78,7 +84,7 @@ class SmStudentAdmissionController extends Controller
 
     public function index()
     {
-
+   
         try {
             if (isSubscriptionEnabled() && auth()->user()->school_id != 1) {
 
@@ -107,9 +113,89 @@ class SmStudentAdmissionController extends Controller
         }
     }
 
+
+
+    
+    public function updateAges($id) {
+        $memberData = MemberData::all();
+    return view('your.view.name', ['memberData' => $memberData]);
+        foreach ($memberData as $member) {
+            // Calculate age using Carbon
+            $age = Carbon::parse($member->date_of_birth)->age;
+    
+
+            if ($age < 12) {
+                $newStatus = '1'; // 1 for Children's Service
+            } else if ($age >= 12 && $age <= 18) {
+                $newStatus = '2'; // 2 for Junior Youth (J.Y.)
+            } 
+            else if ($age >= 18 && $age <= 30) {
+                $newStatus = '3'; // 3 for Young People's Guild (Y.P.G.)
+            } 
+            else if ($age >= 31 && $age <= 40) {
+                $newStatus = '4';  // 4 for Young Adults Fellowship
+            } else {
+                $newStatus = '5'; // 5 for Men's and Women's Fellowship
+            }
+
+            DB::table('student_records')
+            ->where('id', $member->id) // Adjust the condition based on table structure
+            ->update(['class_id' => $newStatus], );
+
+
+           // DB::table('student_records')
+            //->where('id', $member->id) // Adjust the condition based on table structure
+           // ->update(['ages' => $age] );
+         
+
+    
+           
+        }
+       
+return view('backEnd.studentInformation.student_details', ['memberData' => $memberData]);
+        echo "Ages updated successfully"; 
+    }
+
+
+
+
+
+
+
     public function store(SmStudentAdmissionRequest $request)
     {
         // return $request->all();
+
+
+                // Calculate age using Carbon
+                $age = Carbon::parse(date('Y-m-d', strtotime($request->date_of_birth)))->age;
+        
+    
+                if ($age < 12) {
+                    $newStatus = '1'; // 1 for Children's Service
+                } else if ($age >= 12 && $age <= 18) {
+                    $newStatus = '2'; // 2 for Junior Youth (J.Y.)
+                } 
+                else if ($age >= 18 && $age <= 30) {
+                    $newStatus = '3'; // 3 for Young People's Guild (Y.P.G.)
+                } 
+                else if ($age >= 31 && $age <= 40) {
+                    $newStatus = '4';  // 4 for Young Adults Fellowship
+                } else {
+                    $newStatus = '5'; // 5 for Men's and Women's Fellowship
+                }
+    
+               
+    
+               // DB::table('student_records')
+                //->where('id', $member->id) // Adjust the condition based on table structure
+               // ->update(['ages' => $age] );
+             
+               //return view('your.view.name', ['memberData' => $memberData]);
+        
+               
+
+
         $validator = Validator::make($request->all(), $this->generateValidateRules("student_registration"));
         if ($validator->fails()) {
             $errors = $validator->errors();
@@ -144,7 +230,7 @@ class SmStudentAdmissionController extends Controller
                         $model = StudentRecord::query();
                         $studentRecord = universityFilter($model, $request)->first();
                     } else {
-                        $studentRecord = StudentRecord::where('class_id', $request->class)
+                        $studentRecord = StudentRecord::where('class_id', $newStatus)
                         ->where('section_id', $request->section)
                         ->where('academic_id', $request->session)
                         ->where('student_id', $user->student->id)
@@ -212,11 +298,9 @@ class SmStudentAdmissionController extends Controller
 
         try {
 
-            if (moduleStatusCheck('University')) {
-                $academic_year = UnAcademicYear::find($request->un_academic_id);
-            } else {
+ 
                 $academic_year = SmAcademicYear::find($request->session);
-            }
+       
            
             
             $user_stu = new User();
@@ -406,6 +490,38 @@ class SmStudentAdmissionController extends Controller
             $student->student_group_id = $request->student_group_id;
             $student->created_at = $academic_year->year . '-01-01 12:00:00';
 
+      
+                // Calculate age using Carbon
+                $age = Carbon::parse(date('Y-m-d', strtotime($request->date_of_birth)))->age;
+        
+    
+                if ($age < 12) {
+                    $newStatus = '1'; // 1 for Children's Service
+                } else if ($age >= 12 && $age <= 18) {
+                    $newStatus = '2'; // 2 for Junior Youth (J.Y.)
+                } 
+                else if ($age >= 18 && $age <= 30) {
+                    $newStatus = '3'; // 3 for Young People's Guild (Y.P.G.)
+                } 
+                else if ($age >= 31 && $age <= 40) {
+                    $newStatus = '4';  // 4 for Young Adults Fellowship
+                } else {
+                    $newStatus = '5'; // 5 for Men's and Women's Fellowship
+                }
+    
+               
+    
+               // DB::table('student_records')
+                //->where('id', $member->id) // Adjust the condition based on table structure
+               // ->update(['ages' => $age] );
+             
+               //return view('your.view.name', ['memberData' => $memberData]);
+        
+               
+       
+           
+
+
             if ($request->customF) {
                 $dataImage = $request->customF;
                 foreach ($dataImage as $label => $field) {
@@ -462,8 +578,8 @@ class SmStudentAdmissionController extends Controller
             //add by abu nayem for lead convert to student
             if (moduleStatusCheck('Lead') == true && $request->lead_id) {
                 $lead = \Modules\Lead\Entities\Lead::find($request->lead_id);
-                $lead->class_id = $request->class;
-                $lead->section_id = $request->section;
+                $lead->class_id = $newStatus;
+                $lead->section_id = $request->gender;
                 $lead->save();
             }
             //end lead convert to student
@@ -1934,26 +2050,37 @@ class SmStudentAdmissionController extends Controller
         if (moduleStatusCheck('Lead') == true) {
             $studentRecord->lead_id = $request->lead_id;
         }
-        if (moduleStatusCheck('University')) {
-            $studentRecord->un_academic_id = $request->un_academic_id;
-            $studentRecord->un_section_id = $request->un_section_id;
-            $studentRecord->un_session_id = $request->un_session_id;
-            $studentRecord->un_department_id = $request->un_department_id;
-            $studentRecord->un_faculty_id = $request->un_faculty_id;
-            $studentRecord->un_semester_id = $request->un_semester_id;
-            $studentRecord->un_semester_label_id = $request->un_semester_label_id;
-        } else {
-            $studentRecord->class_id = $request->class;
-            $studentRecord->section_id = $request->section;
+       
+
+         // Calculate age using Carbon
+         $age = Carbon::parse(date('Y-m-d', strtotime($request->date_of_birth)))->age;
+        
+    
+         if ($age < 12) {
+             $newStatus = '1'; // 1 for Children's Service
+         } else if ($age >= 12 && $age <= 18) {
+             $newStatus = '2'; // 2 for Junior Youth (J.Y.)
+         } 
+         else if ($age >= 18 && $age <= 30) {
+             $newStatus = '3'; // 3 for Young People's Guild (Y.P.G.)
+         } 
+         else if ($age >= 31 && $age <= 40) {
+             $newStatus = '4';  // 4 for Young Adults Fellowship
+         } else {
+             $newStatus = '5'; // 5 for Men's and Women's Fellowship
+         }
+
+        
+
+         
+            $studentRecord->class_id =  $newStatus;
+            $studentRecord->section_id = $request->gender;
             $studentRecord->session_id = $request->session;
-        }
+    
         $studentRecord->school_id = Auth::user()->school_id;
         $studentRecord->academic_id = $request->session;
         $studentRecord->save();
-       
-        if (moduleStatusCheck('University')) {
-            $this->assignSubjectStudent($studentRecord, $pre_record);
-        }
+     
         if(directFees()){
             $this->assignDirectFees($studentRecord->id, $studentRecord->class_id, $studentRecord->section_id,null);
         }
@@ -2547,9 +2674,9 @@ class SmStudentAdmissionController extends Controller
                                         }
 
 
-                                        if ($value->guardian_email != "") {
+                                       
                                             $user_info[] = array('email' => $value->guardian_email, 'username' => $data_parent['email']);
-                                        }
+                                   
                                     } catch (\Illuminate\Database\QueryException $e) {
                                         DB::rollback();
                                         Toastr::error('Operation Failed', 'Failed');

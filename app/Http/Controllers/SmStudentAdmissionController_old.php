@@ -2898,7 +2898,7 @@ class SmStudentAdmissionController extends Controller
                         if ($ad_check->count() > 0) {
                             DB::rollback();
                             StudentBulkTemporary::where('user_id', Auth::user()->id)->delete();
-                            Toastr::error('Admission number should be unique.', 'Failed');
+                            Toastr::error('Registration number should be unique.', 'Failed');
                             return redirect()->back();
                         }
 
@@ -2907,22 +2907,11 @@ class SmStudentAdmissionController extends Controller
                             if ($chk >= 1) {
                                 DB::rollback();
                                 StudentBulkTemporary::where('user_id', Auth::user()->id)->delete();
-                                Toastr::error('Student Email address should be unique.', 'Failed');
+                                Toastr::error('Member Email address should be unique.', 'Failed');
                                 return redirect()->back();
                             }
                         }
-
-                        if ($value->guardian_email != "") {
-                            $chk =  DB::table('sm_parents')->where('guardians_email', $value->guardian_email)->where('school_id', Auth::user()->school_id)->count();
-                            if ($chk >= 1) {
-                                DB::rollback();
-                                StudentBulkTemporary::where('user_id', Auth::user()->id)->delete();
-                                Toastr::error('Guardian Email address should be unique.', 'Failed');
-                                return redirect()->back();
-                            }
-                        }
-
-
+     
                         try {
                             
                             if($value->admission_number==null){

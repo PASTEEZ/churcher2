@@ -2,6 +2,12 @@
 
 namespace App\Http\Controllers\Admin\Academics;
 
+ 
+
+ 
+
+
+
 use App\SmClass;
 use App\SmSection;
 use App\tableList;
@@ -50,6 +56,14 @@ class SmClassController extends Controller
             return redirect()->back();
         }
     }
+
+
+
+
+
+
+
+
 
     public function store(ClassRequest $request)
     {
@@ -182,6 +196,7 @@ class SmClassController extends Controller
         Toastr::error('Operation Failed', 'Failed');
         return redirect()->back();
     }
+
 
     public function delete(Request $request, $id)
     {

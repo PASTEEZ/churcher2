@@ -31,7 +31,7 @@ return [
     'actions'   => 'Actions',
     'created_by'=> 'Created By',
     'class'     => 'Group',
-    'section'   => 'Membership Type',
+    'section'   => 'Gender',
     'teacher'   => 'Leader',
     'staff'     => 'Staff',
     'save'      => 'Save',
@@ -106,10 +106,10 @@ return [
     'communicant' => 'Communicant',
     
     'email_address'    => 'Email Address',
-    'academic_year' => 'Financial Year',
-    'class_Sec' => 'Group(Membership Type)',
-    'class_sec' => 'Group(Membership Type)',
-    'class_section' => 'Group(Membership Type)',
+    'academic_year' => 'Year',
+    'class_Sec' => 'Gen. Group',
+    'class_sec' => 'Gen. Group',
+    'class_section' => 'Gen. Group',
     'language' =>'Language',
     'select_language' =>'Select Language',
     'select_criteria' => 'Select Criteria',
@@ -126,7 +126,7 @@ return [
     'select_type' => 'Select Type',
     'select_room' => 'Select Room',
     'select_lesson' => 'Select Lesson',
-    'select_academic_year' => 'Select Financial Year',
+    'select_academic_year' => 'Select Year',
     'select_student'=>'Select Member',
     
     'select_exam_type' => 'Select Exam Type',
@@ -439,5 +439,7 @@ return [
 
 
     'nationality'=>'Nationality',
+    'update_yeargroup'=>'Update Year Groups',
+    
    
 ];

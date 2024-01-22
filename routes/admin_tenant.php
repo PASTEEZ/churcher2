@@ -5,7 +5,7 @@ use App\Models\Theme;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Response;
-
+use App\Http\Controllers\MemberController;
 
 Route::get('checkForeignKey', 'HomeController@checkForeignKey')->name('checkForeignKey');
 
@@ -157,7 +157,15 @@ Route::group(['middleware' => ['XSS','subscriptionAccessUrl']], function () {
 
         //// Academics Routing
 
-        // Class route
+        // GEN GROUP route
+       // Route::get('gen-group', ['as' => 'class', 'uses' => 'Admin\Academics\SmClassController@index'])->middleware('userRolePermission:261');
+        //Route::post('gen-group-store', ['as' => 'class_store', 'uses' => 'Admin\Academics\SmClassController@store'])->middleware('userRolePermission:266');
+       // Route::get('gen-group-edit/{id}', ['as' => 'class_edit', 'uses' => 'Admin\Academics\SmClassController@edit'])->middleware('userRolePermission:263');
+       // Route::post('gen-group-update', ['as' => 'class_update', 'uses' => 'Admin\Academics\SmClassController@update'])->middleware('userRolePermission:263');
+       // Route::get('gen-group-delete/{id}', ['as' => 'class_delete', 'uses' => 'Admin\Academics\SmClassController@delete'])->middleware('userRolePermission:264');
+
+        //Route::get('gen-group-age-update/{id}','Admin\Academics\SmClassController@updateAges')->name('updatememberage.route');
+
         Route::get('membership-type', ['as' => 'class', 'uses' => 'Admin\Academics\SmClassController@index'])->middleware('userRolePermission:261');
         Route::post('membership-type-store', ['as' => 'class_store', 'uses' => 'Admin\Academics\SmClassController@store'])->middleware('userRolePermission:266');
         Route::get('membership-type-edit/{id}', ['as' => 'class_edit', 'uses' => 'Admin\Academics\SmClassController@edit'])->middleware('userRolePermission:263');
@@ -165,7 +173,9 @@ Route::group(['middleware' => ['XSS','subscriptionAccessUrl']], function () {
         Route::get('membership-type-delete/{id}', ['as' => 'class_delete', 'uses' => 'Admin\Academics\SmClassController@delete'])->middleware('userRolePermission:264');
 
 
- 
+
+
+
         //*********************************************** START SUBJECT WISE ATTENDANCE ****************************************************** */
         Route::get('subject-wise-attendance',  'Admin\StudentInfo\SmSubjectAttendanceController@index')->name('subject-wise-attendance')->middleware('userRolePermission:533');
         Route::post('subject-wise-attendance',  'Admin\StudentInfo\SmSubjectAttendanceController@search')->name('subject-attendance-search');
@@ -1230,8 +1240,15 @@ Route::group(['middleware' => ['XSS','subscriptionAccessUrl']], function () {
         Route::get('members_list', ['as' => 'student_list', 'uses' => 'Admin\StudentInfo\SmStudentAdmissionController@studentDetails'])->middleware('userRolePermission:64');
         Route::get('csmembers_list', ['as' => 'csmember_list', 'uses' => 'Admin\StudentInfo\SmStudentAdmissionController@csmemberDetails'])->middleware('userRolePermission:64');
         Route::get('jymembers_list', ['as' => 'jymember_list', 'uses' => 'Admin\StudentInfo\SmStudentAdmissionController@jymemberDetails'])->middleware('userRolePermission:64');
-       
-       
+        //Route::get('userData/update/{id}','App\Http\Controllers\MemberDataController@updateAges')->name('updatememberage.route');
+      //  Route::post('members_list', ['as' => 'student_list', 'uses' => 'Admin\StudentInfo\SmStudentAdmissionController@updateAges'])->name('updatememberage.route');
+  
+  
+  //2024 updates
+      Route::get('members_list/update','MemberDataController@updateAges')->name('updatememberage.route');
+   
+
+
         Route::get('jy-member-list_menu', ['as' => 'jy_member_list_menu', 'uses' => 'Admin\StudentInfo\JymembersRegistrationController@jymembersDetails'])->middleware('userRolePermission:64');
     
       

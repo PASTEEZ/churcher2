@@ -1,6 +1,11 @@
-sti<?php
+<?php
 
 namespace App\Http\Controllers\Admin\StudentInfo;
+
+
+use Carbon\Carbon;
+use App\Models\MemberData;
+
 
 use App\User;
 use App\SmClass;
@@ -107,6 +112,10 @@ class SmMemberRegistrationController extends Controller
             return redirect()->back();
         }
     }
+
+
+
+
 
     public function store(SmMemberRegistrationRequest $request)
     {

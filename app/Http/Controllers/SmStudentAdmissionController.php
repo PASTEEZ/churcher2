@@ -2043,16 +2043,7 @@ class SmStudentAdmissionController extends Controller
                             }
                         }
 
-                        if ($value->guardian_email != "") {
-                            $chk =  DB::table('sm_parents')->where('guardians_email', $value->guardian_email)->where('school_id', Auth::user()->school_id)->count();
-                            if ($chk >= 1) {
-                                DB::rollback();
-                                StudentBulkTemporary::where('user_id', Auth::user()->id)->delete();
-                                Toastr::error('Guardian Email address should be unique.', 'Failed');
-                                return redirect()->back();
-                            }
-                        }
-
+                     
 
                         try {
 
@@ -2210,9 +2201,9 @@ class SmStudentAdmissionController extends Controller
                                         }
 
 
-                                        if ($value->guardian_email != "") {
+                                  
                                             $user_info[] =  array('email' =>  $value->guardian_email, 'username' => $data_parent['email']);
-                                        }
+                           
                                     } catch (\Illuminate\Database\QueryException $e) {
 
                                         DB::rollback();

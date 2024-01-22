@@ -34,12 +34,8 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="main-title">
-                                <h3 class="mb-30">@if(isset($sectionId))
-                                        @lang('academics.edit_class')
-                                    @else
-                                        @lang('academics.add_class')
-                                    @endif
-                                   
+                                <h3 class="mb-30">
+                                              
                                 </h3>
                             </div>
                             @if(isset($sectionId))
@@ -71,27 +67,10 @@
                                         </div>
                                     </div>
                                    
-                                    @if (generalSetting()->result_type == 'mark')
-                                    <div class="row mt-30">
-                                        <div class="col-lg-12"> 
-                                            <div class="input-effect">
-                                                <input class="primary-input form-control{{ @$errors->has('pass_mark') ? ' is-invalid' : '' }}"
-                                                       type="text" name="pass_mark" autocomplete="off"
-                                                       value="{{isset($classById)? @$classById->pass_mark: ''}}">
-                                                <label>@lang('exam.pass_mark') <span>*</span></label>
-                                                <span class="focus-border"></span>
-                                                @if ($errors->has('pass_mark'))
-                                                    <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ @$errors->first('pass_mark') }}</strong>
-                                                </span>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                    @endif 
+     
                                     <div class="row mt-30">
                                         <div class="col-lg-12">
-                                            <label>@lang('common.section')*</label><br>
+                                      
                                             @foreach($sections as $section)
                                                 <div class="">
                                                     @if(isset($sectionId))
@@ -99,12 +78,12 @@
                                                                class="common-checkbox form-control{{ @$errors->has('section') ? ' is-invalid' : '' }}"
                                                                name="section[]"
                                                                value="{{@$section->id}}" {{in_array(@$section->id, @$sectionId)? 'checked': ''}}>
-                                                        <label for="section{{@$section->id}}">@lang('common.section') {{@$section->section_name}}</label>
+                                                        <label for="section{{@$section->id}}"> {{@$section->section_name}}</label>
                                                     @else
                                                         <input type="checkbox" id="section{{@$section->id}}"
                                                                class="common-checkbox form-control{{ @$errors->has('section') ? ' is-invalid' : '' }}"
                                                                name="section[]" value="{{@$section->id}}">
-                                                        <label for="section{{@$section->id}}">@lang('common.section') {{@$section->section_name}}</label>
+                                                        <label for="section{{@$section->id}}"> {{@$section->section_name}}</label>
                                                     @endif
                                                 </div>
                                             @endforeach
@@ -163,9 +142,7 @@
                                 <tr>
                                     <th>@lang('common.class')</th>
                                     <th>@lang('common.section')</th>
-                                    @if (@generalSetting()->result_type == 'mark')
-                                    <th>@lang('exam.pass_mark')</th>
-                                    @endif 
+                                   
                                     <th>@lang('student.students')</th>
                                     <th>@lang('common.action')</th>
                                 </tr>
@@ -182,11 +159,7 @@
                                                 @endforeach
                                             @endif
                                         </td>
-                                        @if (@generalSetting()->result_type == 'mark')
-                                        <td>
-                                            {{$class->pass_mark}}
-                                        </td>
-                                        @endif
+                                      
                                         <td>
                                             <a href="{{route('sorting_student_list',[$class->id])}}">{{$class->records_count}}</a>
                                         </td>
