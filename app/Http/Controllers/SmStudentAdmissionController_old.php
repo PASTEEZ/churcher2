@@ -342,7 +342,6 @@ class SmStudentAdmissionController extends Controller
                     'gender' => 'required',
                     'first_name' => 'required|max:100',
                     'date_of_birth' => 'required',
-                    'guardians_email' => "required",
                     'guardians_phone' => "required",
                     'document_file_1' => "sometimes|nullable|mimes:pdf,doc,docx,jpg,jpeg,png,txt",
                     'document_file_2' => "sometimes|nullable|mimes:pdf,doc,docx,jpg,jpeg,png,txt",
@@ -536,12 +535,10 @@ class SmStudentAdmissionController extends Controller
                     $user_parent->role_id = 3;
                     $user_parent->full_name = $request->fathers_name;
 
-
-                    if (!empty($request->guardians_email)) {
+ 
                         $data_parent['email'] = $request->guardians_email;
                         $user_parent->username = $request->guardians_email;
-                    }
-
+                    
                     $user_parent->email = $request->guardians_email;
                     $user_parent->password = Hash::make(123456);
                     $user_parent->school_id = Auth::user()->school_id;
@@ -697,10 +694,9 @@ class SmStudentAdmissionController extends Controller
                             $user_info[] =  array('email' => $request->email_address, 'id' => $student->id, 'slug' => 'student');
                         }
 
-
-                        if ($request->guardians_email != "") {
+ 
                             $user_info[] =  array('email' =>  $request->guardians_email, 'id' => $parent->id, 'slug' => 'parent');
-                        }
+                    
 
 
                         DB::commit();
@@ -1591,7 +1587,7 @@ class SmStudentAdmissionController extends Controller
                     'gender' => 'required',
                     'first_name' => 'required|max:100',
                     'date_of_birth' => 'required',
-                    'guardians_email' => 'required',
+                 
                     'guardians_phone' => 'required'
                 ],
                 [
@@ -1638,7 +1634,7 @@ class SmStudentAdmissionController extends Controller
                     'gender' => 'required',
                     'first_name' => 'required|max:100',
                     'date_of_birth' => 'required',
-                    'guardians_email' => 'required',
+                 
                     'guardians_phone' => 'required',
                     'document_file_1' => "sometimes|nullable|mimes:pdf,doc,docx,jpg,jpeg,png,txt",
                     'document_file_2' => "sometimes|nullable|mimes:pdf,doc,docx,jpg,jpeg,png,txt",
@@ -2950,16 +2946,12 @@ class SmStudentAdmissionController extends Controller
                                 $user_parent->role_id = 3;
                                 $user_parent->full_name = $value->father_name;
 
-                                if (empty($value->guardian_email)) {
+           
                                     $data_parent['email'] = 'par_' . $value->admission_number;
 
                                     $user_parent->username  = 'par_' . $value->admission_number;
-                                } else {
-
-                                    $data_parent['email'] = $value->guardian_email;
-
-                                    $user_parent->username = $value->guardian_email;
-                                }
+                            
+ 
 
                                 $user_parent->email = $value->guardian_email;
 
@@ -3068,9 +3060,9 @@ class SmStudentAdmissionController extends Controller
                                         }
 
 
-                                        if ($value->guardian_email != "") {
+                                     
                                             $user_info[] =  array('email' =>  $value->guardian_email, 'username' => $data_parent['email']);
-                                        }
+                                       
                                     } catch (\Illuminate\Database\QueryException $e) {
                                         DB::rollback();
                                         Toastr::error('Operation Failed', 'Failed');

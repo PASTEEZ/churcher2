@@ -88,7 +88,7 @@ $(document).ready(function() {
                   processing: true,
                   serverSide: true,
                   "ajax": $.fn.dataTable.pipeline( {
-                        url: "{{ route('csmembers_list_datatable') }}",
+                        url: "{{ route('csmember_list_datatable') }}",
                         pages: 2 // number of pages to cache
                         
                     } ),

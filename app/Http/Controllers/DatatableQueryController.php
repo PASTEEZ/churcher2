@@ -36,7 +36,7 @@ class DatatableQueryController extends Controller
          
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
-            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->withoutGlobalScope(StatusAcademicSchoolScope::class)->get();
+            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->withoutGlobalScope(StatusAcademicSchoolScope::class)->get();
             $sessions = SmAcademicYear::where('school_id', Auth::user()->school_id)->get();
             $academic_year = $request->academic_year;
             $class_id = $request->class;
@@ -58,7 +58,7 @@ class DatatableQueryController extends Controller
              
         
             $records = StudentRecord::query();
-            $records->where('school_id',auth()->user()->school_id);
+            $records->where('school_id',auth()->user()->school_id)->whereIn('class_id', [3, 4, 5]);
             $records->when(moduleStatusCheck('University') && $request->filled('un_academic_id'), function ($u_query) use ($request) {
                 $u_query->where('un_academic_id', $request->un_academic_id);
                 }, function ($query) use ($request) {
@@ -71,7 +71,7 @@ class DatatableQueryController extends Controller
 
           $all_students =  SmStudent::whereIn('id',$student_records)
                                 ->where('active_status', 1)
-                                ->where('type_of_member', 1)
+                                                              
                                 ->with(array('parents' => function ($query) {
                                     $query->select('id', 'fathers_name');
                                 }))
@@ -208,287 +208,197 @@ class DatatableQueryController extends Controller
     }
 
    
- 
 
 
 
-    public function searchStudentList(Request $request)
+
+
+
+    public function csmemberDetailsDatatable(Request $request)
     {
-        $student_ids = StudentRecord::when($request->academic_year, function ($query) use ($request) {
-            $query->where('academic_id', $request->academic_year);
-        })
-        ->when($request->class, function ($query) use ($request) {
-            $query->where('class_id', $request->class);
-        })
-        ->when($request->section, function ($query) use ($request) {
-            $query->where('section_id', $request->section);
-        })
-        ->when(!$request->academic_year, function ($query) use ($request) {
-            $query->where('academic_id', getAcademicId());
-        })
-        ->groupBy('student_id')->pluck('student_id')->toArray();
-
-        $students = SmStudent::query();
-        $students->where('active_status', 1);
-
-       
-        if ($request->name != "") {
-            $students->where('full_name', 'like', '%' . $request->name . '%');
-        }
-        if ($request->roll_no != "") {
-            $students->where('roll_no', 'like', '%' . $request->roll_no . '%');
-        }
-
-
-        $students = $students->whereIn('id', $student_ids)->where('school_id', Auth::user()->school_id)
+         
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            
+            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->withoutGlobalScope(StatusAcademicSchoolScope::class)->get();
+            $sessions = SmAcademicYear::where('school_id', Auth::user()->school_id)->get();
+            $academic_year = $request->academic_year;
+            $class_id = $request->class;
+            $name = $request->name;
+            $roll_no = $request->roll_no;
+            $section = $request->section;
+            $data['un_session_id']= $request->un_session_id ;
+            $data['un_academic_id']= $request->un_academic_id ;
+            $data['un_faculty_id']= $request->un_faculty_id;
+            $data['un_department_id']= $request->un_department_id;
+            $data['un_semester_id']= $request->un_semester_id;
+            $data['un_semester_label_id']= $request->un_semester_label_id;
+            $data['un_section_id']= $request->un_section_id;
            
-            ->with(array('parents' => function ($query) {
-                $query->select('id', 'fathers_name');
-            }))
-            ->with(array('gender' => function ($query) {
-                $query->select('id', 'base_setup_name');
-            }))
-            ->with(array('category' => function ($query) {
-                $query->select('id', 'category_name');
-            }))
-            ->get();
+            return view('backEnd.studentInformation.csmember_details', compact('classes', 'class_id', 'name', 'roll_no', 'sessions', 'section', 'academic_year','data'));
+        }
 
-        return Datatables::of($students)
-            ->addIndexColumn()
-            ->addColumn('dob', function ($row) {
-
-                $dob = dateConvert(@$row->date_of_birth);
-
-                return $dob;
+        if ($request->ajax()) {
+             //$students = DB::table('sm_jymembers')
+               // ->where('academic_id', getAcademicId())
+           
+               $records = StudentRecord::query();
+            $records->where('school_id',auth()->user()->school_id)->where('class_id',1);
+            $records->when(moduleStatusCheck('University') && $request->filled('un_academic_id'), function ($u_query) use ($request) {
+                $u_query->where('un_academic_id', $request->un_academic_id);
+                }, function ($query) use ($request) {
+                    $query->when($request->academic_year, function ($query) use ($request) {
+                    $query->where('academic_id', $request->academic_year);
+                    });
             })
-            ->rawColumns(['dob'])
-            ->editColumn('full_name', function ($row) {
-                $full_name_link = '<a target="_blank" href="'. route('student_view', [$row->id]) . '">' . $row->first_name .' '. $row->last_name . '</a>';
-                return $full_name_link;
+            ->when(moduleStatusCheck('University') && $request->filled('un_faculty_id'), function ($u_query) use ($request) {
+                $u_query->where('un_faculty_id', $request->un_faculty_id);
+            }, function ($query) use ($request) {
+                $query->when($request->class, function ($query) use ($request) {
+                    $query->where('class_id', $request->class);
+                });
             })
             
-            ->editColumn('mobile', function ($row) {
-                $mobile = '<a href="tel:'.$row->mobile.'">' .$row->mobile. '</a>';
-                return $mobile;
+            ->when(moduleStatusCheck('University') && $request->filled('un_department_id'), function ($u_query) use ($request) {
+                $u_query->where('un_department_id', $request->un_department_id);
+            }, function ($query) use ($request) {
+                $query->when($request->section, function ($query) use ($request) {
+                    $query->where('section_id', $request->section);
+                });
             })
-            ->addColumn('class_sec', function ($row) use ($request) {
-                $class_sec=[];
-                foreach ($row->studentRecords as $classSec) {
-                    $class_sec[]=$classSec->class->class_name.'('. $classSec->section->section_name .'), ' ;
-                }
-                if ($request->class) {
-                    $sections = [];
-                    $class =  $row->recordClass ? $row->recordClass->class->class_name : '';
-                    if ($request->section) {
-                        $sections [] = $row->recordSection != "" ? $row->recordSection->section->section_name:"";
-                    } else {
-                        foreach ($row->recordClasses as $section) {
-                            $sections [] = $section->section->section_name;
-                        }
-                    }
-                    return  $class .'('.$sections.'), ';
-                }
-                return $class_sec;
+            ->when(!$request->academic_year && moduleStatusCheck('University')==false, function ($query) use ($request) {
+                $query->where('academic_id', getAcademicId());
             })
-            ->addColumn('action', function ($row) {
-                $btn = '<div class="dropdown">
-                                <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">' . app('translator')->get('common.select') . '</button>
-
-                                <div class="dropdown-menu dropdown-menu-right">
-                                        <a class="dropdown-item" target="_blank" href="' . route('student_view', [$row->id]) . '">' . app('translator')->get('common.view') . '</a>' .
-                    (userPermission(66) === true ? '<a class="dropdown-item" href="' . route('student_edit', [$row->id]) . '">' . app('translator')->get('common.edit') . '</a>' : '') .
-
-                    (userPermission(67) === true ? (Config::get('app.app_sync') ? '<span  data-toggle="tooltip" title="Disabled For Demo "><a  class="dropdown-item" href="#"  >' . app('translator')->get('common.disable') . '</a></span>' :
-                        '<a onclick="deleteId(' . $row->id . ');" class="dropdown-item" href="#" data-toggle="modal" data-target="#deleteStudentModal" data-id="' . $row->id . '"  >' . app('translator')->get('common.disable') . '</a>') : '') .
-
-                    '</div>
-                            </div>';
-
-                return $btn;
+            
+            ->when( moduleStatusCheck('University') && $request->filled('un_session_id'), function ($query) use ($request) {
+                $query->where('un_session_id', $request->un_session_id);
             })
-            ->rawColumns(['action','full_name', 'mobile', 'dob','class_sec', 'mobile', 'dob','class_sec'])
-            ->make(true);
+            
+            ->when( moduleStatusCheck('University') && $request->filled('un_semester_label_id'), function ($query) use ($request) {
+                $query->where('un_semester_label_id', $request->un_semester_label_id);
+            });
+            
+           $student_records = $records->where('is_promote', 0)->whereHas('student')->get(['student_id'])->unique('student_id')->toArray();
 
-        return view('backEnd.studentInformation.students');
-    }
+          $all_students =  SmStudent::whereIn('id',$student_records)
+                                ->where('active_status', 1)
+                                
+                                ->with(array('parents' => function ($query) {
+                                    $query->select('id', 'fathers_name');
+                                }))
+                                ->with(array('gender' => function ($query) {
+                                    $query->select('id', 'base_setup_name');
+                                }))
+                                ->with(array('category' => function ($query) {
+                                    $query->select('id', 'category_name');
+                                }))
+                                ->when($request->name, function ($query) use ($request) {
+                                    $query->where('full_name', 'like', '%' . $request->name . '%');
+                                });
 
-    public function AjaxStudentSearch($class, $section, $date)
-    {
+                             
 
-        try {
-            // $date = $request->attendance_date;
-            if (getClassActeacherAccesscess()) {
-                $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-            } else {
-                $teacher_info = SmStaff::where('user_id', Auth::user()->id)->first();
-                $classes = SmAssignSubject::where('teacher_id', $teacher_info->id)->join('sm_classes', 'sm_classes.id', 'sm_assign_subjects.class_id')
-                    ->where('sm_assign_subjects.academic_id', getAcademicId())
-                    ->where('sm_assign_subjects.active_status', 1)
-                    ->where('sm_assign_subjects.school_id', Auth::user()->school_id)
-                    ->select('sm_classes.id', 'class_name')
-                    ->groupBy('sm_classes.id')
-                    ->get();
-            }
-            $students = SmStudent::where('class_id', $class)->where('section_id', $section)->where('active_status', 1)
-                ->where('school_id', Auth::user()->school_id)->get();
+            $students = SmStudent::with(['gender', 'studentRecords' => function ($q) use ($request) {
+                return $q->when(moduleStatusCheck('University') && $request->filled('un_academic_id'), function ($u_query) use ($request) {
+                        $u_query->where('un_academic_id', $request->un_academic_id);
+                    }, function ($query) use ($request) {
+                       $query->when($request->academic_year, function ($query) use ($request) {
+                            $query->where('academic_id', $request->academic_year);
+                        });
+                    })
+                    ->when(moduleStatusCheck('University') && $request->filled('un_faculty_id'), function ($u_query) use ($request) {
+                        $u_query->where('un_faculty_id', $request->un_faculty_id);
+                    }, function ($query) use ($request) {
+                        $query->when($request->class, function ($query) use ($request) {
+                            $query->where('class_id', $request->class);
+                        });
+                    })
 
-            if ($students->isEmpty()) {
-                Toastr::error('No Result Found', 'Failed');
-                return redirect('student-attendance');
-            }
+                    ->when(moduleStatusCheck('University') && $request->filled('un_department_id'), function ($u_query) use ($request) {
+                        $u_query->where('un_department_id', $request->un_department_id);
+                    }, function ($query) use ($request) {
+                        $query->when($request->section, function ($query) use ($request) {
+                            $query->where('section_id', $request->section);
+                        });
+                    })
+                    ->where('is_promote', 0)
+                    ->when(!$request->academic_year && moduleStatusCheck('University')==false, function ($query) use ($request) {
+                        $query->where('academic_id', getAcademicId());
+                    });
 
-            $already_assigned_students = [];
-            $new_students = [];
-            $attendance_type = "";
-            foreach ($students as $student) {
-                $attendance = SmStudentAttendance::where('student_id', $student->id)
-                    ->where('attendance_date', date('Y-m-d', $date))
-                    ->where('academic_id', getAcademicId())
-                    ->where('school_id', Auth::user()->school_id)
-                    ->first();
-                if ($attendance != "") {
-                    $already_assigned_students[] = $attendance;
-                    $attendance_type = $attendance->attendance_type;
-                } else {
-                    $new_students[] = $student;
-                }
-            }
-            $class_id = $class;
-            $section_id = $section;
-            $class_info = SmClass::find($class);
-            $section_info = SmSection::find($section);
+            }])->select('sm_students.*');
+            $students->where('sm_students.active_status', 1);
 
-            $search_info['class_name'] = $class_info->class_name;
-            $search_info['section_name'] = $section_info->section_name;
-            $search_info['date'] = $date;
-
-            $all_students = [];
-            foreach ($already_assigned_students as $key => $value) {
-                $all_students[$value->student_id]['std_id'] = $value->student_id;
-                $all_students[$value->student_id]['admission_no'] = $value->studentInfo->admission_no;
-                $all_students[$value->student_id]['roll_no'] = $value->studentInfo->roll_no;
-                $all_students[$value->student_id]['full_name'] = $value->studentInfo->full_name;
-                $all_students[$value->student_id]['attendance_type'] = $value->attendance_type;
-                $all_students[$value->student_id]['notes'] = $value->notes;
-                $all_students[$value->student_id]['attendance_date'] = $value->attendance_date;
-            }
-            foreach ($new_students as $key => $value) {
-                $all_students[$value->id]['std_id'] = $value->id;
-                $all_students[$value->id]['admission_no'] = $value->admission_no;
-                $all_students[$value->id]['roll_no'] = $value->roll_no;
-                $all_students[$value->id]['full_name'] = $value->full_name;
-                $all_students[$value->id]['attendance_type'] = '';
-                $all_students[$value->id]['notes'] = '';
-                $all_students[$value->id]['attendance_date'] = '';
-            }
-            // return $all_students;
-
-            // if ($request->ajax()) {
-
+         
+            $students = $students->where('sm_students.school_id', Auth::user()->school_id)
+                ->with(array('parents' => function ($query) {
+                    $query->select('id', 'fathers_name');
+                }))
+                ->with(array('gender' => function ($query) {
+                    $query->select('id', 'base_setup_name');
+                }))
+                ->with(array('category' => function ($query) {
+                    $query->select('id', 'category_name');
+                }));
 
             return Datatables::of($all_students)
                 ->addIndexColumn()
-                ->addColumn('teacher_note', function ($row) {
-                    $note_input = '<input type="text" name="note>';
+                ->addColumn('dob', function ($row) {
 
-                    return $note_input;
+                    $dob = dateConvert(@$row->date_of_birth);
+
+                    return $dob;
                 })
-                // ->rawColumns(['teacher_note'])
+               
 
-                ->addColumn('action', function ($row) {
-
-                    $btn = '<div class="d-flex radio-btn-flex">
-                                    <div class="mr-20">
-                                        <input type="radio" data-id="' . $row['std_id'] . '" name="attendance[' . $row['std_id'] . ']" id="attendanceP' . $row['std_id'] . '"' . ($row['attendance_type'] == 'P' ? 'checked' : '') . ' value="P" class="common-radio attendanceP attendance_type">
-                                        <label for="attendanceP' . $row['std_id'] . '">' . app('translator')->get('common.present') . '</label>
-                                    </div>
-                                    <div class="mr-20">
-                                        <input type="radio" data-id="' . $row['std_id'] . '" name="attendance[' . $row['std_id'] . ']" id="attendanceL' . $row['std_id'] . '"' . ($row['attendance_type'] == 'L' ? 'checked' : '') . ' value="L" class="common-radio attendanceL attendance_type">
-                                        <label for="attendanceL' . $row['std_id'] . '">' . app('translator')->get('common.late') . '</label>
-                                    </div>
-                                    <div class="mr-20">
-                                        <input type="radio" data-id="' . $row['std_id'] . '" name="attendance[' . $row['std_id'] . ']" id="attendanceA' . $row['std_id'] . '"' . ($row['attendance_type'] == 'A' ? 'checked' : '') . ' value="A" class="common-radio attendanceA attendance_type">
-                                        <label for="attendanceA' . $row['std_id'] . '">' . app('translator')->get('common.absent') . '</label>
-                                    </div>
-                                    <div class="mr-20">
-                                        <input type="radio" data-id="' . $row['std_id'] . '" name="attendance[' . $row['std_id'] . ']" id="attendanceF' . $row['std_id'] . '"' . ($row['attendance_type'] == 'F' ? 'checked' : '') . ' value="F" class="common-radio attendanceF attendance_type">
-                                        <label for="attendanceF' . $row['std_id'] . '">' . app('translator')->get('common.half_day') . '</label>
-                                    </div>
-                                       
-    
-                                    </div>';
-
-                    return $btn;
+                ->addColumn('full_name', function ($row) {
+                    $full_name_link = '<a target="_blank" href="'. route('student_view', [$row->id]) . '">' . $row->first_name .' '. $row->last_name . '</a>';
+                    return $full_name_link;
                 })
-                ->rawColumns(['action', 'teacher_note'])
-                ->make(true);
+                
+                ->addColumn('mobile', function ($row) {
+                    $mobile = '<a href="tel:'.$row->mobile.'">' .$row->mobile. '</a>';
+                    return $mobile;
+                })
 
-            // }
 
+                ->addColumn('semester_label', function ($row) use ($request) {
+                    $semester_label=[];
+                    foreach ($row->studentRecords as $label) {
+                        if (moduleStatusCheck('University')) {
+                            $semester_label[] = $label->unSemesterLabel->name;
+                        }
+                    }
+                    return $semester_label;
+                })
 
-            return view('backEnd.studentInformation.student_attendance', compact('classes', 'date', 'class_id', 'section_id', 'date', 'already_assigned_students', 'new_students', 'attendance_type', 'search_info'));
-        } catch (\Exception $e) {
-            Toastr::error('Operation Failed', 'Failed');
-            return redirect()->back();
-        }
-    }
-
-    public function getStaffList()
-    {
-        try {
-            if (Auth::user()->role_id == 1) {
-                $staffs = SmStaff::where('school_id', Auth::user()->school_id)
-                    ->where('is_saas', 0)
-                    ->with(array('roles' => function ($query) {
-                        $query->select('id', 'name');
-                    }))
-                    ->with(array('departments' => function ($query) {
-                        $query->select('id', 'name');
-                    }))
-                    ->with(array('designations' => function ($query) {
-                        $query->select('id', 'title');
-                    }))
-                    ->get();
-            } else {
-                $staffs = SmStaff::where('is_saas', 0)->where('school_id', Auth::user()->school_id)
-                    ->where('role_id', '!=', 1)
-                    ->where('role_id', '!=', 5)
-                    ->with(array('roles' => function ($query) {
-                        $query->select('id', 'name');
-                    }))
-                    ->with(array('departments' => function ($query) {
-                        $query->select('id', 'name');
-                    }))
-                    ->with(array('designations' => function ($query) {
-                        $query->select('id', 'title');
-                    }))
-                    ->get();
-            }
-
-            return Datatables::of($staffs)
-                ->addIndexColumn()
-                ->addColumn('switch', function ($row) {
-                    if (Auth::user()->id != $row->user_id || Auth::user()->role_id != 1) {
-                        $btn = '<label class="switch">
-                            <input type="checkbox" id="' . $row->id . '" value="' . $row->id . '" class="switch-input-staff" ' . ($row->active_status == 0 ? '' : 'checked') . '>
-                            <span class="slider round"></span>
-                          </label>';
-                    } else {
-                        $btn = '';
+                ->addColumn('class_sec', function ($row) use ($request) {
+                    $class_sec=[];
+                    foreach ($row->studentRecords as $classSec) {
+                        if (moduleStatusCheck('University')) {
+                            $class_sec[] = $classSec->unFaculty->name.'('. $classSec->unDepartment->name .')';
+                        } else {
+                            $class_sec[] = $classSec->class->class_name.'('. $classSec->section->section_name .')';
+                        }
                     }
 
-
-                    return $btn;
+                    return implode(', ', $class_sec);
                 })
+
                 ->addColumn('action', function ($row) {
+                    $langName = (moduleStatusCheck('University')) ? app('translator')->get('university::un.assign_faculty_department') : app('translator')->get('student.assign_class') ;
                     $btn = '<div class="dropdown">
                                     <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">' . app('translator')->get('common.select') . '</button>
 
-                                    <div class="dropdown-menu dropdown-menu-right">
-                                            <a class="dropdown-item" target="_blank" href="' . route('viewStaff', [$row->id]) . '">' . app('translator')->get('common.view') . '</a>' .
-                        (userPermission(163) === true ? '<a class="dropdown-item" href="' . route('editStaff', [$row->id]) . '">' . app('translator')->get('common.edit') . '</a>' : '') .
+                                    <div class="dropdown-menu dropdown-menu-right">'
+                        .(userPermission(1201) === true ? '<a class="dropdown-item" target="_blank" href="' . route('student.assign-class', [$row->id]) . '">' . $langName . '</a>' :'')
 
-                        (userPermission(164) === true ? ($row->role_id != Auth::user()->role_id ? '' :
+                        .((userPermission(1201) === true && moduleStatusCheck('University')) ?
+                        '<a class="dropdown-item" target="_blank" href="' . route('student_view', [$row->id,'assign_subject']) . '">' .  app('translator')->get('university::un.assign_subject') . '</a>' :'')
+
+                        .'<a class="dropdown-item" target="_blank" href="' . route('student_view', [$row->id]) . '">' . app('translator')->get('common.view') . '</a>' .
+                        (userPermission(66) === true ? '<a class="dropdown-item" href="' . route('student_edit', [$row->id]) . '">' . app('translator')->get('common.edit') . '</a>' : '') .
+
+                        (userPermission(67) === true ? (Config::get('app.app_sync') ? '<span  data-toggle="tooltip" title="Disabled For Demo "><a  class="dropdown-item" href="#"  >' . app('translator')->get('common.disable') . '</a></span>' :
                             '<a onclick="deleteId(' . $row->id . ');" class="dropdown-item" href="#" data-toggle="modal" data-target="#deleteStudentModal" data-id="' . $row->id . '"  >' . app('translator')->get('common.disable') . '</a>') : '') .
 
                         '</div>
@@ -496,15 +406,217 @@ class DatatableQueryController extends Controller
 
                     return $btn;
                 })
-                ->rawColumns(['action', 'switch'])
+                ->rawColumns(['action','full_name', 'mobile', 'dob','class_sec','full_name', 'mobile', 'dob','class_sec'])
                 ->make(true);
-
-            return view('backEnd.studentInformation.students');
-        } catch (\Throwable $th) {
-            Toastr::error('Operation Failed', 'Failed');
-            return redirect()->back();
         }
+        return view('backEnd.studentInformation.csmembers');
+
     }
+
+
+
+
+
+
+    public function jymemberDetailsDatatable(Request $request)
+    {
+         
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            
+            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->withoutGlobalScope(StatusAcademicSchoolScope::class)->get();
+            $sessions = SmAcademicYear::where('school_id', Auth::user()->school_id)->get();
+            $academic_year = $request->academic_year;
+            $class_id = $request->class;
+            $name = $request->name;
+            $roll_no = $request->roll_no;
+            $section = $request->section;
+            $data['un_session_id']= $request->un_session_id ;
+            $data['un_academic_id']= $request->un_academic_id ;
+            $data['un_faculty_id']= $request->un_faculty_id;
+            $data['un_department_id']= $request->un_department_id;
+            $data['un_semester_id']= $request->un_semester_id;
+            $data['un_semester_label_id']= $request->un_semester_label_id;
+            $data['un_section_id']= $request->un_section_id;
+           
+            return view('backEnd.studentInformation.jymember_details', compact('classes', 'class_id', 'name', 'roll_no', 'sessions', 'section', 'academic_year','data'));
+        }
+
+        if ($request->ajax()) {
+             //$students = DB::table('sm_jymembers')
+               // ->where('academic_id', getAcademicId())
+           
+               $records = StudentRecord::query();
+            $records->where('school_id',auth()->user()->school_id)->where('class_id',2);
+            $records->when(moduleStatusCheck('University') && $request->filled('un_academic_id'), function ($u_query) use ($request) {
+                $u_query->where('un_academic_id', $request->un_academic_id);
+                }, function ($query) use ($request) {
+                    $query->when($request->academic_year, function ($query) use ($request) {
+                    $query->where('academic_id', $request->academic_year);
+                    });
+            })
+            ->when(moduleStatusCheck('University') && $request->filled('un_faculty_id'), function ($u_query) use ($request) {
+                $u_query->where('un_faculty_id', $request->un_faculty_id);
+            }, function ($query) use ($request) {
+                $query->when($request->class, function ($query) use ($request) {
+                    $query->where('class_id', $request->class);
+                });
+            })
+            
+            ->when(moduleStatusCheck('University') && $request->filled('un_department_id'), function ($u_query) use ($request) {
+                $u_query->where('un_department_id', $request->un_department_id);
+            }, function ($query) use ($request) {
+                $query->when($request->section, function ($query) use ($request) {
+                    $query->where('section_id', $request->section);
+                });
+            })
+            ->when(!$request->academic_year && moduleStatusCheck('University')==false, function ($query) use ($request) {
+                $query->where('academic_id', getAcademicId());
+            })
+            
+            ->when( moduleStatusCheck('University') && $request->filled('un_session_id'), function ($query) use ($request) {
+                $query->where('un_session_id', $request->un_session_id);
+            })
+            
+            ->when( moduleStatusCheck('University') && $request->filled('un_semester_label_id'), function ($query) use ($request) {
+                $query->where('un_semester_label_id', $request->un_semester_label_id);
+            });
+            
+           $student_records = $records->where('is_promote', 0)->whereHas('student')->get(['student_id'])->unique('student_id')->toArray();
+
+          $all_students =  SmStudent::whereIn('id',$student_records)
+                                ->where('active_status', 1)
+                                
+                                ->with(array('parents' => function ($query) {
+                                    $query->select('id', 'fathers_name');
+                                }))
+                                ->with(array('gender' => function ($query) {
+                                    $query->select('id', 'base_setup_name');
+                                }))
+                                ->with(array('category' => function ($query) {
+                                    $query->select('id', 'category_name');
+                                }))
+                                ->when($request->name, function ($query) use ($request) {
+                                    $query->where('full_name', 'like', '%' . $request->name . '%');
+                                });
+
+                             
+
+            $students = SmStudent::with(['gender', 'studentRecords' => function ($q) use ($request) {
+                return $q->when(moduleStatusCheck('University') && $request->filled('un_academic_id'), function ($u_query) use ($request) {
+                        $u_query->where('un_academic_id', $request->un_academic_id);
+                    }, function ($query) use ($request) {
+                       $query->when($request->academic_year, function ($query) use ($request) {
+                            $query->where('academic_id', $request->academic_year);
+                        });
+                    })
+                    ->when(moduleStatusCheck('University') && $request->filled('un_faculty_id'), function ($u_query) use ($request) {
+                        $u_query->where('un_faculty_id', $request->un_faculty_id);
+                    }, function ($query) use ($request) {
+                        $query->when($request->class, function ($query) use ($request) {
+                            $query->where('class_id', $request->class);
+                        });
+                    })
+
+                    ->when(moduleStatusCheck('University') && $request->filled('un_department_id'), function ($u_query) use ($request) {
+                        $u_query->where('un_department_id', $request->un_department_id);
+                    }, function ($query) use ($request) {
+                        $query->when($request->section, function ($query) use ($request) {
+                            $query->where('section_id', $request->section);
+                        });
+                    })
+                    ->where('is_promote', 0)
+                    ->when(!$request->academic_year && moduleStatusCheck('University')==false, function ($query) use ($request) {
+                        $query->where('academic_id', getAcademicId());
+                    });
+
+            }])->select('sm_students.*');
+            $students->where('sm_students.active_status', 1);
+
+         
+            $students = $students->where('sm_students.school_id', Auth::user()->school_id)
+                ->with(array('parents' => function ($query) {
+                    $query->select('id', 'fathers_name');
+                }))
+                ->with(array('gender' => function ($query) {
+                    $query->select('id', 'base_setup_name');
+                }))
+                ->with(array('category' => function ($query) {
+                    $query->select('id', 'category_name');
+                }));
+
+            return Datatables::of($all_students)
+                ->addIndexColumn()
+                ->addColumn('dob', function ($row) {
+
+                    $dob = dateConvert(@$row->date_of_birth);
+
+                    return $dob;
+                })
+               
+
+                ->addColumn('full_name', function ($row) {
+                    $full_name_link = '<a target="_blank" href="'. route('student_view', [$row->id]) . '">' . $row->first_name .' '. $row->last_name . '</a>';
+                    return $full_name_link;
+                })
+                
+                ->addColumn('mobile', function ($row) {
+                    $mobile = '<a href="tel:'.$row->mobile.'">' .$row->mobile. '</a>';
+                    return $mobile;
+                })
+
+
+                ->addColumn('semester_label', function ($row) use ($request) {
+                    $semester_label=[];
+                    foreach ($row->studentRecords as $label) {
+                        if (moduleStatusCheck('University')) {
+                            $semester_label[] = $label->unSemesterLabel->name;
+                        }
+                    }
+                    return $semester_label;
+                })
+
+                ->addColumn('class_sec', function ($row) use ($request) {
+                    $class_sec=[];
+                    foreach ($row->studentRecords as $classSec) {
+                        if (moduleStatusCheck('University')) {
+                            $class_sec[] = $classSec->unFaculty->name.'('. $classSec->unDepartment->name .')';
+                        } else {
+                            $class_sec[] = $classSec->class->class_name.'('. $classSec->section->section_name .')';
+                        }
+                    }
+
+                    return implode(', ', $class_sec);
+                })
+
+                ->addColumn('action', function ($row) {
+                    $langName = (moduleStatusCheck('University')) ? app('translator')->get('university::un.assign_faculty_department') : app('translator')->get('student.assign_class') ;
+                    $btn = '<div class="dropdown">
+                                    <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">' . app('translator')->get('common.select') . '</button>
+
+                                    <div class="dropdown-menu dropdown-menu-right">'
+                        .(userPermission(1201) === true ? '<a class="dropdown-item" target="_blank" href="' . route('student.assign-class', [$row->id]) . '">' . $langName . '</a>' :'')
+
+                        .((userPermission(1201) === true && moduleStatusCheck('University')) ?
+                        '<a class="dropdown-item" target="_blank" href="' . route('student_view', [$row->id,'assign_subject']) . '">' .  app('translator')->get('university::un.assign_subject') . '</a>' :'')
+
+                        .'<a class="dropdown-item" target="_blank" href="' . route('student_view', [$row->id]) . '">' . app('translator')->get('common.view') . '</a>' .
+                        (userPermission(66) === true ? '<a class="dropdown-item" href="' . route('student_edit', [$row->id]) . '">' . app('translator')->get('common.edit') . '</a>' : '') .
+
+                        (userPermission(67) === true ? (Config::get('app.app_sync') ? '<span  data-toggle="tooltip" title="Disabled For Demo "><a  class="dropdown-item" href="#"  >' . app('translator')->get('common.disable') . '</a></span>' :
+                            '<a onclick="deleteId(' . $row->id . ');" class="dropdown-item" href="#" data-toggle="modal" data-target="#deleteStudentModal" data-id="' . $row->id . '"  >' . app('translator')->get('common.disable') . '</a>') : '') .
+
+                        '</div>
+                                </div>';
+
+                    return $btn;
+                })
+                ->rawColumns(['action','full_name', 'mobile', 'dob','class_sec','full_name', 'mobile', 'dob','class_sec'])
+                ->make(true);
+        }
+        return view('backEnd.studentInformation.jymembers');
+
+    }
+
 
 
     public function incomeList(Request $request)

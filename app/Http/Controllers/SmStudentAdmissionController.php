@@ -481,7 +481,7 @@ class SmStudentAdmissionController extends Controller
                     'gender' => 'required',
                     'first_name' => 'required|max:100',
                     'date_of_birth' => 'required',
-                    'guardians_email' => "required",
+               
                     'document_file_1' => "sometimes|nullable|mimes:pdf,doc,docx,jpg,jpeg,png,txt",
                     'document_file_2' => "sometimes|nullable|mimes:pdf,doc,docx,jpg,jpeg,png,txt",
                     'document_file_3' => "sometimes|nullable|mimes:pdf,doc,docx,jpg,jpeg,png,txt",
@@ -508,7 +508,7 @@ class SmStudentAdmissionController extends Controller
                     'document_file_4' => "sometimes|nullable|mimes:pdf,doc,docx,jpg,jpeg,png,txt",
                 ],
                 [
-                    'section.required' => 'Academic year field is required.'
+                    'section.required' => 'Year field is required.'
                 ]
             );
         }
@@ -518,7 +518,7 @@ class SmStudentAdmissionController extends Controller
             ->first();
 
         if ($is_duplicate) {
-            Toastr::error('Duplicate admission number found!', 'Failed');
+            Toastr::error('Duplicate Registration number found!', 'Failed');
             return redirect()->back()->withInput();
         }
 
@@ -644,10 +644,10 @@ class SmStudentAdmissionController extends Controller
                     $user_parent = new User();
                     $user_parent->role_id = 3;
                     $user_parent->full_name = $request->fathers_name;
-                    if (!empty($request->guardians_email)) {
+                     
                         $data_parent['email'] = $request->guardians_email;
                         $user_parent->username = $request->guardians_email;
-                    }
+                    
                     $user_parent->email = $request->guardians_email;
                     $user_parent->password = Hash::make(123456);
                     $user_parent->school_id = Auth::user()->school_id;
@@ -1006,18 +1006,82 @@ class SmStudentAdmissionController extends Controller
     }
 
 
+  
     public function studentDetails(Request $request)
     {
-     
-    }
+        try {
+            $classes = SmClass::where('active_status', 1)
+                ->where('academic_id', getAcademicId())
+                ->where('school_id', Auth::user()->school_id)
+                ->get();
 
+            $students = SmStudent::where('academic_id', getAcademicId())
+                ->where('school_id', Auth::user()->school_id)
+                ->where('school_id', Auth::user()->school_id)
+                ->get();
+
+            $sessions = SmAcademicYear::where('active_status', 1)
+                ->where('school_id', Auth::user()->school_id)
+                ->get();
+
+            return view('backEnd.studentInformation.student_details', compact('classes', 'sessions'));
+        } catch (\Exception $e) {
+            Toastr::error('Operation Failed', 'Failed');
+            return redirect()->back();
+        }
+    }
+ 
+
+    public function csmemberDetails(Request $request)
+    {
+        try {
+            $classes = SmClass::where('active_status', 1)
+                ->where('academic_id', getAcademicId())
+                ->where('school_id', Auth::user()->school_id)
+                ->get();
+
+            $students = SmStudent::where('academic_id', getAcademicId())
+                ->where('school_id', Auth::user()->school_id)
+     
+                ->get();
+
+            $sessions = SmAcademicYear::where('active_status', 1)
+                ->where('school_id', Auth::user()->school_id)
+                ->get();
+
+            return view('backEnd.studentInformation.csmember_details', compact('classes', 'sessions'));
+        } catch (\Exception $e) {
+            Toastr::error('Operation Failed', 'Failed');
+            return redirect()->back();
+        }
+    }
+ 
 
 
     public function jymemberDetails(Request $request)
     {
-        
-    }
+        try {
+            $classes = SmClass::where('active_status', 1)
+                ->where('academic_id', getAcademicId())
+                ->where('school_id', Auth::user()->school_id)
+                ->get();
 
+            $students = SmStudent::where('academic_id', getAcademicId())
+                ->where('school_id', Auth::user()->school_id)
+         
+                ->get();
+
+            $sessions = SmAcademicYear::where('active_status', 1)
+                ->where('school_id', Auth::user()->school_id)
+                ->get();
+
+            return view('backEnd.studentInformation.jymember_details', compact('classes', 'sessions'));
+        } catch (\Exception $e) {
+            Toastr::error('Operation Failed', 'Failed');
+            return redirect()->back();
+        }
+    }
+ 
 
     public function getClassBySchool($schoolId)
     {
@@ -2083,16 +2147,11 @@ class SmStudentAdmissionController extends Controller
                                 $user_parent->role_id = 3;
                                 $user_parent->full_name = $value->father_name;
 
-                                if (empty($value->guardian_email)) {
+                              
                                     $data_parent['email'] = 'par_' . $value->admission_number;
 
                                     $user_parent->username  = 'par_' . $value->admission_number;
-                                } else {
-
-                                    $data_parent['email'] = $value->guardian_email;
-
-                                    $user_parent->username = $value->guardian_email;
-                                }
+                                  
 
                                 $user_parent->email = $value->guardian_email;
 

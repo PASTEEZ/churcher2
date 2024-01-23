@@ -36,6 +36,9 @@ use Modules\Saas\Entities\SmPackagePlan;
 use Modules\Saas\Entities\SmSubscriptionPayment;
 use Modules\Wallet\Entities\WalletTransaction;
 
+
+use App\Models\StudentRecord;
+
 class HomeController extends Controller
 {
 
@@ -303,20 +306,20 @@ class HomeController extends Controller
             $total_staffs= $staffs->where('role_id', '!=', 1)
                 ->where('school_id', $school_id)->count();
             $data =[
-                    'totalStudents' => SmStudent::where('active_status', 1)
+                    'totalStudents' => StudentRecord::where('active_status', 1)
                     ->where('school_id', $school_id)
-                    ->where('type_of_member', 1)
+                    ->whereIn('class_id', [3, 4, 5])
                     ->count(),
                     
-                    'totalchildrenservice' => SmStudent::where('active_status', 1)
+                    'totalchildrenservice' => StudentRecord::where('active_status', 1)
                     ->where('school_id', $school_id)
-                    ->where('type_of_member', 2)
+                    ->where('class_id', 1)
                     ->count(),
 
 
-                    'total_jy' => SmStudent::where('active_status', 1)
+                    'total_jy' => StudentRecord::where('active_status', 1)
                     ->where('school_id', $school_id)
-                    ->where('type_of_member', 3)
+                    ->where('class_id', 2)
                     ->count(),
 
 

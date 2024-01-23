@@ -1258,6 +1258,7 @@ Route::group(['middleware' => ['XSS','subscriptionAccessUrl']], function () {
 
     // student search
 
+    Route::post('csmember-list-search', 'DatatableQueryController@csmemberDetailsDatatable')->name('csmember-list-search');
         Route::post('jymember-list-search', 'DatatableQueryController@jymemberDetailsDatatable')->name('jymember-list-search');
         Route::post('ajax-member-list-search', 'DatatableQueryController@searchStudentList')->name('ajax-student-list-search');
 

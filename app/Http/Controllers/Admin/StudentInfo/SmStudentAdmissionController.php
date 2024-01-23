@@ -118,29 +118,54 @@ class SmStudentAdmissionController extends Controller
     
     public function updateAges($id) {
         $memberData = MemberData::all();
-    return view('your.view.name', ['memberData' => $memberData]);
-        foreach ($memberData as $member) {
+          foreach ($memberData as $member) {
             // Calculate age using Carbon
             $age = Carbon::parse($member->date_of_birth)->age;
-    
+            
+
+            $change_memberidData = SmStudent::all();
+            foreach ($change_memberidData as $change_member_id) {
+                $firstThreeLetters = substr($change_member_id->class_id, 0, 4);
+                $newMemberId =  'PMCS'. $firstThreeLetters ;
+           
+            
+          
 
             if ($age < 12) {
+
                 $newStatus = '1'; // 1 for Children's Service
+                $firstThreeLetters = substr($change_member_id->class_id, 0, 4);
+                $newMemberId =  'PMCS'. $firstThreeLetters ;
             } else if ($age >= 12 && $age <= 18) {
                 $newStatus = '2'; // 2 for Junior Youth (J.Y.)
+                $firstThreeLetters = substr($change_member_id->class_id, 0, 4);
+                $newMemberId =  'PMJY'. $firstThreeLetters ;
             } 
             else if ($age >= 18 && $age <= 30) {
                 $newStatus = '3'; // 3 for Young People's Guild (Y.P.G.)
+                $firstThreeLetters = substr($change_member_id->class_id, 0, 4);
+                $newMemberId =  'PMCS'. $firstThreeLetters ;
             } 
             else if ($age >= 31 && $age <= 40) {
                 $newStatus = '4';  // 4 for Young Adults Fellowship
+                $firstThreeLetters = substr($change_member_id->class_id, 0, 4);
+                $newMemberId =  'PMCS'. $firstThreeLetters ;
             } else {
                 $newStatus = '5'; // 5 for Men's and Women's Fellowship
+                $firstThreeLetters = substr($change_member_id->class_id, 0, 4);
+                $newMemberId =  'PMCS'. $firstThreeLetters ;
             }
-
+        }
+          
+           
             DB::table('student_records')
             ->where('id', $member->id) // Adjust the condition based on table structure
             ->update(['class_id' => $newStatus], );
+
+
+            DB::table('sm_students')
+            ->where('id', $member->id) // Adjust the condition based on table structure
+            ->update(['admission_no' => $newMemberId], );
 
 
            // DB::table('student_records')
@@ -153,7 +178,7 @@ class SmStudentAdmissionController extends Controller
         }
        
 return view('backEnd.studentInformation.student_details', ['memberData' => $memberData]);
-        echo "Ages updated successfully"; 
+        
     }
 
 
@@ -325,9 +350,7 @@ return view('backEnd.studentInformation.student_details', ['memberData' => $memb
                         $user_parent->role_id = 3;
                         $user_parent->username = $guardians_phone ? $guardians_phone : $guardians_email;
                         $user_parent->full_name = $request->fathers_name;
-                        if (!empty($guardians_email)) {
-                            $user_parent->username = $guardians_phone ? $guardians_phone : $guardians_email;
-                        }
+                       
                         $user_parent->email = $guardians_email;
                         $user_parent->phone_number = $guardians_phone;
                         $user_parent->password = Hash::make(123456);
@@ -736,16 +759,16 @@ return view('backEnd.studentInformation.student_details', ['memberData' => $memb
             if ($request->parent_id == "") {
                     $userIdParent = null;
                     $hasParent = null;
-                if ($request->filled('guardians_phone') || $request->filled('guardians_email')) {
+                if ($request->filled('guardians_phone')) {
                     
                     if (!$staff) {  
                         $user_parent = new User();
                         $user_parent->role_id = 3;
                         $user_parent->username = $guardians_phone ? $guardians_phone : $guardians_email;
                         $user_parent->full_name = $request->fathers_name;
-                        if (!empty($guardians_email)) {
+                        
                             $user_parent->username = $guardians_phone ? $guardians_phone : $guardians_email;
-                        }
+                  
                         $user_parent->email = $guardians_email;
                         $user_parent->phone_number = $guardians_phone;
                         $user_parent->password = Hash::make(123456);
@@ -772,7 +795,7 @@ return view('backEnd.studentInformation.student_details', ['memberData' => $memb
                     $parent->mothers_photo = session()->get('mothers_photo') ?? fileUpload($request->file('mothers_photo'), $student_file_destination);
                     $parent->guardians_name = $request->guardians_name;
                     $parent->guardians_mobile = $request->guardians_phone;
-                    $parent->guardians_email = $request->guardians_email;
+                    $parent->guardians_email = $request->guardians_email2;
                     $parent->guardians_occupation = $request->guardians_occupation;
                     $parent->guardians_relation = $request->relation;
                     $parent->relation = $request->relationButton;
@@ -1811,6 +1834,7 @@ return view('backEnd.studentInformation.student_details', ['memberData' => $memb
         }
     }
 
+    
     public function studentDetails(Request $request)
     {
         try {
@@ -2480,7 +2504,7 @@ return view('backEnd.studentInformation.student_details', ['memberData' => $memb
                             }
                             DB::rollback();
                             StudentBulkTemporary::where('user_id', Auth::user()->id)->delete();
-                            Toastr::error('Admission number should be unique.', 'Failed');
+                            Toastr::error('Registration number should be unique.', 'Failed');
                             return redirect()->back();
                         }
 
@@ -2489,21 +2513,12 @@ return view('backEnd.studentInformation.student_details', ['memberData' => $memb
                             if ($chk >= 1) {
                                 DB::rollback();
                                 StudentBulkTemporary::where('user_id', Auth::user()->id)->delete();
-                                Toastr::error('Student Email address should be unique.', 'Failed');
+                                Toastr::error('Member Email address should be unique.', 'Failed');
                                 return redirect()->back();
                             }
                         }
 
-                        if ($value->guardian_email != "") {
-                            $chk = DB::table('sm_parents')->where('guardians_email', $value->guardian_email)->where('school_id', Auth::user()->school_id)->count();
-                            if ($chk >= 1) {
-                                DB::rollback();
-                                StudentBulkTemporary::where('user_id', Auth::user()->id)->delete();
-                                Toastr::error('Guardian Email address should be unique.', 'Failed');
-                                return redirect()->back();
-                            }
-                        }
-
+                        
                         $parentInfo = ($value->father_name || $value->father_phone || $value->mother_name || $value->mother_phone || $value->guardian_email || $value->guardian_phone )  ? true : false;
                         try {
 
@@ -2546,17 +2561,7 @@ return view('backEnd.studentInformation.student_details', ['memberData' => $memb
                                     $user_parent = new User();
                                     $user_parent->role_id = 3;
                                     $user_parent->full_name = $value->father_name;
-
-                                    if (empty($value->guardian_email)) {
-                                        $data_parent['email'] = 'par_' . $value->admission_number;
-
-                                        $user_parent->username = 'par_' . $value->admission_number;
-                                    } else {
-
-                                        $data_parent['email'] = $value->guardian_email;
-
-                                        $user_parent->username = $value->guardian_email;
-                                    }
+ 
 
                                     $user_parent->email = $value->guardian_email;
 
@@ -2669,9 +2674,9 @@ return view('backEnd.studentInformation.student_details', ['memberData' => $memb
                                         
                                         $user_info = [];
 
-                                        if ($value->email != "") {
+                                     
                                             $user_info[] = array('email' => $value->email, 'username' => $value->email);
-                                        }
+                                       
 
 
                                        

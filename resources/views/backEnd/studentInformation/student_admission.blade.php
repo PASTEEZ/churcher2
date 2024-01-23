@@ -594,25 +594,7 @@
                             </div>
                         </div>
                         @endif 
-                        @if(generalSetting()->with_guardian)
-                        @if(is_show('guardians_email') || is_show('guardians_phone'))
-                        <div class="col-lg-6 text-right">
-                            <div class="row">
-                                <div class="col-lg-7 text-left" id="parent_info">
-                                    <input type="hidden" name="parent_id" value="">
-
-                                </div>
-                                <div class="col-lg-5">
-                                    <button class="primary-btn-small-input primary-btn small fix-gr-bg" type="button" data-toggle="modal" data-target="#editStudent">
-                                        <span class="ti-plus pr-2"></span>
-                                        @lang('student.add_parents')
-                                    </button>
-                                </div>
-                            </div>
-
-                        </div>
-                        @endif 
-                        @endif 
+                        
                     </div>
                     @if(generalSetting()->with_guardian)
                     <input type="hidden" name="staff_parent" id="staff_parent">
@@ -763,16 +745,16 @@
                                 </div>
                             </div>
                             @endif 
-                            @if(is_show('guardians_email')) 
+                             
                             <div class="col-lg-3">
                                 <div class="input-effect sm2_mb_20 md_mb_20">
-                                    <input  class="primary-input form-control{{ $errors->has('guardians_email') ? ' is-invalid' : '' }}" type="text" name="guardians_email"  value="{{old('guardians_email')}}">
+                                    <input  class="primary-input form-control" type="text" name="guardians_email2"  value="{{old('guardians_email2')}}">
                                     <label>@lang('student.guardian_email')</label>
                                   
                                   
                                 </div>
                             </div>
-                            @endif 
+                         
                             @if(is_show('guardians_photo')) 
                             <div class="col-lg-3">
                                 <div class="row no-gutters input-right-icon">

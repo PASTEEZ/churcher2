@@ -19,11 +19,13 @@
         <div class="container-fluid p-0">
             <div class="row">
                 <div class="col-lg-8 col-md-6 col-sm-6">
-                    <div class="main-title mt_0_sm mt_0_md">
-                        <h3 class="mb-30  ">@lang('common.select_criteria')</h3>
-                    </div>
+                  
+                        <a class="btn btn-danger" href="{{ route('updatememberage.route') }}" class="primary-btn small fix-gr-bg">
+                        <span  class="bi bi-database-fill-add"></span>
+                        @lang('common.update_yeargroup')
+                    </a>
                 </div>
-
+               
                 @if(userPermission(62))
                     <div class="col-lg-4 text-md-right text-left col-md-6 mb-30-lg col-sm-6 text_sm_right">
                         <a href="{{route('student_admission')}}" class="primary-btn small fix-gr-bg">
@@ -166,7 +168,9 @@
                                    
                                     <th>@lang('student.date_of_birth')</th>
                                    
-                                        <th>@lang('student.class_sec')</th>
+                                    <th>@lang('student.age')</th>
+                                   
+                                        <th>@lang('student.class')</th>
                       
 
                                     <th>@lang('common.gender')</th>
@@ -255,10 +259,10 @@
                     {data: 'full_name', name: 'full_name'},  
                     
                     {data: 'dob', name: 'dob'},
-                    
+                    {data: 'age', name: 'age'},
                         {data: 'class_sec', name: 'class_sec'},
                   
-                    {data: 'gender.base_setup_name', name: 'gender.base_setup_name'},
+                    {data: 'm_gender', name: 'm_gender'},
                      {data: 'mobile', name: 'sm_students.mobile'},
                     {data: 'action', name: 'action', orderable: false, searchable: false},
                     {data: 'first_name', name: 'first_name', visible : false},
