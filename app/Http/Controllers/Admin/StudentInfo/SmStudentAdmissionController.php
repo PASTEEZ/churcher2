@@ -159,7 +159,7 @@ class SmStudentAdmissionController extends Controller
           
            
             DB::table('student_records')
-            ->where('id', $member->id) // Adjust the condition based on table structure
+            ->where('id', $member->id)  // Adjust the condition based on table structure
             ->update(['class_id' => $newStatus], );
 
 
@@ -1433,9 +1433,7 @@ return view('backEnd.studentInformation.student_details', ['memberData' => $memb
             $data['student'] = SmStudent::with('sections')->select('sm_students.*')->find($id);
             $data['siblings'] = SmStudent::where('parent_id', $data['student']->parent_id)->whereNotNull('parent_id')->where('id', '!=', $id)->get();
             $data['custom_filed_values'] = json_decode($data['student']->custom_field);
-            if (moduleStatusCheck('University')) {
-                return view('university::admission.edit_student_admission', $data);
-            }
+            
             return view('backEnd.studentInformation.student_edit', $data);
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -1446,7 +1444,7 @@ return view('backEnd.studentInformation.student_details', ['memberData' => $memb
     public function updateStudentInfo($request, $studentRecord = null)
     {
 
-        $parentInfo = ($request->fathers_name || $request->fathers_phone || $request->mothers_name || $request->mothers_phone || $request->guardians_email || $request->guardians_phone )  ? true : false;
+        $parentInfo = ($request->fathers_name || $request->fathers_phone || $request->mothers_name || $request->mothers_phone || $request->guardians_email || $request->guardians_phone)  ? true : false;
         $student_detail = SmStudent::find($request->id);
         $parentUserId = $student_detail->parents ? $student_detail->parents->user_id : null;
         // custom field validation start
@@ -1466,19 +1464,16 @@ return view('backEnd.studentInformation.student_details', ['memberData' => $memb
         $student = SmStudent::find($request->id);
         if ($request->relation == 'Father') {
             $guardians_photo = fileUpdate($student->parents->guardians_photo, $request->fathers_photo, $student_file_destination);
-
         } elseif ($request->relation == 'Mother') {
             $guardians_photo = fileUpdate($student->parents->guardians_photo, $request->mothers_photo, $student_file_destination);
-
         } else {
             $guardians_photo = fileUpdate($student->parents->guardians_photo, $request->guardians_photo, $student_file_destination);
-
         }
 
         DB::beginTransaction();
         try {
-            $user_parent =[];
-            $parent =[];
+            $user_parent = [];
+            $parent = [];
             $username = $request->phone_number ? $request->phone_number : $request->admission_number;
             $phone_number = $request->phone_number;
             $user_stu = $this->add_user($student_detail->user_id, 2, $username, $request->email_address, $phone_number, $request->first_name . ' ' . $request->last_name);
@@ -1490,8 +1485,6 @@ return view('backEnd.studentInformation.student_details', ['memberData' => $memb
                 if ($request->guardians_phone || $request->guardians_email) {
                     $user_parent = $this->add_user($parentUserId, 3, $username, $request->guardians_email, $phone_number, $request->guardians_name);
                 }
-
-
             } elseif ($request->sibling_id == 0 && $request->parent_id != "") {
                 User::destroy($student_detail->parents->user_id);
             } elseif (($request->sibling_id == 2 || $request->sibling_id == 1) && $request->parent_id != "") {
@@ -1508,7 +1501,7 @@ return view('backEnd.studentInformation.student_details', ['memberData' => $memb
             } elseif (($request->sibling_id == 2 || $request->sibling_id == 1) && $request->parent_id != "") {
             } else {
                 if ($parentInfo) {
-                   
+
                     if (($request->sibling_id == 0 || $request->sibling_id == 1) && $request->parent_id == "") {
                         // when find parent
                         if ($parentUserId) {
@@ -1541,19 +1534,11 @@ return view('backEnd.studentInformation.student_details', ['memberData' => $memb
                 }
             }
             $student = SmStudent::find($request->id);
-            if (($request->sibling_id == 0 || $request->sibling_id == 1) && $request->parent_id == "") {
-                $student->parent_id = @$parent->id ?? null;
-            } elseif ($request->sibling_id == 0 && $request->parent_id != "") {
-                $student->parent_id = $request->parent_id;
-            } elseif (($request->sibling_id == 2 || $request->sibling_id == 1) && $request->parent_id != "") {
-                $student->parent_id = $request->parent_id;
-            } elseif ($request->sibling_id == 2 && $request->parent_id == "") {
-                $student->parent_id = $parent->id;
-            }
+           
             $student->user_id = $user_stu->id;
             $student->admission_no = $request->admission_number;
             if ($request->roll_number) {
-                $student->roll_no = $request->admission_number;
+                $student->roll_no = $request->roll_number;
             }
             $student->first_name = $request->first_name;
             $student->last_name = $request->last_name;
@@ -1577,16 +1562,7 @@ return view('backEnd.studentInformation.student_details', ['memberData' => $memb
             $student->route_list_id = $request->route;
             $student->dormitory_id = $request->dormitory_name;
             $student->room_id = $request->room_number;
-            if (!empty($request->vehicle)) {
-                $driver = SmVehicle::where('id', '=', $request->vehicle)
-                    ->select('driver_id')
-                    ->first();
-                $student->vechile_id = $request->vehicle;
-                $student->driver_id = $driver->driver_id;
-            } else{
-                $student->vechile_id = null;
-                $student->driver_id = null;
-            }
+         
             $student->national_id_no = $request->national_id_number;
             $student->local_id_no = $request->local_id_number;
             $student->bank_account_no = $request->bank_account_number;
@@ -1595,58 +1571,6 @@ return view('backEnd.studentInformation.student_details', ['memberData' => $memb
             $student->aditional_notes = $request->additional_notes;
             $student->ifsc_code = $request->ifsc_code;
             $student->document_title_1 = $request->document_title_1;
-
-            $student->date_of_baptism = $request->date_of_baptism;
-            $student->middle_name = $request->middle_name;
-            
-
-            $student->student_status = $request->student_status;
-            $student->student_school_name = $request->student_school_name;
-            $student->school_admission_date = $request->school_admission_date;
-            $student->school_completion_date = $request->school_completion_date;
-            $student->school_telephone = $request->school_telephone;
-            $student->school_location = $request->school_location;
-
-
-            
-            $student->confirmation_status = $request->confirmation_status;
-            $student->date_of_confirmation = $request->date_of_confirmation;
-            $student->ageconfirmed = $request->ageconfirmed;
-            $student->place_of_confirmation = $request->place_of_confirmation;
-            $student->bibleverseused = $request->bibleverseused;
-            $student->confirmation_cert_no = $request->confirmation_cert_no;
-            $student->confirmation_off_minister = $request->confirmation_off_minister;
-
-
-            $student->baptism_status = $request->baptism_status;
-            $student->baptism_off_minister = $request->baptism_off_minister;
-            $student->baptism_cert_no = $request->baptism_cert_no;
-       
-
-
- 
-            $student->type_of_member = $request->type_of_member;
-
-            $student->marriage_status = $request->marriage_status;
-            $student->date_of_marriage = $request->date_of_marriage;
-            $student->place_of_marriage = $request->place_of_marriage;
-            $student->marriage_type = $request->marriage_type;
-            $student->marriage_cert_no = $request->marriage_cert_no;
-            $student->marriage_off_minister = $request->marriage_off_minister;
-           
-            
-
-            $student->family_status = $request->family_status;
-            $student->spouse_name = $request->spouse_name;
-            $student->spouse_date_of_birth = $request->spouse_date_of_birth;
-            $student->spouse_chucrh = $request->spouse_chucrh;
-            $student->child_name1 = $request->child_name1;
-            $student->child_name2 = $request->child_name2;
-           
-            
-
-
-         
             $student->document_file_1 = fileUpdate($student->document_file_1, $request->file('document_file_1'), $destination);
             $student->document_title_2 = $request->document_title_2;
             $student->document_file_2 = fileUpdate($student->document_file_2, $request->file('document_file_2'), $destination);
@@ -1654,6 +1578,11 @@ return view('backEnd.studentInformation.student_details', ['memberData' => $memb
             $student->document_file_3 = fileUpdate($student->document_file_3, $request->file('document_file_3'), $destination);
             $student->document_title_4 = $request->document_title_4;
             $student->document_file_4 = fileUpdate($student->document_file_4, $request->file('document_file_4'), $destination);
+           
+           
+
+            
+           
             if ($request->customF) {
                 $dataImage = $request->customF;
                 foreach ($dataImage as $label => $field) {
@@ -1671,7 +1600,6 @@ return view('backEnd.studentInformation.student_details', ['memberData' => $memb
                         $key = $file->getClientOriginalName();
                         $file->move('public/uploads/customFields/', $key);
                         $dataImage[$label] = 'public/uploads/customFields/' . $key;
-
                     }
                 }
                 //Custom Field Start
@@ -1686,15 +1614,15 @@ return view('backEnd.studentInformation.student_details', ['memberData' => $memb
 
             $student->save();
             if ($studentRecord && generalSetting()->multiple_roll == 0 && $request->roll_number) {
-                $studentRecord->update(['roll_no'=>$request->admission_number]);
+                $studentRecord->update(['roll_no' => $request->roll_number]);
             }
             DB::commit();
-
         } catch (\Exception $e) {
             DB::rollback();
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
         }
+      
     }
 
     public function update(SmStudentAdmissionRequest $request)
@@ -1715,7 +1643,7 @@ return view('backEnd.studentInformation.student_details', ['memberData' => $memb
             }
             $this->updateStudentInfo($request, $studentRecord);
             Toastr::success('Operation successful', 'Success');
-            return redirect('student-list');
+            return redirect('members_list');
         } catch (\Throwable $th) {
             throw $th;
             DB::rollback();

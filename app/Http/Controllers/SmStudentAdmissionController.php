@@ -864,7 +864,7 @@ class SmStudentAdmissionController extends Controller
                         } catch (\Exception $e) {
 
                             Toastr::success('Operation successful', 'Success');
-                            return redirect('student-list');
+                            return redirect('member-list');
                         }
                         Toastr::success('Operation successful', 'Success');
                         return redirect()->back();
@@ -2081,7 +2081,7 @@ class SmStudentAdmissionController extends Controller
                                 DB::commit();
                                 StudentBulkTemporary::where('user_id', Auth::user()->id)->delete();
                                 Toastr::error('Your student limit has been crossed.', 'Failed');
-                                return redirect('student-list');
+                                return redirect('member-list');
 
                             }
                         }

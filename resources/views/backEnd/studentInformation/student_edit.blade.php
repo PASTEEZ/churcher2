@@ -102,26 +102,7 @@
                                 $classes = DB::table('sm_classes')->where('academic_id', '=', old('session', getAcademicId()))
                                 ->get();
                             @endphp
-                            <div class="col-lg-3">
-                                <div class="input-effect sm2_mb_20 md_mb_20" id="class-div">
-                                    <select class="niceSelect w-100 bb form-control{{ $errors->has('class') ? ' is-invalid' : '' }}" name="class" id="classSelectStudent">
-                                        <option data-display="@lang('common.class') @if(is_required('class')==true) * @endif" value="">@lang('common.class') @if(is_required('class')==true) * @endif</option>
-                                        @foreach ($classes as $class)
-                                            <option value="{{ $class->id }}"
-                                                {{ old('class') == $class->id ? 'selected':''}}>{{ $class->class_name }}</option>
-                                        @endforeach
-                                    </select>
-                                    <div class="pull-right loader loader_style" id="select_class_loader">
-                                        <img class="loader_img_style" src="{{asset('public/backEnd/img/demo_wait.gif')}}" alt="loader">
-                                    </div>
-                                    <span class="focus-border"></span>
-                                    @if ($errors->has('class'))
-                                    <span class="invalid-feedback invalid-select" role="alert">
-                                        <strong>{{ $errors->first('class') }}</strong>
-                                    </span>
-                                    @endif
-                                </div>
-                            </div>
+                        
                            
                            
                             @if(!empty(old('class')))
@@ -130,45 +111,10 @@
                                 ->join('sm_sections','sm_class_sections.section_id','=','sm_sections.id')
                                 ->get();
                             @endphp
-                            <div class="col-lg-3">
-                                <div class="input-effect sm2_mb_20 md_mb_20" id="sectionStudentDiv">
-                                    <select class="niceSelect w-100 bb form-control {{ $errors->has('section') ? ' is-invalid' : '' }}" name="section"
-                                        id="sectionSelectStudent" >
-                                       <option data-display="@lang('common.section') @if(is_required('section')==true) * @endif" value="">@lang('common.section') @if(is_required('section')==true) * @endif</option>
-                                        @foreach ($old_sections as $old_section)
-                                           <option value="{{ $old_section->id }}" {{ old('section')==$old_section->id ? 'selected' : '' }} >
-                                            {{ $old_section->section_name }}</option>
-                                      @endforeach
-                                    </select>
-                                    <div class="pull-right loader loader_style" id="select_section_loader">
-                                        <img class="loader_img_style" src="{{asset('public/backEnd/img/demo_wait.gif')}}" alt="loader">
-                                    </div>
-                                    <span class="focus-border"></span>
-                                    @if ($errors->has('section'))
-                                    <span class="invalid-feedback invalid-select" role="alert">
-                                        <strong>{{ $errors->first('section') }}</strong>
-                                    </span>
-                                    @endif
-                                </div>
-                            </div>
+                     
                             @else
 
-                            <div class="col-lg-3">
-                                <div class="input-effect sm2_mb_20 md_mb_20" id="sectionStudentDiv">
-                                    <select class="niceSelect w-100 bb form-control{{ $errors->has('section') ? ' is-invalid' : '' }}" name="section" id="sectionSelectStudent">
-                                       <option data-display="@lang('common.section') @if(is_required('section')==true) * @endif" value="">@lang('common.section') @if(is_required('section')==true) * @endif</option>
-                                    </select>
-                                    <div class="pull-right loader loader_style" id="select_section_loader">
-                                        <img class="loader_img_style" src="{{asset('public/backEnd/img/demo_wait.gif')}}" alt="loader">
-                                    </div>
-                                    <span class="focus-border"></span>
-                                    @if ($errors->has('section'))
-                                    <span class="invalid-feedback invalid-select" role="alert">
-                                        <strong>{{ $errors->first('section') }}</strong>
-                                    </span>
-                                    @endif
-                                </div>
-                            </div>
+                         
                             @endif
 
                             @if(is_show('admission_number'))
@@ -327,18 +273,20 @@
                                     @endif
                                 </div>
                             </div>
+
                             @if(is_show('religion'))
                             <div class="col-lg-2">
                                 <div class="input-effect sm2_mb_20 md_mb_20">
-                                    <select class="niceSelect w-100 bb form-control{{ $errors->has('gender') ? ' is-invalid' : '' }}" name="gender">
-                                        <option data-display="@lang('common.gender') @if(is_required('gender')==true)  * @endif" value="">@lang('common.gender') @if(is_required('gender')==true) <span> *</span> @endif</option>
-                                        @foreach($genders as $gender)
-                                            @if(isset($student->gender_id))
-                                                <option value="{{$gender->id}}" {{$student->gender_id == $gender->id? 'selected': ''}}>{{$gender->base_setup_name}}</option>
-                                            @else
-                                                <option value="{{$gender->id}}">{{$gender->base_setup_name}}</option>
-                                            @endif
+                                    <select class="niceSelect w-100 bb form-control{{ $errors->has('religion') ? ' is-invalid' : '' }}" name="religion">
+                                        <option data-display="@lang('student.religion') @if(is_required('religion')==true) @endif" value="">@lang('student.religion') @if(is_required('religion')==true) <span> *</span> @endif</option>
+                                        @foreach($blood_groups as $blood_group)
+                                        @if(isset($student->bloodgroup_id))
+                                            <option value="{{$blood_group->id}}" {{$blood_group->id == $student->bloodgroup_id? 'selected': ''}}>{{$blood_group->base_setup_name}}</option>
+                                        @else
+                                            <option value="{{$blood_group->id}}">{{$blood_group->base_setup_name}}</option>
+                                        @endif
                                         @endforeach
+
                                     </select>
                                     <span class="focus-border"></span>
                                     @if ($errors->has('religion'))
@@ -349,6 +297,7 @@
                                 </div>
                             </div>
                             @endif 
+                           
                             @if(is_show('caste'))
                             <div class="col-lg-2">
                                 <div class="input-effect sm2_mb_20 md_mb_20">
@@ -382,7 +331,7 @@
                                <div class="input-effect sm2_mb_20 md_mb_20">
                                 <select class="niceSelect w-100 bb form-control{{ $errors->has('blood_group') ? ' is-invalid' : '' }}" name="blood_group">
                                     <option data-display="@lang('student.blood_group') @if(is_required('blood_group')==true)  * @endif" value="">@lang('student.blood_group') @if(is_required('blood_group')==true) <span> *</span> @endif</option>
-                                    @foreach($blood_groups as $blood_group)
+                                    @foreach($section as $blood_group)
                                     @if(isset($student->bloodgroup_id))
                                         <option value="{{$blood_group->id}}" {{$blood_group->id == $student->bloodgroup_id? 'selected': ''}}>{{$blood_group->base_setup_name}}</option>
                                     @else
@@ -664,12 +613,7 @@
                                     <input type="hidden" name="parent_id" value="">
 
                                 </div>
-                                <div class="col-lg-5">
-                                    <button class="primary-btn-small-input primary-btn small fix-gr-bg" type="button" data-toggle="modal" data-target="#editStudent">
-                                        <span class="ti-plus pr-2"></span>
-                                        @lang('student.add_parents')
-                                    </button>
-                                </div>
+                                
                             </div>
 
                         </div>

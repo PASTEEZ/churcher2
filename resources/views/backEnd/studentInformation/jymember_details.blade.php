@@ -259,6 +259,7 @@
                     {data: 'full_name', name: 'full_name'},  
                     
                     {data: 'dob', name: 'dob'},
+               
                     {data: 'age', name: 'age'},
                         {data: 'class_sec', name: 'class_sec'},
                   

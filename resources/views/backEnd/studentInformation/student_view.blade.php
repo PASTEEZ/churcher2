@@ -76,23 +76,8 @@
                         <li class="nav-item">
                             <a class="nav-link {{Session::get('studentDocuments') == 'active'? 'active':''}}" href="#studentDocuments" role="tab" data-toggle="tab">@lang('student.document')</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{Session::get('studentRecord') == 'active'? 'active':''}} " href="#studentRecord" role="tab" data-toggle="tab">@lang('student.record')</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{$type == 'studentTimeline' ? 'active':''}} " href="#studentTimeline" role="tab" data-toggle="tab">@lang('student.timeline')</a>
-                        </li>
-                        @if(generalSetting()->result_type == 'mark')
-                        <li class="nav-item">
-                            <a class="nav-link {{$type == 'mark' ? 'active':''}} " href="#mark" role="tab" data-toggle="tab">@lang('exam.marksheet')</a>
-                        </li>
-                        @endif
-
-                        @if(moduleStatusCheck('University'))
-                        <li class="nav-item">
-                            <a class="nav-link {{$type == 'assign_subject' ? 'active':''}} " href="#studentSubject" role="tab" data-toggle="tab">@lang('university::un.subject')</a>
-                        </li>
-                        @endif
+                      
+                     
 
                         <li class="nav-item edit-button">
                             @if(userPermission(66))
@@ -126,22 +111,9 @@
 
                         <!-- delete document modal -->
                         <!-- Start reocrd Tab -->
-                        
-                        @include('backEnd.studentInformation.inc._record_tab')
-
-                        <!-- End record Tab -->
-                        
-                        @include('backEnd.studentInformation.inc._timeline_tab')
+                      
                         {{-- start marksheet tab  --}}
-                        @if(generalSetting()->result_type == 'mark')
-                        <div role="tabpanel" class="tab-pane fade {{Session::get('mark') == 'active'? 'show active':''}}" id="mark">
-                            <div class="white-box">
-                                @foreach($student_detail->studentRecords as $record)
-                                    @includeIf('backEnd.studentInformation.inc.finalMarkSheet')
-                                @endforeach
-                            </div>
-                        </div>
-                        @endif 
+                       
                         {{-- end marksheet tab  --}}
 
                         <!-- Start Timeline Tab -->

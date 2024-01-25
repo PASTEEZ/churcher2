@@ -184,8 +184,7 @@ class DatatableQueryController extends Controller
                                     <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">' . app('translator')->get('common.select') . '</button>
 
                                     <div class="dropdown-menu dropdown-menu-right">'
-                        .(userPermission(1201) === true ? '<a class="dropdown-item" target="_blank" href="' . route('student.assign-class', [$row->id]) . '">' . $langName . '</a>' :'')
-
+                      
                         .((userPermission(1201) === true && moduleStatusCheck('University')) ?
                         '<a class="dropdown-item" target="_blank" href="' . route('student_view', [$row->id,'assign_subject']) . '">' .  app('translator')->get('university::un.assign_subject') . '</a>' :'')
 
@@ -370,18 +369,28 @@ class DatatableQueryController extends Controller
                     }
                     return $semester_label;
                 })
-
                 ->addColumn('class_sec', function ($row) use ($request) {
                     $class_sec=[];
                     foreach ($row->studentRecords as $classSec) {
-                        if (moduleStatusCheck('University')) {
-                            $class_sec[] = $classSec->unFaculty->name.'('. $classSec->unDepartment->name .')';
-                        } else {
-                            $class_sec[] = $classSec->class->class_name.'('. $classSec->section->section_name .')';
-                        }
+                      
+                            $class_sec[] = $classSec->class->class_name;
+                       
                     }
 
                     return implode(', ', $class_sec);
+                })
+
+
+        
+                ->addColumn('m_gender', function ($row) use ($request) {
+                    $m_gender=[];
+                    foreach ($row->studentRecords as $classSec) {
+                        
+                            $m_gender[] =  $classSec->section->section_name;
+                      
+                    }
+
+                    return implode(', ', $m_gender);
                 })
 
                 ->addColumn('action', function ($row) {
@@ -390,8 +399,7 @@ class DatatableQueryController extends Controller
                                     <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">' . app('translator')->get('common.select') . '</button>
 
                                     <div class="dropdown-menu dropdown-menu-right">'
-                        .(userPermission(1201) === true ? '<a class="dropdown-item" target="_blank" href="' . route('student.assign-class', [$row->id]) . '">' . $langName . '</a>' :'')
-
+                        
                         .((userPermission(1201) === true && moduleStatusCheck('University')) ?
                         '<a class="dropdown-item" target="_blank" href="' . route('student_view', [$row->id,'assign_subject']) . '">' .  app('translator')->get('university::un.assign_subject') . '</a>' :'')
 
@@ -574,18 +582,27 @@ class DatatableQueryController extends Controller
                     }
                     return $semester_label;
                 })
-
                 ->addColumn('class_sec', function ($row) use ($request) {
                     $class_sec=[];
                     foreach ($row->studentRecords as $classSec) {
-                        if (moduleStatusCheck('University')) {
-                            $class_sec[] = $classSec->unFaculty->name.'('. $classSec->unDepartment->name .')';
-                        } else {
-                            $class_sec[] = $classSec->class->class_name.'('. $classSec->section->section_name .')';
-                        }
+                      
+                            $class_sec[] = $classSec->class->class_name;
+                       
                     }
 
                     return implode(', ', $class_sec);
+                })
+
+
+                ->addColumn('m_gender', function ($row) use ($request) {
+                    $m_gender=[];
+                    foreach ($row->studentRecords as $classSec) {
+                        
+                            $m_gender[] =  $classSec->section->section_name;
+                      
+                    }
+
+                    return implode(', ', $m_gender);
                 })
 
                 ->addColumn('action', function ($row) {
@@ -594,8 +611,7 @@ class DatatableQueryController extends Controller
                                     <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">' . app('translator')->get('common.select') . '</button>
 
                                     <div class="dropdown-menu dropdown-menu-right">'
-                        .(userPermission(1201) === true ? '<a class="dropdown-item" target="_blank" href="' . route('student.assign-class', [$row->id]) . '">' . $langName . '</a>' :'')
-
+                     
                         .((userPermission(1201) === true && moduleStatusCheck('University')) ?
                         '<a class="dropdown-item" target="_blank" href="' . route('student_view', [$row->id,'assign_subject']) . '">' .  app('translator')->get('university::un.assign_subject') . '</a>' :'')
 

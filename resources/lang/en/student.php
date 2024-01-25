@@ -355,8 +355,8 @@ return [
     'roll_no' => 'Phone No',
     'roll' => 'Mobile Number(Work)',
 
-    'section' => 'Membership Type',
-    'select_section' => 'Select Membership Type',
+    'section' => 'Gender',
+    'select_section' => 'Select Gender',
     'date_of_birth' => 'Date Of Birth',
     'manage_student' => 'Manage Member',
     'disable_student' => 'Disable Member',

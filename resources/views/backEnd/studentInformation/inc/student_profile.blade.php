@@ -20,7 +20,7 @@
                     @lang('student.student_name')
                 </div>
                 <div class="value">
-                    {{ @$student_detail->first_name . ' ' . @$student_detail->last_name }}
+                    {{ @$student_detail->first_name . ' '. @$student_detail->middle_name . ' ' . @$student_detail->last_name }}
                 </div>
             </div>
         </div>
@@ -96,11 +96,11 @@
         <div class="single-meta">
             <div class="d-flex justify-content-between">
                 <div class="name">
-                    @lang('common.gender')
+                    @lang('common.marriage_status')
                 </div>
                 <div class="value">
 
-                    {{ @$student_detail->gender != '' ? $student_detail->gender->base_setup_name : '' }}
+                    {{  $student_detail->marriage_status}}
                 </div>
             </div>
         </div>

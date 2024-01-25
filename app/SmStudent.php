@@ -22,7 +22,9 @@ use Modules\OnlineExam\Entities\InfixStudentTakeOnlineExam;
 class SmStudent extends Model
 {
     use HasFactory;
-    protected $fillable = [];
+    protected $fillable = [
+        'admission_no',
+    ];
 
     protected static function boot()
     {

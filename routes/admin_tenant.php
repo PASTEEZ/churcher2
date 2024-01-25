@@ -1285,8 +1285,11 @@ Route::group(['middleware' => ['XSS','subscriptionAccessUrl']], function () {
         Route::post('member-update', ['as' => 'student_update', 'uses' => 'Admin\StudentInfo\SmStudentAdmissionController@update']);
       
         //Route::post('member-update', ['as' => 'student_update', 'uses' => 'Admin\StudentInfo\SmStudentAdmissionController@update']);
-        // Route::post('student-update-pic/{id}', ['as' => 'student_update_pic', 'uses' => 'SmStudentAdmissionController@studentUpdatePic']);
+       Route::post('student-update-pic/{id}', ['as' => 'student_update_pic', 'uses' => 'SmStudentAdmissionController@studentUpdatePic']);
 
+
+
+         // Route::post('student-update-pic/{id}', ['as' => 'student_update_pic', 'uses' => 'SmStudentAdmissionController@studentUpdatePic']);
         // Student Promote search
         // Route::get('student-promote', ['as' => 'student_promote', 'uses' => 'SmStudentAdmissionController@studentPromote'])->middleware('userRolePermission:81');
 
@@ -1643,7 +1646,7 @@ Route::group(['middleware' => ['XSS','subscriptionAccessUrl']], function () {
         Route::post('update-book-data/{id}', 'Admin\Library\SmBookController@updateBookData')->name('update-book-data');
         Route::get('delete-book-view/{id}', 'Admin\Library\SmBookController@deleteBookView')->name('delete-book-view')->middleware('userRolePermission:303');
         Route::get('delete-book/{id}', 'Admin\Library\SmBookController@deleteBook');
-        Route::get('member-list', 'Admin\Library\SmBookController@memberList')->name('member-list')->middleware('userRolePermission:311');
+        //Route::get('member-list', 'Admin\Library\SmBookController@memberList')->name('member-list')->middleware('userRolePermission:311');
         Route::get('issue-books/{member_type}/{id}', 'Admin\Library\SmBookController@issueBooks')->name('issue-books');
         Route::post('save-issue-book-data', 'Admin\Library\SmBookController@saveIssueBookData')->name('save-issue-book-data');
         Route::get('return-book-view/{id}', 'Admin\Library\SmBookController@returnBookView')->name('return-book-view')->middleware('userRolePermission:313');

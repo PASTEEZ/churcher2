@@ -114,7 +114,7 @@ return [
     'select_language' =>'Select Language',
     'select_criteria' => 'Select Criteria',
     'select_class'    => 'Select Group',
-    'select_section'  => 'Select Membership Type',
+    'select_section'  => 'Select Gender',
     'select_subject'  => 'Select Service',
     'select_subjects' => 'Select Service',
     'select_teacher'  => 'Select Leader',
@@ -440,6 +440,6 @@ return [
 
     'nationality'=>'Nationality',
     'update_yeargroup'=>'Update Year Groups',
-    
+    'marriage_status'=>'Marital Status',
    
 ];

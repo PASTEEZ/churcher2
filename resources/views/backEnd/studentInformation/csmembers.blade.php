@@ -54,19 +54,11 @@
                 <tr>
                     <th>@lang('student.admission_no')</th>
                     <th>@lang('student.name')</th>
-                    @if(generalSetting()->multiple_roll==0)
-                    <th>@lang('student.id_number')</th>
-                    @else
-                    @if(!moduleStatusCheck('University'))
-                     <th>@lang('student.father_name')</th>
-                     @endif
-                    @endif
+                 
                     <th>@lang('student.date_of_birth')</th>
-                    @if(moduleStatusCheck('University'))
-                    <th>@lang('student.fac_dept')</th>
-                    @else
+                 
                     <th>@lang('student.class_sec')</th>
-                    @endif
+            
                     <th>@lang('common.gender')</th>
                     <th>@lang('common.type')</th>
                     <th>@lang('common.phone')</th>
@@ -104,11 +96,9 @@ $(document).ready(function() {
                             @endif
 
                             {data: 'dob', name: 'dob'},
-                            @if(moduleStatusCheck('University'))
-                            {data: 'fac_dept', name: 'fac_dept'},
-                            @else
-                            {data: 'class_sec', name: 'class_sec'},
-                            @endif
+                            
+                            {data: 'm_gender', name: 'm_gender'},
+                    
                             {data: 'gender.base_setup_name', name: 'gender.base_setup_name'},
                             {data: 'category.category_name', name: 'category.category_name'},
                             {data: 'mobile', name: 'sm_jymembers.mobile', orderable: false, searchable: false},

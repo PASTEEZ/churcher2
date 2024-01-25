@@ -376,7 +376,7 @@ class SmNonadultAdmissionController extends Controller
                                 DB::commit();
                                 StudentBulkTemporary::where('user_id', Auth::user()->id)->delete();
                                 Toastr::error('Your student limit has been crossed.', 'Failed');
-                                return redirect('student-list');
+                                return redirect('member-list');
 
                             }
                         }

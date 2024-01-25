@@ -139,7 +139,7 @@ return [
     'base_setup'=>'Base Setup',
     'background_image' => 'Background Image',
     'generate_certificate' => 'Generate Certificate',
-    'select_section' => 'Select Membership Type',
+    'select_section' => 'Select Gender',
     'generate' => 'Generate',
     'admission' => 'Admission',
     'class_Sec' => 'Group (Type)',

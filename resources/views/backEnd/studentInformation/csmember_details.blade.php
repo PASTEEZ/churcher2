@@ -262,6 +262,8 @@
                     {data: 'age', name: 'age'},
                         {data: 'class_sec', name: 'class_sec'},
                   
+         
+                  
                     {data: 'm_gender', name: 'm_gender'},
                      {data: 'mobile', name: 'sm_students.mobile'},
                     {data: 'action', name: 'action', orderable: false, searchable: false},
