@@ -18,13 +18,24 @@
             </div>
             <div class="col-md-12">
                 <form method="post" action="{{ route('service.database') }}" id="content_form">
+                    @if(config('spondonit.support_multi_connection', false))
+                    <div class="form-group">
+                        <label class="required" for="db_connection">{{ __('service::install.db_connection') }} <i class="ti-help" data-toogle="tooltip" title="{{ __('service::install.db_connection_help') }}"></i> </label>
+                        <select class="form-control select2" name="db_connection" id="db_connection"  required  data-placeholder="{{ __('service::install.db_connection') }}" data-parsley-errors-container="#parsley_db_connection_error">
+                            <option value="mysql" {{ env('DB_CONNECTION', 'mysql') == 'mysql' ? 'selected' : '' }}>{{ __('service::install.mysql') }}</option>
+                            <option value="pgsql" {{ env('DB_CONNECTION', 'mysql') == 'pgsql' ? 'selected' : '' }}>{{ __('service::install.pgsql') }}</option>
+                        </select>
+                        <span id="parsley_db_connection_error"></span>
+                    </div>
+                    @endif
+
                     <div class="form-group">
                         <label class="required" for="db_host">{{ __('service::install.db_host') }}</label>
-                        <input type="text" class="form-control " name="db_host" id="db_host"  required="required"  placeholder="{{ __('service::install.db_host') }}" value="localhost" >
+                        <input type="text" class="form-control " name="db_host" id="db_host"  required="required"  placeholder="{{ __('service::install.db_host') }}" value="{{ env('DB_HOST', 'localhost') }}" >
                     </div>
                     <div class="form-group">
                         <label class="required" for="db_port">{{ __('service::install.db_port') }}</label>
-                        <input type="text" class="form-control" name="db_port" id="db_port" required="required" placeholder="{{ __('service::install.db_port') }}" value="3306" >
+                        <input type="text" class="form-control" name="db_port" id="db_port" required="required" placeholder="{{ __('service::install.db_port') }}" value="{{ env('DB_PORT', '3306') }}" >
                     </div>
                     <div class="form-group">
                         <label class="required" for="db_database">{{ __('service::install.db_database') }}</label>
@@ -59,7 +70,15 @@
 @push('js')
     <script>
         _formValidation('content_form');
+        @if(config('spondonit.support_multi_connection', false))
+            $('#db_connection').select2();
+            $(document).on('change', '#db_connection', function(){
+                $('#db_port').val($(this).val() === 'pgsql' ? 5432 : 3306)
+            })
+            $('[data-toogle="tooltip"]').tooltip()
+        @endif
         $(document).ready(function(){
+
             setTimeout(function(){
                 $('.preloader h2').html('We are validating your database. <br> Please do not refresh or close the browser')
             }, 2000);

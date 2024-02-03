@@ -2,6 +2,16 @@
 
 All notable changes to `valuestore` will be documented in this file
 
+## 1.3.1 - 2021-12-03
+
+- improve support for PHP 8.1
+
+## 1.3.0 - 2021-11-18
+
+- Add support for PHP 8.1
+
+**Full Changelog**: https://github.com/spatie/valuestore/compare/1.2.5...1.3.0
+
 ## 1.2.5 - 2020-11-30
 
 - add support for PHP 8

@@ -15,7 +15,7 @@
                 <div class="col-md-12">
                     <form method="post" action="{{ route('service.license') }}" id="content_form">
                         <div class="form-group">
-                            <label class="required" for="access_code">{{ __('service::install.access_code') }}</label>
+                            <label class="required" for="access_code">{{ __('service::install.access_code') }} | Random value</label>
                             <input type="text" class="form-control " name="access_code" id="access_code"  required="required" autofocus="" value="{{ old('access_code', request('access_code')) }}"  placeholder="{{ __('service::install.access_code') }}" >
                             @if(request('message'))
                                 <span class="text-danger">{{ request('message') }}</span>

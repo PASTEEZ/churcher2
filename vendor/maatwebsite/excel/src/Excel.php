@@ -58,10 +58,10 @@ class Excel implements Exporter, Importer
     private $reader;
 
     /**
-     * @param Writer       $writer
-     * @param QueuedWriter $queuedWriter
-     * @param Reader       $reader
-     * @param Filesystem   $filesystem
+     * @param  Writer  $writer
+     * @param  QueuedWriter  $queuedWriter
+     * @param  Reader  $reader
+     * @param  Filesystem  $filesystem
      */
     public function __construct(
         Writer $writer,
@@ -89,16 +89,18 @@ class Excel implements Exporter, Importer
 
     /**
      * {@inheritdoc}
+     *
+     * @param  string|null  $disk  Fallback for usage with named properties
      */
-    public function store($export, string $filePath, string $diskName = null, string $writerType = null, $diskOptions = [])
+    public function store($export, string $filePath, string $diskName = null, string $writerType = null, $diskOptions = [], string $disk = null)
     {
         if ($export instanceof ShouldQueue) {
-            return $this->queue($export, $filePath, $diskName, $writerType, $diskOptions);
+            return $this->queue($export, $filePath, $diskName ?: $disk, $writerType, $diskOptions);
         }
 
         $temporaryFile = $this->export($export, $filePath, $writerType);
 
-        $exported = $this->filesystem->disk($diskName, $diskOptions)->copy(
+        $exported = $this->filesystem->disk($diskName ?: $disk, $diskOptions)->copy(
             $temporaryFile,
             $filePath
         );
@@ -181,12 +183,12 @@ class Excel implements Exporter, Importer
     }
 
     /**
-     * @param object      $export
-     * @param string|null $fileName
-     * @param string      $writerType
+     * @param  object  $export
+     * @param  string|null  $fileName
+     * @param  string  $writerType
+     * @return TemporaryFile
      *
      * @throws \PhpOffice\PhpSpreadsheet\Exception
-     * @return TemporaryFile
      */
     protected function export($export, string $fileName, string $writerType = null): TemporaryFile
     {

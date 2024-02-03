@@ -6,6 +6,8 @@ I cloned the repository brian2694/laravel-toastr to update to Laravel 5.5
 
 | Laravel Version     | Is Working? |
 | ---      | ---       |
+| 10.x | Yes         |
+| 9.x | Yes         |
 | 8.x | Yes         |
 | 7.x | Yes        |
 | 6.x | Yes        |
@@ -104,6 +106,32 @@ You should add `{!! Toastr::message() !!}` to your html.
 </html>
 ```
 
+### Use ViteJs / script type defaults to module
+
+You can also set Toastr to use vitejs by default by registering `Toastr::useVite()` inside the `AppServiceProvider`.
+
+```php
+namespace App\Providers;
+
+use Illuminate\Support\ServiceProvider;
+use Brian2694\Toastr\Facades\Toastr;
+
+class AppServiceProvider extends ServiceProvider
+{
+    public function boot(): void
+    {
+        Toastr::useVite();
+    }
+}
+```
+
+Upon registering, you can now use `Toastr::message()` and it set the script type to module.
 
 
-### MIT
+
+## Contributors
+
+We'd like to thank the following individuals for their contributions to this project:
+
+- [Antonio Bruno](https://github.com/antonio8101) - Set DOC on the Facade class.
+- [aoradev44](https://github.com/aoradev44) - Set toastr message script type to module for using with vite

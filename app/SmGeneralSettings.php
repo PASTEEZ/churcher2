@@ -311,7 +311,7 @@ class SmGeneralSettings extends Model
                         $is_verify = InfixModuleManager::where('name', $name)->first();
                        
                         if (!empty($is_verify->purchase_code)) {
-                            return TRUE;
+                            return FALSE;
                            
                         }
                     }

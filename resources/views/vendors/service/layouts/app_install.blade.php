@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="{{ asset($base_path . '/css/spondonit.css') }}">
     <link rel="stylesheet" href="{{ asset($base_path . '/css/themify-icons.css') }}">
     <link rel="stylesheet" href="{{ asset($base_path . '/css/toastr.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset($base_path . '/css/select2.css') }}">
     <link rel="stylesheet" href="{{ asset($base_path . '/css/parsley.css') }}">
 
     @stack('css')
@@ -51,6 +52,7 @@
 
     <script type="text/javascript" src="{{ asset($base_path . '/js/jquery-3.6.0.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset($base_path . '/js/bootstrap.bundle.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset($base_path . '/js/select2.min.js') }}"></script>
     <script src="{{ asset($base_path . '/js/toastr.min.js') }}"></script>
     <script src="{{ asset($base_path . '/js/parsley.min.js') }}"></script>
     <script src="{{ asset($base_path . '/js/function.js') }}"></script>

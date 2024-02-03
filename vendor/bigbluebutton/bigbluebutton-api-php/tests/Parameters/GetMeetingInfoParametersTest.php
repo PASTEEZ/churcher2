@@ -1,8 +1,9 @@
 <?php
-/**
+
+/*
  * BigBlueButton open source conferencing system - https://www.bigbluebutton.org/.
  *
- * Copyright (c) 2016-2018 BigBlueButton Inc. and by respective authors (see below).
+ * Copyright (c) 2016-2023 BigBlueButton Inc. and by respective authors (see below).
  *
  * This program is free software; you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,23 +17,30 @@
  * You should have received a copy of the GNU Lesser General Public License along
  * with BigBlueButton; if not, see <http://www.gnu.org/licenses/>.
  */
+
 namespace BigBlueButton\Parameters;
 
 use BigBlueButton\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class GetMeetingInfoParametersTest extends TestCase
 {
     public function testGetMeetingInfoParameters()
     {
-        $getMeetingInfoParams = new GetMeetingInfoParameters($meetingId = $this->faker->uuid, $password = $this->faker->password());
+        $getMeetingInfoParams = new GetMeetingInfoParameters($meetingId = $this->faker->uuid);
 
         $this->assertEquals($meetingId, $getMeetingInfoParams->getMeetingId());
-        $this->assertEquals($password, $getMeetingInfoParams->getPassword());
 
         // Test setters that are ignored by the constructor
         $getMeetingInfoParams->setMeetingId($newId = $this->faker->uuid);
-        $getMeetingInfoParams->setPassword($newPassword = $this->faker->password);
+        $getMeetingInfoParams->setMeetingId($limit = $this->faker->numberBetween(1, 99));
+        $getMeetingInfoParams->setMeetingId($offset = $this->faker->numberBetween(1, 99));
         $this->assertEquals($newId, $getMeetingInfoParams->getMeetingId());
-        $this->assertEquals($newPassword, $getMeetingInfoParams->getPassword());
+        $this->assertEquals($limit, $getMeetingInfoParams->getLimit());
+        $this->assertEquals($offset, $getMeetingInfoParams->getOffset());
     }
 }

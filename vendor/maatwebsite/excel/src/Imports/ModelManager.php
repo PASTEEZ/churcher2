@@ -31,7 +31,7 @@ class ModelManager
     private $remembersRowNumber = false;
 
     /**
-     * @param RowValidator $validator
+     * @param  RowValidator  $validator
      */
     public function __construct(RowValidator $validator)
     {
@@ -39,8 +39,8 @@ class ModelManager
     }
 
     /**
-     * @param int   $row
-     * @param array $attributes
+     * @param  int  $row
+     * @param  array  $attributes
      */
     public function add(int $row, array $attributes)
     {
@@ -48,7 +48,7 @@ class ModelManager
     }
 
     /**
-     * @param bool $remembersRowNumber
+     * @param  bool  $remembersRowNumber
      */
     public function setRemembersRowNumber(bool $remembersRowNumber)
     {
@@ -56,8 +56,8 @@ class ModelManager
     }
 
     /**
-     * @param ToModel $import
-     * @param bool    $massInsert
+     * @param  ToModel  $import
+     * @param  bool  $massInsert
      *
      * @throws ValidationException
      */
@@ -77,10 +77,9 @@ class ModelManager
     }
 
     /**
-     * @param ToModel $import
-     * @param array   $attributes
-     *
-     * @param int|null $rowNumber
+     * @param  ToModel  $import
+     * @param  array  $attributes
+     * @param  int|null  $rowNumber
      * @return Model[]|Collection
      */
     public function toModels(ToModel $import, array $attributes, $rowNumber = null): Collection
@@ -89,17 +88,11 @@ class ModelManager
             $import->rememberRowNumber($rowNumber);
         }
 
-        $model = $import->model($attributes);
-
-        if (null !== $model) {
-            return \is_array($model) ? new Collection($model) : new Collection([$model]);
-        }
-
-        return new Collection([]);
+        return Collection::wrap($import->model($attributes));
     }
 
     /**
-     * @param ToModel $import
+     * @param  ToModel  $import
      */
     private function massFlush(ToModel $import)
     {
@@ -120,21 +113,19 @@ class ModelManager
                              $import->uniqueBy(),
                              $import instanceof WithUpsertColumns ? $import->upsertColumns() : null
                          );
-                     } else {
-                         $model::query()->insert($models->toArray());
+
+                         return;
                      }
+
+                     $model::query()->insert($models->toArray());
                  } catch (Throwable $e) {
-                     if ($import instanceof SkipsOnError) {
-                         $import->onError($e);
-                     } else {
-                         throw $e;
-                     }
+                     $this->handleException($import, $e);
                  }
              });
     }
 
     /**
-     * @param ToModel $import
+     * @param  ToModel  $import
      */
     private function singleFlush(ToModel $import)
     {
@@ -149,23 +140,20 @@ class ModelManager
                                 $import->uniqueBy(),
                                 $import instanceof WithUpsertColumns ? $import->upsertColumns() : null
                             );
-                        } else {
-                            $model->saveOrFail();
+
+                            return;
                         }
+
+                        $model->saveOrFail();
                     } catch (Throwable $e) {
-                        if ($import instanceof SkipsOnError) {
-                            $import->onError($e);
-                        } else {
-                            throw $e;
-                        }
+                        $this->handleException($import, $e);
                     }
                 });
             });
     }
 
     /**
-     * @param Model $model
-     *
+     * @param  Model  $model
      * @return Model
      */
     private function prepare(Model $model): Model
@@ -192,7 +180,7 @@ class ModelManager
     }
 
     /**
-     * @param WithValidation $import
+     * @param  WithValidation  $import
      *
      * @throws ValidationException
      */
@@ -213,5 +201,14 @@ class ModelManager
     private function rows(): Collection
     {
         return new Collection($this->rows);
+    }
+
+    private function handleException(ToModel $import, Throwable $e): void
+    {
+        if (!$import instanceof SkipsOnError) {
+            throw $e;
+        }
+
+        $import->onError($e);
     }
 }

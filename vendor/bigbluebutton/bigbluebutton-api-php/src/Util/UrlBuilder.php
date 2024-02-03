@@ -1,8 +1,9 @@
 <?php
-/**
+
+/*
  * BigBlueButton open source conferencing system - https://www.bigbluebutton.org/.
  *
- * Copyright (c) 2016-2018 BigBlueButton Inc. and by respective authors (see below).
+ * Copyright (c) 2016-2023 BigBlueButton Inc. and by respective authors (see below).
  *
  * This program is free software; you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,18 +17,21 @@
  * You should have received a copy of the GNU Lesser General Public License along
  * with BigBlueButton; if not, see <http://www.gnu.org/licenses/>.
  */
+
 namespace BigBlueButton\Util;
 
 /**
- * Class UrlBuilder
- * @package BigBlueButton\Util
+ * Class UrlBuilder.
  */
 class UrlBuilder
 {
+    protected $hashingAlgorithm;
+
     /**
      * @var string
      */
     private $securitySalt;
+
     /**
      * @var string
      */
@@ -36,21 +40,31 @@ class UrlBuilder
     /**
      * UrlBuilder constructor.
      *
-     * @param $secret
-     * @param $serverBaseUrl
+     * @param mixed $secret
+     * @param mixed $serverBaseUrl
+     * @param mixed $hashingAlgorithm
      */
-    public function __construct($secret, $serverBaseUrl)
+    public function __construct($secret, $serverBaseUrl, $hashingAlgorithm)
     {
         $this->securitySalt     = $secret;
         $this->bbbServerBaseUrl = $serverBaseUrl;
+        $this->hashingAlgorithm = $hashingAlgorithm;
+    }
+
+    /**
+     * Sets the hashing algorithm.
+     */
+    public function setHashingAlgorithm(string $hashingAlgorithm): void
+    {
+        $this->hashingAlgorithm = $hashingAlgorithm;
     }
 
     /**
      * Builds an API method URL that includes the url + params + its generated checksum.
      *
-     * @param string  $method
-     * @param string  $params
-     * @param boolean $append
+     * @param string $method
+     * @param string $params
+     * @param bool   $append
      *
      * @return string
      */
@@ -69,6 +83,6 @@ class UrlBuilder
      */
     public function buildQs($method = '', $params = '')
     {
-        return $params . '&checksum=' . sha1($method . $params . $this->securitySalt);
+        return $params . '&checksum=' . hash($this->hashingAlgorithm, $method . $params . $this->securitySalt);
     }
 }

@@ -27,7 +27,6 @@ class SpondonItSchoolServiceProvider extends ServiceProvider
     {
         $kernel = $this->app->make(Kernel::class);
         $kernel->pushMiddleware(SchoolService::class);
-
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'school');
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'school');

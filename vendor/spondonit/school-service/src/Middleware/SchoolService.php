@@ -28,18 +28,19 @@ class SchoolService
      */
     public function handle($request, Closure $next)
     {
+        if(config('app.app_sync') && Storage::exists('.app_resetting')){
+            abort(503);
+        }
         $this->repo->init();
-
         $this->service_repo->init();
 
         if($this->inExceptArray($request)){
             return $next($request);
         }
 
-
        $temp = Storage::exists('.temp_app_installed') ? Storage::get('.temp_app_installed') : false;
         
-        if (!$temp) {
+        if (!$temp){
             $database = $this->service_repo->checkDatabase();
             $logout = Storage::exists('.logout') ? Storage::get('.logout') : false;
             

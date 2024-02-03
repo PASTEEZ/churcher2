@@ -29,7 +29,7 @@
                         <input type="password" class="form-control" name="password_confirmation" id="password_confirmation" required placeholder="{{ __('service::install.password_confirmation') }}" data-parsley-equalto="#password">
                     </div>
 
-                    @if(env('APP_SYNC'))
+                    @if(config('app.app_sync', env('APP_SYNC')))
                     <div class="form-group">
                         <label data-id="bg_option" class="primary_checkbox d-flex mr-12 ">
                             <input name="seed" type="checkbox">

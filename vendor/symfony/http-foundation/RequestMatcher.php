@@ -91,7 +91,7 @@ class RequestMatcher implements RequestMatcherInterface
     }
 
     /**
-     * Adds a check for the the URL port.
+     * Adds a check for the URL port.
      *
      * @param int|null $port The port number to connect to
      */
@@ -185,7 +185,7 @@ class RequestMatcher implements RequestMatcherInterface
             return false;
         }
 
-        if (IpUtils::checkIp($request->getClientIp(), $this->ips)) {
+        if (IpUtils::checkIp($request->getClientIp() ?? '', $this->ips)) {
             return true;
         }
 
