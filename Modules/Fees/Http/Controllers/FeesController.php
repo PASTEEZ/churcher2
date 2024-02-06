@@ -289,7 +289,11 @@ class FeesController extends Controller
         $studentInvoices = FmFeesInvoice::where('type', 'fees')
             ->where('school_id', Auth::user()->school_id)
             ->where('academic_id', getAcademicId())
+            
+          
+            ->whereMonth('create_date', now()->month)  // Assuming 'created_at' is the timestamp of invoice creation
             ->orderBy('id', 'DESC')
+
             ->get();
 
         return view('fees::feesInvoice.feesInvoiceList', compact('studentInvoices'));
@@ -325,7 +329,7 @@ class FeesController extends Controller
                 $invoiceSettings = new FmFeesInvoiceSettings();
                 $invoiceSettings->invoice_positions = '[{"id":"prefix","text":"prefix"},{"id":"admission_no","text":"Admission No"},{"id":"class","text":"Class"},{"id":"section","text":"Section"}]';
                 $invoiceSettings->uniq_id_start = "0011";
-                $invoiceSettings->prefix = 'infixEdu';
+                $invoiceSettings->prefix = 'PCG-IN';
                 $invoiceSettings->class_limit = 3;
                 $invoiceSettings->section_limit = 1;
                 $invoiceSettings->admission_limit = 3;
@@ -348,10 +352,9 @@ class FeesController extends Controller
              
             'student' => 'required',
             'create_date' => 'required',
-            'due_date' => 'required',
+ 
             'payment_status' => 'required',
-            'payment_method' => 'required_if:payment_status,partial|required_if:payment_status,full',
-            'bank' => 'required_if:payment_method,Bank',
+            
             'fees_type' => 'required',
         ]);
         if ($validator->fails()) {

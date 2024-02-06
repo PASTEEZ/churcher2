@@ -352,7 +352,6 @@ class FeesController extends Controller
                 sendNotification("Fees Assign", null, $students->parents->user_id, 3);
             } else {
                 $allStudents = StudentRecord::with('studentDetail', 'studentDetail.parents')
-                    ->where('class_id', $request->class)
                     ->where('school_id', Auth::user()->school_id)
                     ->where('academic_id', getAcademicId())
                     ->get();
@@ -604,9 +603,7 @@ class FeesController extends Controller
     public function addFeesPayment($id)
     {
         try {
-            $classes = SmClass::where('school_id', auth()->user()->school_id)
-                ->where('academic_id', getAcademicId())
-                ->get();
+    
 
             $feesGroups = FmFeesGroup::where('school_id', auth()->user()->school_id)
                 ->where('academic_id', getAcademicId())
@@ -642,7 +639,7 @@ class FeesController extends Controller
                 ->where('school_id', auth()->user()->school_id)
                 ->first();
 
-            return response()->json(compact('classes', 'feesGroups', 'feesTypes', 'paymentMethods', 'bankAccounts', 'invoiceInfo', 'invoiceDetails', 'stripe_info','walletBalance'));
+            return response()->json(compact('feesGroups', 'feesTypes', 'paymentMethods', 'bankAccounts', 'invoiceInfo', 'invoiceDetails', 'stripe_info','walletBalance'));
         } catch (\Exception $e) {
             return response()->json(['message'=>'Error']);
         }

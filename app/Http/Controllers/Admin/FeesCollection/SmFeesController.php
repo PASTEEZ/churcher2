@@ -184,7 +184,7 @@ class SmFeesController extends Controller
         try {
            
 
-            $discount_group = explode('-', $request->discount_group);
+        
             $user = Auth::user();
             $fees_payment = new SmFeesPayment();
             $fees_payment->student_id = $request->student_id;
@@ -263,13 +263,7 @@ class SmFeesController extends Controller
                     $current_balance->current_balance=$after_balance;
                     $current_balance->update();
             }
-            if(moduleStatusCheck('University')){
-                $fees_assign = SmFeesAssign::where('fees_master_id',$request->master_id)
-                ->where('student_id',$request->student_id)
-                ->where('record_id',$request->record_id)
-                ->where('school_id',Auth::user()->school_id)
-                ->first();
-            }elseif(directFees()){
+           if(directFees()){
                 $fees_assign = SmFeesAssign::where('fees_master_id',$request->master_id)
                 ->where('student_id',$request->student_id)
                 ->where('record_id',$request->record_id)

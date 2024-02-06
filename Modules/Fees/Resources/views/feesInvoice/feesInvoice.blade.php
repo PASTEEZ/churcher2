@@ -64,30 +64,7 @@
                                     <div class="add-visitor">                              
                                         
 
-                                    @if (moduleStatusCheck('University'))
-                                        @includeIf('university::common.session_faculty_depart_academic_semester_level',
-                                        ['required' => 
-                                            ['USN', 'UD', 'UA', 'US', 'USL','USEC'],'hide'=> ['USUB'],
-                                            'div'=>'col-lg-12','row'=>1,
-                                             'mt'=>'mt-0','disabled'=>true
-                                        ])
-                    
-                                        <div class="row">
-                                            <div class="col-lg-12 mt-30" id="select_un_student_div">
-                                                {{ Form::select('student_id', @$students ?? [""=>__('common.select_student').'*'], $invoiceInfo ? $invoiceInfo->student_id : null , ['class' => 'niceSelect w-100 bb form-control'. ($errors->has('student_id') ? ' is-invalid' : ''), 'id'=>'select_un_student',  isset($invoiceInfo) ? 'disabled' : '']) }}
-
-                                                <span class="focus-border"></span>
-                                                <div class="pull-right loader loader_style" id="select_un_student_loader">
-                                                    <img class="loader_img_style" src="{{asset('public/backEnd/img/demo_wait.gif')}}" alt="loader">
-                                                </div>
-                                                @if ($errors->has('student_id'))
-                                                    <span class="invalid-feedback custom-error-message" role="alert">
-                                                        {{ @$errors->first('student_id') }}
-                                                    </span>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    @else
+                                     
                                        {{-- <div class="row">
                                             <div class="col-lg-12 mt-25">
                                                 <select class="niceSelect w-100 bb form-control{{ $errors->has('class') ? ' is-invalid' : '' }}" name="class" id="selectClass">
@@ -108,12 +85,11 @@
                                             <div class="col-lg-12" id="">
                                                 <select class="w-100 bb niceSelect form-control{{ $errors->has('student') ? ' is-invalid' : '' }}" id="selectStudent" name="student">
                                                 <option data-display="@lang('common.select_student') *" value="">@lang('common.select_student')*</option>
-                                               
-                                                @dump($students)
+                                                   @dump($students)
                                                     @foreach ($students as $student)
-                                                        <option value="{{$student->id}}">{{$student->full_name}} (  - {{$student->roll_no}})</option>
+                                                        <option value="{{$student->id}}">{{$student->full_name}}  - {{$student->admission_no}})</option>
                                                     @endforeach
-                                         
+                                                 
                                             </select>
                                             <div class="pull-right loader" id="selectStudentLoader" style="margin-top: -30px;padding-right: 21px;">
                                                 <img src="{{asset('Modules/Fees/Resources/assets/img/pre-loader.gif')}}" alt="" style="width: 28px;height:28px;">
@@ -125,7 +101,7 @@
                                             @endif
                                             </div>
                                         </div>
-                                    @endif
+                                    
                                         <div class="row no-gutters input-right-icon mt-30">
                                             <div class="col">
                                                 <div class="input-effect">
@@ -146,25 +122,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="row no-gutters input-right-icon mt-30">
-                                            <div class="col">
-                                                <div class="input-effect">
-                                                    <input class="primary-input date form-control{{ $errors->has('due_date') ? ' is-invalid' : '' }}" id="startDate" type="text" name="due_date" value="{{isset($invoiceInfo)? date('m/d/Y', strtotime($invoiceInfo->due_date)) : date('m/d/Y')}}">
-                                                        <label>@lang('fees.due_date') <span>*</span></label>
-                                                    <span class="focus-border"></span>
-                                                    @if ($errors->has('due_date'))
-                                                    <span class="invalid-feedback" role="alert">
-                                                        <strong>{{ $errors->first('due_date') }}</strong>
-                                                    </span>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                            <div class="col-auto">
-                                                <button class="" type="button">
-                                                    <i class="ti-calendar" id="start-date-icon"></i>
-                                                </button>
-                                            </div>
-                                        </div>
+                                        
 
                                         <div class="row mt-25">
                                             <div class="col-lg-12">

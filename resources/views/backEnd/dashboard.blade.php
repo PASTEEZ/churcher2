@@ -101,8 +101,8 @@
                                         <p style="color: white" class="mb-0">@lang('dashboard.total_payments_of_Tithe')</p>
                                     </div>
                                     <h1 style="color: white">
-                                        @if(isset($totalParents))
-                                            {{($totalParents)}}
+                                        @if(isset($totalpaymentsthismonth))
+                                            {{($totalpaymentsthismonth)}}
                                         @endif</h1>
                                 </div>
                             </div>

@@ -19,6 +19,7 @@ use App\CheckSection;
 use App\SmAddExpense;
 use App\SmNoticeBoard;
 use App\SmAcademicYear;
+use Modules\Fees\Entities\FmFeesInvoice;
 use App\SmClassSection;
 use App\SmGeneralSettings;
 use App\InfixModuleManager;
@@ -151,39 +152,25 @@ class HomeController extends Controller
             }
 
             // for current month
-            if(moduleStatusCheck('University')){
-                $m_add_incomes = SmAddIncome::where('active_status', 1)
-                                ->where('name','!=','Fund Transfer')
-                                ->where('date', 'like', date('Y-m-') . '%')
-                                ->where('un_academic_id', getAcademicId())
-                                ->where('school_id', $school_id)
-                                ->sum('amount');
-            }else{
+        
                 $m_add_incomes = SmAddIncome::where('active_status', 1)
                                 ->where('name','!=','Fund Transfer')
                                 ->where('date', 'like', date('Y-m-') . '%')
                                 ->where('academic_id', getAcademicId())
                                 ->where('school_id', $school_id)
                                 ->sum('amount');
-            }
+            
             
             $m_total_income = $m_add_incomes;
 
-            if(moduleStatusCheck('University')){
-                $m_add_expenses = SmAddExpense::where('active_status', 1)
-                                ->where('name','!=','Fund Transfer')
-                                ->where('date', 'like', date('Y-m-') . '%')
-                                ->where('un_academic_id', getAcademicId())
-                                ->where('school_id', $school_id)
-                                ->sum('amount');
-            }else{
+           
                 $m_add_expenses = SmAddExpense::where('active_status', 1)
                                 ->where('name','!=','Fund Transfer')
                                 ->where('date', 'like', date('Y-m-') . '%')
                                 ->where('academic_id', getAcademicId())
                                 ->where('school_id', $school_id)
                                 ->sum('amount');
-            }
+          
             
 
             $m_total_expense = $m_add_expenses;
@@ -195,40 +182,23 @@ class HomeController extends Controller
 
             // for current month end
 
-            // for current year start
-            if(moduleStatusCheck('University')){
-                $y_add_incomes = SmAddIncome::where('active_status', 1)
-                                ->where('name','!=','Fund Transfer')
-                                ->where('date', 'like', date('Y-') . '%')
-                                ->where('un_academic_id', getAcademicId())
-                                ->where('school_id', Auth::user()->school_id)
-                                ->sum('amount');
-            }else{
+           
                 $y_add_incomes = SmAddIncome::where('active_status', 1)
                                 ->where('name','!=','Fund Transfer')
                                 ->where('date', 'like', date('Y-') . '%')
                                 ->where('academic_id', getAcademicId())
                                 ->where('school_id', Auth::user()->school_id)
                                 ->sum('amount');
-            }
-
+            
             $y_total_income = $y_add_incomes;
 
-            if(moduleStatusCheck('University')){
-                $y_add_expenses = SmAddExpense::where('active_status', 1)
-                                ->where('name','!=','Fund Transfer')
-                                ->where('date', 'like', date('Y-') . '%')
-                                ->where('un_academic_id', getAcademicId())
-                                ->where('school_id', Auth::user()->school_id)
-                                ->sum('amount');
-            }else{
                 $y_add_expenses = SmAddExpense::where('active_status', 1)
                                 ->where('name','!=','Fund Transfer')
                                 ->where('date', 'like', date('Y-') . '%')
                                 ->where('academic_id', getAcademicId())
                                 ->where('school_id', Auth::user()->school_id)
                                 ->sum('amount');
-            }
+            
 
             $y_total_expense = $y_add_expenses;
 
@@ -323,12 +293,14 @@ class HomeController extends Controller
                     ->count(),
 
 
-                    'totalParents' => SmStudent::whereNotNull('parent_id')
-                    ->where('active_status', 1)
+
+                    'totalpaymentsthismonth' => FmFeesInvoice::where('type', 'fees')
                     ->where('school_id', $school_id)
-                    ->select('parent_id')
-                    ->distinct()
+                    ->where('active_status', 1)
+                    ->whereMonth('created_at', now()->month)  // Assuming 'created_at' is the timestamp of invoice creation
                     ->count(),
+
+                  
 
                 'totalTeachers' => $staffs->where(function($q)  {
                     $q->where(function($q) {

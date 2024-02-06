@@ -331,7 +331,7 @@
                                <div class="input-effect sm2_mb_20 md_mb_20">
                                 <select class="niceSelect w-100 bb form-control{{ $errors->has('blood_group') ? ' is-invalid' : '' }}" name="blood_group">
                                     <option data-display="@lang('student.blood_group') @if(is_required('blood_group')==true)  * @endif" value="">@lang('student.blood_group') @if(is_required('blood_group')==true) <span> *</span> @endif</option>
-                                    @foreach($section as $blood_group)
+                                    @foreach($blood_groups as $blood_group)
                                     @if(isset($student->bloodgroup_id))
                                         <option value="{{$blood_group->id}}" {{$blood_group->id == $student->bloodgroup_id? 'selected': ''}}>{{$blood_group->base_setup_name}}</option>
                                     @else
