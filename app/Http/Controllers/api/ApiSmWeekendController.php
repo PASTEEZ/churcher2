@@ -25,7 +25,7 @@ class ApiSmWeekendController extends Controller
     public function index(Request $request)
     {
         try{
-            $weekends = SmWeekend::where('school_id', 1)->get();
+            $weekends = SmWeekend::where('church_id', 1)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($weekends, null);
             }

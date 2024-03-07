@@ -76,7 +76,7 @@
                                             <select class="niceSelect w-100 bb form-control{{ $errors->has('bank_id') ? ' is-invalid' : '' }}" name="bank_id" id="account_id">
                                             @if(isset($account_id))
                                             @foreach($account_id as $key=>$value)
-                                            <option value="{{$value->id}}">{{$value->account_name}} ({{$value->bank_name}})</option>
+                                            <option value="{{$value->id}}">{{$value->account_name}} ({{$value->employer_name}})</option>
                                             @endforeach
                                             @endif
                                             </select>
@@ -113,7 +113,7 @@
                                                 <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                                     <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                                     @foreach($classes as $class)
-                                                    <option value="{{$class->id}}"  {{( old("class") == $class->id ? "selected":"")}}>{{$class->class_name}}</option>
+                                                    <option value="{{$class->id}}"  {{( old("class") == $class->id ? "selected":"")}}>{{$class->age_group_name}}</option>
                                                     @endforeach
                                                 </select>
                                                 <div class="text-danger" id="classError"></div>

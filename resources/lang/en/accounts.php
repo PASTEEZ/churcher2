@@ -46,7 +46,7 @@ return[
     "account_holder"=> "Account Holder",
     "account_name"=> "Account Name",
     "account_number"=> "Account Number",
-    "bank_name"=> "Bank Name",
+    "employer_name"=> "Bank Name",
     "account_type"=> "Account Type",
     "opening_balance"=> "Opening Balance",
     "current_balance"=> "Current Balance",

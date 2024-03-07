@@ -35,7 +35,7 @@ class SmFeesMasterRequest extends FormRequest
                 'date'=>"required|date",
                 'amount' => "required",
                 'class' => "required",
-                'section_id' => "required",
+                'mgender_id' => "required",
                 'unPercentage' => "required",
                 'totalInstallmentAmount' => 'required|same:amount'
              ];

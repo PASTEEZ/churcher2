@@ -27,7 +27,7 @@
                                     <select class="niceSelect w-100 bb form-control{{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                         <option data-display="@lang('common.select_class')" value="">@lang('common.select_class')*</option>
                                         @foreach($classes as $class)
-                                            <option value="{{$class->id}}" {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{$class->class_name}}</option>
+                                            <option value="{{$class->id}}" {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{$class->age_group_name}}</option>
                                         @endforeach
                                     </select>
                                     @if ($errors->has('class'))
@@ -136,8 +136,8 @@
                                                             @endphp>
                                                         <label for="checkAll"> @lang('common.all')</label>
                                                     </th>
-                                                    <th width="20%">@lang('student.student_name')</th>
-                                                    <th width="10%">@lang('student.admission_no')</th>
+                                                    <th width="20%">@lang('student.member_name')</th>
+                                                    <th width="10%">@lang('student.registration_no')</th>
                                                     <th width="15%">@lang('common.class')</th>
                                                     <th width="15%">@lang('fees.fees_type')</th>
                                                     <th width="15%">@lang('student.father_name')</th>
@@ -164,20 +164,20 @@
                                                                     }
                                                                 }
                                                             @endphp
-                                                            <input type="checkbox" id="student.{{$student->id}}" {{@$show}} class="common-checkbox" name="data[{{$loop->index}}][checked]" value="1" {{in_array($student->student_id, $pre_assigned)? 'checked':''}} {{in_array($student->student_id, $already_paid)? 'disabled="disabled"':''}} >
+                                                            <input type="checkbox" id="student.{{$student->id}}" {{@$show}} class="common-checkbox" name="data[{{$loop->index}}][checked]" value="1" {{in_array($student->member_id, $pre_assigned)? 'checked':''}} {{in_array($student->member_id, $already_paid)? 'disabled="disabled"':''}} >
                                                             <label for="student.{{$student->id}}"></label>
                                                         </td>
-                                                            <input type="hidden" name="data[{{$loop->index}}][class_id]" value="{{@$student->class_id}}">
-                                                            <input type="hidden" name="data[{{$loop->index}}][section_id]" value="{{@$student->section_id}}">
+                                                            <input type="hidden" name="data[{{$loop->index}}][age_group_id]" value="{{@$student->age_group_id}}">
+                                                            <input type="hidden" name="data[{{$loop->index}}][mgender_id]" value="{{@$student->mgender_id}}">
                                                             <input type="hidden" name="data[{{$loop->index}}][record_id]" value="{{@$student->id}}">
-                                                            <input type="hidden" name="data[{{$loop->index}}][student_id]" value="{{@$student->studentDetail->forwardBalance->id ?? $student->student_id}}">
+                                                            <input type="hidden" name="data[{{$loop->index}}][member_id]" value="{{@$student->studentDetail->forwardBalance->id ?? $student->member_id}}">
                                                         <td>{{$student->studentDetail->full_name}}</td>
-                                                        <td>{{$student->studentDetail->admission_no}}</td>
-                                                        <td>{{$student->class != ""? @$student->class->class_name :""}} {{'('.$student->section!=""? $student->section->section_name:"".')' }}</td>
+                                                        <td>{{$student->studentDetail->registration_no}}</td>
+                                                        <td>{{$student->class != ""? @$student->class->age_group_name :""}} {{'('.$student->section!=""? $student->section->mgender_name:"".')' }}</td>
                                                         <td>
                                                             @php
                                                                 $check_discount_apply= DB::table('sm_fees_assign_discounts')
-                                                                                    ->where('student_id',$student->student_id)
+                                                                                    ->where('member_id',$student->member_id)
                                                                                     ->where('record_id',$student->id)
                                                                                     ->where('fees_discount_id',$fees_discount_id)
                                                                                     ->leftjoin('sm_fees_types','sm_fees_types.id','=','sm_fees_assign_discounts.fees_type_id')
@@ -200,7 +200,7 @@
                                                                             @endphp
                                                                                 <option value="" disabled >{{$fees_group->name}} </option>
                                                                                     @php
-                                                                                        $studentAssingFees_types=App\SmFeesAssign::studentFeesTypeDiscount($fees_group->group_id,$student->student_id,$fees_discount->amount, $student->id);
+                                                                                        $studentAssingFees_types=App\SmFeesAssign::studentFeesTypeDiscount($fees_group->group_id,$student->member_id,$fees_discount->amount, $student->id);
                                                                                     @endphp
                                                                                 @foreach ($studentAssingFees_types as $fees_type)
                                                                                     <option value="{{$fees_type->id}}">{{$fees_type->name}}</option>

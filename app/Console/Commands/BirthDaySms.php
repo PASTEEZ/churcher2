@@ -46,13 +46,13 @@ class BirthDaySms extends Command
         $allStudents = SmStudent::where('date_of_birth', 'like', '%'. $currentDate)->get();
         foreach($allStudents as $student){
             $compact['user_email'] = $student->email;
-            @send_sms($student->mobile, 'student_birthday', $compact, $student->school_id);
+            @send_sms($student->mobile, 'student_birthday', $compact, $student->church_id);
         }
 
         $allStaffs = SmStaff::where('date_of_birth', 'like', '%'. $currentDate)->get();
         foreach($allStaffs as $staff){
             $compact['user_email'] = $staff->email;
-            @send_sms($staff->mobile, 'staff_birthday', $compact, $staff->school_id);
+            @send_sms($staff->mobile, 'staff_birthday', $compact, $staff->church_id);
         }
 
         return true;

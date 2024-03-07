@@ -101,18 +101,18 @@
                              id="memberProfile">
                             <div class="white-box">
                                 <h4 class="stu-sub-head">@lang('student.personal_info')</h4>
-                                @if(is_show('admission_date'))
+                                @if(is_show('registration_date'))
                                     <div class="single-info">
                                         <div class="row">
                                             <div class="col-lg-5 col-md-5">
                                                 <div class="">
-                                                    @lang('student.admission_date')
+                                                    @lang('student.registration_date')
                                                 </div>
                                             </div>
 
                                             <div class="col-lg-7 col-md-6">
                                                 <div class="">
-                                                    {{@$student_detail->admission_date != ""? dateConvert(@$student_detail->admission_date):''}}
+                                                    {{@$student_detail->registration_date != ""? dateConvert(@$student_detail->registration_date):''}}
                                                 </div>
                                             </div>
                                         </div>
@@ -154,18 +154,18 @@
                                         </div>
                                     </div>
                                 @endif
-                                @if(is_show('religion'))
+                                @if(is_show('marital_status'))
                                     <div class="single-info">
                                         <div class="row">
                                             <div class="col-lg-5 col-md-6">
                                                 <div class="">
-                                                    @lang('student.religion')
+                                                    @lang('student.marital_status')
                                                 </div>
                                             </div>
 
                                             <div class="col-lg-7 col-md-7">
                                                 <div class="">
-                                                    {{@$student_detail->religion != ""? @$student_detail->religion->base_setup_name:""}}
+                                                    {{@$student_detail->marital_status != ""? @$student_detail->marital_status->base_setup_name:""}}
                                                 </div>
                                             </div>
                                         </div>
@@ -522,12 +522,12 @@
                                 
                                 <!-- Start Other Information Part -->
                                 <h4 class="stu-sub-head mt-40">@lang('student.information_other')</h4>
-                                @if(is_show('blood_group'))
+                                @if(is_show('region'))
                                     <div class="single-info">
                                         <div class="row">
                                             <div class="col-lg-5 col-md-5">
                                                 <div class="">
-                                                    @lang('student.blood_group')
+                                                    @lang('student.region')
                                                 </div>
                                             </div>
 
@@ -618,7 +618,7 @@
 
                                             <div class="col-lg-7 col-md-6">
                                                 <div class="">
-                                                    {{isset($student_detail->local_id_no)? @$student_detail->local_id_no: ''}}
+                                                    {{isset($student_detail->communicant)? @$student_detail->communicant: ''}}
                                                 </div>
                                             </div>
                                         </div>
@@ -635,41 +635,41 @@
 
                                             <div class="col-lg-7 col-md-6">
                                                 <div class="">
-                                                    {{isset($student_detail->bank_account_no)? @$student_detail->bank_account_no: ''}}
+                                                    {{isset($student_detail->day_born)? @$student_detail->day_born: ''}}
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 @endif
-                                @if(is_show('bank_name'))
+                                @if(is_show('employer_name'))
                                     <div class="single-info">
                                         <div class="row">
                                             <div class="col-lg-5 col-md-5">
                                                 <div class="">
-                                                    @lang('accounts.bank_name')
+                                                    @lang('accounts.employer_name')
                                                 </div>
                                             </div>
 
                                             <div class="col-lg-7 col-md-6">
                                                 <div class="">
-                                                    {{isset($student_detail->bank_name)? @$student_detail->bank_name: ''}}
+                                                    {{isset($student_detail->employer_name)? @$student_detail->employer_name: ''}}
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 @endif
-                                @if(is_show('ifsc_code'))
+                                @if(is_show('baptism_status'))
                                     <div class="single-info">
                                         <div class="row">
                                             <div class="col-lg-5 col-md-5">
                                                 <div class="">
-                                                    @lang('student.ifsc_code')
+                                                    @lang('student.baptism_status')
                                                 </div>
                                             </div>
 
                                             <div class="col-lg-7 col-md-6">
                                                 <div class="">
-                                                    {{isset($student_detail->ifsc_code)? @$student_detail->ifsc_code: ''}}
+                                                    {{isset($student_detail->baptism_status)? @$student_detail->baptism_status: ''}}
                                                 </div>
                                             </div>
                                         </div>
@@ -696,10 +696,10 @@
                                                     @if(moduleStatusCheck('University'))
                                                         <h3 class="mb-10">{{@$record->name}}
                                                             ({{@$record->unDepartment->name}}
-                                                            - {{@$record->unSection->section_name}})</h3>
+                                                            - {{@$record->unSection->mgender_name}})</h3>
                                                     @else
-                                                        <h3 class="mb-10">{{$record->class->class_name}}
-                                                            ({{$record->section->section_name}})</h3>
+                                                        <h3 class="mb-10">{{$record->class->age_group_name}}
+                                                            ({{$record->section->mgender_name}})</h3>
                                                     @endif
                                                 </div>
                                             </div>
@@ -785,14 +785,14 @@
                                                         @php
                                                             @$discount_amount = $fees_assigned->applied_discount;
                                                             @$total_discount += @$discount_amount;
-                                                            @$student_id = @$fees_assigned->student_id;
+                                                            @$member_id = @$fees_assigned->member_id;
                                                         @endphp
                                                         @php
-                                                            @$paid = App\SmFeesAssign::discountSum(@$fees_assigned->student_id, @$fees_assigned->feesGroupMaster->feesTypes->id, 'amount', $fees_assigned->record_id);
+                                                            @$paid = App\SmFeesAssign::discountSum(@$fees_assigned->member_id, @$fees_assigned->feesGroupMaster->feesTypes->id, 'amount', $fees_assigned->record_id);
                                                             @$total_grand_paid += @$paid;
                                                         @endphp
                                                         @php
-                                                            @$fine = App\SmFeesAssign::discountSum(@$fees_assigned->student_id, @$fees_assigned->feesGroupMaster->feesTypes->id, 'fine', $fees_assigned->record_id);
+                                                            @$fine = App\SmFeesAssign::discountSum(@$fees_assigned->member_id, @$fees_assigned->feesGroupMaster->feesTypes->id, 'fine', $fees_assigned->record_id);
                                                             @$total_fine += @$fine;
                                                         @endphp
 
@@ -842,7 +842,7 @@
                                                             </td>
                                                         </tr>
                                                         @php
-                                                            @$payments = App\SmFeesAssign::feesPayment(@$fees_assigned->feesGroupMaster->feesTypes->id, @$fees_assigned->student_id, $fees_assigned->recordDetail->id);
+                                                            @$payments = App\SmFeesAssign::feesPayment(@$fees_assigned->feesGroupMaster->feesTypes->id, @$fees_assigned->member_id, $fees_assigned->recordDetail->id);
                                                             $i = 0;
                                                         @endphp
 
@@ -1074,7 +1074,7 @@
                                                                         }
                                                                     }
                                                                     $temp_gpa[]=$mark->total_gpa_point;
-                                                                    $get_subject_marks =  subjectFullMark ($mark->exam_type_id, $mark->subject_id, $mark->studentRecord->class_id, $mark->studentRecord->section_id);
+                                                                    $get_subject_marks =  subjectFullMark ($mark->exam_type_id, $mark->subject_id, $mark->studentRecord->age_group_id, $mark->studentRecord->mgender_id);
 
                                                                     $subject_marks = App\SmStudent::fullMarksBySubject($exam->id, $mark->subject_id);
                                                                     $schedule_by_subject = App\SmStudent::scheduleBySubject($exam->id, $mark->subject_id, @$record);
@@ -1086,7 +1086,7 @@
                                                                     }
                                                                     if(@$mark->is_absent == 0){
                                                                         if(@generalSetting()->result_type == 'mark'){
-                                                                            $grand_total += @subjectPercentageMark(@$mark->total_marks, @subjectFullMark($mark->exam_type_id, $mark->subject_id, $mark->studentRecord->class_id, $mark->studentRecord->section_id));
+                                                                            $grand_total += @subjectPercentageMark(@$mark->total_marks, @subjectFullMark($mark->exam_type_id, $mark->subject_id, $mark->studentRecord->age_group_id, $mark->studentRecord->mgender_id));
                                                                         }else{
                                                                             $grand_total += @$mark->total_marks;
                                                                         }
@@ -1108,12 +1108,12 @@
                                                                         @if (@generalSetting()->result_type == 'mark')
                                                                             ({{subject100PercentMark()}})
                                                                         @else
-                                                                            ({{ @subjectFullMark($mark->exam_type_id, $mark->subject_id, $mark->studentRecord->class_id, $mark->studentRecord->section_id) }})
+                                                                            ({{ @subjectFullMark($mark->exam_type_id, $mark->subject_id, $mark->studentRecord->age_group_id, $mark->studentRecord->mgender_id) }})
                                                                         @endif
                                                                     </td>
                                                                     <td>
                                                                         @if (@generalSetting()->result_type == 'mark')
-                                                                            {{@subjectPercentageMark(@$mark->total_marks, @subjectFullMark($mark->exam_type_id, $mark->subject_id, $mark->studentRecord->class_id, $mark->studentRecord->section_id))}}
+                                                                            {{@subjectPercentageMark(@$mark->total_marks, @subjectFullMark($mark->exam_type_id, $mark->subject_id, $mark->studentRecord->age_group_id, $mark->studentRecord->mgender_id))}}
                                                                         @else
                                                                             {{@$mark->total_marks}}
                                                                         @endif
@@ -1121,7 +1121,7 @@
                                                                     @if(@generalSetting()->result_type == 'mark')
                                                                         <td>
                                                                             @php
-                                                                                $totalMark = subjectPercentageMark(@$mark->total_marks, @subjectFullMark($mark->exam_type_id, $mark->subject_id, $mark->studentRecord->class_id, $mark->studentRecord->section_id));
+                                                                                $totalMark = subjectPercentageMark(@$mark->total_marks, @subjectFullMark($mark->exam_type_id, $mark->subject_id, $mark->studentRecord->age_group_id, $mark->studentRecord->mgender_id));
                                                                                 $passMark = $mark->subject->pass_mark;
                                                                             @endphp
                                                                             @if ($passMark <= $totalMark)
@@ -1147,7 +1147,7 @@
                                                             <tr>
                                                                 <th></th>
                                                                 <th>@lang('exam.position')
-                                                                    : {{getStudentMeritPosition($record->class_id, $record->section_id, $exam->id, $record->id)}}</th>
+                                                                    : {{getStudentMeritPosition($record->age_group_id, $record->mgender_id, $exam->id, $record->id)}}</th>
                                                                 <th>
                                                                     @lang('exam.grand_total'): {{$grand_total}}
                                                                     /{{$grand_total_marks}}
@@ -1166,16 +1166,16 @@
                                                                                     if($result == 0 && $grand_total_marks != 0){
                                                                                         $gpa_point=number_format($final_gpa_point, 2, '.', '');
                                                                                         if($gpa_point >= $maxgpa){
-                                                                                            $average_grade_max = App\SmMarksGrade::where('school_id',Auth::user()->school_id)
-                                                                                            ->where('academic_id', getAcademicId() )
+                                                                                            $average_grade_max = App\SmMarksGrade::where('church_id',Auth::user()->church_id)
+                                                                                            ->where('church_year_id', getAcademicId() )
                                                                                             ->where('from', '<=', $maxgpa )
                                                                                             ->where('up', '>=', $maxgpa )
                                                                                             ->first('grade_name');
 
                                                                                             echo  @$average_grade_max->grade_name;
                                                                                         } else {
-                                                                                            $average_grade = App\SmMarksGrade::where('school_id',Auth::user()->school_id)
-                                                                                            ->where('academic_id', getAcademicId() )
+                                                                                            $average_grade = App\SmMarksGrade::where('church_id',Auth::user()->church_id)
+                                                                                            ->where('church_year_id', getAcademicId() )
                                                                                             ->where('from', '<=', $final_gpa_point )
                                                                                             ->where('up', '>=', $final_gpa_point )
                                                                                             ->first('grade_name');
@@ -1308,9 +1308,9 @@
                                                        title="Answer Script" href="
                                                 @if(moduleStatusCheck('OnlineExam'))
                                                 
-                                                {{route('om-student_answer_script-modal', [@$result_view->online_exam_id, @$result_view->student_id,@$result_view->student_record_id])}}
+                                                {{route('om-student_answer_script-modal', [@$result_view->online_exam_id, @$result_view->member_id,@$result_view->student_record_id])}}
                                                 @else
-                                                {{route('student_answer_script', [@$result_view->online_exam_id, @$result_view->student_id])}}
+                                                {{route('student_answer_script', [@$result_view->online_exam_id, @$result_view->member_id])}}
                                                 @endif 
                                                 ">@lang('exam.answer_script')</a>
 
@@ -1354,7 +1354,7 @@
                                     @if(is_show('document_file_1'))
                                         @if($student_detail->document_file_1 != "")
                                             <tr class="d-flex">
-                                                <td class="col-2">{{$student_detail->document_title_1}} </td>
+                                                <td class="col-2">{{$student_detail->group_1}} </td>
                                                 <td class="col-6">{{showDocument(@$student_detail->document_file_1)}}</td>
                                                 <td class="col-4 d-flex align-items-center">
                                                     @if(userPermission(17))
@@ -1378,7 +1378,7 @@
                                     @if(is_show('document_file_2'))
                                         @if($student_detail->document_file_2 != "")
                                             <tr class="d-flex">
-                                                <td class="col-2">{{$student_detail->document_title_2}}</td>
+                                                <td class="col-2">{{$student_detail->group_2}}</td>
                                                 <td class="col-6">{{showDocument(@$student_detail->document_file_2)}}</td>
                                                 <td class="col-4 d-flex align-items-center">
                                                     @if(userPermission(17))
@@ -1402,7 +1402,7 @@
                                     @if(is_show('document_file_3'))
                                         @if($student_detail->document_file_3 != "")
                                             <tr class="d-flex">
-                                                <td class="col-2">{{$student_detail->document_title_3}}</td>
+                                                <td class="col-2">{{$student_detail->group_3}}</td>
                                                 <td class="col-6">{{showDocument(@$student_detail->document_file_3)}}</td>
                                                 <td class="col-4 d-flex align-items-center">
                                                     @if(userPermission(17))
@@ -1426,7 +1426,7 @@
                                     @if(is_show('document_file_4'))
                                         @if($student_detail->document_file_4 != "")
                                             <tr class="d-flex">
-                                                <td class="col-2">{{$student_detail->document_title_4}}</td>
+                                                <td class="col-2">{{$student_detail->group_4}}</td>
                                                 <td class="col-6">{{showDocument(@$student_detail->document_file_4)}}</td>
                                                 <td class="col-4 d-flex align-items-center">
                                                     @if(userPermission(17))
@@ -1465,7 +1465,7 @@
                                                         <form action="{{route('student_document_delete')}}"
                                                               method="POST">
                                                             @csrf
-                                                            <input type="hidden" name="student_id">
+                                                            <input type="hidden" name="member_id">
                                                             <input type="hidden" name="doc_id">
                                                             <button type="button" class="primary-btn tr-bg"
                                                                     data-dismiss="modal">@lang('common.cancel')</button>
@@ -1567,7 +1567,7 @@
                                             {{ Form::open(['class' => 'form-horizontal', 'files' => true, 'route' => 'student_upload_document', 'method' => 'POST', 'enctype' => 'multipart/form-data', 'name' => 'document_upload']) }}
                                             <div class="row">
                                                 <div class="col-lg-12">
-                                                    <input type="hidden" name="student_id"
+                                                    <input type="hidden" name="member_id"
                                                            value="{{@$student_detail->id}}">
                                                     <div class="row mt-25">
                                                         <div class="col-lg-12">
@@ -1677,7 +1677,7 @@
                                             @else
                                                 <td class="col-3">
 
-                                                    {{  $record->class->class_name}}
+                                                    {{  $record->class->age_group_name}}
                                                     @if($record->is_default)
                                                         <span class="badge fix-gr-bg">
                                                         {{ __('common.default') }}
@@ -1685,11 +1685,11 @@
                                                     @endif
                                                 </td>
                                                 <td class="col-3">
-                                                    {{ $record->section->section_name }}
+                                                    {{ $record->section->mgender_name }}
                                                 </td>
                                             @endif
 
-                                            <td class="col-2">{{ $record->roll_no }}</td>
+                                            <td class="col-2">{{ $record->member_id_no }}</td>
                                         </tr>
                                     @endforeach
                                     </tbody>
@@ -1727,7 +1727,7 @@
                         {{ Form::open(['class' => 'form-horizontal', 'files' => true, 'route' => 'student_timeline_store', 'method' => 'POST', 'enctype' => 'multipart/form-data', 'name' => 'document_upload']) }}
                         <div class="row">
                             <div class="col-lg-12">
-                                <input type="hidden" name="student_id" value="{{@$student_detail->id}}">
+                                <input type="hidden" name="member_id" value="{{@$student_detail->id}}">
                                 <div class="row mt-25">
                                     <div class="col-lg-12">
                                         <div class="input-effect">
@@ -1834,7 +1834,7 @@
 
         function deleteDoc(id, doc) {
             var modal = $('#delete-doc');
-            modal.find('input[name=student_id]').val(id)
+            modal.find('input[name=member_id]').val(id)
             modal.find('input[name=doc_id]').val(doc)
             modal.modal('show');
         }

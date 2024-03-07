@@ -14,18 +14,18 @@ class SmOnlineExamQuestionAssignTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run($school_id, $academic_id, $count)
+    public function run($church_id, $church_year_id, $count)
     {
-        $online_exams = SmOnlineExam::where('school_id', $school_id)->where('academic_id', $academic_id)->take(10)->get();
+        $online_exams = SmOnlineExam::where('church_id', $church_id)->where('church_year_id', $church_year_id)->take(10)->get();
         foreach ($online_exams as $online_exam){
-            $question_banks = SmQuestionBank::where('school_id', $school_id)->where('academic_id', $academic_id)->take(10)->get();
+            $question_banks = SmQuestionBank::where('church_id', $church_id)->where('church_year_id', $church_year_id)->take(10)->get();
             foreach ($question_banks as $question_bank) {
                 $store = new SmOnlineExamQuestionAssign();
                 $store->online_exam_id = $online_exam->id;
                 $store->question_bank_id = $question_bank->id;
                 $store->created_at = date('Y-m-d h:i:s');
-                $store->school_id = $school_id;
-                $store->academic_id = $academic_id;
+                $store->church_id = $church_id;
+                $store->church_year_id = $church_year_id;
                 $store->save();
             }
 

@@ -234,7 +234,7 @@
                     var field_show = "0";
                 }
 
-                var student_required_fields = ['admission_number', 'email_address', 'phone_number'];
+                var student_required_fields = ['registration_number', 'email_address', 'phone_number'];
                 var guardian_required_fields =['guardians_email', 'guardians_phone'];
                 
                 if(canChangeCheckbox(student_required_fields, filed_value, field_show, 'show_')==false) {
@@ -302,7 +302,7 @@
                 } else {
                     var field_status = "0";
                 }
-                var student_required_fields = ['admission_number', 'email_address', 'phone_number'];
+                var student_required_fields = ['registration_number', 'email_address', 'phone_number'];
                 var guardian_required_fields =['guardians_email', 'guardians_phone'];
                 
                 if(canChangeCheckbox(student_required_fields, filed_value, field_status, 'required_')==false) {

@@ -31,7 +31,7 @@ class StudentAttendanceReportSearchRequest extends FormRequest
                 'un_session_id' => 'required',
                 'un_faculty_id' => 'required',
                 'un_department_id' => 'sometimes|nullable',
-                'un_academic_id' => 'required',
+                'un_church_year_id' => 'required',
                 'un_semester_id' => 'required',
                 'un_semester_label_id' => 'required',
                 

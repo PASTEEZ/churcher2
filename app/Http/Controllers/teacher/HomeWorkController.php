@@ -54,15 +54,15 @@ class HomeWorkController extends Controller
                 $fileName = 'public/uploads/homework/' . $fileName;
             }
             $homeworks = new SmHomework;
-            $homeworks->class_id = $request->class;
-            $homeworks->section_id = $request->section;
+            $homeworks->age_group_id = $request->class;
+            $homeworks->mgender_id = $request->section;
             $homeworks->subject_id = $request->subject;
             $homeworks->marks = $request->marks;
             $homeworks->created_by = $request->teacher_id;
             $homeworks->homework_date = $request->assign_date;
             $homeworks->submission_date = $request->submission_date;
-            $homeworks->school_id = Auth::user()->school_id;
-            $homeworks->academic_id = getAcademicId();
+            $homeworks->church_id = Auth::user()->church_id;
+            $homeworks->church_year_id = getAcademicId();
             //$homeworks->marks = $request->marks;
             $homeworks->description = $request->description;
             if ($fileName != "") {
@@ -84,7 +84,7 @@ class HomeWorkController extends Controller
         try {
             $teacher = SmStaff::where('user_id', '=', $id)->first();
             $teacher_id = $teacher->id;
-            $subject_list = SmAssignSubject::where('teacher_id', '=', $teacher_id)->where('school_id',Auth::user()->school_id)->get();
+            $subject_list = SmAssignSubject::where('teacher_id', '=', $teacher_id)->where('church_id',Auth::user()->church_id)->get();
             $i = 0;
             foreach ($subject_list as $subject) {
                 $homework_subject_list[$subject->subject->subject_name] = $subject->subject->subject_name;

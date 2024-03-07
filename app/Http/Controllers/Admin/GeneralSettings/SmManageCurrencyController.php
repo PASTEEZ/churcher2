@@ -24,7 +24,7 @@ class SmManageCurrencyController extends Controller
       {
   
           try {            
-              $currencies = SmCurrency::whereIn('school_id', [1, Auth::user()->school_id])->get();
+              $currencies = SmCurrency::whereIn('church_id', [1, Auth::user()->church_id])->get();
               return view('backEnd.systemSettings.manageCurrency', compact('currencies'));
           } catch (\Exception $e) {
               Toastr::error('Operation Failed', 'Failed');
@@ -48,7 +48,7 @@ class SmManageCurrencyController extends Controller
               $s->decimal_digit = $request->decimal_digit;
               $s->decimal_separator = $request->decimal_separator;
               $s->thousand_separator = $request->thousand_separator;
-              $s->school_id = Auth::user()->school_id;
+              $s->church_id = Auth::user()->church_id;
               $s->save();
               Toastr::success('Operation successful', 'Success');
               return redirect('manage-currency');
@@ -70,7 +70,7 @@ class SmManageCurrencyController extends Controller
               $s->decimal_digit = $request->decimal_digit;
               $s->decimal_separator = $request->decimal_separator;
               $s->thousand_separator = $request->thousand_separator;
-              $s->school_id = Auth::user()->school_id;
+              $s->church_id = Auth::user()->church_id;
               $s->update();
   
               Toastr::success('Operation successful', 'Success');
@@ -86,7 +86,7 @@ class SmManageCurrencyController extends Controller
       {
   
           try {
-              $currencies = SmCurrency::whereOr(['school_id', Auth::user()->school_id], ['school_id', 1])->get();
+              $currencies = SmCurrency::whereOr(['church_id', Auth::user()->church_id], ['church_id', 1])->get();
               $editData = SmCurrency::where('id', $id)->first();
   
               return view('backEnd.systemSettings.create_update_currency', compact('editData', 'currencies'));
@@ -99,7 +99,7 @@ class SmManageCurrencyController extends Controller
       public function manageCurrencyDelete($id)
       {
           try {
-              $current_currency = SmGeneralSettings::where('school_id', Auth::user()->school_id)->where('currency', @schoolConfig()->currency)->where('currency_symbol', @schoolConfig()->currency_symbol)->first();
+              $current_currency = SmGeneralSettings::where('church_id', Auth::user()->church_id)->where('currency', @schoolConfig()->currency)->where('currency_symbol', @schoolConfig()->currency_symbol)->first();
               $del_currency = SmCurrency::findOrfail($id);
   
               if (!empty($current_currency) && $current_currency->currency == $del_currency->code && $current_currency->currency_symbol == $del_currency->symbol) {

@@ -19,8 +19,8 @@ class SmCourseListController extends Controller
     public function index()
     {
         try{
-            $course = SmCourse::where('school_id', app('school')->id)->get();
-            $categories = SmCourseCategory::where('school_id', app('school')->id)->get();
+            $course = SmCourse::where('church_id', app('school')->id)->get();
+            $categories = SmCourseCategory::where('church_id', app('school')->id)->get();
             return view('backEnd.frontSettings.course.course_page', compact('course','categories'));
         }catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -44,7 +44,7 @@ class SmCourseListController extends Controller
             $course->prerequisites = $request->prerequisites;
             $course->resources = $request->resources;
             $course->stats = $request->stats;
-            $course->school_id = app('school')->id;
+            $course->church_id = app('school')->id;
             $result = $course->save();
         
                 Toastr::success('Operation successful', 'Success');
@@ -59,8 +59,8 @@ class SmCourseListController extends Controller
     public function edit($id)
     {
         try {
-            $categories = SmCourseCategory::where('school_id', app('school')->id)->get();
-            $course = SmCourse::where('school_id', app('school')->id)->get();
+            $categories = SmCourseCategory::where('church_id', app('school')->id)->get();
+            $course = SmCourse::where('church_id', app('school')->id)->get();
             $add_course = SmCourse::find($id);
             return view('backEnd.frontSettings.course.course_page', compact('categories','course', 'add_course'));
         } catch (\Exception $e) {
@@ -86,7 +86,7 @@ class SmCourseListController extends Controller
             $course->prerequisites = $request->prerequisites;
             $course->resources = $request->resources;
             $course->stats = $request->stats;
-            $course->school_id = app('school')->id;
+            $course->church_id = app('school')->id;
             $result = $course->save();
           
             Toastr::success('Operation successful', 'Success');

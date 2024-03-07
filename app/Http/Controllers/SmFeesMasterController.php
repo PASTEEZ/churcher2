@@ -47,14 +47,14 @@ class SmFeesMasterController extends Controller
     public function index(Request $request)
     {
         try {
-            $fees_groups = SmFeesGroup::where('school_id', Auth::user()->school_id)->where('academic_id', getAcademicId())->get();
-            $fees_masters = SmFeesMaster::where('school_id', Auth::user()->school_id)->where('academic_id', getAcademicId())->get();
+            $fees_groups = SmFeesGroup::where('church_id', Auth::user()->church_id)->where('church_year_id', getAcademicId())->get();
+            $fees_masters = SmFeesMaster::where('church_id', Auth::user()->church_id)->where('church_year_id', getAcademicId())->get();
             $already_assigned = [];
             foreach ($fees_masters as $fees_master) {
                 $already_assigned[] = $fees_master->fees_type_id;
             }
             $fees_masters = $fees_masters->groupBy('fees_group_id');
-            $fees_types = SmFeesType::where('school_id', Auth::user()->school_id)->where('academic_id', getAcademicId())->get();
+            $fees_types = SmFeesType::where('church_id', Auth::user()->church_id)->where('church_year_id', getAcademicId())->get();
 
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -88,8 +88,8 @@ class SmFeesMasterController extends Controller
                 $fees_master->fees_group_id = $fees_type->fees_group_id;
                 $fees_master->fees_type_id = $request->fees_type;
                 $fees_master->date = date('Y-m-d', strtotime($request->date));
-                $fees_master->school_id = Auth::user()->school_id;
-                $fees_master->academic_id = getAcademicId();
+                $fees_master->church_id = Auth::user()->church_id;
+                $fees_master->church_year_id = getAcademicId();
                 $fees_master->amount = $request->amount;
                 $result = $fees_master->save();
                 if ($result) {
@@ -125,11 +125,11 @@ class SmFeesMasterController extends Controller
             if (checkAdmin()) {
                 $fees_master = SmFeesMaster::find($id);
             }else{
-                $fees_master = SmFeesMaster::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+                $fees_master = SmFeesMaster::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
             }
-            $fees_groups = SmFeesGroup::where('school_id', Auth::user()->school_id)->where('academic_id', getAcademicId())->get();
-            $fees_types = SmFeesType::where('school_id', Auth::user()->school_id)->where('academic_id', getAcademicId())->get();
-            $fees_masters = SmFeesMaster::where('school_id', Auth::user()->school_id)->where('academic_id', getAcademicId())->get();
+            $fees_groups = SmFeesGroup::where('church_id', Auth::user()->church_id)->where('church_year_id', getAcademicId())->get();
+            $fees_types = SmFeesType::where('church_id', Auth::user()->church_id)->where('church_year_id', getAcademicId())->get();
+            $fees_masters = SmFeesMaster::where('church_id', Auth::user()->church_id)->where('church_year_id', getAcademicId())->get();
 
             $already_assigned = [];
             foreach ($fees_masters as $master) {
@@ -159,7 +159,7 @@ class SmFeesMasterController extends Controller
             if (checkAdmin()) {
                 $fees_master = SmFeesMaster::find($request->id);
             }else{
-                $fees_master = SmFeesMaster::where('id',$request->id)->where('school_id',Auth::user()->school_id)->first();
+                $fees_master = SmFeesMaster::where('id',$request->id)->where('church_id',Auth::user()->church_id)->first();
             }
             $fees_master->fees_type_id = $request->fees_type;
             $fees_master->date = date('Y-m-d', strtotime($request->date));
@@ -192,7 +192,7 @@ class SmFeesMasterController extends Controller
             if (checkAdmin()) {
                 $fees_master = SmFeesMaster::destroy($id);
             }else{
-                $fees_master = SmFeesMaster::where('id',$id)->where('school_id',Auth::user()->school_id)->delete();
+                $fees_master = SmFeesMaster::where('id',$id)->where('church_id',Auth::user()->church_id)->delete();
             }
             if ($fees_master) {
                 Toastr::success('Operation successful', 'Success');
@@ -215,8 +215,8 @@ class SmFeesMasterController extends Controller
             try {
                 if ($tables == null) {
                     $check_fees_assign = SmFeesAssign::where('fees_master_id', $request->id)
-                    ->where('school_id',Auth::user()->school_id)
-                        ->join('sm_students','sm_students.id','=','sm_fees_assigns.student_id')->first();
+                    ->where('church_id',Auth::user()->church_id)
+                        ->join('sm_students','sm_students.id','=','sm_fees_assigns.member_id')->first();
                     if ($check_fees_assign != null) {
                         $msg = 'This data already used in  : ' . $tables . ' Please remove those data first';
                         Toastr::error($msg, 'Failed');
@@ -225,7 +225,7 @@ class SmFeesMasterController extends Controller
                     if (checkAdmin()) {
                         $delete_query = SmFeesMaster::destroy($request->id);
                     }else{
-                        $delete_query = SmFeesMaster::where('id',$request->id)->where('school_id',Auth::user()->school_id)->delete();
+                        $delete_query = SmFeesMaster::where('id',$request->id)->where('church_id',Auth::user()->church_id)->delete();
                     }
                     if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                         if ($delete_query) {
@@ -268,7 +268,7 @@ class SmFeesMasterController extends Controller
             $tables = tableList::getTableList($id_key, $request->id);
             try {
                 $assigned_master_id=[];
-                $fees_group_master=SmFeesAssign::where('school_id',Auth::user()->school_id)->get();
+                $fees_group_master=SmFeesAssign::where('church_id',Auth::user()->church_id)->get();
                 foreach ($fees_group_master as $key => $value) {
                     $assigned_master_id[]=$value->fees_master_id;
                 }
@@ -278,7 +278,7 @@ class SmFeesMasterController extends Controller
                         if (checkAdmin()) {
                             $delete_query = SmFeesMaster::destroy($feesmaster->id);
                         }else{
-                            $delete_query = SmFeesMaster::where('id',$feesmaster->id)->where('school_id',Auth::user()->school_id)->delete();
+                            $delete_query = SmFeesMaster::where('id',$feesmaster->id)->where('church_id',Auth::user()->church_id)->delete();
                         }
                     }else{
                         $msg = 'This data already used in : ' . $tables . ' Please remove those data first';
@@ -309,9 +309,9 @@ class SmFeesMasterController extends Controller
     {
         try {
             $fees_group_id = $id;
-            $classes = SmClass::where('active_status', 1)->where('school_id', Auth::user()->school_id)->where('academic_id', getAcademicId())->get();
-            $groups = SmStudentGroup::where('active_status', '=', '1')->where('school_id', Auth::user()->school_id)->get();
-            $categories = SmStudentCategory::where('school_id', Auth::user()->school_id)->where('academic_id', getAcademicId())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_id', Auth::user()->church_id)->where('church_year_id', getAcademicId())->get();
+            $groups = SmStudentGroup::where('active_status', '=', '1')->where('church_id', Auth::user()->church_id)->get();
+            $categories = SmStudentCategory::where('church_id', Auth::user()->church_id)->where('church_year_id', getAcademicId())->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -344,20 +344,20 @@ class SmFeesMasterController extends Controller
         }
 
         try {
-            $section_id=0;
-            $classes = DB::table('sm_classes')->where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-            $groups = DB::table('sm_student_groups')->where('active_status', '=', '1')->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-            $categories = DB::table('sm_student_categories')->where('school_id', Auth::user()->school_id)->get();
+            $mgender_id=0;
+            $classes = DB::table('sm_classes')->where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+            $groups = DB::table('sm_student_groups')->where('active_status', '=', '1')->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+            $categories = DB::table('sm_student_categories')->where('church_id', Auth::user()->church_id)->get();
             $fees_group_id = $request->fees_group_id;
 
             $students = SmStudent::query();
             $students->where('active_status', 1);
             if ($request->class != "") {
-                $students->where('class_id', $request->class);
+                $students->where('age_group_id', $request->class);
             }
             if ($request->section != "") {
-                $students->where('section_id', $request->section);
-                $section_id=$request->section;
+                $students->where('mgender_id', $request->section);
+                $mgender_id=$request->section;
             }
             if ($request->category != "") {
                 $students->where('student_category_id', $request->category);
@@ -366,20 +366,20 @@ class SmFeesMasterController extends Controller
                 $students->where('student_group_id', $request->group);
             }
 
-            $students = $students->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $students = $students->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
-            $fees_masters = SmFeesMaster::where('fees_group_id', $request->fees_group_id)->where('school_id', Auth::user()->school_id)->get();
+            $fees_masters = SmFeesMaster::where('fees_group_id', $request->fees_group_id)->where('church_id', Auth::user()->church_id)->get();
 
             $pre_assigned = [];
 
 
             foreach ($students as $student) {
                 foreach ($fees_masters as $fees_master) {
-                    $assigned_student = SmFeesAssign::select('student_id')->where('student_id', $student->id)->where('fees_master_id', $fees_master->id)->where('school_id',Auth::user()->school_id)->first();
+                    $assigned_student = SmFeesAssign::select('member_id')->where('member_id', $student->id)->where('fees_master_id', $fees_master->id)->where('church_id',Auth::user()->church_id)->first();
 
                     if ($assigned_student != "") {
-                        if (!in_array($assigned_student->student_id, $pre_assigned)) {
-                            $pre_assigned[] = $assigned_student->student_id;
+                        if (!in_array($assigned_student->member_id, $pre_assigned)) {
+                            $pre_assigned[] = $assigned_student->member_id;
                         }
                     }
                 }
@@ -391,16 +391,16 @@ class SmFeesMasterController extends Controller
             } else {
                 $assigned_value=0;
             }
-            $class_id = $request->class;
-            $section_id=$request->section;
+            $age_group_id = $request->class;
+            $mgender_id=$request->section;
             $category_id = $request->category;
             $group_id = $request->group;
 
-            $fees_assign_groups = SmFeesMaster::where('fees_group_id', $request->fees_group_id)->where('school_id', Auth::user()->school_id)->get();
+            $fees_assign_groups = SmFeesMaster::where('fees_group_id', $request->fees_group_id)->where('church_id', Auth::user()->church_id)->get();
 
           
             // return $request;
-            return view('backEnd.feesCollection.fees_assign', compact('classes', 'categories', 'groups', 'students', 'fees_assign_groups', 'fees_group_id', 'pre_assigned', 'class_id', 'category_id', 'group_id','assigned_value','section_id'));
+            return view('backEnd.feesCollection.fees_assign', compact('classes', 'categories', 'groups', 'students', 'fees_assign_groups', 'fees_group_id', 'pre_assigned', 'age_group_id', 'category_id', 'group_id','assigned_value','mgender_id'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -411,14 +411,14 @@ class SmFeesMasterController extends Controller
     //    return $request;
         try {
             $fees_masters = SmFeesMaster::where('fees_group_id', $request->fees_group_id)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
             if ($request->checked_ids != "") {
                 foreach ($request->students as $student) {
                     foreach ($fees_masters as $fees_master) {
-                        $payment_info=SmFeesPayment::where('active_status',1)->where('fees_type_id',$fees_master->fees_type_id)->where('student_id',$student)->first();
+                        $payment_info=SmFeesPayment::where('active_status',1)->where('fees_type_id',$fees_master->fees_type_id)->where('member_id',$student)->first();
                         if ($payment_info==null) {
-                            $assign_fees = SmFeesAssign::where('fees_master_id', $fees_master->id)->where('student_id', $student)->where('school_id',Auth::user()->school_id)->delete();
+                            $assign_fees = SmFeesAssign::where('fees_master_id', $fees_master->id)->where('member_id', $student)->where('church_id',Auth::user()->church_id)->delete();
                         }
                     }
                 }
@@ -427,9 +427,9 @@ class SmFeesMasterController extends Controller
                 foreach ($request->students as $student) {
                 
                     foreach ($fees_masters as $fees_master) {
-                        $payment_info=SmFeesPayment::where('active_status',1)->where('fees_type_id',$fees_master->fees_type_id)->where('student_id',$student)->first();
+                        $payment_info=SmFeesPayment::where('active_status',1)->where('fees_type_id',$fees_master->fees_type_id)->where('member_id',$student)->first();
                         if ($payment_info==null) {
-                            $assign_fees = SmFeesAssign::where('fees_master_id', $fees_master->id)->where('student_id', $student)->where('school_id',Auth::user()->school_id)->delete();
+                            $assign_fees = SmFeesAssign::where('fees_master_id', $fees_master->id)->where('member_id', $student)->where('church_id',Auth::user()->church_id)->delete();
                         }
                     }
                 }
@@ -438,23 +438,23 @@ class SmFeesMasterController extends Controller
                 foreach ($request->checked_ids as $student) {
 
                     foreach ($fees_masters as $fees_master) {
-                        $assign_fees = SmFeesAssign::where('fees_master_id', $fees_master->id)->where('student_id', $student)->where('school_id',Auth::user()->school_id)->first();
+                        $assign_fees = SmFeesAssign::where('fees_master_id', $fees_master->id)->where('member_id', $student)->where('church_id',Auth::user()->church_id)->first();
 
                         if ( $assign_fees) {
                             continue;
                         }
                         $assign_fees = new SmFeesAssign();
-                        $assign_fees->student_id = $student;
+                        $assign_fees->member_id = $student;
                         $assign_fees->fees_amount = $fees_master->amount;
                         $assign_fees->fees_master_id = $fees_master->id;
-                        $assign_fees->school_id = Auth::user()->school_id;
-                        $assign_fees->academic_id = getAcademicId();
+                        $assign_fees->church_id = Auth::user()->church_id;
+                        $assign_fees->church_year_id = getAcademicId();
                         $assign_fees->save();
 
 
                         //Yearly Discount assign
 
-                        $check_yearly_discount=SmFeesAssignDiscount::where('fees_group_id',$request->fees_group_id)->where('student_id',$student)->where('school_id',Auth::user()->school_id)->first();
+                        $check_yearly_discount=SmFeesAssignDiscount::where('fees_group_id',$request->fees_group_id)->where('member_id',$student)->where('church_id',Auth::user()->church_id)->first();
 
                         if ($check_yearly_discount) {
                             if ($assign_fees->fees_amount>$check_yearly_discount->applied_amount) {
@@ -474,7 +474,7 @@ class SmFeesMasterController extends Controller
 
                     //fees carry forward 
 
-                    $forward = SmFeesCarryForward::where('student_id', $student)->first();
+                    $forward = SmFeesCarryForward::where('member_id', $student)->first();
                     if($forward){
                        $forwardAmount = $forward->balance;
                     
@@ -483,7 +483,7 @@ class SmFeesMasterController extends Controller
                         $students_info = SmStudent::find($student);
                         if($forwardAmount > 0 &&  $assign_fees->fees_amount >= $forwardAmount){
                             $fees_payment = new SmFeesPayment();
-                            $fees_payment->student_id = $student;
+                            $fees_payment->member_id = $student;
                             $fees_payment->fees_type_id = $fees_master->fees_type_id;
                             $fees_payment->discount_amount = 0;
                             $fees_payment->fine = 0;
@@ -492,19 +492,19 @@ class SmFeesMasterController extends Controller
                             $fees_payment->payment_mode = @$forward->notes;
                             $fees_payment->created_by = Auth::id();
                             $fees_payment->note = @$forward->notes;
-                            $fees_payment->academic_id = getAcademicId();
-                            $fees_payment->school_id = Auth::user()->school_id;
+                            $fees_payment->church_year_id = getAcademicId();
+                            $fees_payment->church_id = Auth::user()->church_id;
                             $result =  $fees_payment->save();
                             if($result){
                                 $forwardAmount = 0 ;
-                                $fees_balance = SmFeesCarryForward::where('student_id', $student)->first();
+                                $fees_balance = SmFeesCarryForward::where('member_id', $student)->first();
                                 $fees_balance->balance = $forwardAmount;
                                 $fees_balance->save();
                             }
                         }
                         elseif($forwardAmount > 0 &&  $fees_master->amount < $forwardAmount){
                             $fees_payment = new SmFeesPayment();
-                            $fees_payment->student_id = $student;
+                            $fees_payment->member_id = $student;
                             $fees_payment->fees_type_id = $fees_master->fees_type_id;
                             $fees_payment->discount_amount = 0;
                             $fees_payment->fine = 0;
@@ -513,12 +513,12 @@ class SmFeesMasterController extends Controller
                             $fees_payment->payment_mode = @$forward->notes;
                             $fees_payment->created_by = Auth::id();
                             $fees_payment->note = @$forward->notes;
-                            $fees_payment->academic_id = getAcademicId();
-                            $fees_payment->school_id = Auth::user()->school_id;
+                            $fees_payment->church_year_id = getAcademicId();
+                            $fees_payment->church_id = Auth::user()->church_id;
                             $result =  $fees_payment->save();
                             if($result){
                                 $forwardAmount = $forwardAmount- $fees_master->amount;
-                                $fees_balance = SmFeesCarryForward::where('student_id', $student)->first();
+                                $fees_balance = SmFeesCarryForward::where('member_id', $student)->first();
                                 $fees_balance->balance = $forwardAmount;
                                 $fees_balance->save();
                             }
@@ -526,7 +526,7 @@ class SmFeesMasterController extends Controller
                         }
                         elseif($forwardAmount < 0){
                             $fees_payment = new SmFeesPayment();
-                            $fees_payment->student_id = $student;
+                            $fees_payment->member_id = $student;
                             $fees_payment->fees_type_id = $fees_master->fees_type_id;
                             $fees_payment->discount_amount = 0;
                             $fees_payment->fine = 0;
@@ -535,12 +535,12 @@ class SmFeesMasterController extends Controller
                             $fees_payment->payment_mode = @$forward->notes;
                             $fees_payment->created_by = Auth::id();
                             $fees_payment->note = @$forward->notes;
-                            $fees_payment->academic_id = getAcademicId();
-                            $fees_payment->school_id = Auth::user()->school_id;
+                            $fees_payment->church_year_id = getAcademicId();
+                            $fees_payment->church_id = Auth::user()->church_id;
                             $result =  $fees_payment->save();
                             if($result){
                                 $forwardAmount = 0 ;
-                                $fees_balance = SmFeesCarryForward::where('student_id', $student)->first();
+                                $fees_balance = SmFeesCarryForward::where('member_id', $student)->first();
                                 $fees_balance->balance = $forwardAmount;
                                 $fees_balance->save();
                             }
@@ -554,8 +554,8 @@ class SmFeesMasterController extends Controller
                     $notification->role_id = 2;
                     $notification->date = date('Y-m-d');
                     $notification->message = app('translator')->get('fees.fees_assigned');
-                    $notification->school_id = Auth::user()->school_id;
-                    $notification->academic_id = getAcademicId();
+                    $notification->church_id = Auth::user()->church_id;
+                    $notification->church_year_id = getAcademicId();
                     $notification->save();
                     
                     try{
@@ -571,8 +571,8 @@ class SmFeesMasterController extends Controller
                     $notification2->role_id = 3;
                     $notification2->date = date('Y-m-d');
                     $notification2->message = app('translator')->get('fees.fees_assigned_for').' '. $students_info->full_name;
-                    $notification2->school_id = Auth::user()->school_id;
-                    $notification2->academic_id = getAcademicId();
+                    $notification2->church_id = Auth::user()->church_id;
+                    $notification2->church_year_id = getAcademicId();
                     $notification2->save();
 
                     try{
@@ -597,7 +597,7 @@ class SmFeesMasterController extends Controller
             
            
             $fees_masters = SmFeesMaster::where('fees_group_id', $request->fees_group_id)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             if ($request->checked_ids != "") {
@@ -605,13 +605,13 @@ class SmFeesMasterController extends Controller
                 $all_students=($request->students);
                 $check=($request->checked_ids);
 
-                 $student_ids =array_diff($all_students,$check);
+                 $member_ids =array_diff($all_students,$check);
 
-                foreach ($student_ids as $student) {
+                foreach ($member_ids as $student) {
                     foreach ($fees_masters as $fees_master) {
                         $assign_fees = SmFeesAssign::where('fees_master_id', $fees_master->id)
-                        ->where('student_id', $student)
-                        ->where('school_id',Auth::user()->school_id)           
+                        ->where('member_id', $student)
+                        ->where('church_id',Auth::user()->church_id)           
                         ->delete();
                     }
                 }
@@ -621,23 +621,23 @@ class SmFeesMasterController extends Controller
             if ($request->checked_ids != "") {
                 foreach ($request->checked_ids as $student) {
                     foreach ($fees_masters as $fees_master) {
-                        $assign_fees = SmFeesAssign::where('fees_master_id', $fees_master->id)->where('student_id', $student)->where('school_id',Auth::user()->school_id)->first();
+                        $assign_fees = SmFeesAssign::where('fees_master_id', $fees_master->id)->where('member_id', $student)->where('church_id',Auth::user()->church_id)->first();
 
                         if ( $assign_fees) {
                             continue;
                         }
                         $assign_fees = new SmFeesAssign();
-                        $assign_fees->student_id = $student;
+                        $assign_fees->member_id = $student;
                         $assign_fees->fees_amount = $fees_master->amount;
                         $assign_fees->fees_master_id = $fees_master->id;                     
-                        $assign_fees->school_id = Auth::user()->school_id;
-                        $assign_fees->academic_id = getAcademicId();
+                        $assign_fees->church_id = Auth::user()->church_id;
+                        $assign_fees->church_year_id = getAcademicId();
                         $assign_fees->save();
 
 
                         //Yearly Discount assign
 
-                        $check_yearly_discount=SmFeesAssignDiscount::where('fees_group_id',$request->fees_group_id)->where('student_id',$student)->where('school_id',Auth::user()->school_id)->first();
+                        $check_yearly_discount=SmFeesAssignDiscount::where('fees_group_id',$request->fees_group_id)->where('member_id',$student)->where('church_id',Auth::user()->church_id)->first();
 
                         if ($check_yearly_discount) {
                             if ($assign_fees->fees_amount>$check_yearly_discount->applied_amount) {
@@ -662,8 +662,8 @@ class SmFeesMasterController extends Controller
                 $notification->role_id = 2;
                 $notification->date = date('Y-m-d');
                 $notification->message = 'New fees Assigned';
-                $notification->school_id = Auth::user()->school_id;
-                $notification->academic_id = getAcademicId();
+                $notification->church_id = Auth::user()->church_id;
+                $notification->church_year_id = getAcademicId();
                 $notification->save();
 
                 $parent = SmParent::find($students_info->parent_id);
@@ -672,8 +672,8 @@ class SmFeesMasterController extends Controller
                 $notification2->role_id = 3;
                 $notification2->date = date('Y-m-d');
                 $notification2->message = 'New fees Assigned For ' . $students_info->full_name;
-                $notification2->school_id = Auth::user()->school_id;
-                $notification2->academic_id = getAcademicId();
+                $notification2->church_id = Auth::user()->church_id;
+                $notification2->church_year_id = getAcademicId();
                 $notification2->save();
             }
             $html = "";

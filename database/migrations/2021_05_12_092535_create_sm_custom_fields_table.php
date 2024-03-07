@@ -25,8 +25,8 @@ class CreateSmCustomFieldsTable extends Migration
             $table->string('name_value')->nullable();
             $table->string('width')->nullable();
             $table->tinyInteger('required')->nullable();
-            $table->integer('school_id')->nullable()->default(1);
-            $table->integer('academic_id')->nullable();
+            $table->integer('church_id')->nullable()->default(1);
+            $table->integer('church_year_id')->nullable();
             $table->timestamps();
         });
 

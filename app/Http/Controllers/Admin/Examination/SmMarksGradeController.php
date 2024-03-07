@@ -41,11 +41,11 @@ class SmMarksGradeController extends Controller
             $marks_grade->description = $request->description;
             $marks_grade->created_by=auth()->user()->id;
             $marks_grade->created_at= YearCheck::getYear() .'-'.date('m-d h:i:s');
-            $marks_grade->school_id = Auth::user()->school_id;
+            $marks_grade->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $marks_grade->un_academic_id = getAcademicId();
+                $marks_grade->un_church_year_id = getAcademicId();
             }else{
-                $marks_grade->academic_id = getAcademicId();
+                $marks_grade->church_year_id = getAcademicId();
             }
             $result = $marks_grade->save();
 
@@ -62,9 +62,9 @@ class SmMarksGradeController extends Controller
         try{
             $marks_grade = SmMarksGrade::find($id);
             if(moduleStatusCheck('University')){
-                $marks_grades = SmMarksGrade::where('un_academic_id', getAcademicId())->get();
+                $marks_grades = SmMarksGrade::where('un_church_year_id', getAcademicId())->get();
             }else{
-                $marks_grades = SmMarksGrade::where('academic_id', getAcademicId())->get();
+                $marks_grades = SmMarksGrade::where('church_year_id', getAcademicId())->get();
             }
             return view('backEnd.examination.marks_grade', compact('marks_grade', 'marks_grades'));
         }catch (\Exception $e) {

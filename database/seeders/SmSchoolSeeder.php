@@ -103,10 +103,10 @@ class SmSchoolSeeder extends Seeder
     {
         SmSchool::factory()->times(2)->create()->each(
             function ($school) {
-                $role_id = User::where('school_id', $school->id)->where('role_id', 1)->first() ? 5 :1;
+                $role_id = User::where('church_id', $school->id)->where('role_id', 1)->first() ? 5 :1;
                 //school admin user
                 User::factory()->times(1)->create([
-                    'school_id' => $school->id,
+                    'church_id' => $school->id,
                     'username' => $school->email,
                     'email' => $school->email,
                     'role_id' => $role_id,
@@ -122,10 +122,10 @@ class SmSchoolSeeder extends Seeder
             });
         // SmSchool::factory()->times(1)->create()->each(
         //     function ($school) {
-        //         $role_id = User::where('school_id', $school->id)->where('role_id', 1)->first() ? 5 :1;
+        //         $role_id = User::where('church_id', $school->id)->where('role_id', 1)->first() ? 5 :1;
         //         //school admin user
         //         User::factory()->times(1)->create([
-        //             'school_id' => $school->id,
+        //             'church_id' => $school->id,
         //             'username' => $school->email,
         //             'email' => $school->email,
         //             'role_id' => $role_id,
@@ -138,26 +138,26 @@ class SmSchoolSeeder extends Seeder
         //             ]);
         //         });
         //         SmDesignation::factory()->times(10)->create([
-        //             'school_id' => $school->id,
+        //             'church_id' => $school->id,
         //         ]);
         //         SmHumanDepartment::factory()->times(10)->create([
-        //             'school_id' => $school->id,
+        //             'church_id' => $school->id,
         //         ]);
         //         SmBaseSetup::factory()->times(10)->create([
-        //             'school_id' => $school->id,
+        //             'church_id' => $school->id,
         //         ]);
 
         //         SmAcademicYear::factory()->times(1)->create([
-        //             'school_id' => $school->id,
-        //         ])->each(function ($academic_year) use ($school) {
+        //             'church_id' => $school->id,
+        //         ])->each(function ($church_year) use ($school) {
         //             $school_academic = [
-        //                 'school_id' => $school->id,
-        //                 'academic_id' => $academic_year->id,
+        //                 'church_id' => $school->id,
+        //                 'church_year_id' => $church_year->id,
         //             ];
         //             SmGeneralSettings::factory()->times(1)->create(array_merge([
-        //                 'session_id' => $academic_year->id,
+        //                 'session_id' => $church_year->id,
         //                 'email' => $school->email,
-        //                 'school_name' => $school->school_name,
+        //                 'church_name' => $school->church_name,
         //             ],$school_academic));
         //             $smRoute=SmRoute::factory()->times(5)->create($school_academic);
         //             SmSetupAdmin::factory()->times(20)->create($school_academic);
@@ -165,13 +165,13 @@ class SmSchoolSeeder extends Seeder
         //             SmStudentGroup::factory()->times(10)->create($school_academic);
         //             //staff user
         //             User::factory()->times(10)->create([
-        //                 'school_id' => $school->id,
+        //                 'church_id' => $school->id,
         //             ])->each(function ($userStaff) use ($school,$school_academic,$smRoute) {
         //                 $staffs=SmStaff::factory()->times(1)->create([
         //                     'user_id' => $userStaff->id,
         //                     'email' => $userStaff->email,
         //                     'full_name' => $userStaff->full_name,
-        //                     'school_id' => $school->id,
+        //                     'church_id' => $school->id,
         //                     'role_id'=>$userStaff->role_id,
         //                 ])->each(function ($staffs) use ($school_academic,$smRoute) {
         //                     if ($staffs->role_id == 9) {
@@ -189,20 +189,20 @@ class SmSchoolSeeder extends Seeder
         //                     ],$school_academic));
         //                 });
         //             });
-        //             $teacher_id = SmStaff::where('role_id', 4)->where('school_id', $school->id)->first()->id;
+        //             $teacher_id = SmStaff::where('role_id', 4)->where('church_id', $school->id)->first()->id;
         //             //subject seeder
         //             $sections = SmSection::factory()->times(5)->create($school_academic);
         //             $subjects = SmSubject::factory()->times(2)->create($school_academic);
         //             //Class room Seeder
         //             $rooms = SmClassRoom::factory()->times(10)->create($school_academic);
         //             //class seeder
-        //             $classes=SmClass::factory()->times(2)->create($school_academic)->each(function ($class) use ($sections, $school_academic, $school, $subjects, $teacher_id, $rooms, $academic_year) {
+        //             $classes=SmClass::factory()->times(2)->create($school_academic)->each(function ($class) use ($sections, $school_academic, $school, $subjects, $teacher_id, $rooms, $church_year) {
         //                 $class_sections = [];
         //                 foreach ($sections as $section) {
-        //                     $class_sections[] = array_merge(['class_id' => $class->id, 'section_id' => $section->id], $school_academic);
+        //                     $class_sections[] = array_merge(['age_group_id' => $class->id, 'mgender_id' => $section->id], $school_academic);
         //                 }
 
-        //                 $class_sections = $class->classSection()->createMany($class_sections)->each(function ($classSections) use ($school_academic, $school, $teacher_id, $rooms, $subjects, $academic_year) {
+        //                 $class_sections = $class->classSection()->createMany($class_sections)->each(function ($classSections) use ($school_academic, $school, $teacher_id, $rooms, $subjects, $church_year) {
                            
         //                     SmAssignClassTeacher::factory()->times(1)->create($school_academic)->each(function ($assignClassTeacher) use ($school_academic, $teacher_id) {
         //                         SmClassTeacher::factory()->times(1)->create(array_merge([
@@ -212,8 +212,8 @@ class SmSchoolSeeder extends Seeder
         //                     });
 
         //                     SmTeacherUploadContent::factory()->times(10)->create(array_merge([
-        //                         'class' => $classSections->class_id,
-        //                         'section' => $classSections->section_id,
+        //                         'class' => $classSections->age_group_id,
+        //                         'section' => $classSections->mgender_id,
         //                     ], $school_academic));
 
         //                 }); /* data insert into sm_class_section_table */
@@ -222,8 +222,8 @@ class SmSchoolSeeder extends Seeder
         //                 foreach ($class_sections as $data) {
         //                     foreach ($subjects as $subject) {
         //                         DB::table('sm_assign_subjects')->insert(array_merge([
-        //                             'class_id' => $data->class_id,
-        //                             'section_id' => $data->section_id,
+        //                             'age_group_id' => $data->age_group_id,
+        //                             'mgender_id' => $data->mgender_id,
         //                             'teacher_id' => $teacher_id,
         //                             'subject_id' => $subject->id,
         //                         ], $school_academic));
@@ -234,34 +234,34 @@ class SmSchoolSeeder extends Seeder
         //                     for ($i = 1; $i <= 5; $i++) {                                
         //                         User::factory()->times(1)->create([
         //                             'role_id' =>2,
-        //                             'email'=>'student_'.$data->class_id.'_'.$data->section_id.'_'.$i.'@infixedu.com', 
-        //                             'username'=>'student_'.$data->class_id.'_'.$data->section_id.'_'.$i.'@infixedu.com',
-        //                             'school_id' =>$school->id,
+        //                             'email'=>'student_'.$data->age_group_id.'_'.$data->mgender_id.'_'.$i.'@infixedu.com', 
+        //                             'username'=>'student_'.$data->age_group_id.'_'.$data->mgender_id.'_'.$i.'@infixedu.com',
+        //                             'church_id' =>$school->id,
         //                         ]);
         //                         User::factory()->times(1)->create([
         //                             'role_id' =>3,
-        //                             'email'=>'guardian_'.$data->class_id.'_'.$data->section_id.'_'.$i.'@infixedu.com', 
-        //                             'username'=>'guardian_'.$data->class_id.'_'.$data->section_id.'_'.$i.'@infixedu.com',
-        //                             'school_id' =>$school->id,
+        //                             'email'=>'guardian_'.$data->age_group_id.'_'.$data->mgender_id.'_'.$i.'@infixedu.com', 
+        //                             'username'=>'guardian_'.$data->age_group_id.'_'.$data->mgender_id.'_'.$i.'@infixedu.com',
+        //                             'church_id' =>$school->id,
         //                         ]);
-        //                         $studentUser=User::where('school_id',$school->id)->where('role_id',2)->latest('id')->first();
-        //                         $parentUser=User::where('school_id',$school->id)->where('role_id',3)->latest('id')->first();
+        //                         $studentUser=User::where('church_id',$school->id)->where('role_id',2)->latest('id')->first();
+        //                         $parentUser=User::where('church_id',$school->id)->where('role_id',3)->latest('id')->first();
 
         //                         SmParent::factory()->times(1)->create(array_merge([
         //                             'user_id' => $parentUser->id,
         //                             'guardians_email' => $parentUser->email,                                 
         //                         ], $school_academic));
 
-        //                         $parent=SmParent::where('school_id',$school->id)->where('academic_id',$academic_year->id)->latest('id')->first();
+        //                         $parent=SmParent::where('church_id',$school->id)->where('church_year_id',$church_year->id)->latest('id')->first();
 
         //                        SmStudent::factory()->times(1)->create(array_merge([
                                    
-        //                             'session_id' => $academic_year->id,
+        //                             'session_id' => $church_year->id,
         //                             'user_id' => $studentUser->id,
         //                             'parent_id' => $parent->id,
-        //                             'class_id' => $data->class_id,
-        //                             'section_id' => $data->section_id,
-        //                             'email' => 'student_'.$data->class_id.'_'.$data->section_id.'_'.$i.'@infixedu.com',                                
+        //                             'age_group_id' => $data->age_group_id,
+        //                             'mgender_id' => $data->mgender_id,
+        //                             'email' => 'student_'.$data->age_group_id.'_'.$data->mgender_id.'_'.$i.'@infixedu.com',                                
         //                         ], $school_academic));                                       
                     
                                 
@@ -272,17 +272,17 @@ class SmSchoolSeeder extends Seeder
 
         //                 //end class id
         //             });
-        //             $classes = SmClass::where('school_id', $school->id)->get(['id', 'class_name']);
+        //             $classes = SmClass::where('church_id', $school->id)->get(['id', 'age_group_name']);
         //             //class routine
-        //             $classSectionSubjects=SmAssignSubject::where('school_id',$school->id)->where('academic_id',$academic_year->id)->get();
+        //             $classSectionSubjects=SmAssignSubject::where('church_id',$school->id)->where('church_year_id',$church_year->id)->get();
         //             SmWeekend::factory()->times(7)->create($school_academic)->each(function ($day) use ($school_academic,$classSectionSubjects) {
                         
         //                 foreach($classSectionSubjects as  $classSectionSubject){                  
                                                      
         //                  SmClassRoutineUpdate::factory()->times(1)->create(array_merge([
         //                     'day' => $day->id,
-        //                     'class_id' => $classSectionSubject->class_id,
-        //                     'section_id' => $classSectionSubject->section_id,
+        //                     'age_group_id' => $classSectionSubject->age_group_id,
+        //                     'mgender_id' => $classSectionSubject->mgender_id,
         //                     'subject_id' => $classSectionSubject->subject_id,
         //                 ], $school_academic));  
                 
@@ -291,11 +291,11 @@ class SmSchoolSeeder extends Seeder
 
  
         //             });
-        //             $classSectionSubjects=SmAssignSubject::where('school_id',$school->id)->where('academic_id',$academic_year->id)->get();
+        //             $classSectionSubjects=SmAssignSubject::where('church_id',$school->id)->where('church_year_id',$church_year->id)->get();
         //             foreach($classSectionSubjects as  $classSectionSubject){ 
         //                 $s = new SmHomework();
-        //                 $s->class_id =  $classSectionSubject->class_id;
-        //                 $s->section_id = $classSectionSubject->section_id;
+        //                 $s->age_group_id =  $classSectionSubject->age_group_id;
+        //                 $s->mgender_id = $classSectionSubject->mgender_id;
         //                 $s->subject_id = $classSectionSubject->subject_id;
         //                 $s->homework_date = date('Y-m-d');
         //                 $s->submission_date = date('Y-m-d');
@@ -304,23 +304,23 @@ class SmSchoolSeeder extends Seeder
         //                 $s->marks = rand(10, 15);
         //                 $s->description = 'Test';
         //                 $s->created_at = date('Y-m-d h:i:s');
-        //                 $s->school_id = $school->id;
-        //                 $s->academic_id = $academic_year->id;
+        //                 $s->church_id = $school->id;
+        //                 $s->church_year_id = $church_year->id;
         //                 $s->save();
         //              }
         //             //end class routine
-        //             $homeworks = SmHomework::where('school_id',$school->id)->first();
-        //             $students = SmStudent::where('school_id',$school->id)->get(['id','user_id']);
+        //             $homeworks = SmHomework::where('church_id',$school->id)->first();
+        //             $students = SmStudent::where('church_id',$school->id)->get(['id','user_id']);
         //             foreach ($students as $student) {                      
                       
         //                     $s = new SmHomeworkStudent();
-        //                     $s->student_id = $student->id;
+        //                     $s->member_id = $student->id;
         //                     $s->homework_id = $homeworks->id;
         //                     $s->marks = rand(5, 10);
         //                     $s->teacher_comments = 'faker';
         //                     $s->complete_status = 'C';
-        //                     $s->school_id = $school->id;
-        //                     $s->academic_id = $academic_year->id;
+        //                     $s->church_id = $school->id;
+        //                     $s->church_year_id = $church_year->id;
         //                     $s->created_at = date('Y-m-d h:i:s');
         //                     $s->save();
                       
@@ -329,8 +329,8 @@ class SmSchoolSeeder extends Seeder
         //                 $SmLibraryMember->member_type = rand(1,8);     
         //                 $SmLibraryMember->student_staff_id = $student->id;
         //                 $SmLibraryMember->active_status = 1;                      
-        //                 $SmLibraryMember->school_id = $school->id;
-        //                 $SmLibraryMember->academic_id = $academic_year->id;
+        //                 $SmLibraryMember->church_id = $school->id;
+        //                 $SmLibraryMember->church_year_id = $church_year->id;
         //                 $SmLibraryMember->created_at = date('Y-m-d h:i:s');
         //                 $SmLibraryMember->save();
         //             }
@@ -364,37 +364,37 @@ class SmSchoolSeeder extends Seeder
 
         //             //
         //             //Examination
-        //             $assignSubjects = SmAssignSubject::where('school_id', $school->id)->where('academic_id', $academic_year->id)->get();
+        //             $assignSubjects = SmAssignSubject::where('church_id', $school->id)->where('church_year_id', $church_year->id)->get();
         //             SmMarksGrade::factory()->times(7)->create($school_academic);
-        //             SmExamType::factory()->times(3)->create($school_academic)->each(function ($examTerm) use ($assignSubjects, $school, $academic_year) {
+        //             SmExamType::factory()->times(3)->create($school_academic)->each(function ($examTerm) use ($assignSubjects, $school, $church_year) {
         //                 foreach ($assignSubjects as $classSectionSubject) {
         //                     $s = new SmExamSetup();
-        //                     $s->class_id = $classSectionSubject->class_id;
-        //                     $s->section_id = $classSectionSubject->section_id;
+        //                     $s->age_group_id = $classSectionSubject->age_group_id;
+        //                     $s->mgender_id = $classSectionSubject->mgender_id;
         //                     $s->subject_id = $classSectionSubject->subject_id;
         //                     $s->exam_term_id = $examTerm->id;
         //                     $s->exam_title = 'Exam';
         //                     $s->exam_mark = 100;
-        //                     $s->school_id = $school->id;
-        //                     $s->academic_id = $academic_year->id;
+        //                     $s->church_id = $school->id;
+        //                     $s->church_year_id = $church_year->id;
         //                     $s->save();
 
         //                     $store= new SmExamAttendance();
         //                     $store->exam_id=$examTerm->id;
         //                     $store->subject_id=$classSectionSubject->subject_id;
-        //                     $store->class_id=$classSectionSubject->class_id;
-        //                     $store->section_id=$classSectionSubject->section_id;                           
+        //                     $store->age_group_id=$classSectionSubject->age_group_id;
+        //                     $store->mgender_id=$classSectionSubject->mgender_id;                           
         //                     $store->created_at = date('Y-m-d h:i:s');
-        //                     $store->school_id = $school->id;
-        //                     $store->academic_id = $academic_year->id;
+        //                     $store->church_id = $school->id;
+        //                     $store->church_year_id = $church_year->id;
         //                     $store->save();
         //                 }
 
         //             });
 
         //             $days = cal_days_in_month(CAL_GREGORIAN, date('m'), date('Y'));
-        //             $students = SmStudent::where('school_id', $school->id)->where('academic_id', $academic_year->id)->get(['id', 'user_id']);
-        //             $staffs = SmStaff::whereIn('role_id', [4, 5, 6, 7, 8, 9])->where('school_id', $school->id)->get(['id', 'user_id']);
+        //             $students = SmStudent::where('church_id', $school->id)->where('church_year_id', $church_year->id)->get(['id', 'user_id']);
+        //             $staffs = SmStaff::whereIn('role_id', [4, 5, 6, 7, 8, 9])->where('church_id', $school->id)->get(['id', 'user_id']);
 
         //             for ($i = 1; $i <= $days; $i++) {
         //                 foreach ($students as $student) {
@@ -403,12 +403,12 @@ class SmSchoolSeeder extends Seeder
         //                     }
         //                     $date = date('Y') . '-' . date('m') . '-' . $d;
         //                     $sa = new SmStudentAttendance();
-        //                     $sa->student_id = $student->id;
+        //                     $sa->member_id = $student->id;
         //                     $sa->attendance_type = 'P';
         //                     $sa->notes = 'Sample Attendance for Student';
         //                     $sa->attendance_date = $date;
-        //                     $sa->school_id = $school->id;
-        //                     $sa->academic_id = $academic_year->id;
+        //                     $sa->church_id = $school->id;
+        //                     $sa->church_year_id = $church_year->id;
         //                     $sa->save();
         //                 }
         //                 foreach ($staffs as $staff) {
@@ -422,14 +422,14 @@ class SmSchoolSeeder extends Seeder
         //                     $sa->attendence_type = 'P';
         //                     $sa->notes = 'Sample Attendance for Staff';
         //                     $sa->attendence_date = $date;
-        //                     $sa->school_id = $school->id;
-        //                     $sa->academic_id = $academic_year->id;
+        //                     $sa->church_id = $school->id;
+        //                     $sa->church_year_id = $church_year->id;
         //                     $sa->save();
         //                 }
         //             }
         //             $rules = InfixRole::where('active_status', '=', '1')->where('id', '!=', 1) /* ->where('id', '!=', 2) */->where('id', '!=', 3)->where('id', '!=', 10)->get();
-        //             $staffs = SmStaff::where('role_id', 4)->where('school_id', $school->id)->get();
-        //             SmLeaveType::factory()->times(5)->create($school_academic)->each(function ($leaveTypes) use ($rules, $school, $academic_year, $staffs) {
+        //             $staffs = SmStaff::where('role_id', 4)->where('church_id', $school->id)->get();
+        //             SmLeaveType::factory()->times(5)->create($school_academic)->each(function ($leaveTypes) use ($rules, $school, $church_year, $staffs) {
         //                 foreach ($rules as $key => $value) {
         //                     $users = User::where('role_id', $value->id)->get();
         //                     foreach ($users as $user) {
@@ -438,8 +438,8 @@ class SmSchoolSeeder extends Seeder
         //                         $store->user_id = $user->id;
         //                         $store->type_id = $leaveTypes->id;
         //                         $store->days = $leaveTypes->total_days;
-        //                         $store->school_id = $school->id;
-        //                         $store->academic_id = $academic_year->id;
+        //                         $store->church_id = $school->id;
+        //                         $store->church_year_id = $church_year->id;
         //                         $store->save();
         //                     }
         //                 }
@@ -457,8 +457,8 @@ class SmSchoolSeeder extends Seeder
         //                     $store->note = 'Seeder Leave';
         //                     $store->file = "public/uploads/leave_request/sample.pdf";
         //                     $store->approve_status = "P";
-        //                     $store->school_id = $school->id;
-        //                     $store->academic_id = $academic_year->id;
+        //                     $store->church_id = $school->id;
+        //                     $store->church_year_id = $church_year->id;
         //                     $store->save();
         //                 }
 
@@ -481,7 +481,7 @@ class SmSchoolSeeder extends Seeder
 
 
         //             SmRoomType::factory()->times(5)->create($school_academic);
-        //             $smRoomTypes=SmRoomType::where('school_id',$school->id)->where('academic_id',$academic_year->id)->get();
+        //             $smRoomTypes=SmRoomType::where('church_id',$school->id)->where('church_year_id',$church_year->id)->get();
         //             SmDormitoryList::factory()->times(5)->create($school_academic)->each(function ($SmDormitoryLists) use ($smRoomTypes,$school_academic){
         //                 foreach($smRoomTypes as $room) {
         //                     SmRoomList::factory()->times(1)->create(array_merge([
@@ -497,13 +497,13 @@ class SmSchoolSeeder extends Seeder
         //             });
         //             SmItemStore::factory()->times(10)->create($school_academic);
         //             SmSupplier::factory()->times(10)->create($school_academic);
-        //             SmBookCategory::factory()->times(10)->create($school_academic)->each(function($bookCategory) use ($school_academic,$students,$school,$academic_year){
+        //             SmBookCategory::factory()->times(10)->create($school_academic)->each(function($bookCategory) use ($school_academic,$students,$school,$church_year){
         //                 LibrarySubject::factory()->times(10)->create(array_merge([
         //                     'sb_category_id' => $bookCategory->id,
         //                 ],$school_academic));
         //                 SmBook::factory()->times(1)->create(array_merge([
         //                         'book_category_id' => $bookCategory->id,
-        //                     ],$school_academic))->each(function ($smBooks) use ($students,$school,$academic_year){
+        //                     ],$school_academic))->each(function ($smBooks) use ($students,$school,$church_year){
         //                         foreach ($students as $student) {
         //                             $store = new SmBookIssue();
         //                             $store->member_id = $student->id;
@@ -511,8 +511,8 @@ class SmSchoolSeeder extends Seeder
         //                             $store->quantity = rand(1, 5);
         //                             $store->given_date = Carbon::now()->format('Y-m-d');                                   
         //                             $store->issue_status = "I"; 
-        //                             $store->school_id = $school->id;
-        //                             $store->academic_id = $academic_year->id;
+        //                             $store->church_id = $school->id;
+        //                             $store->church_year_id = $church_year->id;
         //                             $store->save();
         //                         }
         //                     });
@@ -524,42 +524,42 @@ class SmSchoolSeeder extends Seeder
         //         //end academic id
 
         //         SmHomePageSetting::factory()->times(1)->create([
-        //             'school_id' =>$school->id,
+        //             'church_id' =>$school->id,
         //         ]);
         //         SmNewsPage::factory()->times(1)->create([
-        //             'school_id' =>$school->id,
+        //             'church_id' =>$school->id,
         //         ]);
         //         SmNewsCategory::factory()->times(1)->create([
-        //             'school_id' =>$school->id,
+        //             'church_id' =>$school->id,
         //         ])->each(function($newsCategory) use ($school){
         //             SmNews::factory()->times(1)->create([
         //                 'category_id' =>$newsCategory->id,
-        //                 'school_id' =>$school->id,
+        //                 'church_id' =>$school->id,
         //             ]);
         //         });
         //         SmCoursePage::factory()->times(1)->create([
-        //             'school_id' =>$school->id,
+        //             'church_id' =>$school->id,
         //         ]);
         //         SmCourseCategory::factory()->times(1)->create([
-        //             'school_id' =>$school->id,
+        //             'church_id' =>$school->id,
         //         ])->each(function ($courseCategory) use ($school){
         //             SmCourse::factory()->times(1)->create([
         //                 'category_id' =>$courseCategory->id,
-        //                 'school_id' =>$school->id,
+        //                 'church_id' =>$school->id,
         //             ]);
         //         });
 
         //         SmTestimonial::factory()->times(1)->create([
-        //             'school_id' =>$school->id,
+        //             'church_id' =>$school->id,
         //         ]);
         //         SmBackgroundSetting::factory()->times(1)->create([
-        //             'school_id' =>$school->id,
+        //             'church_id' =>$school->id,
         //         ]);
         //         SmContactMessage::factory()->times(1)->create([
-        //             'school_id' =>$school->id,
+        //             'church_id' =>$school->id,
         //         ]);
         //         SmAboutPage::factory()->times(1)->create([
-        //             'school_id' =>$school->id,
+        //             'church_id' =>$school->id,
         //         ]);
                 
 
@@ -574,7 +574,7 @@ class SmSchoolSeeder extends Seeder
         //                     'gateway_client_id' => '',
         //                     'gateway_secret_key' => '',
         //                     'gateway_publisher_key' => '',
-        //                     'school_id' => $school->id,
+        //                     'church_id' => $school->id,
         //                 ],
         
         //             ]);
@@ -586,7 +586,7 @@ class SmSchoolSeeder extends Seeder
         //             $method = new SmPaymentMethhod();
         //             $method->method = $payment_method;
         //             $method->type = 'System';
-        //             $method->school_id = $school->id;
+        //             $method->church_id = $school->id;
         //             $method->save();
         //         }
         
@@ -600,7 +600,7 @@ class SmSchoolSeeder extends Seeder
         //                 'gateway_client_id' => '',
         //                 'gateway_secret_key' => 'AVZdghanegaOjiL6DPXd0XwjMGEQ2aXc58z1-isWmBFnw1h2j',
         //                 'gateway_secret_word' => 'AVZdghanegaOjiL6DPXd0XwjMGEQ2aXc58z1',
-        //                 'school_id' => $school->id,
+        //                 'church_id' => $school->id,
         //             ],
         //         ]);
         
@@ -612,7 +612,7 @@ class SmSchoolSeeder extends Seeder
         //                 'gateway_client_id' => '',
         //                 'gateway_secret_key' => 'sk_live_2679322872013c265e161bc8ea11efc1e822bce1',
         //                 'gateway_publisher_key' => 'pk_live_e5738ce9aade963387204f1f19bee599176e7a71',
-        //                 'school_id' => $school->id,
+        //                 'church_id' => $school->id,
         //             ],
         
         //         ]);
@@ -625,7 +625,7 @@ class SmSchoolSeeder extends Seeder
         //                 'gateway_client_id' => 'AaCPtpoUHZEXCa3v006nbYhYfD0HIX-dlgYWlsb0fdoFqpVToATuUbT43VuUE6pAxgvSbPTspKBqAF0x69',
         //                 'gateway_secret_key' => 'EJ6q4h8w0OanYO1WKtNbo9o8suDg6PKUkHNKv-T6F4APDiq2e19OZf7DfpL5uOlEzJ_AMgeE0L2PtTEj69',
         //                 'gateway_publisher_key' => '',
-        //                 'school_id' => $school->id,
+        //                 'church_id' => $school->id,
         //             ],
         
         //         ]);
@@ -633,7 +633,7 @@ class SmSchoolSeeder extends Seeder
         //         DB::table('sm_payment_gateway_settings')->insert([
         //             [
         //                 'gateway_name' => 'Bank',
-        //                 'school_id' => $school->id,
+        //                 'church_id' => $school->id,
         //             ],
         
         //         ]);
@@ -641,7 +641,7 @@ class SmSchoolSeeder extends Seeder
         //         DB::table('sm_payment_gateway_settings')->insert([
         //             [
         //                 'gateway_name' => 'Cheque',
-        //                 'school_id' => $school->id,
+        //                 'church_id' => $school->id,
         //             ],
         
         //         ]);
@@ -651,19 +651,19 @@ class SmSchoolSeeder extends Seeder
         //                 'gateway_name' => 'Clickatell',
         //                 'clickatell_username' => 'demo1',
         //                 'clickatell_password' => '122334',
-        //                 'school_id' => $school->id,
+        //                 'church_id' => $school->id,
         //             ],
         //             [
         //                 'gateway_name' => 'Twilio',
         //                 'clickatell_username' => 'demo2',
         //                 'clickatell_password' => '12336',
-        //                 'school_id' => $school->id,
+        //                 'church_id' => $school->id,
         //             ],
         //             [
         //                 'gateway_name' => 'Msg91',
         //                 'clickatell_username' => 'demo3',
         //                 'clickatell_password' => '23445',
-        //                 'school_id' => $school->id,
+        //                 'church_id' => $school->id,
         //             ],
         //         ]);
                 
@@ -673,7 +673,7 @@ class SmSchoolSeeder extends Seeder
         //             $assign->module_id = $i;
         //             $assign->created_by = 1;
         //             $assign->updated_by = 1;
-        //             $assign->school_id = $school->id;
+        //             $assign->church_id = $school->id;
         //             $assign->save();
         //         }
         
@@ -681,7 +681,7 @@ class SmSchoolSeeder extends Seeder
         //             $permission = new InfixPermissionAssign();
         //             $permission->module_id = $j;
         //             $permission->role_id = 5;
-        //             $permission->school_id = $school->id;
+        //             $permission->church_id = $school->id;
         //             $permission->save();
         //         }
         
@@ -691,13 +691,13 @@ class SmSchoolSeeder extends Seeder
         //             $permission = new InfixPermissionAssign();
         //             $permission->module_id = $value;
         //             $permission->role_id = 5;
-        //             $permission->school_id = $school->id;
+        //             $permission->church_id = $school->id;
         //             $permission->save();
         //         }
         
         //         $ids = [399, 400, 401, 402, 403, 404, 428, 429, 430, 431, 456, 457, 458, 459, 460, 461, 462, 463, 478, 482, 483, 484, 549];
         //         foreach ($ids as $id) {
-        //             $permission = InfixPermissionAssign::where('school_id', $school->id)->where('role_id', 5)->where('module_id', $id)->first();
+        //             $permission = InfixPermissionAssign::where('church_id', $school->id)->where('role_id', 5)->where('module_id', $id)->first();
         //             if ($permission) {
         //                 $permission->delete();
         //             }
@@ -711,7 +711,7 @@ class SmSchoolSeeder extends Seeder
         //             $permission = new InfixPermissionAssign();
         //             $permission->module_id = $value;
         //             $permission->role_id = 4;
-        //             $permission->school_id = $school->id;
+        //             $permission->church_id = $school->id;
         //             $permission->save();
         //         }
         
@@ -723,7 +723,7 @@ class SmSchoolSeeder extends Seeder
         //             $permission = new InfixPermissionAssign();
         //             $permission->module_id = $value;
         //             $permission->role_id = 7;
-        //             $permission->school_id = $school->id;
+        //             $permission->church_id = $school->id;
         //             $permission->save();
         //         }
         
@@ -735,7 +735,7 @@ class SmSchoolSeeder extends Seeder
         //             $permission = new InfixPermissionAssign();
         //             $permission->module_id = $value;
         //             $permission->role_id = 8;
-        //             $permission->school_id = $school->id;
+        //             $permission->church_id = $school->id;
         //             $permission->save();
         //         }
         
@@ -747,7 +747,7 @@ class SmSchoolSeeder extends Seeder
         //             $permission = new InfixPermissionAssign();
         //             $permission->module_id = $value;
         //             $permission->role_id = 9;
-        //             $permission->school_id = $school->id;
+        //             $permission->church_id = $school->id;
         //             $permission->save();
         //         }
         
@@ -759,7 +759,7 @@ class SmSchoolSeeder extends Seeder
         //             $permission = new InfixPermissionAssign();
         //             $permission->module_id = $value;
         //             $permission->role_id = 6;
-        //             $permission->school_id = $school->id;
+        //             $permission->church_id = $school->id;
         //             $permission->save();
         //         }
         
@@ -768,7 +768,7 @@ class SmSchoolSeeder extends Seeder
         //             $permission = new InfixPermissionAssign();
         //             $permission->module_id = $j;
         //             $permission->role_id = 2;
-        //             $permission->school_id = $school->id;
+        //             $permission->church_id = $school->id;
         //             $permission->save();
         //         }
         
@@ -777,7 +777,7 @@ class SmSchoolSeeder extends Seeder
         //             $permission = new InfixPermissionAssign();
         //             $permission->module_id = $value;
         //             $permission->role_id = 2;
-        //             $permission->school_id = $school->id;
+        //             $permission->church_id = $school->id;
         //             $permission->save();
         //         }
         
@@ -786,7 +786,7 @@ class SmSchoolSeeder extends Seeder
         //             $permission = new InfixPermissionAssign();
         //             $permission->module_id = $j;
         //             $permission->role_id = 3;
-        //             $permission->school_id = $school->id;
+        //             $permission->church_id = $school->id;
         //             $permission->save();
         //         }
         //         // chat module
@@ -795,7 +795,7 @@ class SmSchoolSeeder extends Seeder
         //             $permission = new InfixPermissionAssign();
         //             $permission->module_id = $value;
         //             $permission->role_id = 3;
-        //             $permission->school_id = $school->id;
+        //             $permission->church_id = $school->id;
         //             $permission->save();
         //         }
         //         // theme
@@ -803,7 +803,7 @@ class SmSchoolSeeder extends Seeder
         //         foreach($default_themes as $key=>$item) {
         //             $theme = Theme::updateOrCreate([
         //                 'title'=>$item,
-        //                 'school_id'=>$school->id
+        //                 'church_id'=>$school->id
         //             ]);
         //             if($item == 'Lawn Green') {
         //                 $theme->path_main_style = 'lawngreen_version/style.css';
@@ -820,11 +820,11 @@ class SmSchoolSeeder extends Seeder
         //             $theme->background_image = asset('/public/backEnd/img/body-bg.jpg');
         //             $theme->is_system = true;
         //             $theme->created_by = 1;
-        //             $theme->school_id = $school->id;
+        //             $theme->church_id = $school->id;
         //             $theme->save(); 
                     
         //         }
-        //         $themes = \App\Models\Theme::withOutGlobalScopes()->where('school_id', $school->id)->get();
+        //         $themes = \App\Models\Theme::withOutGlobalScopes()->where('church_id', $school->id)->get();
         //         $sql = [];
         //         foreach($themes as $theme){
         //             if($theme->title == 'Default') { 
@@ -886,7 +886,7 @@ class SmSchoolSeeder extends Seeder
         //         $store->element_id = 1;
         //         $store->title = 'Home';
         //         $store->link = '/';
-        //         $store->school_id = $school->id;
+        //         $store->church_id = $school->id;
         //         $store->save();
 
         //         $store = new SmHeaderMenuManager();
@@ -895,7 +895,7 @@ class SmSchoolSeeder extends Seeder
         //         $store->element_id = 2;
         //         $store->title = 'About';
         //         $store->link = '/about';
-        //         $store->school_id = $school->id;
+        //         $store->church_id = $school->id;
         //         $store->save();
 
         //         $store = new SmHeaderMenuManager();
@@ -904,7 +904,7 @@ class SmSchoolSeeder extends Seeder
         //         $store->element_id = 3;
         //         $store->title = 'Course';
         //         $store->link = '/course';
-        //         $store->school_id = $school->id;
+        //         $store->church_id = $school->id;
         //         $store->save();
 
         //         $store = new SmHeaderMenuManager();
@@ -913,7 +913,7 @@ class SmSchoolSeeder extends Seeder
         //         $store->element_id = 4;
         //         $store->title = 'News';
         //         $store->link = '/news-page';
-        //         $store->school_id = $school->id;
+        //         $store->church_id = $school->id;
         //         $store->save();
 
         //         $store = new SmHeaderMenuManager();
@@ -922,7 +922,7 @@ class SmSchoolSeeder extends Seeder
         //         $store->element_id = 5;
         //         $store->title = 'Contact';
         //         $store->link = '/contact';
-        //         $store->school_id = $school->id;
+        //         $store->church_id = $school->id;
         //         $store->save();
 
         //         $store = new SmHeaderMenuManager();
@@ -931,7 +931,7 @@ class SmSchoolSeeder extends Seeder
         //         $store->element_id = 6;
         //         $store->title = 'Login';
         //         $store->link = '/login';
-        //         $store->school_id = $school->id;
+        //         $store->church_id = $school->id;
         //         $store->save();
 
         //         DB::table('sm_social_media_icons')->insert([
@@ -939,25 +939,25 @@ class SmSchoolSeeder extends Seeder
         //                 'url' => 'https://www.facebook.com/Spondonit',
         //                 'icon' => 'fa fa-facebook',
         //                 'status' => 1,
-        //                 'school_id' => $school->id,
+        //                 'church_id' => $school->id,
         //             ],
         //             [
         //                 'url' => 'https://www.facebook.com/Spondonit',
         //                 'icon' => 'fa fa-twitter',
         //                 'status' => 1,
-        //                 'school_id' => $school->id,
+        //                 'church_id' => $school->id,
         //             ],
         //             [
         //                 'url' => 'https://www.facebook.com/Spondonit',
         //                 'icon' => 'fa fa-dribbble',
         //                 'status' => 1,
-        //                 'school_id' => $school->id,
+        //                 'church_id' => $school->id,
         //             ],
         //             [
         //                 'url' => 'https://www.facebook.com/Spondonit',
         //                 'icon' => 'fa fa-linkedin',
         //                 'status' => 1,
-        //                 'school_id' => $school->id,
+        //                 'church_id' => $school->id,
         //             ],
         //         ]);
 
@@ -967,7 +967,7 @@ class SmSchoolSeeder extends Seeder
         //         $store->slug = '/';
         //         $store->active_status = 1;
         //         $store->is_dynamic = 0;
-        //         $store->school_id = $school->id;
+        //         $store->church_id = $school->id;
         //         $store->save();
         
         //         $store = new SmPage();
@@ -976,7 +976,7 @@ class SmSchoolSeeder extends Seeder
         //         $store->slug = '/about';
         //         $store->active_status = 1;
         //         $store->is_dynamic = 0;
-        //         $store->school_id = $school->id;
+        //         $store->church_id = $school->id;
         //         $store->save();
         
         //         $store = new SmPage();
@@ -985,7 +985,7 @@ class SmSchoolSeeder extends Seeder
         //         $store->slug = '/course';
         //         $store->active_status = 1;
         //         $store->is_dynamic = 0;
-        //         $store->school_id = $school->id;
+        //         $store->church_id = $school->id;
         //         $store->save();
         
         //         $store = new SmPage();
@@ -994,7 +994,7 @@ class SmSchoolSeeder extends Seeder
         //         $store->slug = '/news-page';
         //         $store->active_status = 1;
         //         $store->is_dynamic = 0;
-        //         $store->school_id = $school->id;
+        //         $store->church_id = $school->id;
         //         $store->save();
         
         //         $store = new SmPage();
@@ -1003,7 +1003,7 @@ class SmSchoolSeeder extends Seeder
         //         $store->slug = '/contact';
         //         $store->active_status = 1;
         //         $store->is_dynamic = 0;
-        //         $store->school_id = $school->id;
+        //         $store->church_id = $school->id;
         //         $store->save();
         
         //         $store = new SmPage();
@@ -1012,7 +1012,7 @@ class SmSchoolSeeder extends Seeder
         //         $store->slug = '/login';
         //         $store->active_status = 1;
         //         $store->is_dynamic = 0;
-        //         $store->school_id = $school->id;
+        //         $store->church_id = $school->id;
         //         $store->save();
 
         //         $s         = new SmCustomLink();
@@ -1069,7 +1069,7 @@ class SmSchoolSeeder extends Seeder
         
         //         $s->link_label16 = 'link_label16';
         //         $s->link_href16  = 'http://infixedu.com';
-        //         $s->school_id = $school->id; 
+        //         $s->church_id = $school->id; 
         //         $s->save();
 
         //     }

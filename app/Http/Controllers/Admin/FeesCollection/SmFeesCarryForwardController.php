@@ -49,25 +49,25 @@ class SmFeesCarryForwardController extends Controller
         }
         try {
             $classes = SmClass::where('active_status', 1)
-                        ->where('academic_id', getAcademicId())
-                        ->where('school_id',Auth::user()->school_id)
+                        ->where('church_year_id', getAcademicId())
+                        ->where('church_id',Auth::user()->church_id)
                         ->get();
 
-            $students = StudentRecord::where('class_id', $request->class)
-                        ->where('section_id', $request->section)
-                        ->where('school_id',Auth::user()->school_id)
+            $students = StudentRecord::where('age_group_id', $request->class)
+                        ->where('mgender_id', $request->section)
+                        ->where('church_id',Auth::user()->church_id)
                         ->get();
 
             if ($students->count() != 0) {
                 foreach ($students as $student) {
-                    $fees_balance = SmFeesCarryForward::where('student_id', $student->student_id)->count();
+                    $fees_balance = SmFeesCarryForward::where('member_id', $student->member_id)->count();
                 }
-                $class_id = $request->class;
+                $age_group_id = $request->class;
                 if ($fees_balance == 0) {
-                    return view('backEnd.feesCollection.fees_forward', compact('classes', 'students', 'class_id'));
+                    return view('backEnd.feesCollection.fees_forward', compact('classes', 'students', 'age_group_id'));
                 } else {
                     $update = "";
-                    return view('backEnd.feesCollection.fees_forward', compact('classes', 'students', 'update', 'class_id'));
+                    return view('backEnd.feesCollection.fees_forward', compact('classes', 'students', 'update', 'age_group_id'));
                 }
             }else{
                 Toastr::error('Operation Failed', 'Failed');
@@ -93,11 +93,11 @@ class SmFeesCarryForwardController extends Controller
                     $fees_forward->save();
                 } else {
                     $fees_forward = new SmFeesCarryForward();
-                    $fees_forward->student_id = $student;
+                    $fees_forward->member_id = $student;
                     $fees_forward->balance = $request->balance[$student] ?? 0;
                     $fees_forward->notes = $request->notes[$student];
-                    $fees_forward->school_id = Auth::user()->school_id;
-                    $fees_forward->academic_id = getAcademicId();
+                    $fees_forward->church_id = Auth::user()->church_id;
+                    $fees_forward->church_year_id = getAcademicId();
                     $fees_forward->save();
                 }
             }

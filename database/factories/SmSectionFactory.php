@@ -20,8 +20,8 @@ class SmSectionFactory extends Factory
      *
      * @return array
      */
-    public $school_id;
-    public $academic_id;
+    public $church_id;
+    public $church_year_id;
 
     public $section = ['A', 'B', 'C', 'D', 'E'];
     public $i = 0;
@@ -31,8 +31,8 @@ class SmSectionFactory extends Factory
     {
 
         return [
-            'section_name' => $this->section[$this->i++] ?? $this->faker->word,
-            'school_id' => 1,
+            'mgender_name' => $this->section[$this->i++] ?? $this->faker->word,
+            'church_id' => 1,
             'created_at' => date('Y-m-d h:i:s'),
         ];
     }

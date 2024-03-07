@@ -240,25 +240,25 @@ class ApiSmDormitoryListController extends Controller
             return redirect()->back();
         }
     }
-    public function saas_studentDormitoryReportSearch(Request $request, $school_id)
+    public function saas_studentDormitoryReportSearch(Request $request, $church_id)
     {
 
         try {
-            $student_ids = studentRecords($request, null, $school_id)->pluck('student_id')->unique();
+            $member_ids = studentRecords($request, null, $church_id)->pluck('member_id')->unique();
             $students = SmStudent::query();
-            $students->where('active_status', 1)->where('school_id', $school_id);
+            $students->where('active_status', 1)->where('church_id', $church_id);
 
             if ($request->dormitory != "") {
-                $students->where('dormitory_id', $request->dormitory)->where('school_id', $school_id);
+                $students->where('dormitory_id', $request->dormitory)->where('church_id', $church_id);
             } else {
-                $students->where('dormitory_id', '!=', '')->where('school_id', $school_id);
+                $students->where('dormitory_id', '!=', '')->where('church_id', $church_id);
             }
-            $students = $students->whereIn('id', $student_ids)->get();
+            $students = $students->whereIn('id', $member_ids)->get();
 
-            $classes = SmClass::withOutGlobalScope(StatusAcademicSchoolScope::class)->where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
-            $dormitories = SmDormitoryList::where('active_status', 1)->where('school_id', $school_id)->get();
+            $classes = SmClass::withOutGlobalScope(StatusAcademicSchoolScope::class)->where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
+            $dormitories = SmDormitoryList::where('active_status', 1)->where('church_id', $church_id)->get();
 
-            $class_id = $request->class;
+            $age_group_id = $request->class;
             $dormitory_id = $request->dormitory;
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -266,12 +266,12 @@ class ApiSmDormitoryListController extends Controller
                 $data['classes'] = $classes->toArray();
                 $data['dormitories'] = $dormitories->toArray();
                 $data['students'] = $students->toArray();
-                $data['class_id'] = $class_id;
+                $data['age_group_id'] = $age_group_id;
                 $data['dormitory_id'] = $dormitory_id;
                 return ApiBaseMethod::sendResponse($data, null);
             }
 
-            return view('backEnd.dormitory.student_dormitory_report', compact('classes', 'dormitories', 'students', 'class_id', 'dormitory_id'));
+            return view('backEnd.dormitory.student_dormitory_report', compact('classes', 'dormitories', 'students', 'age_group_id', 'dormitory_id'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }

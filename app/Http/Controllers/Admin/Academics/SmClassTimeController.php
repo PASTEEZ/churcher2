@@ -17,7 +17,7 @@ class SmClassTimeController extends Controller
     public function __construct()
     {
         $this->middleware('PM');
-        $this->date = generalSetting()->academic_Year->year;
+        $this->date = generalSetting()->church_year->year;
        
     }
 
@@ -59,8 +59,8 @@ class SmClassTimeController extends Controller
                 $class_time->start_time = date('H:i:s', strtotime($request->start_time));
                 $class_time->end_time = date('H:i:s', strtotime($request->end_time));
                 $class_time->is_break = $request->is_break;
-                $class_time->school_id = Auth::user()->school_id;
-                $class_time->academic_id = getAcademicId();
+                $class_time->church_id = Auth::user()->church_id;
+                $class_time->church_year_id = getAcademicId();
                 $result = $class_time->save();
                 $type = $request->time_type;
                 if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -153,10 +153,10 @@ class SmClassTimeController extends Controller
     public function destroy(Request $request, $id)
     {
         try {
-            $class_id_key = 'class_period_id';
+            $age_group_id_key = 'class_period_id';
             $exam_id_key = 'exam_period_id';
 
-            $class = \App\tableList::getTableList($class_id_key, $id);
+            $class = \App\tableList::getTableList($age_group_id_key, $id);
             $exam = \App\tableList::getTableList($exam_id_key, $id);
             $tables = $class . '' . $exam;
             //return $tables;
@@ -225,8 +225,8 @@ class SmClassTimeController extends Controller
             $class_time->period = $request->period;
             $class_time->start_time = date('H:i:s', strtotime($request->start_time));
             $class_time->end_time = date('H:i:s', strtotime($request->end_time));
-            $class_time->school_id = Auth::user()->school_id;
-            $class_time->academic_id = getAcademicId();
+            $class_time->church_id = Auth::user()->church_id;
+            $class_time->church_year_id = getAcademicId();
             $result = $class_time->save();
 
             $type = $request->time_type;

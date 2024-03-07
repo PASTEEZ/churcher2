@@ -24,9 +24,9 @@ class SmFeesTypeRequest extends FormRequest
      */
     public function rules()
     {
-        $school_id=auth()->user()->school_id;
+        $church_id=auth()->user()->church_id;
         return [
-            'name' => ['required', 'max:50', Rule::unique('sm_fees_types')->where('school_id', $school_id)->where('fees_group_id', $this->fees_group)->ignore($this->id) ],
+            'name' => ['required', 'max:50', Rule::unique('sm_fees_types')->where('church_id', $church_id)->where('fees_group_id', $this->fees_group)->ignore($this->id) ],
             'fees_group' => "required|integer",
             'description' => "nullable|max:200",
         ];

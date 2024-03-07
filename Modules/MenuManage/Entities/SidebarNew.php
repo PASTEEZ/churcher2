@@ -21,7 +21,7 @@ class SidebarNew extends Model
 
     public function scopeRoleUser($query)
     {
-        return $query->where('school_id', auth()->user()->school_id)
+        return $query->where('church_id', auth()->user()->church_id)
             ->where('role_id', auth()->user()->role_id)
             ->where('user_id', auth()->user()->id);
     }

@@ -57,7 +57,7 @@ class ThemeController extends Controller
             $theme->background_color = $request->background_color;
             $theme->is_default = $request->is_default ? 1 : 0;
             $theme->created_by = auth()->user()->id;
-            $theme->school_id = auth()->user()->school_id;
+            $theme->church_id = auth()->user()->church_id;
             $theme->save();
 
             $theme->colors()->sync($color_format);            

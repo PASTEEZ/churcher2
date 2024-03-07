@@ -56,7 +56,7 @@
                                 <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                     <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                     @foreach($classes as $class)
-                                    <option value="{{$class->id}}" {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{$class->class_name}}</option>
+                                    <option value="{{$class->id}}" {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{$class->age_group_name}}</option>
                                     @endforeach
                                 </select>
                                 @if ($errors->has('class'))
@@ -121,7 +121,7 @@
                              <table id="table_id" class="display school-table " cellspacing="0" width="100%">
                                 <thead>
                                     <tr>
-                                        <th> @lang('student.admission_no')</th>
+                                        <th> @lang('student.registration_no')</th>
                                         <th> @lang('common.name')</th>
                                         <th> @lang('university::un.installment')</th>
                                         <th>@lang('fees.due_date')</th>
@@ -135,7 +135,7 @@
                                 <tbody>
                                     @foreach($fees_dues as $fees_due)
                                         <tr>
-                                            <td>{{$fees_due->recordDetail->studentDetail !=""?$fees_due->recordDetail->studentDetail->admission_no:""}}</td>
+                                            <td>{{$fees_due->recordDetail->studentDetail !=""?$fees_due->recordDetail->studentDetail->registration_no:""}}</td>
                                             <td>{{$fees_due->recordDetail->studentDetail !=""?$fees_due->recordDetail->studentDetail->full_name:""}}</td>
                                             <td>
                                                 {{@$fees_due->installment->title}}
@@ -207,7 +207,7 @@
                              <table id="table_id" class="display school-table " cellspacing="0" width="100%">
                                 <thead>
                                     <tr>
-                                        <th> @lang('student.admission_no')</th>
+                                        <th> @lang('student.registration_no')</th>
                                         <th> @lang('common.name')</th>
                                         <th> @lang('fees.installment')</th>
                                         <th>@lang('fees.due_date')</th>
@@ -221,7 +221,7 @@
                                 <tbody>
                                     @foreach($fees_dues as $fees_due)
                                         <tr>
-                                            <td>{{@$fees_due->recordDetail->studentDetail !=""?$fees_due->recordDetail->studentDetail->admission_no:""}}</td>
+                                            <td>{{@$fees_due->recordDetail->studentDetail !=""?$fees_due->recordDetail->studentDetail->registration_no:""}}</td>
                                             <td>{{@$fees_due->recordDetail->studentDetail !=""?$fees_due->recordDetail->studentDetail->full_name:""}}</td>
                                             <td>
                                                 {{@$fees_due->installment->title}}
@@ -289,8 +289,8 @@
                             <table id="table_id" class="display school-table " cellspacing="0" width="100%">
                                 <thead>
                                     <tr>
-                                        <th> @lang('student.admission_no')</th>
-                                        <th> @lang('student.roll_no')</th>
+                                        <th> @lang('student.registration_no')</th>
+                                        <th> @lang('student.member_id_no')</th>
                                         <th> @lang('common.name')</th>
                                         <th>@lang('fees.due_date')</th>
                                         <th>@lang('fees.amount') ({{generalSetting()->currency_symbol}})</th>
@@ -305,8 +305,8 @@
                                     @foreach($fees_dues as $fees_due)
                                       
                                         <tr>
-                                            <td>{{$fees_due->recordDetail->studentDetail !=""?$fees_due->recordDetail->studentDetail->admission_no:""}}</td>
-                                            <td>{{$fees_due->recordDetail->studentDetail !=""?$fees_due->recordDetail->studentDetail->roll_no:""}}</td>
+                                            <td>{{$fees_due->recordDetail->studentDetail !=""?$fees_due->recordDetail->studentDetail->registration_no:""}}</td>
+                                            <td>{{$fees_due->recordDetail->studentDetail !=""?$fees_due->recordDetail->studentDetail->member_id_no:""}}</td>
                                             <td>{{$fees_due->recordDetail->studentDetail !=""?$fees_due->recordDetail->studentDetail->full_name:""}}</td>
                                             <td>
                                                 @if($fees_due->feesGroupMaster !="")
@@ -320,7 +320,7 @@
                                             </td>
                                             <td>
                                                 @php
-                                                    $amount = App\SmFeesAssign::discountSum($fees_due->student_id, $fees_due->feesGroupMaster->feesTypes->id, 'amount', $fees_due->recordDetail->id);
+                                                    $amount = App\SmFeesAssign::discountSum($fees_due->member_id, $fees_due->feesGroupMaster->feesTypes->id, 'amount', $fees_due->recordDetail->id);
                                                     echo $amount;
                                                 @endphp
                                             </td>
@@ -336,7 +336,7 @@
                                             </td>
                                             <td>
                                                 @php
-                                                    $fine = App\SmFeesAssign::discountSum($fees_due->student_id, $fees_due->feesGroupMaster->feesTypes->id, 'fine', $fees_due->recordDetail->id);
+                                                    $fine = App\SmFeesAssign::discountSum($fees_due->member_id, $fees_due->feesGroupMaster->feesTypes->id, 'fine', $fees_due->recordDetail->id);
                                                     echo $fine;
                                                 @endphp
                                             </td>
@@ -346,7 +346,7 @@
                                                     $dues_amount = $fees_due->feesGroupMaster->amount - $discount_amount - $amount;
                                                 @endphp
                                                 <input type="hidden" name="dues_amount[{{$fees_due->recordDetail->id}}]" value="{{$dues_amount}}">
-                                                <input type="hidden" name="student_list[]" value="{{$fees_due->recordDetail->student_id}}">
+                                                <input type="hidden" name="student_list[]" value="{{$fees_due->recordDetail->member_id}}">
                                                 <input type="hidden" name="fees_master" value="{{$fees_due->feesGroupMaster->id}}">
                                             </td>
                                             <td>

@@ -27,6 +27,6 @@ class SeatPlan extends Model
         return $this->belongsTo(SmExamType::class,'exam_type_id','id');
     }
     public function academicYear(){
-        return $this->belongsTo(SmAcademicYear::class,'academic_id','id');
+        return $this->belongsTo(SmAcademicYear::class,'church_year_id','id');
     }
 }

@@ -24,7 +24,7 @@ class SmBankAccountFactory extends Factory
     public function definition()
     {
         return [
-            'bank_name'=> "Bank_ ".$this->i++ ,
+            'employer_name'=> "Bank_ ".$this->i++ ,
             'account_name'=>$this->faker->name,
             'opening_balance'=>2000,
             'note'=>$this->faker->realText($maxNbChars = 100, $indexSize = 1),

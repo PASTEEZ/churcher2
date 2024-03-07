@@ -67,16 +67,16 @@
 
 
                         <div class="row mb-20">                           
-                            @if(in_array('admission_number',$fields))
+                            @if(in_array('registration_number',$fields))
                             <div class="col-lg-3">
                                 <div class="input-effect">
-                                    <input class="primary-input form-control{{ $errors->has('admission_number') ? ' is-invalid' : '' }}" type="text" name="admission_number" value="{{$student->admission_no}}" onkeyup="GetAdminUpdate(this.value,{{$student->id}})">
-                                    <label>@lang('student.admission_number')  @if(is_required('admission_number')==true) * @endif</label>
+                                    <input class="primary-input form-control{{ $errors->has('registration_number') ? ' is-invalid' : '' }}" type="text" name="registration_number" value="{{$student->registration_no}}" onkeyup="GetAdminUpdate(this.value,{{$student->id}})">
+                                    <label>@lang('student.registration_number')  @if(is_required('registration_number')==true) * @endif</label>
                                     <span class="focus-border"></span>
-                                    <span class="invalid-feedback" id="Admission_Number" role="alert"></span>
-                                    @if ($errors->has('admission_number'))
+                                    <span class="invalid-feedback" id="registration_number" role="alert"></span>
+                                    @if ($errors->has('registration_number'))
                                     <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('admission_number') }}</strong>
+                                        <strong>{{ $errors->first('registration_number') }}</strong>
                                     </span>
                                     @endif
                                 </div>
@@ -86,7 +86,7 @@
                                 @if(generalSetting()->multiple_roll==0)
                                     <div class="col-lg-2">
                                         <div class="input-effect">
-                                            <input class="primary-input read-only-input" type="text" placeholder="Roll Number" name="roll_number" value="{{$student->roll_no}}" readonly id="roll_number">
+                                            <input class="primary-input read-only-input" type="text" placeholder="Roll Number" name="roll_number" value="{{$student->member_id_no}}" readonly id="roll_number">
                                             <label>@lang('student.roll')@if(is_required('roll_number')==true) <span> *</span> @endif</label>
                                             <span class="focus-border"></span>
                                         </div>
@@ -171,53 +171,53 @@
                             @endif
                         </div>
                         <div class="row mb-20">
-                            @if(in_array('blood_group',$fields))
+                            @if(in_array('region',$fields))
                              <div class="col-lg-2">
                                 <div class="input-effect">
-                                    <select class="niceSelect w-100 bb form-control{{ $errors->has('blood_group') ? ' is-invalid' : '' }}" name="blood_group">
-                                        <option data-display="@lang('student.blood_group') @if(is_required('blood_group')==true)  * @endif" value="">@lang('student.blood_group') @if(is_required('blood_group')==true) <span> *</span> @endif</option>
-                                        @foreach($blood_groups as $blood_group)
+                                    <select class="niceSelect w-100 bb form-control{{ $errors->has('region') ? ' is-invalid' : '' }}" name="region">
+                                        <option data-display="@lang('student.region') @if(is_required('region')==true)  * @endif" value="">@lang('student.region') @if(is_required('region')==true) <span> *</span> @endif</option>
+                                        @foreach($blood_groups as $region)
                                         @if(isset($student->bloodgroup_id))
-                                            <option value="{{$blood_group->id}}" {{$blood_group->id == $student->bloodgroup_id? 'selected': ''}}>{{$blood_group->base_setup_name}}</option>
+                                            <option value="{{$region->id}}" {{$region->id == $student->bloodgroup_id? 'selected': ''}}>{{$region->base_setup_name}}</option>
                                         @else
-                                            <option value="{{$blood_group->id}}">{{$blood_group->base_setup_name}}</option>
+                                            <option value="{{$region->id}}">{{$region->base_setup_name}}</option>
                                         @endif
                                         @endforeach
                                     </select>
                                     <span class="focus-border"></span>
-                                    @if ($errors->has('blood_group'))
+                                    @if ($errors->has('region'))
                                     <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('blood_group') }}</strong>
+                                        <strong>{{ $errors->first('region') }}</strong>
                                     </span>
                                     @endif
                                 </div>
                             </div>
                             @endif
-                            @if(in_array('religion',$fields))
+                            @if(in_array('marital_status',$fields))
                             <div class="col-lg-2">
                                 <div class="input-effect">
-                                    <select class="niceSelect w-100 bb form-control{{ $errors->has('religion') ? ' is-invalid' : '' }}" name="religion">
-                                        <option data-display="@lang('student.religion') @if(is_required('religion')==true)  * @endif" value="">@lang('student.religion') @if(is_required('religion')==true) <span> *</span> @endif</option>
-                                        @foreach($religions as $religion)
-                                            <option value="{{$religion->id}}" {{$student->religion_id != ""? ($student->religion_id == $religion->id? 'selected':''):''}}>{{$religion->base_setup_name}}</option>
+                                    <select class="niceSelect w-100 bb form-control{{ $errors->has('marital_status') ? ' is-invalid' : '' }}" name="marital_status">
+                                        <option data-display="@lang('student.marital_status') @if(is_required('marital_status')==true)  * @endif" value="">@lang('student.marital_status') @if(is_required('marital_status')==true) <span> *</span> @endif</option>
+                                        @foreach($religions as $marital_status)
+                                            <option value="{{$marital_status->id}}" {{$student->religion_id != ""? ($student->religion_id == $marital_status->id? 'selected':''):''}}>{{$marital_status->base_setup_name}}</option>
                                         }
                                         @endforeach
 
                                     </select>
                                     <span class="focus-border"></span>
-                                    @if ($errors->has('religion'))
+                                    @if ($errors->has('marital_status'))
                                     <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('religion') }}</strong>
+                                        <strong>{{ $errors->first('marital_status') }}</strong>
                                     </span>
                                     @endif
                                 </div>
                             </div>
                             @endif
-                            @if(in_array('caste',$fields))
+                            @if(in_array('home_town',$fields))
                             <div class="col-lg-2">
                                 <div class="input-effect">
-                                    <input class="primary-input" type="text" name="caste" value="{{$student->caste}}">
-                                    <label>@lang('student.caste') @if(is_required('caste')==true) <span> *</span> @endif</label>
+                                    <input class="primary-input" type="text" name="home_town" value="{{$student->home_town}}">
+                                    <label>@lang('student.home_town') @if(is_required('home_town')==true) <span> *</span> @endif</label>
                                     <span class="focus-border"></span>
                                 </div>
                             </div>
@@ -252,14 +252,14 @@
                             @endif
                         </div>
                         <div class="row mb-20">
-                            @if(in_array('admission_date',$fields))
+                            @if(in_array('registration_date',$fields))
                             <div class="col-lg-2">
                                 <div class="no-gutters input-right-icon">
                                     <div class="col">
                                         <div class="input-effect">
-                                            <input class="primary-input date" id="endDate" type="text" name="admission_date" value="{{$student->admission_date != ""? date('m/d/Y', strtotime($student->admission_date)): date('m/d/Y')}}" autocomplete="off">
-                                                <label>@lang('student.admission_date')
-                                                    @if(is_required('admission_date')==true) <span> *</span> @endif</span>
+                                            <input class="primary-input date" id="endDate" type="text" name="registration_date" value="{{$student->registration_date != ""? date('m/d/Y', strtotime($student->registration_date)): date('m/d/Y')}}" autocomplete="off">
+                                                <label>@lang('student.registration_date')
+                                                    @if(is_required('registration_date')==true) <span> *</span> @endif</span>
                                                 </label>
                                             <span class="focus-border"></span>
                                         </div>
@@ -425,7 +425,7 @@
                                                                 <select class="niceSelect w-100 bb" name="sibling_class" id="select_sibling_class">
                                                                     <option data-display="@lang('common.class') *" value="">@lang('common.class') *</option>
                                                                     @foreach($classes as $class)
-                                                                    <option value="{{$class->id}}">{{$class->class_name}}</option>
+                                                                    <option value="{{$class->id}}">{{$class->age_group_name}}</option>
                                                                     @endforeach
                                                                 </select>
                                                             </div>
@@ -504,10 +504,10 @@
                                                 <div class="single-meta">
                                                     <div class="d-flex justify-content-between">
                                                         <div class="name">
-                                                            @lang('student.admission_number')
+                                                            @lang('student.registration_number')
                                                         </div>
                                                         <div class="value">
-                                                            {{$sibling->admission_no}}
+                                                            {{$sibling->registration_no}}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -518,7 +518,7 @@
                                                             @lang('common.class')
                                                         </div>
                                                         <div class="value">
-                                                            {{$sibling->class!=""?$sibling->class->class_name:""}}
+                                                            {{$sibling->class!=""?$sibling->class->age_group_name:""}}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -529,7 +529,7 @@
                                                             @lang('common.section')
                                                         </div>
                                                         <div class="value">
-                                                            {{$sibling->section !=""?$sibling->section->section_name:""}}
+                                                            {{$sibling->section !=""?$sibling->section->mgender_name:""}}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -891,7 +891,7 @@
                             @if(in_array('local_id_number', $fields))
                             <div class="col-lg-3">
                                 <div class="input-effect">
-                                    <input class="primary-input form-control" type="text" name="local_id_number" value="{{$student->local_id_no}}">
+                                    <input class="primary-input form-control" type="text" name="local_id_number" value="{{$student->communicant}}">
                                     <label>@lang('student.birth_certificate_number')@if(is_required('local_id_number')==true) <span> *</span> @endif </label>
                                     <span class="focus-border"></span>
                                 </div>
@@ -900,24 +900,24 @@
                             @if(in_array('bank_account_number', $fields))
                             <div class="col-lg-3">
                                 <div class="input-effect">
-                                    <input class="primary-input form-control" type="text" name="bank_account_number" value="{{$student->bank_account_no}}">
+                                    <input class="primary-input form-control" type="text" name="bank_account_number" value="{{$student->day_born}}">
                                     <label>@lang('student.bank_account_number') @if(is_required('bank_account_number')==true) <span> *</span> @endif </label>
                                     <span class="focus-border"></span>
                                 </div>
                             </div>
                             @endif
-                            @if(in_array('bank_name', $fields))
+                            @if(in_array('employer_name', $fields))
                             <div class="col-lg-3">
                                 <div class="input-effect">
-                                    <input class="primary-input form-control" type="text" name="bank_name" value="{{$student->bank_name}}">
-                                     <label>@lang('student.bank_name') @if(is_required('bank_name')==true) <span> *</span> @endif </label>
+                                    <input class="primary-input form-control" type="text" name="employer_name" value="{{$student->employer_name}}">
+                                     <label>@lang('student.employer_name') @if(is_required('employer_name')==true) <span> *</span> @endif </label>
                                     <span class="focus-border"></span>
                                 </div>
                             </div>
                             @endif
                         </div>
                         <div class="row mb-20 mt-40">
-                            @if(in_array('bank_name', $fields))
+                            @if(in_array('employer_name', $fields))
                             <div class="col-lg-6">
                                 <div class="input-effect">
                                     <textarea class="primary-input form-control" cols="0" rows="4" name="previous_school_details">{{$student->previous_school_details}}</textarea>
@@ -935,11 +935,11 @@
                                 </div>
                             </div>
                             @endif
-                            @if(in_array('ifsc_code', $fields))
+                            @if(in_array('baptism_status', $fields))
                             <div class="col-lg-3">
                                 <div class="input-effect mt-50">
-                                    <input class="primary-input form-control" type="text" name="ifsc_code" value="{{old('ifsc_code')}}{{$student->ifsc_code}}">
-                                    <label>@lang('student.ifsc_code')@if(is_required('ifsc_code')==true) <span> *</span> @endif</label>
+                                    <input class="primary-input form-control" type="text" name="baptism_status" value="{{old('baptism_status')}}{{$student->baptism_status}}">
+                                    <label>@lang('student.baptism_status')@if(is_required('baptism_status')==true) <span> *</span> @endif</label>
                                     <span class="focus-border"></span>
                                 </div>
                             </div>
@@ -957,8 +957,8 @@
                              @if(in_array('document_file_1', $fields))
                                 <div class="col-lg-3">
                                     <div class="input-effect">
-                                        <input class="primary-input" type="text" name="document_title_1" value="{{$student->document_title_1}}">
-                                        <label>@lang('student.document_01_title') @if(is_required('document_title_1')==true) <span> *</span> @endif</label>
+                                        <input class="primary-input" type="text" name="group_1" value="{{$student->group_1}}">
+                                        <label>@lang('student.document_01_title') @if(is_required('group_1')==true) <span> *</span> @endif</label>
                                         <span class="focus-border"></span>
                                     </div>
                                 </div>
@@ -966,8 +966,8 @@
                             @if(in_array('document_file_2', $fields))
                             <div class="col-lg-3">
                                 <div class="input-effect">
-                                    <input class="primary-input" type="text" name="document_title_2" value="{{$student->document_title_2}}">
-                                    <label>@lang('student.document_02_title') @if(is_required('document_title_2')==true) <span> *</span> @endif</label>
+                                    <input class="primary-input" type="text" name="group_2" value="{{$student->group_2}}">
+                                    <label>@lang('student.document_02_title') @if(is_required('group_2')==true) <span> *</span> @endif</label>
                                     <span class="focus-border"></span>
                                 </div>
                             </div>
@@ -975,8 +975,8 @@
                             @if(in_array('document_file_3', $fields))
                             <div class="col-lg-3">
                                 <div class="input-effect">
-                                    <input class="primary-input" type="text" name="document_title_3" value="{{$student->document_title_3}}">
-                                    <label>@lang('student.document_03_title') @if(is_required('document_title_3')==true) <span> *</span> @endif</label>
+                                    <input class="primary-input" type="text" name="group_3" value="{{$student->group_3}}">
+                                    <label>@lang('student.document_03_title') @if(is_required('group_3')==true) <span> *</span> @endif</label>
                                     <span class="focus-border"></span>
                                 </div>
                             </div>
@@ -984,8 +984,8 @@
                             @if(in_array('document_file_4', $fields))
                             <div class="col-lg-3">
                                 <div class="input-effect">
-                                    <input class="primary-input" type="text" name="document_title_4" value="{{$student->document_title_4}}">
-                                    <label>@lang('student.document_04_title') @if(is_required('document_title_4')==true) <span> *</span> @endif</label>
+                                    <input class="primary-input" type="text" name="group_4" value="{{$student->group_4}}">
+                                    <label>@lang('student.document_04_title') @if(is_required('group_4')==true) <span> *</span> @endif</label>
                                     <span class="focus-border"></span>
                                 </div>
                             </div>
@@ -997,7 +997,7 @@
                                 <div class="row no-gutters input-right-icon">
                                     <div class="col">
                                         <div class="input-effect">
-                                            <input class="primary-input" type="text" id="placeholderFileOneName" placeholder="{{$student->document_file_1 != ""? showPicName($student->document_file_1):(is_required('document_title_1')==true ? '01 *': '01') }}"
+                                            <input class="primary-input" type="text" id="placeholderFileOneName" placeholder="{{$student->document_file_1 != ""? showPicName($student->document_file_1):(is_required('group_1')==true ? '01 *': '01') }}"
                                                 disabled>
                                             <span class="focus-border"></span>
                                         </div>
@@ -1016,7 +1016,7 @@
                                 <div class="row no-gutters input-right-icon">
                                     <div class="col">
                                         <div class="input-effect">
-                                            <input class="primary-input" type="text" id="placeholderFileTwoName" placeholder="{{isset($student->document_file_2) && $student->document_file_2 != ""? showPicName($student->document_file_2):(is_required('document_title_2')==true ? '02 *': '02')}}"
+                                            <input class="primary-input" type="text" id="placeholderFileTwoName" placeholder="{{isset($student->document_file_2) && $student->document_file_2 != ""? showPicName($student->document_file_2):(is_required('group_2')==true ? '02 *': '02')}}"
                                                 disabled>
                                             <span class="focus-border"></span>
                                         </div>
@@ -1035,7 +1035,7 @@
                                 <div class="row no-gutters input-right-icon">
                                     <div class="col">
                                         <div class="input-effect">
-                                            <input class="primary-input" type="text" id="placeholderFileThreeName" placeholder="{{isset($student->document_file_3) && $student->document_file_3 != ""? showPicName($student->document_file_3):(is_required('document_title_3')==true ? '03 *': '03')}}"
+                                            <input class="primary-input" type="text" id="placeholderFileThreeName" placeholder="{{isset($student->document_file_3) && $student->document_file_3 != ""? showPicName($student->document_file_3):(is_required('group_3')==true ? '03 *': '03')}}"
                                                 disabled>
                                             <span class="focus-border"></span>
                                         </div>
@@ -1054,7 +1054,7 @@
                                 <div class="row no-gutters input-right-icon">
                                     <div class="col">
                                         <div class="input-effect">
-                                            <input class="primary-input" type="text" id="placeholderFileFourName" placeholder="{{isset($student->document_file_4) && $student->document_file_4 != ""? showPicName($student->document_file_4):(is_required('document_title_4')==true ? '04 *': '04') }}"
+                                            <input class="primary-input" type="text" id="placeholderFileFourName" placeholder="{{isset($student->document_file_4) && $student->document_file_4 != ""? showPicName($student->document_file_4):(is_required('group_4')==true ? '04 *': '04') }}"
                                                 disabled>
                                             <span class="focus-border"></span>
                                         </div>

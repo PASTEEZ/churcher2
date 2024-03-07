@@ -117,7 +117,7 @@
                                                 @foreach($bank_accounts as $bank_account)
                                                 <div class="input-effect custom-transfer-account mb-20">
                                                     <input type="radio" name="from_bank_name" id="from_bank{{$bank_account->id}}" value="{{$bank_account->id}}" class="common-radio">
-                                                    <label for="from_bank{{$bank_account->id}}">{{$bank_account->bank_name}} ({{$bank_account->current_balance}})</label>
+                                                    <label for="from_bank{{$bank_account->id}}">{{$bank_account->employer_name}} ({{$bank_account->current_balance}})</label>
                                                 </div>
                                                 @endforeach
                                             </div>
@@ -152,7 +152,7 @@
                                                 @foreach($bank_accounts as $bank_account)
                                                 <div class="input-effect custom-transfer-account mb-20">
                                                     <input type="radio" name="to_bank_name" id="tobank{{$bank_account->id}}" value="{{$bank_account->id}}" class="common-radio">
-                                                    <label for="tobank{{$bank_account->id}}">{{$bank_account->bank_name}} ({{$bank_account->current_balance}})</label>
+                                                    <label for="tobank{{$bank_account->id}}">{{$bank_account->employer_name}} ({{$bank_account->current_balance}})</label>
                                                 </div>
                                                 @endforeach
                                             </div>

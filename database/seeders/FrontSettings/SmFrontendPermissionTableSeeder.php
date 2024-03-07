@@ -12,7 +12,7 @@ class SmFrontendPermissionTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run($school_id, $count)
+    public function run($church_id, $count)
     {        
        $values = ['Home Page','About Page','Image Banner','Latest News','Notice Board','Event List','Academics','Testimonial','Custom Links','Social Icons','About Image','Statistic Number Section','Our History','Our Mission and Vision','Testimonial'];
        {
@@ -20,7 +20,7 @@ class SmFrontendPermissionTableSeeder extends Seeder
         $s->name            = 'Home Page';
         $s->parent_id       = 0;
         $s->is_published    = 1;
-        $s->school_id       = $school_id;
+        $s->church_id       = $church_id;
         $s->save(); //ID=1
 
 
@@ -28,7 +28,7 @@ class SmFrontendPermissionTableSeeder extends Seeder
         $s->name            = 'About Page';
         $s->parent_id       = 1;
         $s->is_published    = 1;
-        $s->school_id       = $school_id;
+        $s->church_id       = $church_id;
         $s->save();//ID=2
 
 
@@ -36,7 +36,7 @@ class SmFrontendPermissionTableSeeder extends Seeder
         $s->name            = 'Image Banner';
         $s->parent_id       = 1;
         $s->is_published    = 1;
-        $s->school_id       = $school_id;
+        $s->church_id       = $church_id;
 
         $s->save();
 
@@ -44,7 +44,7 @@ class SmFrontendPermissionTableSeeder extends Seeder
         $s->name            = 'Latest News';
         $s->parent_id       = 1;
         $s->is_published    = 1;
-        $s->school_id       = $school_id;
+        $s->church_id       = $church_id;
 
         $s->save();
 
@@ -53,7 +53,7 @@ class SmFrontendPermissionTableSeeder extends Seeder
         $s->name            = 'Notice Board';
         $s->parent_id       = 1;
         $s->is_published    = 1;
-        $s->school_id       = $school_id;
+        $s->church_id       = $church_id;
 
         $s->save();
 
@@ -62,7 +62,7 @@ class SmFrontendPermissionTableSeeder extends Seeder
         $s->name            = 'Event List';
         $s->parent_id       = 1;
         $s->is_published    = 1;
-        $s->school_id       = $school_id;
+        $s->church_id       = $church_id;
 
         $s->save();
         $s                  = new SmFrontendPersmission();
@@ -75,7 +75,7 @@ class SmFrontendPermissionTableSeeder extends Seeder
         $s->name            = 'Testimonial';
         $s->parent_id       = 1;
         $s->is_published    = 1;
-        $s->school_id       = $school_id;
+        $s->church_id       = $church_id;
 
         $s->save();
 
@@ -83,7 +83,7 @@ class SmFrontendPermissionTableSeeder extends Seeder
         $s->name            = 'Custom Links';
         $s->parent_id       = 1;
         $s->is_published    = 1;
-        $s->school_id       = $school_id;
+        $s->church_id       = $church_id;
 
         $s->save();
 
@@ -91,7 +91,7 @@ class SmFrontendPermissionTableSeeder extends Seeder
         $s->name            = 'Social Icons';
         $s->parent_id       = 1;
         $s->is_published    = 1;
-        $s->school_id       = $school_id;
+        $s->church_id       = $church_id;
 
         $s->save();
 
@@ -99,7 +99,7 @@ class SmFrontendPermissionTableSeeder extends Seeder
         $s->name            = 'About Image';
         $s->parent_id       = 2;
         $s->is_published    = 1;
-        $s->school_id       = $school_id;
+        $s->church_id       = $church_id;
 
         $s->save();
 
@@ -107,7 +107,7 @@ class SmFrontendPermissionTableSeeder extends Seeder
         $s->name            = 'Statistic Number Section';
         $s->parent_id       = 2;
         $s->is_published    = 1;
-        $s->school_id       = $school_id;
+        $s->church_id       = $church_id;
 
         $s->save();
 
@@ -116,7 +116,7 @@ class SmFrontendPermissionTableSeeder extends Seeder
         $s->name            = 'Our History';
         $s->parent_id       = 2;
         $s->is_published    = 1;
-        $s->school_id       = $school_id;
+        $s->church_id       = $church_id;
 
         $s->save();
 
@@ -124,7 +124,7 @@ class SmFrontendPermissionTableSeeder extends Seeder
         $s->name            = 'Our Mission and Vision';
         $s->parent_id       = 2;
         $s->is_published    = 1;
-        $s->school_id       = $school_id;
+        $s->church_id       = $church_id;
 
         $s->save();
 
@@ -133,7 +133,7 @@ class SmFrontendPermissionTableSeeder extends Seeder
         $s->name            = 'Testimonial';
         $s->parent_id       = 2;
         $s->is_published    = 1;
-        $s->school_id       = $school_id;
+        $s->church_id       = $church_id;
 
         $s->save();
 

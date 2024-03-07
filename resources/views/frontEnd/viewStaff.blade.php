@@ -383,7 +383,7 @@
 
         <div class="col-lg-7 col-md-6">
             <div class="">
-                @if(isset($staffDetails)){{$staffDetails->bank_account_no}}@endif
+                @if(isset($staffDetails)){{$staffDetails->day_born}}@endif
             </div>
         </div>
     </div>
@@ -399,7 +399,7 @@
 
         <div class="col-lg-7 col-md-6">
             <div class="">
-                @if(isset($staffDetails)){{$staffDetails->bank_name}}@endif
+                @if(isset($staffDetails)){{$staffDetails->employer_name}}@endif
             </div>
         </div>
     </div>
@@ -851,7 +851,7 @@
                              'method' => 'POST', 'enctype' => 'multipart/form-data', 'name' => 'document_upload']) }}
                              <div class="row">
                                 <div class="col-lg-12">
-                                    <input type="hidden" name="staff_student_id" value="{{$staffDetails->id}}">
+                                    <input type="hidden" name="staff_member_id" value="{{$staffDetails->id}}">
                                     <div class="row mt-25">
                                         <div class="col-lg-12">
                                             <div class="input-effect">

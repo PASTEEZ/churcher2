@@ -379,7 +379,7 @@ class FlattenException
     {
         $array = new \ArrayObject($value);
 
-        return $array['__PHP_Incomplete_Class_Name'];
+        return $array['__PHP_Incomplete_age_group_name'];
     }
 
     public function getTraceAsString(): string

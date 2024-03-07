@@ -63,7 +63,7 @@
                                                 {{@$studentInvoice->studentInfo->full_name}}
                                             </a>
                                         </td>
-                                        {{-- <td>{{@$studentInvoice->recordDetail->class->class_name}} ({{@$studentInvoice->recordDetail->section->section_name}})</td> --}}
+                                        {{-- <td>{{@$studentInvoice->recordDetail->class->age_group_name}} ({{@$studentInvoice->recordDetail->section->mgender_name}})</td> --}}
                                         <td>{{$amount}}</td>
                                     
                                         <td>{{$paid_amount}}</td>
@@ -169,7 +169,7 @@
                     <ul class="nav nav-tabs tabs_scroll_nav ml-0" role="tablist">
                         @foreach($records as $key => $record)
                             <li class="nav-item">
-                                <a class="nav-link @if($key== 0) active @endif " href="#tab{{$key}}" role="tab" data-toggle="tab">{{$record->class->class_name}} ({{$record->section->section_name}}) </a>
+                                <a class="nav-link @if($key== 0) active @endif " href="#tab{{$key}}" role="tab" data-toggle="tab">{{$record->class->age_group_name}} ({{$record->section->mgender_name}}) </a>
                             </li>
                         @endforeach
                     </ul>
@@ -209,7 +209,7 @@
                                                         {{@$studentInvoice->studentInfo->full_name}}
                                                     </a>
                                                 </td>
-                                                <td>{{@$studentInvoice->recordDetail->class->class_name}} ({{@$studentInvoice->recordDetail->section->section_name}})</td>
+                                                <td>{{@$studentInvoice->recordDetail->class->age_group_name}} ({{@$studentInvoice->recordDetail->section->mgender_name}})</td>
                                                 <td>{{$amount}}</td>
                                              
                                                 <td>{{$paid_amount}}</td>

@@ -47,9 +47,9 @@
                 
                 <input type="hidden" name="assign_id" id="assign_id" value="{{$assign_id}}">
                 <input type="hidden" name="real_amount" id="real_amount" value="{{$amount}}">
-                <input type="hidden" name="student_id" value="{{$student_id}}">
-                <input type="hidden" name="class_id" value="{{$std_info->class_id}}">
-                <input type="hidden" name="section_id" value="{{$std_info->section_id}}">
+                <input type="hidden" name="member_id" value="{{$member_id}}">
+                <input type="hidden" name="age_group_id" value="{{$std_info->age_group_id}}">
+                <input type="hidden" name="mgender_id" value="{{$std_info->mgender_id}}">
                 <input type="hidden" name="fees_type_id" value="{{$fees_type_id}}">
                 <input type="hidden" name="record_id" value="{{$record_id}}">
 
@@ -117,7 +117,7 @@
                             <select class="niceSelect1 w-100 bb form-control{{ $errors->has('bank_id') ? ' is-invalid' : '' }}" name="bank_id">
                             @if(isset($banks))
                             @foreach($banks as $key=>$value)
-                                <option value="{{$value->id}}">{{$value->bank_name}} ({{$value->account_name}})</option>
+                                <option value="{{$value->id}}">{{$value->employer_name}} ({{$value->account_name}})</option>
                             @endforeach
                             @endif
                             </select>

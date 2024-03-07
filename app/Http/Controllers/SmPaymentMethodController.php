@@ -24,7 +24,7 @@ class SmPaymentMethodController extends Controller
     {
 
         try {
-            $payment_methods = SmPaymentMethhod::where('school_id', Auth::user()->school_id)->get();
+            $payment_methods = SmPaymentMethhod::where('church_id', Auth::user()->church_id)->get();
             return view('backEnd.accounts.payment_method', compact('payment_methods'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -57,7 +57,7 @@ class SmPaymentMethodController extends Controller
         try {
             $payment_method = new SmPaymentMethhod();
             $payment_method->method = $request->method;
-            $payment_method->school_id = Auth::user()->school_id;
+            $payment_method->church_id = Auth::user()->church_id;
             $result = $payment_method->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -91,9 +91,9 @@ class SmPaymentMethodController extends Controller
             $statement                = "SELECT P.id as PID, D.id as DID, P.active_status as IsActive, P.method, D.* FROM sm_payment_methhods as P, sm_payment_gateway_settings D WHERE P.gateway_id=D.id";
 
             $PaymentMethods           = DB::select($statement);
-            $paymeny_gateway          = SmPaymentMethhod::where('school_id', Auth::user()->school_id)->get();
-            $paymeny_gateway_settings = SmPaymentGatewaySetting::where('school_id', Auth::user()->school_id)->get();
-            $payment_methods = SmPaymentMethhod::where('school_id', Auth::user()->school_id)->get();
+            $paymeny_gateway          = SmPaymentMethhod::where('church_id', Auth::user()->church_id)->get();
+            $paymeny_gateway_settings = SmPaymentGatewaySetting::where('church_id', Auth::user()->church_id)->get();
+            $payment_methods = SmPaymentMethhod::where('church_id', Auth::user()->church_id)->get();
             $payment_method = SmPaymentMethhod::find($id);
             $payment_methods = SmPaymentMethhod::all();
 

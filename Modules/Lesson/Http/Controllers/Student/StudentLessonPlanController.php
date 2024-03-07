@@ -46,13 +46,13 @@ class StudentLessonPlanController extends Controller
              }
             $student_detail = SmStudent::where('user_id', auth()->user()->id)->first();
             //return $student_detail;
-            $class_id = $student_detail->class_id;
-            $section_id = $student_detail->section_id;
+            $age_group_id = $student_detail->age_group_id;
+            $mgender_id = $student_detail->mgender_id;
 
             $records = studentRecords(null, $student_detail->id)->get();
 
-            $sm_weekends = SmWeekend::orderBy('order', 'ASC')->where('active_status', 1)->where('school_id',Auth::user()->school_id)->get();
-            return view('lesson::student.student_lesson_plan', compact('dates','this_week','class_id','section_id', 'sm_weekends','records'));
+            $sm_weekends = SmWeekend::orderBy('order', 'ASC')->where('active_status', 1)->where('church_id',Auth::user()->church_id)->get();
+            return view('lesson::student.student_lesson_plan', compact('dates','this_week','age_group_id','mgender_id', 'sm_weekends','records'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -69,15 +69,15 @@ class StudentLessonPlanController extends Controller
             $login_id = Auth::user()->id;
         }
         $student_detail = SmStudent::where('user_id', $login_id)->first();
-        $class=$student_detail->class_id;
-        $section=$student_detail->section_id;       
-        $academic_id=$student_detail->academic_id;
-        $school_id=$student_detail->school_id;
+        $class=$student_detail->age_group_id;
+        $section=$student_detail->mgender_id;       
+        $church_year_id=$student_detail->church_year_id;
+        $church_id=$student_detail->church_id;
 
         $records = studentRecords(null, $student_detail->id)->get();
 
-        $lessonPlanner = LessonPlanner::where('class_id', $class)
-                        ->where('section_id', $section) 
+        $lessonPlanner = LessonPlanner::where('age_group_id', $class)
+                        ->where('mgender_id', $section) 
                         ->groupBy('lesson_detail_id')
                         ->where('active_status', 1)
                         ->get(); 
@@ -90,8 +90,8 @@ class StudentLessonPlanController extends Controller
 
         
         $classes = SmClass::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
         return view('lesson::student.student_lesson_plan_overview',compact('alllessonPlanner','lessonPlanner','classes', 'records'));
@@ -131,15 +131,15 @@ class StudentLessonPlanController extends Controller
 
             $student_detail = SmStudent::where('user_id', $user_id)->first();
             //return $student_detail;
-            $class_id = $student_detail->class_id;
-            $section_id = $student_detail->section_id;
+            $age_group_id = $student_detail->age_group_id;
+            $mgender_id = $student_detail->mgender_id;
 
-            $sm_weekends = SmWeekend::orderBy('order', 'ASC')->where('active_status', 1)->where('school_id',Auth::user()->school_id)->get();
+            $sm_weekends = SmWeekend::orderBy('order', 'ASC')->where('active_status', 1)->where('church_id',Auth::user()->church_id)->get();
 
-            $class_times = SmClassTime::where('type', 'class')->where('academic_id', getAcademicId())->where('school_id',Auth::user()->school_id)->get();
+            $class_times = SmClassTime::where('type', 'class')->where('church_year_id', getAcademicId())->where('church_id',Auth::user()->church_id)->get();
 
             $records = studentRecords(null, $student_detail->id)->get();
-            return view('lesson::student.student_lesson_plan', compact('dates','this_week','class_times', 'class_id', 'section_id', 'sm_weekends','records'));
+            return view('lesson::student.student_lesson_plan', compact('dates','this_week','class_times', 'age_group_id', 'mgender_id', 'sm_weekends','records'));
       
     }
     public function discreaseChangeWeek(Request $request,$pre_date)
@@ -175,16 +175,16 @@ class StudentLessonPlanController extends Controller
 
             $student_detail = SmStudent::where('user_id', $user_id)->first();
             //return $student_detail;
-            $class_id = $student_detail->class_id;
-            $section_id = $student_detail->section_id;
+            $age_group_id = $student_detail->age_group_id;
+            $mgender_id = $student_detail->mgender_id;
 
-            $sm_weekends = SmWeekend::orderBy('order', 'ASC')->where('active_status', 1)->where('school_id',Auth::user()->school_id)->get();
+            $sm_weekends = SmWeekend::orderBy('order', 'ASC')->where('active_status', 1)->where('church_id',Auth::user()->church_id)->get();
 
-            $class_times = SmClassTime::where('type', 'class')->where('academic_id', getAcademicId())->where('school_id',Auth::user()->school_id)->get();
+            $class_times = SmClassTime::where('type', 'class')->where('church_year_id', getAcademicId())->where('church_id',Auth::user()->church_id)->get();
 
             $records = studentRecords(null, $student_detail->id)->get();
 
-            return view('lesson::student.student_lesson_plan', compact('dates','this_week','class_times', 'class_id', 'section_id', 'sm_weekends','records'));
+            return view('lesson::student.student_lesson_plan', compact('dates','this_week','class_times', 'age_group_id', 'mgender_id', 'sm_weekends','records'));
     }
     public function create()
     {

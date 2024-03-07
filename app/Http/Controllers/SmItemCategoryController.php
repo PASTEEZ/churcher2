@@ -28,7 +28,7 @@ class SmItemCategoryController extends Controller
     {
 
         try{
-            $itemCategories = SmItemCategory::where('school_id',Auth::user()->school_id)->orderby('id','DESC')->get();
+            $itemCategories = SmItemCategory::where('church_id',Auth::user()->church_id)->orderby('id','DESC')->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($itemCategories, null);
             }
@@ -54,7 +54,7 @@ class SmItemCategoryController extends Controller
                 ->withInput();
         }
         // school wise uquine validation
-        $is_duplicate = SmItemCategory::where('school_id', Auth::user()->school_id)->where('category_name', $request->category_name)->first();
+        $is_duplicate = SmItemCategory::where('church_id', Auth::user()->church_id)->where('category_name', $request->category_name)->first();
         if ($is_duplicate) {
             Toastr::error('Duplicate name found!', 'Failed');
             return redirect()->back()->withErrors($validator)->withInput();
@@ -62,8 +62,8 @@ class SmItemCategoryController extends Controller
         try{
             $categories = new SmItemCategory();
             $categories->category_name = $request->category_name;
-            $categories->school_id = Auth::user()->school_id;
-            $categories->academic_id = getAcademicId();
+            $categories->church_id = Auth::user()->church_id;
+            $categories->church_year_id = getAcademicId();
             $results = $categories->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -94,9 +94,9 @@ class SmItemCategoryController extends Controller
             if (checkAdmin()) {
                     $editData = SmItemCategory::find($id);
                 }else{
-                    $editData = SmItemCategory::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+                    $editData = SmItemCategory::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
                 }
-            $itemCategories = SmItemCategory::where('school_id',Auth::user()->school_id)->get();
+            $itemCategories = SmItemCategory::where('church_id',Auth::user()->church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -134,7 +134,7 @@ class SmItemCategoryController extends Controller
                 ->withInput();
         }
          // school wise uquine validation
-         $is_duplicate = SmItemCategory::where('school_id', Auth::user()->school_id)->where('category_name', $request->category_name)->where('id', '!=', $request->id)->first();
+         $is_duplicate = SmItemCategory::where('church_id', Auth::user()->church_id)->where('category_name', $request->category_name)->where('id', '!=', $request->id)->first();
          if ($is_duplicate) {
              Toastr::error('Duplicate name found!', 'Failed');
              return redirect()->back()->withErrors($validator)->withInput();
@@ -144,7 +144,7 @@ class SmItemCategoryController extends Controller
               if (checkAdmin()) {
                     $categories = SmItemCategory::find($id);
                 }else{
-                    $categories = SmItemCategory::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+                    $categories = SmItemCategory::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
                 }
             $categories->category_name = $request->category_name;
             $results = $categories->update();
@@ -196,7 +196,7 @@ class SmItemCategoryController extends Controller
                 if (checkAdmin()) {
                     $result = SmItemCategory::destroy($id);
                 }else{
-                    $result = SmItemCategory::where('id',$id)->where('school_id',Auth::user()->school_id)->delete();
+                    $result = SmItemCategory::where('id',$id)->where('church_id',Auth::user()->church_id)->delete();
                 }
 
             if ($result) {

@@ -54,12 +54,12 @@
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <div class="input-effect">
-                                            <input class="primary-input form-control{{ @$errors->has('bank_name') ? ' is-invalid' : '' }}" type="text" name="bank_name" autocomplete="off" value="{{isset($bank_account)? $bank_account->bank_name : old('bank_name')}}">
-                                            <label>@lang('accounts.bank_name') <span>*</span></label>
+                                            <input class="primary-input form-control{{ @$errors->has('employer_name') ? ' is-invalid' : '' }}" type="text" name="employer_name" autocomplete="off" value="{{isset($bank_account)? $bank_account->employer_name : old('employer_name')}}">
+                                            <label>@lang('accounts.employer_name') <span>*</span></label>
                                             <span class="focus-border"></span>
-                                            @if ($errors->has('bank_name'))
+                                            @if ($errors->has('employer_name'))
                                                 <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ @$errors->first('bank_name') }}</strong>
+                                                    <strong>{{ @$errors->first('employer_name') }}</strong>
                                                 </span>
                                             @endif
                                         </div>
@@ -179,7 +179,7 @@
                         <table id="table_id" class="display school-table" cellspacing="0" width="100%">
                             <thead>
                                 <tr>
-                                    <th>@lang('accounts.bank_name')</th>
+                                    <th>@lang('accounts.employer_name')</th>
                                     <th>@lang('accounts.account_name')</th>
                                     <th>@lang('accounts.opening_balance')</th>
                                     <th>@lang('accounts.current_balance')</th>
@@ -190,7 +190,7 @@
                             <tbody>
                                 @foreach($bank_accounts as $bank_account)
                                 <tr>
-                                    <td>{{@$bank_account->bank_name}}</td>
+                                    <td>{{@$bank_account->employer_name}}</td>
                                     <td>{{@$bank_account->account_name}}</td>
                                     <td>{{currency_format(@$bank_account->opening_balance)}}</td>
                                     <td>{{currency_format(@$bank_account->current_balance)}}</td>

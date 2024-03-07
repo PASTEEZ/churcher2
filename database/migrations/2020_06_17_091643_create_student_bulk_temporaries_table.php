@@ -15,19 +15,19 @@ class CreateStudentBulkTemporariesTable extends Migration
     {
         Schema::create('student_bulk_temporaries', function (Blueprint $table) {
             $table->id();
-            $table->string('admission_number')->nullable();
-            $table->string('roll_no')->nullable();
+            $table->string('registration_number')->nullable();
+            $table->string('member_id_no')->nullable();
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
             $table->string('date_of_birth')->nullable();
-            $table->string('religion')->nullable();
+            $table->string('marital_status')->nullable();
             $table->string('gender')->nullable();
 
-            $table->string('caste')->nullable();
+            $table->string('home_town')->nullable();
             $table->string('mobile')->nullable();
             $table->string('email')->nullable();
-            $table->string('admission_date')->nullable();
-            $table->string('blood_group')->nullable();
+            $table->string('registration_date')->nullable();
+            $table->string('region')->nullable();
             $table->string('height')->nullable();
             $table->string('weight')->nullable();
 
@@ -47,8 +47,8 @@ class CreateStudentBulkTemporariesTable extends Migration
 
             $table->string('current_address')->nullable();
             $table->string('permanent_address')->nullable();
-            $table->string('bank_account_no')->nullable();
-            $table->string('bank_name')->nullable();
+            $table->string('day_born')->nullable();
+            $table->string('employer_name')->nullable();
 
             $table->string('national_identification_no')->nullable();
             $table->string('local_identification_no')->nullable();

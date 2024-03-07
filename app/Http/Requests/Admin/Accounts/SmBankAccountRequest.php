@@ -24,7 +24,7 @@ class SmBankAccountRequest extends FormRequest
     public function rules()
     {
         return [
-            'bank_name' => "required",
+            'employer_name' => "required",
             'account_name' => "required",
             'account_number' => "required|unique:sm_bank_accounts,account_number,".$this->id,
             'account_type' => "sometimes|nullable",

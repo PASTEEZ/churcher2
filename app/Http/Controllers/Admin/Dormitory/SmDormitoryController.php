@@ -50,13 +50,13 @@ class SmDormitoryController extends Controller
             $students = SmStudent::query();
             $student_records = StudentRecord::query();
             if(moduleStatusCheck('University')){
-                $student_ids = universityFilter($student_records, $request)
-                            ->groupBy('student_id')->get('student_id');
-              foreach($student_ids as $record){
-                  $stdent_ids[]= $record->student_id;
+                $member_ids = universityFilter($student_records, $request)
+                            ->groupBy('member_id')->get('member_id');
+              foreach($member_ids as $record){
+                  $stdent_ids[]= $record->member_id;
               }
             }else{
-                $student_ids = SmStudentReportController::classSectionStudent($request);
+                $member_ids = SmStudentReportController::classSectionStudent($request);
             }
            
             if ($request->dormitory != "") {
@@ -64,13 +64,13 @@ class SmDormitoryController extends Controller
             } else {
                 $students->where('dormitory_id', '!=', '');
             }
-            $students = $students->whereIn('id', $student_ids)->with('class','section','parents','dormitory','room')->where('school_id',Auth::user()->school_id)->get();
+            $students = $students->whereIn('id', $member_ids)->with('class','section','parents','dormitory','room')->where('church_id',Auth::user()->church_id)->get();
 
             $data['classes'] =SmClass::get();
             $data['dormitories'] =SmDormitoryList::get();
             $data['students'] = $students;
-            $data['class_id'] = $request->class;
-            $data['section_id'] =$request->section;
+            $data['age_group_id'] = $request->class;
+            $data['mgender_id'] =$request->section;
             $data['dormitory_id'] = $request->dormitory;
             if (moduleStatusCheck('University')) {
                 $interface = App::make(UnCommonRepositoryInterface::class);

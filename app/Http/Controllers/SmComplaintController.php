@@ -27,9 +27,9 @@ class SmComplaintController extends Controller
 
 
         try {
-            $complaints = SmComplaint::where('active_status', 1)->where('school_id',Auth::user()->school_id)->with('complaintType','complaintSource')->orderby('id','DESC')->get();
-            $complaint_types = SmSetupAdmin::where('type', 2)->where('school_id',Auth::user()->school_id)->get();
-            $complaint_sources = SmSetupAdmin::where('type', 3)->where('school_id',Auth::user()->school_id)->get();
+            $complaints = SmComplaint::where('active_status', 1)->where('church_id',Auth::user()->church_id)->with('complaintType','complaintSource')->orderby('id','DESC')->get();
+            $complaint_types = SmSetupAdmin::where('type', 2)->where('church_id',Auth::user()->church_id)->get();
+            $complaint_sources = SmSetupAdmin::where('type', 3)->where('church_id',Auth::user()->church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -110,8 +110,8 @@ class SmComplaintController extends Controller
             $complaint->action_taken = $request->action_taken;
             $complaint->assigned = $request->assigned;
             $complaint->file = $fileName;
-            $complaint->school_id = Auth::user()->school_id;
-            $complaint->academic_id = getAcademicId();
+            $complaint->church_id = Auth::user()->church_id;
+            $complaint->church_year_id = getAcademicId();
             $result = $complaint->save();
 
 
@@ -164,11 +164,11 @@ class SmComplaintController extends Controller
     public function edit(Request $request, $id)
     {
         try {
-            $complaints = SmComplaint::where('active_status', 1)->where('school_id',Auth::user()->school_id)->get();
+            $complaints = SmComplaint::where('active_status', 1)->where('church_id',Auth::user()->church_id)->get();
             $complaint = SmComplaint::find($id);
 
-            $complaint_types = SmSetupAdmin::where('type', 2)->where('school_id',Auth::user()->school_id)->get();
-            $complaint_sources = SmSetupAdmin::where('type', 3)->where('school_id',Auth::user()->school_id)->get();
+            $complaint_types = SmSetupAdmin::where('type', 2)->where('church_id',Auth::user()->church_id)->get();
+            $complaint_sources = SmSetupAdmin::where('type', 3)->where('church_id',Auth::user()->church_id)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
                 $data['complaints'] = $complaints->toArray();

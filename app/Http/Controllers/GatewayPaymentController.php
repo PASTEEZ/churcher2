@@ -19,7 +19,7 @@ class GatewayPaymentController extends Controller
             'payment_method'=>"required",
             'amount' => "required",
             'assign_id' => "required", 
-            'student_id' => "required",
+            'member_id' => "required",
         ]);
         
 
@@ -36,7 +36,7 @@ class GatewayPaymentController extends Controller
             $data['real_amount'] =$request->real_amount;
             $data['amount'] = $request->amount;
             $data['assign_id'] = $request->assign_id;
-            $data['student_id'] = $request->student_id;
+            $data['member_id'] = $request->member_id;
             $data['method'] = SmPaymentMethhod::find($request->payment_method)->method;
             $classMap = config('paymentGateway.'.$data['method']);
             $make_payment = new $classMap();
@@ -53,7 +53,7 @@ class GatewayPaymentController extends Controller
         $validator = Validator::make($input, [
             'payment_method'=>"required",
             'amount' => "required",
-            'student_id' => "required",
+            'member_id' => "required",
         ]);
         
         if ($validator->fails()) {
@@ -69,7 +69,7 @@ class GatewayPaymentController extends Controller
             $data['real_amount'] =$request->real_amount;
             $data['amount'] = $request->amount;
             $data['assign_id'] = $request->assign_id;
-            $data['student_id'] = $request->student_id;
+            $data['member_id'] = $request->member_id;
             $data['method'] = SmPaymentMethhod::find($request->payment_method)->method;
             $classMap = config('paymentGateway.'.$data['method']);
             $make_payment = new $classMap();

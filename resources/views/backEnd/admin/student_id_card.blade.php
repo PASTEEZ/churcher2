@@ -490,11 +490,11 @@
                                     <div class="col-lg-8">
                                         <div class="d-flex radio-btn-flex ml-40">
                                             <div class="mr-30">
-                                                <input type="radio" name="admission_no" id="id_roll_yes" value="1" class="common-radio relationButton" onclick="idRoll('1')" {{isset($id_card)? ($id_card->admission_no == 1? 'checked': ''):'checked'}}>
+                                                <input type="radio" name="registration_no" id="id_roll_yes" value="1" class="common-radio relationButton" onclick="idRoll('1')" {{isset($id_card)? ($id_card->registration_no == 1? 'checked': ''):'checked'}}>
                                                 <label for="id_roll_yes">@lang('admin.yes')</label>
                                             </div>
                                             <div class="mr-30">
-                                                <input type="radio" name="admission_no" id="id_roll_no" value="0" class="common-radio relationButton" onclick="idRoll('0')" {{isset($id_card)? ($id_card->admission_no == 0? 'checked': ''):''}}>
+                                                <input type="radio" name="registration_no" id="id_roll_no" value="0" class="common-radio relationButton" onclick="idRoll('0')" {{isset($id_card)? ($id_card->registration_no == 0? 'checked': ''):''}}>
                                                 <label for="id_roll_no">@lang('admin.none')</label>
                                             </div>
                                         </div>
@@ -503,17 +503,17 @@
 
                                 <div class="row mt-25">
                                     <div class="col-lg-4 d-flex">
-                                        <p class="text-uppercase fw-500 mb-10">@lang('student.student_name') </p>
+                                        <p class="text-uppercase fw-500 mb-10">@lang('student.member_name') </p>
                                     </div>
                                     <div class="col-lg-8">
                                         <div class="d-flex radio-btn-flex ml-40">
                                             <div class="mr-30">
-                                                <input type="radio" name="student_name" id="student_name_yes" value="1" class="common-radio relationButton" onclick="studentName('1')" {{isset($id_card)? ($id_card->student_name == 1? 'checked': ''):'checked'}}>
-                                                <label for="student_name_yes">@lang('admin.yes')</label>
+                                                <input type="radio" name="member_name" id="member_name_yes" value="1" class="common-radio relationButton" onclick="studentName('1')" {{isset($id_card)? ($id_card->member_name == 1? 'checked': ''):'checked'}}>
+                                                <label for="member_name_yes">@lang('admin.yes')</label>
                                             </div>
                                             <div class="mr-30">
-                                                <input type="radio" name="student_name" id="student_name_no" value="0" class="common-radio relationButton" onclick="studentName('0')" {{isset($id_card)? ($id_card->student_name == 0? 'checked': ''):''}}>
-                                                <label for="student_name_no">@lang('admin.none')</label>
+                                                <input type="radio" name="member_name" id="member_name_no" value="0" class="common-radio relationButton" onclick="studentName('0')" {{isset($id_card)? ($id_card->member_name == 0? 'checked': ''):''}}>
+                                                <label for="member_name_no">@lang('admin.none')</label>
                                             </div>
                                         </div>
                                     </div>
@@ -623,7 +623,7 @@
                                 </div>
                                 <div class="row mt-25">
                                     <div class="col-lg-4 d-flex">
-                                        <p class="text-uppercase fw-500 mb-10">@lang('student.blood_group')</p>
+                                        <p class="text-uppercase fw-500 mb-10">@lang('student.region')</p>
                                     </div>
                                     <div class="col-lg-8">
                                         <div class="d-flex radio-btn-flex ml-40">
@@ -741,13 +741,13 @@
                                                     <h3 style="line-height:1.02; margin-top: 0; margin-bottom: 3px; font-size:10px; font-weight:500">Date of Birth : Dec 25 , 2022</h3>
                                                 </div>
                                                 <div id="hBloodGroup">
-                                                    <h3 style="line-height:1.02; margin-top: 0; margin-bottom: 3px; font-size:10px; font-weight:500">Blood Group : B+</h3>
+                                                    <h3 style="line-height:1.02; margin-top: 0; margin-bottom: 3px; font-size:10px; font-weight:500">Region : B+</h3>
                                                 </div>
                                                 {{-- <h4 style="line-height:1.02; margin-top: 0; margin-bottom: 3px; font-size:9px; font-weight:500">DOB</h4> --}}
                                             </div>
                                             {{-- <div class="card_text_right">
                                                 <h3 style="line-height:1.02; margin-top: 0; margin-bottom: 3px; font-size:10px; font-weight:500;  text-transform: uppercase;font-weight:500; text-align:center;">B+</h3>
-                                                <h4 style="line-height:1.02; margin-top: 0; margin-bottom: 0; font-size:9px; text-transform: uppercase; font-weight:500">Blood Group</h4>
+                                                <h4 style="line-height:1.02; margin-top: 0; margin-bottom: 0; font-size:9px; text-transform: uppercase; font-weight:500">Region</h4>
                                             </div> --}}
                                         </div>
                                         <div class="card_text_head " style="line-height:1.02; display: flex; align-items: center; justify-content: space-between; width: 100%; margin-top:5px"> 
@@ -806,7 +806,7 @@
                                                 <h3 style="line-height:1.02; margin-top: 0; margin-bottom: 3px; font-size:10px; font-weight:500;">DOB : jan 21. 2030</h3>
                                             </div>
                                             <div id="vBloodGroup">
-                                                <h3 style="line-height:1.02; margin-top: 0; margin-bottom: 3px; font-size:10px; font-weight:500;">Blood Group : B+</h3>
+                                                <h3 style="line-height:1.02; margin-top: 0; margin-bottom: 3px; font-size:10px; font-weight:500;">Region : B+</h3>
                                             </div>
                                                 {{-- <h4 style="line-height:1.02; margin-top: 0; margin-bottom: 0; font-size:10px; text-transform: uppercase; font-weight:500">Date of iSSued</h4> --}}
                                             </div>
@@ -863,7 +863,7 @@
                                     <span>@lang('common.name')</span>
                                 </div>
                                 <div class="single_info addMNumber">
-                                    <span>@lang('student.admission_no') :</span>
+                                    <span>@lang('student.registration_no') :</span>
                                     <span>123456 </span>
                                 </div>
                                 <div class="single_info idClass">
@@ -886,8 +886,8 @@
                                     <span>@lang('common.date_of_birth'):</span>
                                     <span>@lang('admin.user_date_of_birth')</span>
                                 </div>
-                                <div class="single_info blood_group">
-                                    <span>@lang('student.blood_group') :</span>
+                                <div class="single_info region">
+                                    <span>@lang('student.region') :</span>
                                     <span>@lang('admin.user_blood_group')</span>
                                 </div>
                                 <div class="single_info">

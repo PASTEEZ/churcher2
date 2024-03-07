@@ -35,7 +35,7 @@
                                 <select class="niceSelect new_test w-100 bb form-control {{ @$errors->has('role') ? ' is-invalid' : '' }}" name="role" id="role_id">
                                     <option data-display="@lang('common.select_role') *" value="">@lang('common.select_role') *</option>
                                     @foreach($roles as $role)
-                                    <option value="{{@$role->id}}" {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{@$role->name}}</option>
+                                    <option value="{{@$role->id}}" {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{@$role->name}}</option>
                                     @endforeach
                                 </select>
                                
@@ -49,7 +49,7 @@
                                 <select class="niceSelect w-100 bb" id="select_section" name="section">
                                     <option data-display="@lang('common.select_section')" value=""> @lang('common.select_section')</option>
                                     @if(isset($section))
-                                    <option value="{{@$section->id}}" selected>{{@$section->section_name}}</option>
+                                    <option value="{{@$section->id}}" selected>{{@$section->mgender_name}}</option>
                                     @endif
                                 </select>
                                 <div class="pull-right loader loader_style" id="select_section_loader">
@@ -129,7 +129,7 @@
                                         <input type="checkbox" id="checkAll" class="common-checkbox generate-id-card-print-all" name="checkAll" value="">
                                         <label for="checkAll">@lang('common.all')</label>
                                     </th>
-                                    <th>@lang('student.admission_no')</th>
+                                    <th>@lang('student.registration_no')</th>
                                     <th>@lang('common.name')</th>
                                     <th>@lang('common.class_Sec')</th>
                                     <th>@lang('student.father_name')</th>
@@ -147,10 +147,10 @@
                                             <label for="student.{{@$student->id}}"></label>
                                         </td>
                                     <td>
-                                        {{@$student->admission_no}}
+                                        {{@$student->registration_no}}
                                     </td>
                                     <td>{{@$student->full_name}}</td>
-                                    <td>{{@$student->class !=""?@$student->class->class_name:""}} ({{@$student->section!=""?@$student->section->section_name:""}})</td>
+                                    <td>{{@$student->class !=""?@$student->class->age_group_name:""}} ({{@$student->section!=""?@$student->section->mgender_name:""}})</td>
                                     <td>{{@$student->parents !=""?@$student->parents->fathers_name:""}}</td>
                                     <td> 
                                         {{@$student->date_of_birth != ""? dateConvert(@$student->date_of_birth):''}}

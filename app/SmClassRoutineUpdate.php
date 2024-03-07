@@ -18,13 +18,13 @@ class SmClassRoutineUpdate extends Model
         static::addGlobalScope(new StatusAcademicSchoolScope);
     }
     
-    public static function assingedClassRoutine($class_time, $day, $class_id, $section_id)
+    public static function assingedClassRoutine($class_time, $day, $age_group_id, $mgender_id)
     {
         try {
 
             return SmClassRoutineUpdate::where('class_period_id', $class_time)
             ->where('day', $day)
-            ->where('class_id', $class_id)->where('section_id', $section_id)
+            ->where('age_group_id', $age_group_id)->where('mgender_id', $mgender_id)
             ->first();
         } catch (\Exception $e) {
             $data=[];
@@ -35,7 +35,7 @@ class SmClassRoutineUpdate extends Model
     public static function teacherAssingedClassRoutine($class_time, $day, $teacher_id)
     {
         try {
-            return SmClassRoutineUpdate::where('class_period_id', $class_time)->where('day', $day)->where('class_period_id', $class_time)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->where('teacher_id', $teacher_id)->first();
+            return SmClassRoutineUpdate::where('class_period_id', $class_time)->where('day', $day)->where('class_period_id', $class_time)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->where('teacher_id', $teacher_id)->first();
         } catch (\Exception $e) {
             $data=[];
             return $data;
@@ -49,7 +49,7 @@ class SmClassRoutineUpdate extends Model
 
     
     public function class(){
-        return $this->belongsTo('App\SmClass', 'class_id', 'id');
+        return $this->belongsTo('App\SmClass', 'age_group_id', 'id');
     }
 
     public function classRoom()
@@ -64,7 +64,7 @@ class SmClassRoutineUpdate extends Model
 
     public function section()
     {
-        return $this->belongsTo('App\SmSection', 'section_id', 'id');
+        return $this->belongsTo('App\SmSection', 'mgender_id', 'id');
     }
     public function classTime()
     {
@@ -88,7 +88,7 @@ class SmClassRoutineUpdate extends Model
     }
     public function unAcademic()
     {
-        return $this->belongsTo('Modules\University\Entities\UnAcademicYear', 'un_academic_id', 'id')->withDefault();
+        return $this->belongsTo('Modules\University\Entities\UnAcademicYear', 'un_church_year_id', 'id')->withDefault();
     }
     public function unSemester()
     {

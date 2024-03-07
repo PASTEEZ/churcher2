@@ -53,7 +53,7 @@
                                     <select class="niceSelect new_test w-100 bb form-control {{ @$errors->has('class') ? ' is-invalid' : '' }}" name="class" id="classSelectStudent">
                                         <option data-display="@lang('common.select_class')" value="">@lang('common.select_class')</option>
                                         @foreach($classes as $class)
-                                            <option value="{{$class->id}}" {{old('class')? 'selected':''}}>{{$class->class_name}}</option>
+                                            <option value="{{$class->id}}" {{old('class')? 'selected':''}}>{{$class->age_group_name}}</option>
                                         @endforeach
                                     </select>
                                 

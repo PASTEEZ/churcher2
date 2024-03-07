@@ -19,22 +19,22 @@ class CreateSchoolModulesTable extends Migration
             $table->string('module_name')->nullable();         
             $table->integer('updated_by')->nullable();
             $table->tinyInteger('active_status')->default(1);
-            $table->integer('school_id')->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_id')->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
             
-            $table->integer('academic_id')->nullable()->unsigned();
-            $table->foreign('academic_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
+            $table->integer('church_year_id')->nullable()->unsigned();
+            $table->foreign('church_year_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
             $table->timestamps();
         });
 
         if(moduleStatusCheck('Lead')){
             $schools = \App\SmSchool::all();
             foreach($schools as $school){
-                $exists = SchoolModule::where('school_id', $school->id)->first();
+                $exists = SchoolModule::where('church_id', $school->id)->first();
                 if (!$exists){
                     $settings = new SchoolModule;
                     $settings->module_name ='lead';
-                    $settings->school_id = $school->id;
+                    $settings->church_id = $school->id;
                     $settings->active_status = $school->id == 1 ? 1 : 0;
                     $settings->updated_by = 1;
                     $settings->save();

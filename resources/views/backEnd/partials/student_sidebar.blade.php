@@ -129,7 +129,7 @@
 
 @if(userPermission(22) && menuStatus(22) && isMenuAllowToShow('academics'))
     <li data-position="{{menuPosition(22)}}" class="sortable_li">
-        <a href="{{route('student_class_routine')}}">
+        <a href="{{route('member_group_routine')}}">
           
             
             <div class="nav_icon_small">

@@ -125,9 +125,9 @@
                                             @foreach($bank_accounts as $bank_account)
                                             @if(isset($add_expense))
                                             <option value="{{@$bank_account->id}}"
-                                                {{@$add_expense->account_id == @$bank_account->id? 'selected': ''}}>{{@$bank_account->account_name}} ({{@$bank_account->bank_name}})</option>
+                                                {{@$add_expense->account_id == @$bank_account->id? 'selected': ''}}>{{@$bank_account->account_name}} ({{@$bank_account->employer_name}})</option>
                                             @else
-                                            <option value="{{@$bank_account->id}}">{{@$bank_account->account_name}} ({{@$bank_account->bank_name}})</option>
+                                            <option value="{{@$bank_account->id}}">{{@$bank_account->account_name}} ({{@$bank_account->employer_name}})</option>
                                             @endif
                                             @endforeach
                                         </select> 

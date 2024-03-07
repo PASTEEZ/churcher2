@@ -186,7 +186,7 @@
                 <ul class="nav nav-tabs tabs_scroll_nav" role="tablist">
                     @foreach($records as $key => $record)
                         <li class="nav-item">
-                            <a class="nav-link @if($key== 0) active @endif " href="#tab{{$key}}" role="tab" data-toggle="tab">{{$record->class->class_name}} ({{$record->section->section_name}}) </a>
+                            <a class="nav-link @if($key== 0) active @endif " href="#tab{{$key}}" role="tab" data-toggle="tab">{{$record->class->age_group_name}} ({{$record->section->mgender_name}}) </a>
                         </li>
                     @endforeach
                 </ul>

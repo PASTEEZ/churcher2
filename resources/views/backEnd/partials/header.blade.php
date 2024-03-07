@@ -15,10 +15,10 @@
         <link rel="icon" href="{{asset('public/uploads/settings/favicon.png')}}" type="image/png"/>
     @endif
 
-<!-- <title>{{@schoolConfig()->school_name ? @schoolConfig()->school_name : 'Churcher'}} |
+<!-- <title>{{@schoolConfig()->church_name ? @schoolConfig()->church_name : 'Churcher'}} |
         {{schoolConfig()->site_title ? schoolConfig()->site_title : 'Church Management System'}}
         </title> -->
-    <title>{{@schoolConfig()->school_name ? @schoolConfig()->school_name : 'Infix Edu ERP'}} |
+    <title>{{@schoolConfig()->church_name ? @schoolConfig()->church_name : 'Infix Edu ERP'}} |
         @yield('title')
     </title>
 
@@ -167,7 +167,7 @@ if (empty(color_theme())) {
     }
 @endphp
 <input type="text" hidden value="{{ base64_encode($tt) }}" id="logo_img">
-<input type="text" hidden value="{{ $generalSetting->school_name }}" id="logo_title">
+<input type="text" hidden value="{{ $generalSetting->church_name }}" id="logo_title">
 
 <div class="main-wrapper" style="min-height: 600px">
     <input type="hidden" id="nodata" value="@lang('common.no_data_available_in_table')">

@@ -27,8 +27,8 @@ class CreateSmModuleLinksTable extends Migration
             $table->integer('updated_by')->nullable()->default(1)->unsigned();
             $table->foreign('updated_by')->references('id')->on('users')->onDelete('cascade');
 
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
             $table->timestamps();
         });
         
@@ -42,7 +42,7 @@ class CreateSmModuleLinksTable extends Migration
         $modules = ['Dashboard', 'Admin Section', 'Student Information', 'Teacher', 'Fees Collection', 'Accounts', 'Human resource', 'Leave Application', 'Examination', 'Academics', 'HomeWork', 'Communicate', 'Library', 'Inventory', 'Transport', 'Dormitory', 'Reports', 'System Settings', 'Common']; 
         
 
-        $sql = "INSERT INTO `sm_module_links` (`id`, `module_id`, `name`, `route`, `active_status`, `created_by`, `updated_by`, `school_id`, `created_at`, `updated_at`) VALUES
+        $sql = "INSERT INTO `sm_module_links` (`id`, `module_id`, `name`, `route`, `active_status`, `created_by`, `updated_by`, `church_id`, `created_at`, `updated_at`) VALUES
         (1, 1, 'Dashboard Menu','', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22'),
         (2, 1, '➡ Number of Student','', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22'),
         (3, 1, '➡ Number of Teacher', '',1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22'),

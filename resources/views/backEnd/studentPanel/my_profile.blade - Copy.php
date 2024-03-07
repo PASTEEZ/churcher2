@@ -26,7 +26,7 @@
                         <div class="single-meta mt-10">
                             <div class="d-flex justify-content-between">
                                 <div class="name">
-                                    @lang('student.student_name')
+                                    @lang('student.member_name')
                                 </div>
                                 <div class="value">
                                     {{@$student_detail->first_name.' '.@$student_detail->last_name}}
@@ -36,10 +36,10 @@
                         <div class="single-meta">
                             <div class="d-flex justify-content-between">
                                 <div class="name">
-                                    @lang('student.admission_number')
+                                    @lang('student.registration_number')
                                 </div>
                                 <div class="value">
-                                    {{@$student_detail->admission_no}}
+                                    {{@$student_detail->registration_no}}
                                 </div>
                             </div>
                         </div>
@@ -49,7 +49,7 @@
                                     @lang('student.roll_number')
                                 </div>
                                 <div class="value">
-                                     {{@$student_detail->roll_no}}
+                                     {{@$student_detail->member_id_no}}
                                 </div>
                             </div>
                         </div>
@@ -59,7 +59,7 @@
                                     Class
                                 </div>
                                 <div class="value">
-                                   {{@$student_detail->class != ""? @$student_detail->class->class_name:''}} ({{@$student_detail->session_id != ""? @$academic_year->year:''}})
+                                   {{@$student_detail->class != ""? @$student_detail->class->age_group_name:''}} ({{@$student_detail->session_id != ""? @$church_year->year:''}})
                                 </div>
                             </div>
                         </div>
@@ -69,7 +69,7 @@
                                     @lang('common.section')
                                 </div>
                                 <div class="value">
-                                    {{@$student_detail->section != ""? @$student_detail->section->section_name:""}}
+                                    {{@$student_detail->section != ""? @$student_detail->section->mgender_name:""}}
                                 </div>
                             </div>
                         </div>
@@ -110,10 +110,10 @@
                             <div class="single-meta">
                                 <div class="d-flex justify-content-between">
                                     <div class="name">
-                                        @lang('student.admission_number') 
+                                        @lang('student.registration_number') 
                                     </div>
                                     <div class="value">
-                                        {{@$sibling->admission_no}}
+                                        {{@$sibling->registration_no}}
                                     </div>
                                 </div>
                             </div>
@@ -123,7 +123,7 @@
                                         @lang('student.roll_number') 
                                     </div>
                                     <div class="value">
-                                        {{@$sibling->roll_no}}
+                                        {{@$sibling->member_id_no}}
                                     </div>
                                 </div>
                             </div>
@@ -133,7 +133,7 @@
                                         @lang('common.class')
                                     </div>
                                     <div class="value">
-                                    {{@$sibling->class !=""?@$sibling->class->class_name:""}}
+                                    {{@$sibling->class !=""?@$sibling->class->age_group_name:""}}
                                     </div>
                                 </div>
                             </div>
@@ -143,7 +143,7 @@
                                         @lang('common.section') 
                                     </div>
                                     <div class="value">
-                                        {{@$sibling->section !=""?@$sibling->section->section_name:""}}
+                                        {{@$sibling->section !=""?@$sibling->section->mgender_name:""}}
                                     </div>
                                 </div>
                             </div>
@@ -227,13 +227,13 @@
                                     <div class="row">
                                         <div class="col-lg-5 col-md-5">
                                             <div class="">
-                                                @lang('student.admission_date')
+                                                @lang('student.registration_date')
                                             </div>
                                         </div>
 
                                         <div class="col-lg-7 col-md-6">
                                             <div class="">                                                                                
-                                            {{@$student_detail->admission_date != ""? dateConvert(@$student_detail->admission_date):''}}
+                                            {{@$student_detail->registration_date != ""? dateConvert(@$student_detail->registration_date):''}}
                                             </div>
                                         </div>
                                     </div>
@@ -275,13 +275,13 @@
                                     <div class="row">
                                         <div class="col-lg-5 col-md-6">
                                             <div class="">
-                                                @lang('student.religion') 
+                                                @lang('student.marital_status') 
                                             </div>
                                         </div>
 
                                         <div class="col-lg-7 col-md-7">
                                             <div class="">
-                                                {{@$student_detail->religion != ""? @$student_detail->religion->base_setup_name:""}}
+                                                {{@$student_detail->marital_status != ""? @$student_detail->marital_status->base_setup_name:""}}
                                             </div>
                                         </div>
                                     </div>
@@ -574,7 +574,7 @@
                                     <div class="row">
                                         <div class="col-lg-5 col-md-5">
                                             <div class="">
-                                                @lang('student.blood_group')
+                                                @lang('student.region')
                                             </div>
                                         </div>
 
@@ -660,7 +660,7 @@
 
                                         <div class="col-lg-7 col-md-6">
                                             <div class="">
-                                                {{isset($student_detail->local_id_no)? @$student_detail->local_id_no: ''}}
+                                                {{isset($student_detail->communicant)? @$student_detail->communicant: ''}}
                                             </div>
                                         </div>
                                     </div>
@@ -676,7 +676,7 @@
 
                                         <div class="col-lg-7 col-md-6">
                                             <div class="">
-                                                {{isset($student_detail->bank_account_no)? @$student_detail->bank_account_no: ''}}
+                                                {{isset($student_detail->day_born)? @$student_detail->day_born: ''}}
                                             </div>
                                         </div>
                                     </div>
@@ -686,13 +686,13 @@
                                     <div class="row">
                                         <div class="col-lg-5 col-md-5">
                                             <div class="">
-                                                @lang('accounts.bank_name')
+                                                @lang('accounts.employer_name')
                                             </div>
                                         </div>
 
                                         <div class="col-lg-7 col-md-6">
                                             <div class="">
-                                                {{isset($student_detail->bank_name)? @$student_detail->bank_name: ''}}
+                                                {{isset($student_detail->employer_name)? @$student_detail->employer_name: ''}}
                                             </div>
                                         </div>
                                     </div>
@@ -702,13 +702,13 @@
                                     <div class="row">
                                         <div class="col-lg-5 col-md-5">
                                             <div class="">
-                                                @lang('student.ifsc_code')
+                                                @lang('student.baptism_status')
                                             </div>
                                         </div>
 
                                         <div class="col-lg-7 col-md-6">
                                             <div class="">
-                                                {{isset($student_detail->ifsc_code)? @$student_detail->ifsc_code: ''}}
+                                                {{isset($student_detail->baptism_status)? @$student_detail->baptism_status: ''}}
                                             </div>
                                         </div>
                                     </div>
@@ -761,14 +761,14 @@
                                         @php
                                             @$discount_amount = $fees_assigned->applied_discount;
                                             @$total_discount += @$discount_amount;
-                                            @$student_id = @$fees_assigned->student_id;
+                                            @$member_id = @$fees_assigned->member_id;
                                         @endphp
                                         @php
-                                            @$paid = App\SmFeesAssign::discountSum(@$fees_assigned->student_id, @$fees_assigned->feesGroupMaster->feesTypes->id, 'amount');
+                                            @$paid = App\SmFeesAssign::discountSum(@$fees_assigned->member_id, @$fees_assigned->feesGroupMaster->feesTypes->id, 'amount');
                                             @$total_grand_paid += @$paid;
                                         @endphp
                                         @php
-                                            @$fine = App\SmFeesAssign::discountSum(@$fees_assigned->student_id, @$fees_assigned->feesGroupMaster->feesTypes->id, 'fine');
+                                            @$fine = App\SmFeesAssign::discountSum(@$fees_assigned->member_id, @$fees_assigned->feesGroupMaster->feesTypes->id, 'fine');
                                             @$total_fine += @$fine;
                                         @endphp
                                             
@@ -818,7 +818,7 @@
                                         </td>
                                     </tr>
                                         @php 
-                                            @$payments = App\SmFeesAssign::feesPayment(@$fees_assigned->feesGroupMaster->feesTypes->id, @$fees_assigned->student_id);
+                                            @$payments = App\SmFeesAssign::feesPayment(@$fees_assigned->feesGroupMaster->feesTypes->id, @$fees_assigned->member_id);
                                             $i = 0;
                                         @endphp
 
@@ -1125,16 +1125,16 @@
                                                                     if($result == 0 && $grand_total_marks != 0){
                                                                         $gpa_point=number_format($final_gpa_point, 2, '.', '');
                                                                         if($gpa_point >= $maxgpa){
-                                                                            $average_grade_max = App\SmMarksGrade::where('school_id',Auth::user()->school_id)
-                                                                            ->where('academic_id', getAcademicId() )
+                                                                            $average_grade_max = App\SmMarksGrade::where('church_id',Auth::user()->church_id)
+                                                                            ->where('church_year_id', getAcademicId() )
                                                                             ->where('from', '<=', $maxgpa )
                                                                             ->where('up', '>=', $maxgpa )
                                                                             ->first('grade_name');
 
                                                                             echo  @$average_grade_max->grade_name;
                                                                         } else {
-                                                                            $average_grade = App\SmMarksGrade::where('school_id',Auth::user()->school_id)
-                                                                            ->where('academic_id', getAcademicId() )
+                                                                            $average_grade = App\SmMarksGrade::where('church_id',Auth::user()->church_id)
+                                                                            ->where('church_year_id', getAcademicId() )
                                                                             ->where('from', '<=', $final_gpa_point )
                                                                             ->where('up', '>=', $final_gpa_point )
                                                                             ->first('grade_name');
@@ -1253,7 +1253,7 @@
                                                     $now =  strtotime("now");
                                                 @endphp
                                                 @if($now >= $endTime)
-                                                <a class="btn btn-success modalLink" data-modal-size="modal-lg" title="Answer Script"  href="{{route('student_answer_script', [@$result_view->online_exam_id, @$result_view->student_id])}}" >@lang('exam.answer_script')</a>
+                                                <a class="btn btn-success modalLink" data-modal-size="modal-lg" title="Answer Script"  href="{{route('student_answer_script', [@$result_view->online_exam_id, @$result_view->member_id])}}" >@lang('exam.answer_script')</a>
                                                         
                                                 @else
                                                     <span class="btn primary-btn small  fix-gr-bg" style="background:blue">@lang('exam.Wait_Till_Exam_Finish')</span>
@@ -1290,7 +1290,7 @@
                                     <tbody class="d-block">
                                         @if($student_detail->document_file_1 != "")
                                         <tr class="d-flex">
-                                            <td class="col-2">{{$student_detail->document_title_1}} </td>
+                                            <td class="col-2">{{$student_detail->group_1}} </td>
                                             <td class="col-6">{{showDocument(@$student_detail->document_file_1)}}</td>
                                             <td class="col-4 d-flex align-items-center">
                                                 @if(userPermission(17))
@@ -1309,7 +1309,7 @@
                                         @endif
                                         @if($student_detail->document_file_2 != "")
                                         <tr class="d-flex">
-                                            <td class="col-2">{{$student_detail->document_title_2}}</td>
+                                            <td class="col-2">{{$student_detail->group_2}}</td>
                                             <td class="col-6">{{showDocument(@$student_detail->document_file_2)}}</td>
                                             <td class="col-4 d-flex align-items-center">
                                                 @if(userPermission(17))
@@ -1328,7 +1328,7 @@
                                         @endif
                                         @if($student_detail->document_file_3 != "")
                                         <tr class="d-flex">
-                                            <td class="col-2">{{$student_detail->document_title_3}}</td>
+                                            <td class="col-2">{{$student_detail->group_3}}</td>
                                             <td class="col-6">{{showDocument(@$student_detail->document_file_3)}}</td>
                                             <td class="col-4 d-flex align-items-center">
                                                 @if(userPermission(17))
@@ -1347,7 +1347,7 @@
                                         @endif
                                         @if($student_detail->document_file_4 != "")
                                         <tr class="d-flex">
-                                            <td class="col-2">{{$student_detail->document_title_4}}</td>
+                                            <td class="col-2">{{$student_detail->group_4}}</td>
                                             <td class="col-6">{{showDocument(@$student_detail->document_file_4)}}</td>
                                             <td class="col-4 d-flex align-items-center">
                                                 @if(userPermission(17))
@@ -1380,7 +1380,7 @@
                                                         <div class="mt-40 d-flex justify-content-between">
                                                             <form action="{{route('student_document_delete')}}" method="POST">
                                                                 @csrf
-                                                                <input type="hidden" name="student_id" >
+                                                                <input type="hidden" name="member_id" >
                                                                 <input type="hidden" name="doc_id">
                                                                 <button type="button" class="primary-btn tr-bg" data-dismiss="modal">@lang('common.cancel')</button>
                                                                 <button type="submit" class="primary-btn fix-gr-bg">@lang('common.delete')</button>
@@ -1457,7 +1457,7 @@
                                             {{ Form::open(['class' => 'form-horizontal', 'files' => true, 'route' => 'student_upload_document', 'method' => 'POST', 'enctype' => 'multipart/form-data', 'name' => 'document_upload']) }}
                                                 <div class="row">
                                                     <div class="col-lg-12">
-                                                        <input type="hidden" name="student_id" value="{{@$student_detail->id}}">
+                                                        <input type="hidden" name="member_id" value="{{@$student_detail->id}}">
                                                         <div class="row mt-25">
                                                             <div class="col-lg-12">
                                                                 <div class="input-effect">
@@ -1574,7 +1574,7 @@
                     {{ Form::open(['class' => 'form-horizontal', 'files' => true, 'route' => 'student_timeline_store', 'method' => 'POST', 'enctype' => 'multipart/form-data', 'name' => 'document_upload']) }}
                         <div class="row">
                             <div class="col-lg-12">
-                                <input type="hidden" name="student_id" value="{{@$student_detail->id}}">
+                                <input type="hidden" name="member_id" value="{{@$student_detail->id}}">
                                 <div class="row mt-25">
                                     <div class="col-lg-12">
                                         <div class="input-effect">
@@ -1674,7 +1674,7 @@
 
     function deleteDoc(id,doc){
         var modal = $('#delete-doc');
-         modal.find('input[name=student_id]').val(id)
+         modal.find('input[name=member_id]').val(id)
          modal.find('input[name=doc_id]').val(doc)
          modal.modal('show');
     }

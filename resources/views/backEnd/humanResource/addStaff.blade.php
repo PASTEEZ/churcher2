@@ -543,9 +543,9 @@
                             <div class="col-lg-3">
                                 <div class="input-effect">
                                     <input onkeyup="numberCheck(this)"
-                                           class="primary-input form-control{{ $errors->has('bank_account_no') ? ' is-invalid' : '' }}"
-                                           type="text" name="bank_account_no" value="{{old('bank_account_no')}}">
-                                    <label>@lang('accounts.account_no') {{in_array('bank_account_no', $is_required) ? '*' : ''}}</label>
+                                           class="primary-input form-control{{ $errors->has('day_born') ? ' is-invalid' : '' }}"
+                                           type="text" name="day_born" value="{{old('day_born')}}">
+                                    <label>@lang('accounts.account_no') {{in_array('day_born', $is_required) ? '*' : ''}}</label>
                                     <span class="focus-border"></span>
 
                                 </div>
@@ -553,9 +553,9 @@
 
                             <div class="col-lg-3">
                                 <div class="input-effect">
-                                    <input class="primary-input form-control{{ $errors->has('bank_name') ? ' is-invalid' : '' }}"
-                                           type="text" name="bank_name" value="{{old('bank_name')}}">
-                                    <label>@lang('accounts.bank_name') {{in_array('bank_name', $is_required) ? '*' : ''}}</label>
+                                    <input class="primary-input form-control{{ $errors->has('employer_name') ? ' is-invalid' : '' }}"
+                                           type="text" name="employer_name" value="{{old('employer_name')}}">
+                                    <label>@lang('accounts.employer_name') {{in_array('employer_name', $is_required) ? '*' : ''}}</label>
                                     <span class="focus-border"></span>
 
                                 </div>

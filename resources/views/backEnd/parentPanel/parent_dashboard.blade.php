@@ -24,23 +24,23 @@
                         @php
                             $student_detail=$children;
 
-                            $totalSubjects = $student_detail->assignSubjects->where('academic_id', generalSetting()->session_id);
+                            $totalSubjects = $student_detail->assignSubjects->where('church_year_id', generalSetting()->session_id);
 
-                            $online_exams = $student_detail->studentOnlineExams->where('academic_id', generalSetting()->session_id);
+                            $online_exams = $student_detail->studentOnlineExams->where('church_year_id', generalSetting()->session_id);
 
-                            $teachers =  $student_detail->assignSubject->where('academic_id', generalSetting()->session_id);
+                            $teachers =  $student_detail->assignSubject->where('church_year_id', generalSetting()->session_id);
 
                             $issueBooks = $student_detail->bookIssue;
-                            $exams = $student_detail->examSchedule->where('academic_id', generalSetting()->session_id) ;
+                            $exams = $student_detail->examSchedule->where('church_year_id', generalSetting()->session_id) ;
 
                             $homeworkLists = 0;
                             
                             foreach($student_detail->studentRecords as $record){
                                 $homeworkLists += $record->getHomeWorkAttribute()->count();   
                             }
-                                // ->where('academic_id', generalSetting()->session_id) ;
+                                // ->where('church_year_id', generalSetting()->session_id) ;
 
-                            $attendances =  $student_detail->studentAttendances->where('academic_id', generalSetting()->session_id)
+                            $attendances =  $student_detail->studentAttendances->where('church_year_id', generalSetting()->session_id)
 
                         @endphp
                     </div>

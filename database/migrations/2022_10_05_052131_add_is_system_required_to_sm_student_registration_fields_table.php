@@ -24,7 +24,7 @@ class AddIsSystemRequiredToSmStudentRegistrationFieldsTable extends Migration
 
         $all_schools = SmSchool::get();
         foreach ($all_schools as $school) {
-            SmStudentRegistrationField::where('school_id', $school->id)->whereIn('field_name', $required_fields)->update(['is_required' => 1, 'is_system_required' => 1]);
+            SmStudentRegistrationField::where('church_id', $school->id)->whereIn('field_name', $required_fields)->update(['is_required' => 1, 'is_system_required' => 1]);
         }
     }
 

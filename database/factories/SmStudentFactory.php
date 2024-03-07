@@ -25,11 +25,11 @@ class SmStudentFactory extends Factory
     {
         $i=$this->i++;
         return [   
-                'admission_no'            => $this->faker->numberBetween($min = 10000, $max = 90000),
-                'roll_no'                 => $this->faker->numberBetween($min = 10000, $max = 90000),          
+                'registration_no'            => $this->faker->numberBetween($min = 10000, $max = 90000),
+                'member_id_no'                 => $this->faker->numberBetween($min = 10000, $max = 90000),          
                 'student_category_id'     => 1,  
                 'session_id'              => 1,
-                'caste'                   => 'Asian',
+                'home_town'                   => 'Asian',
                 'bloodgroup_id'           => 3,
                 //transport section
                 'religion_id'             => rand(1,2),
@@ -41,15 +41,15 @@ class SmStudentFactory extends Factory
                 'full_name'               => $this->faker->userName,
 
                 'date_of_birth'           => $this->faker->date($format = 'Y-m-d', $max = 'now'),
-                'admission_date'          => $this->faker->date($format = 'Y-m-d', $max = 'now'),
+                'registration_date'          => $this->faker->date($format = 'Y-m-d', $max = 'now'),
 
                 'gender_id'               =>1,
                 'role_id'                 =>2,
                 'email'                   =>  'student_'. uniqid() .'@infixedu.com',
                 'mobile'                  => '+8801234567' . $i,
-                'bank_account_no'         => '+8801234567' . $i,
+                'day_born'         => '+8801234567' . $i,
 
-                'bank_name'               => 'DBBL',               
+                'employer_name'               => 'DBBL',               
                 'current_address'         => 'Bangladesh',
                 'previous_school_details' => 'Bangladesh',
                 'aditional_notes'         => 'Bangladesh',

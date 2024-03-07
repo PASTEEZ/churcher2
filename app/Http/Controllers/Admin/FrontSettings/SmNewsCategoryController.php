@@ -25,7 +25,7 @@ class SmNewsCategoryController extends Controller
     {
 
         try{
-            $newsCategories = SmNewsCategory::where('school_id', app('school')->id)->get();
+            $newsCategories = SmNewsCategory::where('church_id', app('school')->id)->get();
             return view('backEnd.frontSettings.news.news_category', compact('newsCategories'));
         }catch (\Exception $e) {
            Toastr::error('Operation Failed', 'Failed');
@@ -40,7 +40,7 @@ class SmNewsCategoryController extends Controller
         try{
             $news_category = new SmNewsCategory();
             $news_category->category_name = $request->category_name;
-            $news_category->school_id = app('school')->id;
+            $news_category->church_id = app('school')->id;
             $news_category->save();
            
            Toastr::success('Operation successful', 'Success');
@@ -55,7 +55,7 @@ class SmNewsCategoryController extends Controller
     public function edit($id)
     {
         try{
-            $newsCategories = SmNewsCategory::where('school_id', app('school')->id)->get();
+            $newsCategories = SmNewsCategory::where('church_id', app('school')->id)->get();
             $editData = SmNewsCategory::find($id);
             return view('backEnd.frontSettings.news.news_category', compact('newsCategories', 'editData'));
         }catch (\Exception $e) {
@@ -71,7 +71,7 @@ class SmNewsCategoryController extends Controller
         try{
             $news_category = SmNewsCategory::find($request->id);
             $news_category->category_name = $request->category_name;
-            $news_category->school_id = app('school')->id;
+            $news_category->church_id = app('school')->id;
             $news_category->save();
           
             Toastr::success('Operation successful', 'Success');

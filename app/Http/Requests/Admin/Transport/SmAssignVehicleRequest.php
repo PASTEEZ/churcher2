@@ -24,9 +24,9 @@ class SmAssignVehicleRequest extends FormRequest
      */
     public function rules()
     {
-        $school_id=auth()->user()->school_id;
+        $church_id=auth()->user()->church_id;
         return [
-            'route' => ['required', Rule::unique('sm_assign_vehicles', 'route_id')->where('school_id', $school_id)->ignore($this->id) ],
+            'route' => ['required', Rule::unique('sm_assign_vehicles', 'route_id')->where('church_id', $church_id)->ignore($this->id) ],
             'vehicles' => 'required|array',
         ];
     }

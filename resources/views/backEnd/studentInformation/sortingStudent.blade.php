@@ -18,9 +18,9 @@
     <section class="admin-visitor-area up_admin_visitor">
         <div class="container-fluid p-0">
            
-            <input type="hidden" id="academic_id" value="{{getAcademicId()}}">
-            <input type="hidden" id="class_id" value="{{@$class_id}}">
-            <input type="hidden" id="section_id" value="{{@$section_id}}">
+            <input type="hidden" id="church_year_id" value="{{getAcademicId()}}">
+            <input type="hidden" id="age_group_id" value="{{@$age_group_id}}">
+            <input type="hidden" id="mgender_id" value="{{@$mgender_id}}">
             {{-- @if (@$students) --}}
             <div class="row mt-40 full_wide_table">
                 <div class="col-lg-12">
@@ -34,7 +34,7 @@
                             <table id="table_id" class="display data-table school-table" cellspacing="0" width="100%">
                                 <thead>
                                 <tr>
-                                    <th>@lang('student.admission_no')</th>                                 
+                                    <th>@lang('student.registration_no')</th>                                 
                                     <th>@lang('student.name')</th>    
                                     @if(!moduleStatusCheck('University') && generalSetting()->with_guardian)                               
                                         <th>@lang('student.father_name')</th>
@@ -101,14 +101,14 @@
                 "ajax": $.fn.dataTable.pipeline( {
                     url: "{{url('student-list-datatable')}}",
                     data: {
-                        academic_year:$('#academic_id').val(),
-                        class:  $('#class_id').val(),
-                        section: $('#section_id').val(),
+                        church_year:$('#church_year_id').val(),
+                        class:  $('#age_group_id').val(),
+                        section: $('#mgender_id').val(),
                     },
                     pages: "{{generalSetting()->ss_page_load}}" // number of pages to cache
                 } ),
                 columns: [
-                    {data: 'admission_no', name: 'admission_no'},                  
+                    {data: 'registration_no', name: 'registration_no'},                  
                     {data: 'full_name', name: 'full_name'},  
                     @if(!moduleStatusCheck('University') && generalSetting()->with_guardian)                 
                      {data: 'parents.fathers_name', name: 'parents.fathers_name'},

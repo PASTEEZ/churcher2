@@ -100,10 +100,10 @@
                                         <p>@lang('study.all_classes')</p>
                                     @endif
                                     @if ($ContentDetails->class != "")
-                                        <p>@lang('common.class'): {{$ContentDetails->classes->class_name}}</p>
+                                        <p>@lang('common.class'): {{$ContentDetails->classes->age_group_name}}</p>
                                     @endif
                                     @if ($ContentDetails->section != "")
-                                        <p>@lang('common.section'): {{$ContentDetails->sections->section_name}}</p>
+                                        <p>@lang('common.section'): {{$ContentDetails->sections->mgender_name}}</p>
                                     @endif
 
                                     @if ($ContentDetails->section ==null)

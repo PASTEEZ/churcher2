@@ -52,7 +52,7 @@
         {{-- <table id="table_id" class="table table-bordered data-table"> --}}
             <thead>
                 <tr>
-                    <th>@lang('student.admission_no')</th>
+                    <th>@lang('student.registration_no')</th>
                     <th>@lang('student.name')</th>
                    
                     <th>@lang('student.id_number')</th>
@@ -89,10 +89,10 @@ $(document).ready(function() {
                         
                     } ),
                     columns: [
-                            {data: 'admission_no', name: 'admission_no'},
+                            {data: 'registration_no', name: 'registration_no'},
                             {data: 'full_name', name: 'full_name'},
                           
-                            {data: 'roll_no', name: 'roll_no'},
+                            {data: 'member_id_no', name: 'member_id_no'},
                              
                                 {data: 'parents.fathers_name', name: 'parents.fathers_name'},
                                 

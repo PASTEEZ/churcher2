@@ -92,7 +92,7 @@
                                         <div class="input-effect">
                                             <select class="niceSelect w-100 bb form-control{{ $errors->has('bank_id') ? ' is-invalid' : '' }}" name="bank_id" id="account_id">
                                                 @if(isset($editData))
-                                                    <option value="{{$editData->account_id}}" selected>{{@$editData->bankName->account_name}} ({{@$editData->bankName->bank_name}})</option>
+                                                    <option value="{{$editData->account_id}}" selected>{{@$editData->bankName->account_name}} ({{@$editData->bankName->employer_name}})</option>
                                                 @endif
                                                 </select>
                                                 <span class="focus-border"></span>

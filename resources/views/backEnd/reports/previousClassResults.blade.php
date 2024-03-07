@@ -140,8 +140,8 @@
                                 <div class="col-lg-4 col-xl-5 col-md-4 col-sm-8"> 
                                     <input type="hidden" name="url" id="url" value="{{URL::to('/')}}"> 
                                     <div class="input-effect">
-                                        <input class="primary-input {{ $errors->has('admission_number') ? ' is-invalid' : '' }}" type="text" name="admission_number" value="{{ isset($admission_number)? $admission_number: old('admission_number')}}" >
-                                        <label>@lang('student.admission_number')</label>
+                                        <input class="primary-input {{ $errors->has('registration_number') ? ' is-invalid' : '' }}" type="text" name="registration_number" value="{{ isset($registration_number)? $registration_number: old('registration_number')}}" >
+                                        <label>@lang('student.registration_number')</label>
                                         <span class="focus-border"></span>
                                     </div>
                                     <span class="text-danger validate-textarea-checkbox admission_number_error" role="alert"></span>
@@ -219,8 +219,8 @@
                                 $("#record").find("option").remove();
                                 $("#selectRecordDiv ul").find("li").not(":first").remove();
                                 $.each(item, function (i, record) {
-                                    let className = record.class.class_name;
-                                    let sectionName = record.section.section_name;
+                                    let className = record.class.age_group_name;
+                                    let sectionName = record.section.mgender_name;
                                     let academicYear = record.academic.year;
                                     $("#record").append(
                                         $("<option>", {
@@ -239,7 +239,7 @@
                     }
                 },
                 error: function(xhr) {
-                    $('.admission_number_error').html(xhr.responseJSON.errors.admission_number);
+                    $('.admission_number_error').html(xhr.responseJSON.errors.registration_number);
                 },
                 complete: function() {
                     i--;

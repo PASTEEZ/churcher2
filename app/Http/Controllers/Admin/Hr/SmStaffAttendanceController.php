@@ -33,7 +33,7 @@ class SmStaffAttendanceController extends Controller
 
         try {
             $roles = InfixRole::where('active_status', '=', '1')->whereNotIn('id', [1, 2, 3, 10])->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })
                 ->orderBy('name', 'asc')
                 ->get();
@@ -50,7 +50,7 @@ class SmStaffAttendanceController extends Controller
         try {
             $date = $request->attendance_date;
 
-            $roles = InfixRole::where('active_status', '=', '1')->whereNotIn('id', [1, 2, 3, 10])->whereOr(['school_id', Auth::user()->school_id], ['school_id', 1])->get();
+            $roles = InfixRole::where('active_status', '=', '1')->whereNotIn('id', [1, 2, 3, 10])->whereOr(['church_id', Auth::user()->church_id], ['church_id', 1])->get();
             $role_id = $request->role;
             $staffs = SmStaff::with('DateWiseStaffAttendance', 'roles')
             ->where(function($q) use ($request) {
@@ -78,7 +78,7 @@ class SmStaffAttendanceController extends Controller
             foreach ($request->id as $staff) {
                 $attendance = SmStaffAttendence::where('staff_id', $staff)
                     ->where('attendence_date', date('Y-m-d', strtotime($request->date)))
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->first();
 
                 if ($attendance != "") {
@@ -87,7 +87,7 @@ class SmStaffAttendanceController extends Controller
 
                 $attendance = new SmStaffAttendence();
                 $attendance->staff_id = $staff;
-                $attendance->school_id = Auth::user()->school_id;
+                $attendance->church_id = Auth::user()->church_id;
                 $attendance->attendence_type = $request->attendance[$staff];
                 $attendance->notes = $request->note[$staff];
                 $attendance->attendence_date = date('Y-m-d', strtotime($request->date));
@@ -118,7 +118,7 @@ class SmStaffAttendanceController extends Controller
     {
         $staffs = SmStaff::where('role_id', $request->role_id)
             ->where('active_status', 1)
-            ->where('school_id', Auth::user()->school_id)
+            ->where('church_id', Auth::user()->church_id)
             ->get();
         if ($staffs->isEmpty()) {
             Toastr::error('No Result Found', 'Failed');
@@ -128,8 +128,8 @@ class SmStaffAttendanceController extends Controller
         foreach ($staffs as $staff) {
             $attendance = SmStaffAttendence::where('staff_id', $staff->id)
                 ->where('attendence_date', date('Y-m-d', strtotime($request->date)))
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->first();
 
             if (!empty($attendance) || $request->purpose == "unmark") {
@@ -141,8 +141,8 @@ class SmStaffAttendanceController extends Controller
                 $attendance->notes = "Holiday";
                 $attendance->attendence_date = date('Y-m-d', strtotime($request->date));
                 $attendance->staff_id = $staff->id;
-                $attendance->academic_id = getAcademicId();
-                $attendance->school_id = Auth::user()->school_id;
+                $attendance->church_year_id = getAcademicId();
+                $attendance->church_id = Auth::user()->church_id;
                 $attendance->save();
 
                 $compact['holiday_date'] = date('Y-m-d', strtotime($request->date));
@@ -159,7 +159,7 @@ class SmStaffAttendanceController extends Controller
         try {
             $roles = InfixRole::where('active_status', '=', '1')
                 ->whereNotIn('id', [1, 2, 3, 10])
-                ->whereOr(['school_id', Auth::user()->school_id], ['school_id', 1])
+                ->whereOr(['church_id', Auth::user()->church_id], ['church_id', 1])
                 ->orderBy('name', 'asc')
                 ->get();
 
@@ -184,14 +184,14 @@ class SmStaffAttendanceController extends Controller
 
             $days = cal_days_in_month(CAL_GREGORIAN, $request->month, $request->year);
             $roles = InfixRole::whereNotIn('id', [1, 2, 3, 10])->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
 
-            $staffs = SmStaff::where('role_id', $request->role)->where('school_id', Auth::user()->school_id)->get(['id', 'staff_no']);
+            $staffs = SmStaff::where('role_id', $request->role)->where('church_id', Auth::user()->church_id)->get(['id', 'staff_no']);
 
             $attendances = [];
             foreach ($staffs as $staff) {
-                $attendance = SmStaffAttendence::with('staffInfo')->where('staff_id', $staff->id)->where('attendence_date', 'like', $request->year . '-' . $request->month . '%')->where('school_id', Auth::user()->school_id)->get();
+                $attendance = SmStaffAttendence::with('staffInfo')->where('staff_id', $staff->id)->where('attendence_date', 'like', $request->year . '-' . $request->month . '%')->where('church_id', Auth::user()->church_id)->get();
                 if (count($attendance) != 0) {
                     $attendances[] = $attendance;
                 }
@@ -211,15 +211,15 @@ class SmStaffAttendanceController extends Controller
 
             $days = cal_days_in_month(CAL_GREGORIAN, $month, $year);
             $roles = InfixRole::whereNotIn('id', [1, 2, 3, 10])->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
 
-            $staffs = SmStaff::where('role_id', $role_id)->where('school_id', Auth::user()->school_id)->get();
+            $staffs = SmStaff::where('role_id', $role_id)->where('church_id', Auth::user()->church_id)->get();
             $role = InfixRole::find($role_id);
 
             $attendances = [];
             foreach ($staffs as $staff) {
-                $attendance = SmStaffAttendence::where('staff_id', $staff->id)->where('attendence_date', 'like', $year . '-' . $month . '%')->where('school_id', Auth::user()->school_id)->get();
+                $attendance = SmStaffAttendence::where('staff_id', $staff->id)->where('attendence_date', 'like', $year . '-' . $month . '%')->where('church_id', Auth::user()->church_id)->get();
                 if (count($attendance) != 0) {
                     $attendances[] = $attendance;
                 }
@@ -275,7 +275,7 @@ class SmStaffAttendanceController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
         try {
-            $teacher = SmStaff::where('user_id', $id)->where('school_id', Auth::user()->school_id)->first();
+            $teacher = SmStaff::where('user_id', $id)->where('church_id', Auth::user()->church_id)->first();
 
             $year = $request->year;
             $month = $request->month;
@@ -306,7 +306,7 @@ class SmStaffAttendanceController extends Controller
             $attendances = SmStaffAttendence::where('staff_id', $teacher->id)
                 ->where('attendence_date', 'like', '%' . $request->year . '-' . $month . '%')
                 ->select('attendence_type as attendance_type', 'attendence_date as attendance_date')
-                ->where('school_id', Auth::user()->school_id)->get();
+                ->where('church_id', Auth::user()->church_id)->get();
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -354,7 +354,7 @@ class SmStaffAttendanceController extends Controller
                 $data = SmStaffAttendanceImport::get();
                 if (!empty($data)) {
                     DB::beginTransaction();
-                    $staffs = SmStaff::where('active_status', 1)->where('school_id', Auth::user()->school_id)->get();
+                    $staffs = SmStaff::where('active_status', 1)->where('church_id', Auth::user()->church_id)->get();
                     $all_staff_ids = [];
                     $present_staffs = [];
 
@@ -367,7 +367,7 @@ class SmStaffAttendanceController extends Controller
 
                         foreach ($data as $key => $val) {
                             SmStaffAttendence::where('attendence_date', date('Y-m-d', strtotime($val->attendence_date)))
-                                ->where('school_id', Auth::user()->school_id)
+                                ->where('church_id', Auth::user()->church_id)
                                 ->delete();
                         }
 
@@ -377,7 +377,7 @@ class SmStaffAttendanceController extends Controller
                                     $staff = SmStaff::find($value->staff_id);
                                     $attendance = SmStaffAttendence::where('staff_id', $staff->id)
                                         ->where('attendence_date', date('Y-m-d', strtotime($value->attendence_date)))
-                                        ->where('school_id', Auth::user()->school_id)
+                                        ->where('church_id', Auth::user()->church_id)
                                         ->first();
                                     if ($attendance != "") {
                                         $attendance->delete();
@@ -390,8 +390,8 @@ class SmStaffAttendanceController extends Controller
                                         $import->attendence_date = date('Y-m-d', strtotime($request->attendance_date));
                                         $import->attendence_type = $value->attendance_type;
                                         $import->notes = $value->notes;
-                                        $import->school_id = Auth::user()->school_id;
-                                        $import->academic_id = getAcademicId();
+                                        $import->church_id = Auth::user()->church_id;
+                                        $import->church_year_id = getAcademicId();
                                         $import->save();
                                     }
                                 }
@@ -404,8 +404,8 @@ class SmStaffAttendanceController extends Controller
                                 $import->staff_id = $all_staff_id;
                                 $import->attendence_type = 'A';
                                 $import->attendence_date = date('Y-m-d', strtotime($request->attendance_date));
-                                $import->school_id = Auth::user()->school_id;
-                                $import->academic_id = getAcademicId();
+                                $import->church_id = Auth::user()->church_id;
+                                $import->church_year_id = getAcademicId();
                                 $import->save();
                             }
                         }

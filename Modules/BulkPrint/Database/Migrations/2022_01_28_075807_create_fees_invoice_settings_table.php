@@ -19,12 +19,12 @@ class CreateFeesInvoiceSettingsTable extends Migration
             $table->id();
             $table->integer('per_th')->default(2);
             $table->string('invoice_type')->default('invoice');
-            $table->tinyInteger('student_name')->default(1)->comment('0=No, 1=Yes');
-            $table->tinyInteger('student_section')->default(1)->comment('0=No, 1=Yes');
-            $table->tinyInteger('student_class')->default(1)->comment('0=No, 1=Yes');
+            $table->tinyInteger('member_name')->default(1)->comment('0=No, 1=Yes');
+            $table->tinyInteger('member_gender')->default(1)->comment('0=No, 1=Yes');
+            $table->tinyInteger('member_group')->default(1)->comment('0=No, 1=Yes');
             $table->tinyInteger('student_roll')->default(1)->comment('0=No, 1=Yes');
             $table->tinyInteger('student_group')->default(1)->comment('0=No, 1=Yes');
-            $table->tinyInteger('student_admission_no')->default(1)->comment('0=No, 1=Yes');
+            $table->tinyInteger('member_registration_no')->default(1)->comment('0=No, 1=Yes');
             
             $table->string('footer_1',255)->default('Parent/Student')->nullable();
             $table->string('footer_2',255)->default('Casier');
@@ -53,11 +53,11 @@ class CreateFeesInvoiceSettingsTable extends Migration
             $table->integer('updated_by')->nullable()->default(1)->unsigned();
             $table->foreign('updated_by')->references('id')->on('users')->onDelete('cascade');
 
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
 
-            $table->integer('academic_id')->nullable()->default(1)->unsigned();
-            $table->foreign('academic_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
+            $table->integer('church_year_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_year_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
         });
 
         try {

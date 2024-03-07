@@ -57,15 +57,15 @@ class SmAssignSubjectController extends Controller
         try {
             $staff_info = SmStaff::where('user_id', Auth::user()->id)->first();
             if (teacherAccess()) {
-                $class_id = $request->class;
-                $allSubjects = SmAssignSubject::where([['section_id', '=', $request->id], ['class_id', $class_id], ['teacher_id', $staff_info->id]])->where('school_id', Auth::user()->school_id)->get();
+                $age_group_id = $request->class;
+                $allSubjects = SmAssignSubject::where([['mgender_id', '=', $request->id], ['age_group_id', $age_group_id], ['teacher_id', $staff_info->id]])->where('church_id', Auth::user()->church_id)->get();
                 $subjectsName = [];
                 foreach ($allSubjects as $allSubject) {
                     $subjectsName[] = SmSubject::find($allSubject->subject_id);
                 }
             } else {
-                $class_id = $request->class;
-                $allSubjects = SmAssignSubject::where([['section_id', '=', $request->id], ['class_id', $class_id]])->where('school_id', Auth::user()->school_id)->get();
+                $age_group_id = $request->class;
+                $allSubjects = SmAssignSubject::where([['mgender_id', '=', $request->id], ['age_group_id', $age_group_id]])->where('church_id', Auth::user()->church_id)->get();
 
                 $subjectsName = [];
                 foreach ($allSubjects as $allSubject) {
@@ -97,25 +97,25 @@ class SmAssignSubjectController extends Controller
         try {
 
              $assign_subjects=SmAssignSubject::query();
-            $assign_subjects= $assign_subjects->where('class_id',$request->class);
+            $assign_subjects= $assign_subjects->where('age_group_id',$request->class);
 
             if($request->section !=null){
-                $assign_subjects= $assign_subjects->where('section_id',$request->section);
+                $assign_subjects= $assign_subjects->where('mgender_id',$request->section);
             }
 
-             $assign_subjects=$assign_subjects->where('school_id',Auth::user()->school_id)->get();
+             $assign_subjects=$assign_subjects->where('church_id',Auth::user()->church_id)->get();
            
 
-            $subjects = SmSubject::where('active_status', 1)->where('school_id', Auth::user()->school_id)->where('academic_id', getAcademicId())->get();
+            $subjects = SmSubject::where('active_status', 1)->where('church_id', Auth::user()->church_id)->where('church_year_id', getAcademicId())->get();
             $teachers = SmStaff::where('active_status', 1)
             ->where(function($q)  {                
                 $q->where('role_id', 4)->orWhere('previous_role_id', 4);             
-            })->where('school_id', Auth::user()->school_id)->get();
+            })->where('church_id', Auth::user()->church_id)->get();
          
-            $class_id = $request->class;
-            $section_id = $request->section;
+            $age_group_id = $request->class;
+            $mgender_id = $request->section;
 
-            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -123,12 +123,12 @@ class SmAssignSubjectController extends Controller
                 $data['assign_subjects'] = $assign_subjects->toArray();
                 $data['teachers'] = $teachers->toArray();
                 $data['subjects'] = $subjects->toArray();
-                $data['class_id'] = $class_id;
-                $data['section_id'] = $section_id;
+                $data['age_group_id'] = $age_group_id;
+                $data['mgender_id'] = $mgender_id;
                 return ApiBaseMethod::sendResponse($data, null);
             }
 
-            return view('backEnd.academics.assign_subject_create', compact('classes', 'assign_subjects', 'teachers', 'subjects', 'class_id', 'section_id'));
+            return view('backEnd.academics.assign_subject_create', compact('classes', 'assign_subjects', 'teachers', 'subjects', 'age_group_id', 'mgender_id'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -168,19 +168,19 @@ class SmAssignSubjectController extends Controller
                 if (isset($request->subjects)) {
                     foreach ($request->subjects as $key=>$subject) {
                         if ($subject != "") {                            
-                            if($request->section_id==null){
+                            if($request->mgender_id==null){
                                 $k = 0;
-                                $all_section=SmClassSection::where('class_id',$request->class_id)->get();
+                                $all_section=SmClassSection::where('age_group_id',$request->age_group_id)->get();
                                $t_teacher=count($request->teachers);
                                 foreach($all_section as $section){                                        
                                     $assign_subject = new SmAssignSubject();
-                                    $assign_subject->class_id = $request->class_id;
-                                    $assign_subject->school_id = Auth::user()->school_id;
-                                    $assign_subject->section_id = $section->section_id;
+                                    $assign_subject->age_group_id = $request->age_group_id;
+                                    $assign_subject->church_id = Auth::user()->church_id;
+                                    $assign_subject->mgender_id = $section->mgender_id;
                                     $assign_subject->subject_id = $subject;                            
                                     $assign_subject->teacher_id = $request->teachers[$key];                                
                                     $assign_subject->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
-                                    $assign_subject->academic_id = getAcademicId();
+                                    $assign_subject->church_year_id = getAcademicId();
                                     $assign_subject->save();
                                     event(new CreateClassGroupChat($assign_subject));
                                     $k++;
@@ -188,13 +188,13 @@ class SmAssignSubjectController extends Controller
 
                             }else{
                             $assign_subject = new SmAssignSubject();
-                            $assign_subject->class_id = $request->class_id;
-                            $assign_subject->school_id = Auth::user()->school_id;
-                            $assign_subject->section_id = $request->section_id;
+                            $assign_subject->age_group_id = $request->age_group_id;
+                            $assign_subject->church_id = Auth::user()->church_id;
+                            $assign_subject->mgender_id = $request->mgender_id;
                             $assign_subject->subject_id = $subject;
                             $assign_subject->teacher_id = $request->teachers[$i];
                             $assign_subject->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
-                            $assign_subject->academic_id = getAcademicId();
+                            $assign_subject->church_year_id = getAcademicId();
                             $assign_subject->save();
                             event(new CreateClassGroupChat($assign_subject));
                             $i++;
@@ -203,8 +203,8 @@ class SmAssignSubjectController extends Controller
                     }
                 }
             } elseif ($request->update == 1) {
-                if($request->section_id ==null){
-                    $assign_subjects = SmAssignSubject::where('class_id', $request->class_id)->delete();
+                if($request->mgender_id ==null){
+                    $assign_subjects = SmAssignSubject::where('age_group_id', $request->age_group_id)->delete();
 
                     $i = 0;
                     if (! empty($request->subjects)) {
@@ -213,17 +213,17 @@ class SmAssignSubjectController extends Controller
                             $k = 0;
                             if (!empty($subject)) {
 
-                                $all_section=SmClassSection::where('class_id',$request->class_id)->get();
+                                $all_section=SmClassSection::where('age_group_id',$request->age_group_id)->get();
                                 foreach($all_section as $section){
                          
                                 $assign_subject = new SmAssignSubject();
-                                $assign_subject->class_id = $request->class_id;
-                                $assign_subject->section_id = $section->section_id;
+                                $assign_subject->age_group_id = $request->age_group_id;
+                                $assign_subject->mgender_id = $section->mgender_id;
                                 $assign_subject->subject_id = $subject;
                                 $assign_subject->teacher_id = $request->teachers[$key];
                                 $assign_subject->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
-                                $assign_subject->academic_id = getAcademicId();
-                                $assign_subject->school_id = Auth::user()->school_id;
+                                $assign_subject->church_year_id = getAcademicId();
+                                $assign_subject->church_id = Auth::user()->church_id;
 
                                 
                                 $assign_subject->save();
@@ -235,7 +235,7 @@ class SmAssignSubjectController extends Controller
                     }
 
                 }else{
-                    SmAssignSubject::where('class_id', $request->class_id)->where('section_id', $request->section_id)->delete();
+                    SmAssignSubject::where('age_group_id', $request->age_group_id)->where('mgender_id', $request->mgender_id)->delete();
                
                     $i = 0;
                     if (! empty($request->subjects)) {
@@ -244,13 +244,13 @@ class SmAssignSubjectController extends Controller
                                 
                             if (!empty($subject)) {
                                 $assign_subject = new SmAssignSubject();
-                                $assign_subject->class_id = $request->class_id;
-                                $assign_subject->section_id = $request->section_id;
+                                $assign_subject->age_group_id = $request->age_group_id;
+                                $assign_subject->mgender_id = $request->mgender_id;
                                 $assign_subject->subject_id = $subject;
                                 $assign_subject->teacher_id = $request->teachers[$i];
                                 $assign_subject->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
-                                $assign_subject->academic_id = getAcademicId();
-                                $assign_subject->school_id = Auth::user()->school_id;
+                                $assign_subject->church_year_id = getAcademicId();
+                                $assign_subject->church_id = Auth::user()->church_id;
                                 $result =  $assign_subject->save();
                                 event(new CreateClassGroupChat($assign_subject));
                                 $i++;
@@ -275,20 +275,20 @@ class SmAssignSubjectController extends Controller
             'section' => 'required'
         ]);
         try {
-            $assign_subjects = SmAssignSubject::where('class_id', $request->class)->where('section_id', $request->section)->get();
+            $assign_subjects = SmAssignSubject::where('age_group_id', $request->class)->where('mgender_id', $request->section)->get();
             $subjects = SmSubject::get();
             $teachers = SmStaff::status()->where(function($q)  {
 	            $q->where('role_id', 4)->orWhere('previous_role_id', 4);
             })->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
             if ($assign_subjects->count() == 0) {
                 Toastr::error('No Result Found', 'Failed');
                 return redirect()->back();
                 // return redirect()->back()->with('message-danger', 'No Result Found');
             } else {
-                $class_id = $request->class;
-                return view('backEnd.academics.assign_subject', compact('classes', 'assign_subjects', 'teachers', 'subjects', 'class_id'));
+                $age_group_id = $request->class;
+                return view('backEnd.academics.assign_subject', compact('classes', 'assign_subjects', 'teachers', 'subjects', 'age_group_id'));
             }
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -299,7 +299,7 @@ class SmAssignSubjectController extends Controller
     public function ajaxSelectSubject(Request $request)
     {
         try {
-            $subject_all = SmAssignSubject::where('class_id', '=', $request->class)->where('section_id', $request->section)->distinct('subject_id')->where('school_id', Auth::user()->school_id)->get();
+            $subject_all = SmAssignSubject::where('age_group_id', '=', $request->class)->where('mgender_id', $request->section)->distinct('subject_id')->where('church_id', Auth::user()->church_id)->get();
             $students = [];
             foreach ($subject_all as $allSubject) {
                 $students[] = SmSubject::find($allSubject->subject_id);

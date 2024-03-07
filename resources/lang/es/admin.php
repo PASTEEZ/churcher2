@@ -234,7 +234,7 @@ return [
 
 "mobile" => "Móvil",
 
-"student_id_card" => "Tarjeta de identificación del estudiante",
+"member_id_card" => "Tarjeta de identificación del estudiante",
 
 "id_card_title" => "Título de tarjeta de ID",
 
@@ -244,7 +244,7 @@ return [
 
 "mother" => "Madre",
 
-"blood_group" => "Grupo sanguíneo",
+"region" => "Grupo sanguíneo",
 
 "id_card" => "Tarjeta de identificación",
 
@@ -272,7 +272,7 @@ return [
 
 "are_you_sure_to_remove" => "¿Está seguro de eliminar este elemento?",
 
-"admission_no" => "Admisión no",
+"registration_no" => "Admisión no",
 
 "fill_marks" => "Marcas de relleno",
 
@@ -368,7 +368,7 @@ return [
 
 "is_present" => "Está presente",
 
-"roll_no" => "Número de rollo",
+"member_id_no" => "Número de rollo",
 
 "button_url" => "Botón Url",
 
@@ -410,7 +410,7 @@ return [
 
 "column_view" => "Vista de columna",
 
-"student_name" => "Nombre del estudiante",
+"member_name" => "Nombre del estudiante",
 
 "manu" => "Menú",
 

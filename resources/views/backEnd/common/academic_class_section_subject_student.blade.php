@@ -3,20 +3,20 @@
     $mt = isset($mt) ? $mt : 'mt-30-md';
     $required = $required ?? [];
     $selected = isset($selected) ? $selected : null;
-    $academic_year = $selected && isset($selected['academic_year']) ? $selected['academic_year']: null;
-    $class_id = $selected && isset($selected['class_id']) ? $selected['class_id'] : null;
-    $section_id = $selected && isset($selected['section_id']) ? $selected['section_id'] : null;
+    $church_year = $selected && isset($selected['church_year']) ? $selected['church_year']: null;
+    $age_group_id = $selected && isset($selected['age_group_id']) ? $selected['age_group_id'] : null;
+    $mgender_id = $selected && isset($selected['mgender_id']) ? $selected['mgender_id'] : null;
     $subject_id = $selected && isset($selected['subject_id']) ? $selected['subject_id'] : null;
-    $student_id = $selected && isset($selected['student_id']) ? $selected['student_id'] : null;
+    $member_id = $selected && isset($selected['member_id']) ? $selected['member_id'] : null;
     
-    if($academic_year) {
-        $classes  =  classes($academic_year) ?? null;
-        $sections = $class_id ? sections($class_id, $academic_year) : null;
-        $subjects = $class_id && $section_id ? subjects($class_id, $section_id, $academic_year) : null;
-        $students = $class_id && $section_id ? students($class_id, $section_id, $academic_year) : null;
+    if($church_year) {
+        $classes  =  classes($church_year) ?? null;
+        $sections = $age_group_id ? sections($age_group_id, $church_year) : null;
+        $subjects = $age_group_id && $mgender_id ? subjects($age_group_id, $mgender_id, $church_year) : null;
+        $students = $age_group_id && $mgender_id ? students($age_group_id, $mgender_id, $church_year) : null;
     }else {
-        $sections = $class_id ? sections($class_id) : null;
-        $subjects = $class_id && $section_id ? subjects($class_id, $section_id) : null;
+        $sections = $age_group_id ? sections($age_group_id) : null;
+        $subjects = $age_group_id && $mgender_id ? subjects($age_group_id, $mgender_id) : null;
     }
     $visiable = $visiable ?? [];
 
@@ -24,24 +24,24 @@
 @if(in_array('academic', $visiable))
 <div class="{{ $div . ' ' . $mt }}">
     <div class="input-effect sm2_mb_20 md_mb_20">
-        <select class="niceSelect w-100 bb form-control{{ $errors->has('academic_year') ? ' is-invalid' : '' }} common_academic_year"
-            name="academic_year" id="common_academic_year">
-            <option data-display="@lang('common.academic_year') {{ in_array('academic', $required) ? '*' :'' }}" value="">@lang('common.academic_year') {{ in_array('academic', $required) ? '*' :'' }}
+        <select class="niceSelect w-100 bb form-control{{ $errors->has('church_year') ? ' is-invalid' : '' }} common_church_year"
+            name="church_year" id="common_church_year">
+            <option data-display="@lang('common.church_year') {{ in_array('academic', $required) ? '*' :'' }}" value="">@lang('common.church_year') {{ in_array('academic', $required) ? '*' :'' }}
             </option>
             @isset($sessions)
 
                 @foreach ($sessions as $session)
                     <option value="{{ $session->id }}"
-                        {{ isset($academic_year) && $academic_year == $session->id ? 'selected' : (getAcademicId() == $session->id ? 'selected':'')}}>
+                        {{ isset($church_year) && $church_year == $session->id ? 'selected' : (getAcademicId() == $session->id ? 'selected':'')}}>
                         {{ $session->year }}[{{ $session->title }}]</option>
                 @endforeach
             @endisset
 
         </select>
         <span class="focus-border"></span>
-        @if ($errors->has('academic_year'))
+        @if ($errors->has('church_year'))
             <span class="invalid-feedback invalid-select d-block" role="alert">
-                <strong>{{ $errors->first('academic_year') }}</strong>
+                <strong>{{ $errors->first('church_year') }}</strong>
             </span>
         @endif
     </div>
@@ -50,12 +50,12 @@
 @if(in_array('class', $visiable))
 <div class="{{ $div . ' ' . $mt }}" id="common_select_class_div">
     <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="common_select_class"
-        name="class_id">
+        name="age_group_id">
         <option data-display="@lang('common.select_class') {{ in_array('class', $required) ? ' *':'' }}" value="">@lang('common.select_class') {{ in_array('class', $required) ? ' *':'' }}</option>
         @if (isset($classes))
             @foreach ($classes as $class)
-                <option value="{{ $class->id }}" {{ isset($class_id) ? ($class_id == $class->id ? 'selected' : '') : '' }}>
-                    {{ $class->class_name }}</option>
+                <option value="{{ $class->id }}" {{ isset($age_group_id) ? ($age_group_id == $class->id ? 'selected' : '') : '' }}>
+                    {{ $class->age_group_name }}</option>
             @endforeach
         @endif
     </select>
@@ -63,9 +63,9 @@
         <img class="loader_img_style" src="{{asset('public/backEnd/img/demo_wait.gif')}}" alt="loader">
     </div>
     <span class="focus-border"></span>
-    @if ($errors->has('class_id'))
+    @if ($errors->has('age_group_id'))
         <span class="invalid-feedback invalid-select d-block" role="alert">
-            <strong>{{ $errors->first('class_id') }}</strong>
+            <strong>{{ $errors->first('age_group_id') }}</strong>
         </span>
     @endif
 </div>
@@ -73,12 +73,12 @@
 @if(in_array('section', $visiable))
 <div class="{{ $div . ' ' . $mt }}" id="common_select_section_div">
     <select class="w-100 bb niceSelect form-control{{ $errors->has('section') ? ' is-invalid' : '' }} select_section"
-        id="common_select_section" name="section_id">
+        id="common_select_section" name="mgender_id">
         <option data-display="@lang('common.select_section') {{ in_array('section', $required) ? '*' :'' }}" value="">@lang('common.select_section') {{ in_array('section', $required) ? '*' :'' }}</option>
         @isset($sections)
             @foreach ($sections as $section)
                 <option value="{{ $section->id }}"
-                    {{ isset($section_id) ? ($section_id == $section->section_id ? 'selected' : '') : '' }}>{{ $section->sectionName->section_name }}
+                    {{ isset($mgender_id) ? ($mgender_id == $section->mgender_id ? 'selected' : '') : '' }}>{{ $section->sectionName->mgender_name }}
                 </option>
             @endforeach
         @endisset
@@ -88,9 +88,9 @@
     </div>
     <span class="focus-border"></span>
 
-    @if ($errors->has('section_id'))
+    @if ($errors->has('mgender_id'))
         <span class="invalid-feedback invalid-select d-block" role="alert">
-            <strong>{{ $errors->first('section_id') }}</strong>
+            <strong>{{ $errors->first('mgender_id') }}</strong>
         </span>
     @endif
 </div>
@@ -129,7 +129,7 @@
         @isset($students)
             @foreach ($students as $student)
                 <option value="{{ $student->id }}"
-                    {{ isset($student_id) ? ($student_id == $student->id ? 'selected' : '') : '' }}>
+                    {{ isset($member_id) ? ($member_id == $student->id ? 'selected' : '') : '' }}>
                     {{ $student->full_name }}
                 </option>
             @endforeach
@@ -156,7 +156,7 @@
         let section_required = "{{ in_array('section', $required) ? ' *' :'' }}";
         let subject_required = "{{ in_array('subject', $required) ? ' *' :'' }}";
         let student_required = "{{ in_array('student', $required) ? ' *' :'' }}";
-        $("#common_academic_year").on(
+        $("#common_church_year").on(
             "change",
             function() {
                 var url = $("#url").val();
@@ -189,7 +189,7 @@
                                 $("#common_select_class").append(
                                     $("<option>", {
                                         value: className.id,
-                                        text: className.class_name,
+                                        text: className.age_group_name,
                                     })
                                 );
                             });
@@ -239,7 +239,7 @@
                                 $("#common_select_section").append(
                                     $("<option>", {
                                         value: section.id,
-                                        text: section.section_name,
+                                        text: section.mgender_name,
                                     })
                                 );
                             });

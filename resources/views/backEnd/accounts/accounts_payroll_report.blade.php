@@ -103,7 +103,7 @@
                                         <td>
                                         {{@$payroll_info->paymentMethod->method}}
                                         @if(@$payroll_info->payment_method_id==3)
-                                        ({{@$payroll_info->account->bank_name}})
+                                        ({{@$payroll_info->account->employer_name}})
                                         @endif
                                         </td>
                                         <td>{{currency_format(@$payroll_info->amount)}}</td>

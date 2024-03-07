@@ -116,7 +116,7 @@
 #[GET] api/fees-discount-assign/{id}
 #[POST] api/fees-discount-assign-search
 #[GET] api/fees-discount-assign-store
-#[GET] api/fees-generate-modal/{amount}/{student_id}/{type}
+#[GET] api/fees-generate-modal/{amount}/{member_id}/{type}
 #[GET] api/fees-discount-amount-search
 #[POST] api/fees-payment-delete
 #[GET] api/fees-forward
@@ -447,10 +447,10 @@ Skipping route: [DELETE] api/assign-vehicle/{assign_vehicle}: Controller method 
 #[GET] api/academic-year
 Skipping route: [GET] api/academic-year/create: Controller method does not exist.
 #[POST] api/academic-year
-#[GET] api/academic-year/{academic_year}
-#[GET] api/academic-year/{academic_year}/edit
-#[PUT,PATCH] api/academic-year/{academic_year}
-#[DELETE] api/academic-year/{academic_year}
+#[GET] api/academic-year/{church_year}
+#[GET] api/academic-year/{church_year}/edit
+#[PUT,PATCH] api/academic-year/{church_year}
+#[DELETE] api/academic-year/{church_year}
 #[GET] api/session
 #[GET] api/session/create
 #[POST] api/session

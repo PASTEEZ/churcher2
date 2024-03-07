@@ -20,8 +20,8 @@ class CreateSmOnlineExamMarksTable extends Migration
             $table->tinyInteger('active_status')->default(1);
             $table->timestamps();
 
-            $table->integer('student_id')->nullable()->unsigned();
-            $table->foreign('student_id')->references('id')->on('sm_students')->onDelete('cascade');
+            $table->integer('member_id')->nullable()->unsigned();
+            $table->foreign('member_id')->references('id')->on('sm_students')->onDelete('cascade');
 
             $table->integer('subject_id')->nullable()->unsigned();
             $table->foreign('subject_id')->references('id')->on('sm_subjects')->onDelete('cascade');
@@ -33,11 +33,11 @@ class CreateSmOnlineExamMarksTable extends Migration
 
             $table->integer('updated_by')->nullable()->default(1)->unsigned();
 
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
             
-            $table->integer('academic_id')->nullable()->default(1)->unsigned();
-            $table->foreign('academic_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
+            $table->integer('church_year_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_year_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
         });
     }
 

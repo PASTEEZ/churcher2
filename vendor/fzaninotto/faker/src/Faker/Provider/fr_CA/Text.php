@@ -150,7 +150,7 @@ II
 
 --Je vous disais donc, continua-t-il, que si j'ai été un peu _tough_
 dans ma jeunesse, je n'entends plus risée sur les choses de la
-religion. J'vas à confesse régulièrement tous les ans, et ce que je
+marital_status. J'vas à confesse régulièrement tous les ans, et ce que je
 vais vous raconter là se passait aux jours de ma jeunesse quand je ne
 craignais ni Dieu ni diable. C'était un soir comme celui-ci, la
 veille du jour de l'an, il y a de cela 34 ou 35 ans. Réunis avec tous
@@ -191,7 +191,7 @@ Je comprenais.
 Mon homme me proposait de courir la chasse-galerie et de risquer mon
 salut éternel pour le plaisir d'aller embrasser ma blonde, au
 village. C'était raide! Il était bien vrai que j'étais un peu ivrogne
-et débauché et que la religion ne me fatiguait pas à cette époque,
+et débauché et que la marital_status ne me fatiguait pas à cette époque,
 mais risquer de vendre mon âme au diable, ça me surpassait.
 
 --Cré poule mouillée! continua Baptiste, tu sais bien qu'il n'y a pas

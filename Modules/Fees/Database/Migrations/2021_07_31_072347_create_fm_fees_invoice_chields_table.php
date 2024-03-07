@@ -26,8 +26,8 @@ class CreateFmFeesInvoiceChieldsTable extends Migration
             $table->float('service_charge')->nullable();
             $table->float('due_amount')->nullable();
             $table->string('note')->nullable();
-            $table->integer('school_id')->nullable();
-            $table->integer('academic_id')->nullable();
+            $table->integer('church_id')->nullable();
+            $table->integer('church_year_id')->nullable();
             $table->timestamps();
         });
     }

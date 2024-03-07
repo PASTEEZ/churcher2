@@ -20,7 +20,7 @@ use PayPal\Common\PayPalModel;
  * @property string check_type
  * @property string auth_type
  * @property string auth_capture_timestamp
- * @property string bank_name
+ * @property string employer_name
  * @property string country_code
  * @property string first_name
  * @property string last_name
@@ -252,13 +252,13 @@ class BankAccount extends PayPalModel
     /**
      * Name of the bank.
      *
-     * @param string $bank_name
+     * @param string $employer_name
      * 
      * @return $this
      */
-    public function setBankName($bank_name)
+    public function setBankName($employer_name)
     {
-        $this->bank_name = $bank_name;
+        $this->employer_name = $employer_name;
         return $this;
     }
 
@@ -269,7 +269,7 @@ class BankAccount extends PayPalModel
      */
     public function getBankName()
     {
-        return $this->bank_name;
+        return $this->employer_name;
     }
 
     /**

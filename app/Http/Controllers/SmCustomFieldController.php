@@ -13,7 +13,7 @@ class SmCustomFieldController extends Controller
 {
     public function index()
     {
-        $custom_fields = SmCustomField::where('form_name','student_registration')->where('school_id',Auth::user()->school_id)->orderby('id','DESC')->get();
+        $custom_fields = SmCustomField::where('form_name','student_registration')->where('church_id',Auth::user()->church_id)->orderby('id','DESC')->get();
         return view('backEnd.customField.studentRegistration',compact('custom_fields'));
     }
 
@@ -35,7 +35,7 @@ class SmCustomFieldController extends Controller
         }
 
         $exist = SmCustomField::where('form_name','student_registration')
-                                ->where('school_id',Auth::user()->school_id)
+                                ->where('church_id',Auth::user()->church_id)
                                 ->where('label',$request->label)->first();
 
         if($exist){
@@ -57,7 +57,7 @@ class SmCustomFieldController extends Controller
     public function edit($id)
     {
         $v_custom_field = SmCustomField::find($id);
-        $custom_fields = SmCustomField::where('form_name','student_registration')->where('school_id',Auth::user()->school_id)->get();
+        $custom_fields = SmCustomField::where('form_name','student_registration')->where('church_id',Auth::user()->church_id)->get();
         return view('backEnd.customField.studentRegistration',compact('custom_fields','v_custom_field'));
     }
 
@@ -82,7 +82,7 @@ class SmCustomFieldController extends Controller
 
         $valueExist = SmCustomField::where('id', '!=', $request->id)
                 ->where('form_name','student_registration')
-                ->where('school_id',Auth::user()->school_id)
+                ->where('church_id',Auth::user()->church_id)
                 ->where('label',$request->label)
                 ->get();
 
@@ -118,7 +118,7 @@ class SmCustomFieldController extends Controller
     }
 
     public function staff_reg_custom_field(){
-        $custom_fields = SmCustomField::where('form_name','staff_registration')->where('school_id',Auth::user()->school_id)->orderby('id','DESC')->get();
+        $custom_fields = SmCustomField::where('form_name','staff_registration')->where('church_id',Auth::user()->church_id)->orderby('id','DESC')->get();
         return view('backEnd.customField.staffRegistration',compact('custom_fields'));
     }
 
@@ -139,7 +139,7 @@ class SmCustomFieldController extends Controller
         }
 
         $exist = SmCustomField::where('form_name','staff_registration')
-                                ->where('school_id',Auth::user()->school_id)
+                                ->where('church_id',Auth::user()->church_id)
                                 ->where('label',$request->label)->first();
 
             if($exist){
@@ -162,7 +162,7 @@ class SmCustomFieldController extends Controller
 
     public function edit_staff_custom_field($id){
         $v_custom_field = SmCustomField::find($id);
-        $custom_fields = SmCustomField::where('form_name','staff_registration')->where('school_id',Auth::user()->school_id)->get();
+        $custom_fields = SmCustomField::where('form_name','staff_registration')->where('church_id',Auth::user()->church_id)->get();
         return view('backEnd.customField.staffRegistration',compact('custom_fields','v_custom_field'));
     }
 
@@ -184,7 +184,7 @@ class SmCustomFieldController extends Controller
 
         $valueExist = SmCustomField::where('id', '!=', $request->id)
                 ->where('form_name','staff_registration')
-                ->where('school_id',Auth::user()->school_id)
+                ->where('church_id',Auth::user()->church_id)
                 ->where('label',$request->label)
                 ->get();
 
@@ -232,8 +232,8 @@ class SmCustomFieldController extends Controller
         if(moduleStatusCheck('ParentRegistration')== TRUE) {/* added for online student registration custom field showing --abunayem */ 
             $store->is_showing = $request->is_showing_online_registration ?? 0;
         }
-        $store->school_id = Auth::user()->school_id;
-        $store->academic_id = getAcademicId();
+        $store->church_id = Auth::user()->church_id;
+        $store->church_year_id = getAcademicId();
         $store->save();
     }
 
@@ -251,8 +251,8 @@ class SmCustomFieldController extends Controller
             $update->is_showing = $request->is_showing_online_registration;
         }
 
-        $update->school_id = Auth::user()->school_id;
-        $update->academic_id = getAcademicId();
+        $update->church_id = Auth::user()->church_id;
+        $update->church_year_id = getAcademicId();
         $update->update();
     }
 

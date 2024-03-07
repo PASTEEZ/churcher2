@@ -14,14 +14,14 @@ class SmStudentAttendanceTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run($school_id, $academic_id, $count=1)
+    public function run($church_id, $church_year_id, $count=1)
     {
         $days = cal_days_in_month(CAL_GREGORIAN, date('m'), date('Y'));
-        $classSection = SmClassSection::where('school_id',$school_id)->where('academic_id', $academic_id)->first();
-        $students = StudentRecord::where('class_id', $classSection->class_id)
-                                ->where('section_id', $classSection->section_id)
-                                ->where('school_id',$school_id)
-                                ->where('academic_id', $academic_id)
+        $classSection = SmClassSection::where('church_id',$church_id)->where('church_year_id', $church_year_id)->first();
+        $students = StudentRecord::where('age_group_id', $classSection->age_group_id)
+                                ->where('mgender_id', $classSection->mgender_id)
+                                ->where('church_id',$church_id)
+                                ->where('church_year_id', $church_year_id)
                                 ->get();
         for ($i = 1; $i <= $days; $i++) {
             foreach ($students as $record) {
@@ -32,15 +32,15 @@ class SmStudentAttendanceTableSeeder extends Seeder
                 }
                 $date = date('Y') . '-' . date('m') . '-' . $d;
                 $sa = new SmStudentAttendance();
-                $sa->student_id = $record->student_id;
-                $sa->student_record_id = $record->student_id;
-                $sa->class_id = $record->class_id;
-                $sa->section_id = $record->section_id;
+                $sa->member_id = $record->member_id;
+                $sa->student_record_id = $record->member_id;
+                $sa->age_group_id = $record->age_group_id;
+                $sa->mgender_id = $record->mgender_id;
                 $sa->attendance_type = 'P';
                 $sa->notes = 'Sample Attendance for Student';
                 $sa->attendance_date = $date;
-                $sa->school_id = $school_id;
-                $sa->academic_id = $academic_id;
+                $sa->church_id = $church_id;
+                $sa->church_year_id = $church_year_id;
                 $sa->save();
             }
         }

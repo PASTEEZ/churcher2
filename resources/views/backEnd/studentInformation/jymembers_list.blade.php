@@ -106,10 +106,10 @@
                                 <tbody>
                                     @foreach($students as $student)
                                     <tr>
-                                        <td>{{$student->admission_no}}</td>
+                                        <td>{{$student->registration_no}}</td>
                                         <td>{{$student->type !=""?$student->type->type:""}}</td>
                                         <td>{{$student->first_name.' '.$student->last_name}}</td>
-                                        <td>{{$student->class != ""? $student->class->class_name:""}}</td>
+                                        <td>{{$student->class != ""? $student->class->age_group_name:""}}</td>
                                         <td>{{$student->parents!=""?$student->parents->fathers_name:""}}</td>
                                         <td>                                                                                
                                         {{$student->date_of_birth != ""? dateConvert($student->date_of_birth):''}}

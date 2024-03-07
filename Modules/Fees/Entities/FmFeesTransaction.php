@@ -55,7 +55,7 @@ class FmFeesTransaction extends Model
 
     public function feeStudentInfo()
     {
-        return $this->belongsTo('App\SmStudent', 'student_id', 'id');
+        return $this->belongsTo('App\SmStudent', 'member_id', 'id');
     }
 
     public function recordDetail()

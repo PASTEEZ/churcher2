@@ -11,17 +11,17 @@ class CreateExamMeritPositionsTable extends Migration
     {
         Schema::create('exam_merit_positions', function (Blueprint $table) {
             $table->id();
-            $table->integer('class_id')->nullable();
-            $table->integer('section_id')->nullable();
+            $table->integer('age_group_id')->nullable();
+            $table->integer('mgender_id')->nullable();
             $table->integer('exam_term_id')->nullable();
             $table->integer('total_mark')->nullable();
             $table->integer('position')->nullable();
-            $table->integer('admission_no')->nullable();
+            $table->integer('registration_no')->nullable();
             $table->float('gpa')->nullable();
             $table->float('grade')->nullable();
             $table->integer('record_id')->nullable();
-            $table->integer('school_id');
-            $table->integer('academic_id');
+            $table->integer('church_id');
+            $table->integer('church_year_id');
             $table->timestamps();
         });
     }

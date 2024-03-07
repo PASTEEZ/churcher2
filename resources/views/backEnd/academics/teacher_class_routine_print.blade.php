@@ -42,7 +42,7 @@
                
             <td style="text-aligh:center">
                     <h3 style="font-size:20px !important; margin-bottom : 0;margin-top: 0px;"
-                    class="text-white mb-0"> {{isset(generalSetting()->school_name)?generalSetting()->school_name:'Infix School Management ERP'}} </h3>
+                    class="text-white mb-0"> {{isset(generalSetting()->church_name)?generalSetting()->church_name:'Infix School Management ERP'}} </h3>
                     <span style="font-size:11px !important;margin:0px"
                     class="text-white "> {{isset(generalSetting()->address)?generalSetting()->address:'Infix School Address'}} </span>
             </td>
@@ -118,8 +118,8 @@
                     $tr[$i][$sm_weekend->name][$loop->index]['teacher']= $routine->teacherDetail ? $routine->teacherDetail->full_name :'';
                     $tr[$i][$sm_weekend->name][$loop->index]['start_time']=  $routine->start_time;
                     $tr[$i][$sm_weekend->name][$loop->index]['end_time']= $routine->end_time;
-                    $tr[$i][$sm_weekend->name][$loop->index]['class_name']= $routine->class ? $routine->class->class_name : '';
-                    $tr[$i][$sm_weekend->name][$loop->index]['section_name']= $routine->section ? $routine->section->section_name : '';
+                    $tr[$i][$sm_weekend->name][$loop->index]['age_group_name']= $routine->class ? $routine->class->age_group_name : '';
+                    $tr[$i][$sm_weekend->name][$loop->index]['mgender_name']= $routine->section ? $routine->section->mgender_name : '';
                     $tr[$i][$sm_weekend->name][$loop->index]['is_break']= $routine->is_break;
                     $used[] = $routine->id;
                 } 
@@ -170,8 +170,8 @@
                
                         <span class="">  <strong>  {{ $classes[$i]['subject'] }} </strong>   @if ($classes[$i]['class_room']) {{ $classes[$i]['class_room'] }}    @endif    <br>  </span>            
                        
-                        @if ($classes[$i]['class_name'])
-                        <span class=""> {{ $classes[$i]['class_name'] }}   @if ($classes[$i]['section_name']) ( {{ $classes[$i]['section_name'] }} )   @endif  <br> </span>
+                        @if ($classes[$i]['age_group_name'])
+                        <span class=""> {{ $classes[$i]['age_group_name'] }}   @if ($classes[$i]['mgender_name']) ( {{ $classes[$i]['mgender_name'] }} )   @endif  <br> </span>
                         @endif 
 
                      @endif

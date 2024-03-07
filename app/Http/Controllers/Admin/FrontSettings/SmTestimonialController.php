@@ -21,7 +21,7 @@ class SmTestimonialController extends Controller
     public function index()
     {
         try{
-            $testimonial = SmTestimonial::where('school_id', app('school')->id)->get();
+            $testimonial = SmTestimonial::where('church_id', app('school')->id)->get();
             return view('backEnd.frontSettings.testimonial.testimonial_page', compact('testimonial'));
         }catch (\Exception $e) {
            Toastr::error('Operation Failed', 'Failed');
@@ -41,7 +41,7 @@ class SmTestimonialController extends Controller
             $testimonial->institution_name = $request->institution_name;
             $testimonial->image = $image;
             $testimonial->description = $request->description;
-            $testimonial->school_id = app('school')->id;
+            $testimonial->church_id = app('school')->id;
             $result = $testimonial->save();
          
             Toastr::success('Operation successful', 'Success');
@@ -56,7 +56,7 @@ class SmTestimonialController extends Controller
     {
 
         try{
-            $testimonial = SmTestimonial::where('school_id', app('school')->id)->get();
+            $testimonial = SmTestimonial::where('church_id', app('school')->id)->get();
             $add_testimonial = SmTestimonial::find($id);
             return view('backEnd.frontSettings.testimonial.testimonial_page', compact('add_testimonial', 'testimonial'));
         }catch (\Exception $e) {
@@ -76,7 +76,7 @@ class SmTestimonialController extends Controller
             $testimonial->name = $request->name;
             $testimonial->designation = $request->designation;
             $testimonial->institution_name = $request->institution_name;
-            $testimonial->school_id = app('school')->id;          
+            $testimonial->church_id = app('school')->id;          
             $testimonial->image = fileUpdate($testimonial->image,$request->image,$destination);       
             $testimonial->description = $request->description;
             $result = $testimonial->save();

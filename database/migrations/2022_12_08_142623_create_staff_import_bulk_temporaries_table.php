@@ -40,8 +40,8 @@ class CreateStaffImportBulkTemporariesTable extends Migration
             $table->string('medical_leave', 15)->nullable();
             $table->string('maternity_leave', 15)->nullable();
             $table->string('bank_account_name', 50)->nullable();
-            $table->string('bank_account_no', 50)->nullable();
-            $table->string('bank_name', 20)->nullable();
+            $table->string('day_born', 50)->nullable();
+            $table->string('employer_name', 20)->nullable();
             $table->string('bank_brach', 30)->nullable();
             $table->string('facebook_url', 100)->nullable();
             $table->string('twitter_url', 100)->nullable();

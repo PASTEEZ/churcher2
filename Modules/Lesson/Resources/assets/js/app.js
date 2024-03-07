@@ -7,7 +7,7 @@
 
             var i = 0;
             var formData = {
-                class_id: $(this).val(),
+                age_group_id: $(this).val(),
 
             };
             $.ajax({
@@ -100,14 +100,14 @@
                             appendRow +=
                                 "<input type='checkbox' id='section_" +
                                 value.id +
-                                "' class='common-checkbox subject-checkbox' onChange='changeSubject(" + value.id + ")'  name='section_ids[]' value='" +
+                                "' class='common-checkbox subject-checkbox' onChange='changeSubject(" + value.id + ")'  name='mgender_ids[]' value='" +
                                 value.id +
                                 "'>";
                             appendRow +=
                                 "<label for='section_" +
                                 value.id +
                                 "'>" +
-                                value.section_name +
+                                value.mgender_name +
                                 "</label>";
                             appendRow += "</div>";
 

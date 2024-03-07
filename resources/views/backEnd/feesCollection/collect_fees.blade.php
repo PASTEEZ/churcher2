@@ -37,7 +37,7 @@
                                 <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                     <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class')* </option>
                                     @foreach($classes as $class)
-                                    <option value="{{$class->id}}"  {{( old("class") == $class->id ? "selected":"")}}>{{$class->class_name}}</option>
+                                    <option value="{{$class->id}}"  {{( old("class") == $class->id ? "selected":"")}}>{{$class->age_group_name}}</option>
                                     @endforeach
                                 </select>
                                 @if ($errors->has('class'))
@@ -90,7 +90,7 @@
                                 <div class="main-title">
                                     <h3 class="mb-0">@lang('fees.fees_collection_list')
                                         @if(! moduleStatusCheck('University'))
-                                         (@lang('common.class'): {{$search_info['class_name']}}, @lang('common.section'): {{@$search_info['section_name']}}, @lang('fees.keyword'): {{@$search_info['keyword']}})</h3>
+                                         (@lang('common.class'): {{$search_info['age_group_name']}}, @lang('common.section'): {{@$search_info['mgender_name']}}, @lang('fees.keyword'): {{@$search_info['keyword']}})</h3>
                                          @endif
                                 </div>
                             </div>
@@ -100,7 +100,7 @@
                                 <table id="table_id" class="display school-table" cellspacing="0" width="100%">
                                     <thead>
                                         <tr>
-                                            <th>@lang('student.admission_no')</th>
+                                            <th>@lang('student.registration_no')</th>
                                             <th>@lang('common.name')</th>
                                             <th>@lang('common.date_of_birth')</th>
                                             <th>@lang('common.phone')</th>
@@ -116,14 +116,14 @@
                                     <tbody>
                                         @foreach($students as $student)
                                             <tr>
-                                                <td>{{$student->studentDetail->admission_no}}</td>
+                                                <td>{{$student->studentDetail->registration_no}}</td>
                                                 <td>{{$student->studentDetail->first_name.' '.$student->studentDetail->last_name}}</td>
                                                 <td >{{$student->studentDetail->date_of_birth != ""? dateConvert($student->studentDetail->date_of_birth):''}}</td>
                                                 <td>{{$student->studentDetail->mobile}}</td>
 
                                                 @if(! moduleStatusCheck('University'))
-                                                <td>{{$student->class->class_name}}</td>
-                                                <td>{{$student->section->section_name}}</td>
+                                                <td>{{$student->class->age_group_name}}</td>
+                                                <td>{{$student->section->mgender_name}}</td>
                                                 <td>{{$student->studentDetail->parents != ""? $student->studentDetail->parents->fathers_name:""}}</td>
                                                 @endif
 

@@ -110,9 +110,9 @@ return [
 
 "custom_field_list" => "Lista de campos personalizados",
 
-"admission_number" => "Número de admisión",
+"registration_number" => "Número de admisión",
 
-"admission_date" => "Fecha de admisión",
+"registration_date" => "Fecha de admisión",
 
 "add_time_setup" => "Añadir configuración de tiempo",
 
@@ -140,9 +140,9 @@ return [
 
 "last" => "Último",
 
-"religion" => "Religión",
+"marital_status" => "Religión",
 
-"caste" => "Casta",
+"home_town" => "Casta",
 
 "height_in" => "Altura (en)",
 
@@ -266,7 +266,7 @@ return [
 
 "student_category" => "Categoría de estudiantes",
 
-"promote_academic_year" => "Promover Año Académico",
+"promote_church_year" => "Promover Año Académico",
 
 "select_current_class" => "Seleccionar clase actual",
 
@@ -324,7 +324,7 @@ return [
 
 "marks_sheet_of" => "Hoja de marcas",
 
-"ifsc_code" => "Código IFSC",
+"baptism_status" => "Código IFSC",
 
 "import_student" => "Estudiante de importación",
 
@@ -516,7 +516,7 @@ return [
 
 "December" => "Diciembre",
 
-"bank_name" => "Nombre del banco",
+"employer_name" => "Nombre del banco",
 
 "bank_account_number" => "Número de cuenta bancaria",
 
@@ -540,17 +540,17 @@ return [
 
 "date_of_birth" => "Fecha De Nacimiento",
 
-"student_id_card" => "Tarjeta de identificación del estudiante",
+"member_id_card" => "Tarjeta de identificación del estudiante",
 
 "mother" => "Madre",
 
-"blood_group" => "Grupo sanguíneo",
+"region" => "Grupo sanguíneo",
 
 "relation_with_guardian" => "Relación con Guardian",
 
 "class_section" => "Clase (seg.)",
 
-"admission_no" => "Admisión no",
+"registration_no" => "Admisión no",
 
 "first_name" => "Nombre:",
 
@@ -568,7 +568,7 @@ return [
 
 "is_present" => "Está presente",
 
-"roll_no" => "Número de rollo",
+"member_id_no" => "Número de rollo",
 
 "pages" => "Páginas",
 
@@ -578,7 +578,7 @@ return [
 
 "export_to_pdf" => "Exportar a PDF",
 
-"student_name" => "Nombre del estudiante",
+"member_name" => "Nombre del estudiante",
 
 "title" => "Título",
 
@@ -650,13 +650,13 @@ return [
 
 "email_address" => "Dirección electrónica",
 
-"academic_year" => "Año académico",
+"church_year" => "Año académico",
 
 "select_class" => "Seleccionar clase",
 
 "select_subject" => "Seleccionar asunto",
 
-"select_academic_year" => "Seleccionar Año Académico",
+"select_church_year" => "Seleccionar Año Académico",
 
 "room" => "Sala",
 

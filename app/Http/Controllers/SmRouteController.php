@@ -27,7 +27,7 @@ class SmRouteController extends Controller
     {
 
         try {
-            $routes = SmRoute::where('school_id', Auth::user()->school_id)->orderby('id','DESC')->get();
+            $routes = SmRoute::where('church_id', Auth::user()->church_id)->orderby('id','DESC')->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($routes, null);
@@ -47,7 +47,7 @@ class SmRouteController extends Controller
         ]);
 
         // school wise uquine validation
-        $is_duplicate = SmRoute::where('school_id', Auth::user()->school_id)->where('title', $request->title)->first();
+        $is_duplicate = SmRoute::where('church_id', Auth::user()->church_id)->where('title', $request->title)->first();
         if ($is_duplicate) {
             Toastr::error('Duplicate name found!', 'Failed');
             return redirect()->back()->withErrors($validator)->withInput();
@@ -68,8 +68,8 @@ class SmRouteController extends Controller
             $route = new SmRoute();
             $route->title = $request->title;
             $route->far = $request->far;
-            $route->school_id = Auth::user()->school_id;
-            $route->academic_id = getAcademicId();
+            $route->church_id = Auth::user()->church_id;
+            $route->church_year_id = getAcademicId();
             $result = $route->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -107,9 +107,9 @@ class SmRouteController extends Controller
              if (checkAdmin()) {
                 $route = SmRoute::find($id);
             }else{
-                $route = SmRoute::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+                $route = SmRoute::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
             }
-            $routes = SmRoute::where('school_id', Auth::user()->school_id)->get();
+            $routes = SmRoute::where('church_id', Auth::user()->church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -140,7 +140,7 @@ class SmRouteController extends Controller
         }
 
         // school wise uquine validation
-        $is_duplicate = SmRoute::where('school_id', Auth::user()->school_id)->where('title', $request->title)->where('id', '!=', $request->id)->first();
+        $is_duplicate = SmRoute::where('church_id', Auth::user()->church_id)->where('title', $request->title)->where('id', '!=', $request->id)->first();
         if ($is_duplicate) {
             Toastr::error('Duplicate name found!', 'Failed');
             return redirect()->back()->withErrors($validator)->withInput();
@@ -152,7 +152,7 @@ class SmRouteController extends Controller
             if (checkAdmin()) {
                 $route = SmRoute::find($request->id);
             }else{
-                $route = SmRoute::where('id',$request->id)->where('school_id',Auth::user()->school_id)->first();
+                $route = SmRoute::where('id',$request->id)->where('church_id',Auth::user()->church_id)->first();
             }
             $route->title = $request->title;
             $route->far = $request->far;
@@ -195,7 +195,7 @@ class SmRouteController extends Controller
                      if (checkAdmin()) {
                             $route = SmRoute::destroy($id);
                         }else{
-                            $route = SmRoute::where('id',$id)->where('school_id',Auth::user()->school_id)->delete();
+                            $route = SmRoute::where('id',$id)->where('church_id',Auth::user()->church_id)->delete();
                         }
                     if ($route) {
                         if (ApiBaseMethod::checkUrl($request->fullUrl())) {

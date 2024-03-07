@@ -48,7 +48,7 @@
                                     <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                         <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                         @foreach($classes as $class)
-                                        <option value="{{@$class->id}}" {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{@$class->class_name}}</option>
+                                        <option value="{{@$class->id}}" {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{@$class->age_group_name}}</option>
                                         @endforeach
                                     </select>
                                     @if ($errors->has('class'))
@@ -60,9 +60,9 @@
                                 <div class="col-lg-4 mt-30-md" id="select_section_div">
                                     <select class="w-100 bb niceSelect form-control{{ $errors->has('section') ? ' is-invalid' : '' }} select_section" id="select_section" name="section">
                                         <option data-display="@lang('common.select_section') " value="">@lang('common.select_section') </option>
-                                        @isset($class_id)
+                                        @isset($age_group_id)
                                             @foreach ($search_current_class->classSection as $section)
-                                                <option  value="{{ $section->sectionName->id }}"  {{ ( ($section_id  == $section->sectionName->id) ? "selected":"")}}>{{ $section->sectionName->section_name }}</option>
+                                                <option  value="{{ $section->sectionName->id }}"  {{ ( ($mgender_id  == $section->sectionName->id) ? "selected":"")}}>{{ $section->sectionName->mgender_name }}</option>
                                             @endforeach
                                         @endisset
                                     </select>
@@ -98,8 +98,8 @@
                     <h3 class="mb-30">@lang('exam.exam_schedule') | 
                                                         <small>
                                      @lang('exam.exam'): {{@$examName != '' ? $examName :' '}},
-                                     @lang('common.class'): {{@$search_current_class != '' ? $search_current_class->class_name :' '}}, 
-                                     @lang('common.section'): {{@$search_current_section !='' ? $search_current_section->section_name : 'All Sections'}},
+                                     @lang('common.class'): {{@$search_current_class != '' ? $search_current_class->age_group_name :' '}}, 
+                                     @lang('common.section'): {{@$search_current_section !='' ? $search_current_section->mgender_name : 'All Sections'}},
                                       
                                     </small>
                     </h3>
@@ -107,7 +107,7 @@
             </div>
          
             <div class="col-lg-4  col-md-4 ">
-              <a href="{{route('exam-routine-print', [$class_id, $section_id,$exam_type_id])}}" class="primary-btn small fix-gr-bg pull-left" target="_blank"><i class="ti-printer"> </i> @lang('common.print')</a>
+              <a href="{{route('exam-routine-print', [$age_group_id, $mgender_id,$exam_type_id])}}" class="primary-btn small fix-gr-bg pull-left" target="_blank"><i class="ti-printer"> </i> @lang('common.print')</a>
                     <button  class="primary-btn small fix-gr-bg pull-right" onclick="addRowInExamRoutine();" id="addRowBtn"> <span class="ti-plus pr-2"></span> @lang('common.add')</button>
             </div>
         </div>
@@ -116,8 +116,8 @@
     {{ Form::open(['class' => 'form-horizontal', 'files' => true, 'route' => 'add-exam-routine-store',
     'method' => 'POST', 'enctype' => 'multipart/form-data', 'name' => 'myForm', 'id'=> "validateAddNewExamRoutine"]) }}
 
-        <input type="hidden" name="class_id" id="class_id" value="{{ @$class_id}}">
-        <input type="hidden" name="section_id" id="section_id" value="{{ @$section_id}}">
+        <input type="hidden" name="age_group_id" id="age_group_id" value="{{ @$age_group_id}}">
+        <input type="hidden" name="mgender_id" id="mgender_id" value="{{ @$mgender_id}}">
         <input type="hidden" name="exam_type_id" id="exam_type_id" value="{{ @$exam_type_id}}"> 
       
 
@@ -167,7 +167,7 @@
                                               <select class="w-100 bb niceSelect form-control  {{ $errors->has('class') ? ' is-invalid' : '' }} promote_class" readonly disabled  id="promote_class" name="routine[{{$row}}][class]" required>
                                                <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                                @foreach($classes as $class)
-                                                <option value="{{ @$class->id}}"  {{ ( ($class_id  == $class->id) ? "selected":"")}}>{{ $class->class_name}}</option>
+                                                <option value="{{ @$class->id}}"  {{ ( ($age_group_id  == $class->id) ? "selected":"")}}>{{ $class->age_group_name}}</option>
                                                @endforeach
                                            </select>
                                            @if ($errors->has('class'))
@@ -191,7 +191,7 @@
                                                  </option>
                                                 
                                                     @foreach ($search_current_class->classSection as $section)
-                                                        <option  value="{{ $section->sectionName->id }}"  {{ ( ($routine->section_id  == $section->sectionName->id) ? "selected":"")}}>{{ $section->sectionName->section_name }}</option>
+                                                        <option  value="{{ $section->sectionName->id }}"  {{ ( ($routine->mgender_id  == $section->sectionName->id) ? "selected":"")}}>{{ $section->sectionName->mgender_name }}</option>
                                                     @endforeach
                                                     
                                              
@@ -385,7 +385,7 @@
                                                             <select class="w-100 bb niceSelect form-control  {{ $errors->has('class') ? ' is-invalid' : '' }} promote_class" readonly disabled  id="promote_class" name="routine[${row_count}][class]" required>
                                                                 <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                                                     @foreach($classes as $class)
-                                                                        <option value="{{ @$class->id}}"  {{ ( ($class_id  == $class->id) ? "selected":"")}}>{{ $class->class_name}}</option>
+                                                                        <option value="{{ @$class->id}}"  {{ ( ($age_group_id  == $class->id) ? "selected":"")}}>{{ $class->age_group_name}}</option>
                                                                     @endforeach
                                                                 </select>
                                                                 @if ($errors->has('class'))
@@ -409,7 +409,7 @@
                                                                 </option>
                                                                 
                                                                     @foreach ($search_current_class->classSection as $section)
-                                                                        <option  value="{{ $section->sectionName->id }}" >{{ $section->sectionName->section_name }}</option>
+                                                                        <option  value="{{ $section->sectionName->id }}" >{{ $section->sectionName->mgender_name }}</option>
                                                                     @endforeach
                                                                     
                                                             

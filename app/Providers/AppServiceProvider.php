@@ -79,12 +79,12 @@ class AppServiceProvider extends ServiceProvider
         $this->app->register(RepositoryServiceProvider::class);
 
         $this->app->singleton('dashboard_bg', function () {
-            $dashboard_background = DB::table('sm_background_settings')->where('school_id', app('school')->id)->where([['is_default', 1], ['title', 'Dashboard Background']])->first();
+            $dashboard_background = DB::table('sm_background_settings')->where('church_id', app('school')->id)->where([['is_default', 1], ['title', 'Dashboard Background']])->first();
             return $dashboard_background;
         });
 
         $this->app->singleton('school_info', function () {
-            return SmGeneralSettings::where('school_id', app('school')->id)->first();
+            return SmGeneralSettings::where('church_id', app('school')->id)->first();
         });
 
         $this->app->singleton('school_menu_permissions', function () {
@@ -100,7 +100,7 @@ class AppServiceProvider extends ServiceProvider
                 $permissions = InfixPermissionAssign::where('role_id', Auth::user()->role_id)->get(['id', 'module_id']);
             }
             if ($infixRole->is_saas == 0) {
-                $permissions = InfixPermissionAssign::where('role_id', Auth::user()->role_id)->where('school_id', Auth::user()->school_id)->get(['id', 'module_id']);
+                $permissions = InfixPermissionAssign::where('role_id', Auth::user()->role_id)->where('church_id', Auth::user()->church_id)->get(['id', 'module_id']);
             }
             foreach ($permissions as $permission) {
                 $module_links[] = $permission->module_id;

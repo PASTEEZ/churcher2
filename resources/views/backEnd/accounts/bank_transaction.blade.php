@@ -37,7 +37,7 @@
                 <div class="row">
                     <div class="col-lg-6 no-gutters">
                         <div class="main-title">
-                            <h3 class="mb-0">@lang('accounts.bank_transaction') ({{$bank_name->bank_name .' '.'-'.' '. $bank_name->account_name}})</h3>
+                            <h3 class="mb-0">@lang('accounts.bank_transaction') ({{$employer_name->employer_name .' '.'-'.' '. $employer_name->account_name}})</h3>
                         </div>
                     </div>
                 </div>
@@ -59,7 +59,7 @@
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                                <td><span class="text-right d-block">{{currency_format($bank_name->opening_balance)}}</span></td>
+                                <td><span class="text-right d-block">{{currency_format($employer_name->opening_balance)}}</span></td>
                             </tr>
                                 @php 
                                     $total_credit= 0;
@@ -100,7 +100,7 @@
                                     <th class="">{{currency_format($total_credit)}}</th>
                                     <th class="">{{currency_format($total_debit)}}</th>
                                     <th class="text-right">@lang('accounts.current_balance'):</th>
-                                    <th class="text-right">{{currency_format($bank_name->current_balance)}}</th>
+                                    <th class="text-right">{{currency_format($employer_name->current_balance)}}</th>
                                 </tr>
                             </tfoot>
                         </table>

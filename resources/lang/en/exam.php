@@ -358,6 +358,6 @@ return[
     'name of step'=>'Name of step',
     'all_exam_position'=>'All Exam Position',
     'with_vertical_boarder' => 'With vertical boarder',
-    'roll_no' => 'Roll no',
+    'member_id_no' => 'Roll no',
     'term_exam' => 'Term exam',
 ];

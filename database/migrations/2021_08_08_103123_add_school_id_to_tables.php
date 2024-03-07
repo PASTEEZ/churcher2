@@ -24,10 +24,10 @@ class AddSchoolIdToTables extends Migration
         
 
         foreach($this->tables as $table){
-            if (!Schema::hasColumn($table, 'school_id')) {
+            if (!Schema::hasColumn($table, 'church_id')) {
                 Schema::table($table, function (Blueprint $table) {
-                    $table->integer('school_id')->nullable()->default(1)->unsigned();
-                    $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+                    $table->integer('church_id')->nullable()->default(1)->unsigned();
+                    $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
                 });
             }
         }
@@ -42,10 +42,10 @@ class AddSchoolIdToTables extends Migration
     public function down()
     {
         foreach($this->tables as $table){
-            if (Schema::hasColumn($table, 'school_id')) {
+            if (Schema::hasColumn($table, 'church_id')) {
                 Schema::table($table, function (Blueprint $table) {
-                    $table->dropForeign(['school_id']);
-                    $table->dropColumn('school_id');
+                    $table->dropForeign(['church_id']);
+                    $table->dropColumn('church_id');
                 });
             }
         }

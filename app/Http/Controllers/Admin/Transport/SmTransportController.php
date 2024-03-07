@@ -67,23 +67,23 @@ class SmTransportController extends Controller
                 ->withInput();
         }
         try{
-            $student_ids = [];
+            $member_ids = [];
             $data = [];
             $students = SmStudent::query();
             $students->where('active_status', 1);
             $student_records = StudentRecord::query();
-            $classes = SmClass::where('active_status', 1)->where('school_id',Auth::user()->school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_id',Auth::user()->church_id)->get();
             if(moduleStatusCheck('University')){
-                  $student_ids = universityFilter($student_records, $request)
-                ->groupBy('student_id')->get('student_id');
+                  $member_ids = universityFilter($student_records, $request)
+                ->groupBy('member_id')->get('member_id');
                 $stdent_ids = [];
-                foreach($student_ids as $record){
-                    $stdent_ids[]= $record->student_id;
+                foreach($member_ids as $record){
+                    $stdent_ids[]= $record->member_id;
                 }
             }
             else
             {
-                $student_ids = SmStudentReportController::classSectionStudent($request);
+                $member_ids = SmStudentReportController::classSectionStudent($request);
             }
 
             if($request->route != ""){
@@ -98,16 +98,16 @@ class SmTransportController extends Controller
                 $students->where('vechile_id', '!=', '');
             }
 
-            $students = $students->whereIn('id', $student_ids)->where('school_id',Auth::user()->school_id)->get();
-            $routes = SmRoute::where('active_status', 1)->where('school_id',Auth::user()->school_id)->get();
-            $vehicles = SmVehicle::where('active_status', 1)->where('school_id',Auth::user()->school_id)->get();
+            $students = $students->whereIn('id', $member_ids)->where('church_id',Auth::user()->church_id)->get();
+            $routes = SmRoute::where('active_status', 1)->where('church_id',Auth::user()->church_id)->get();
+            $vehicles = SmVehicle::where('active_status', 1)->where('church_id',Auth::user()->church_id)->get();
 
             $data['classes'] = $classes;
             $data['routes'] = $routes;
             $data['vehicles'] = $vehicles;
             $data['students'] = $students;
-            $data['class_id'] = $request->class;
-            $data['section_id'] = $request->section_id;
+            $data['age_group_id'] = $request->class;
+            $data['mgender_id'] = $request->mgender_id;
             $data['route_id'] =$request->route;
             $data['vechile_id'] =  $request->vehicle;
             if (moduleStatusCheck('University')) {
@@ -129,7 +129,7 @@ class SmTransportController extends Controller
                 ->join('sm_routes', 'sm_assign_vehicles.route_id', '=', 'sm_routes.id')
                 ->join('sm_vehicles', 'sm_assign_vehicles.vehicle_id', '=', 'sm_vehicles.id')
                 ->join('sm_staffs', 'sm_vehicles.driver_id', '=', 'sm_staffs.id')
-                ->where('school_id',Auth::user()->school_id)->get();
+                ->where('church_id',Auth::user()->church_id)->get();
 
                 return ApiBaseMethod::sendResponse($transport, null);
             }

@@ -25,7 +25,7 @@ class ApiSmMarksGradeController extends Controller
     public function index(Request $request)
     {        
         try{
-            $marks_grades = SmMarksGrade::orderBy('gpa', 'desc')->where('academic_id', getAcademicId())->get();
+            $marks_grades = SmMarksGrade::orderBy('gpa', 'desc')->where('church_year_id', getAcademicId())->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($marks_grades, null);
             }
@@ -112,7 +112,7 @@ class ApiSmMarksGradeController extends Controller
     {       
         try{
             $marks_grade = SmMarksGrade::find($id);
-            $marks_grades = SmMarksGrade::where('academic_id', getAcademicId())->get();
+            $marks_grades = SmMarksGrade::where('church_year_id', getAcademicId())->get();
     
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];

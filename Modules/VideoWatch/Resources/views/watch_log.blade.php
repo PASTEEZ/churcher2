@@ -47,8 +47,8 @@
                             <thead>
                                 <tr>
                                     <tr>
-                                        <th>@lang('student.admission_no')</th>
-                                        <th>@lang('student.roll_no')</th>
+                                        <th>@lang('student.registration_no')</th>
+                                        <th>@lang('student.member_id_no')</th>
                                         <th>@lang('common.name')</th>
                                         <th>@lang('common.title')</th>
                                         <th>@lang('common.view')</th>
@@ -60,8 +60,8 @@
                             <tbody>
                                 @foreach($watchLogs as $log)
                                 <tr>
-                                    <td>{{@$log->admission_no}}</td>
-                                    <td>{{@$log->roll_no}}</td>
+                                    <td>{{@$log->registration_no}}</td>
+                                    <td>{{@$log->member_id_no}}</td>
                                     <td>{{@$log->full_name}}</td>
                                     <td>{{@$log->content_title}}</td>
                                     <td>{{dateConvert(@$log->created_at)}} - {{date('h:i A', strtotime($log->created_at))}}</td>
@@ -81,8 +81,8 @@
                                     <thead>
                                         <tr>
                                             <tr>
-                                                <th>@lang('student.admission_no')</th>
-                                                <th>@lang('student.roll_no')</th>
+                                                <th>@lang('student.registration_no')</th>
+                                                <th>@lang('student.member_id_no')</th>
                                                 <th>@lang('common.name')</th>
                                                 <th>@lang('common.class')</th>
                                                 <th>@lang('common.section')</th>
@@ -94,8 +94,8 @@
                                     <tbody>
                                         @foreach($unseen_lists as $log)
                                         <tr>
-                                            <td>{{@$log['admission_no']}}</td>
-                                            <td>{{@$log['roll_no']}}</td>
+                                            <td>{{@$log['registration_no']}}</td>
+                                            <td>{{@$log['member_id_no']}}</td>
                                             <td>{{@$log['full_name']}}</td>
                                             <td>{{@$log['class']}}</td>
                                             <td>{{@$log['section']}}</td>

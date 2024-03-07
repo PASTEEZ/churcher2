@@ -29,11 +29,11 @@ class SmStudentAttendanceSearchRequest extends FormRequest
                 'un_session_id' => 'sometimes|nullable',
                 'un_faculty_id' => 'sometimes|nullable',
                 'un_department_id' => 'sometimes|nullable',
-                'un_academic_id' => 'sometimes|nullable',
+                'un_church_year_id' => 'sometimes|nullable',
                 'un_semester_id' => 'sometimes|nullable',
                 'un_semester_label_id' => 'sometimes|nullable',
                 'un_subject_id' => 'sometimes|nullable',
-                'un_section_id' => 'required',
+                'un_mgender_id' => 'required',
             ];
         } else {
             return [

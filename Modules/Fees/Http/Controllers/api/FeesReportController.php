@@ -35,8 +35,8 @@ class FeesReportController extends Controller
                 $balance = $sub_total - $paid_amount + $fine;
                 if($balance != 0){
                     return [
-                        'admission_no' => $value->studentInfo->admission_no ? $value->studentInfo->admission_no : null,
-                        'roll_no' => $value->recordDetail->roll_no ? $value->recordDetail->roll_no: null,
+                        'registration_no' => $value->studentInfo->registration_no ? $value->studentInfo->registration_no : null,
+                        'member_id_no' => $value->recordDetail->member_id_no ? $value->recordDetail->member_id_no: null,
                         'name' => $value->studentInfo->full_name ? $value->studentInfo->full_name : null,
                         'due_date' => dateConvert($value->due_date),
                         'amount' => $amount,
@@ -71,8 +71,8 @@ class FeesReportController extends Controller
             $fineReport = $data['fees_dues']->where('Tfine','!=', 0)
             ->map(function ($value) {
                 return [
-                    'admission_no' => $value->studentInfo->admission_no ? $value->studentInfo->admission_no: null,
-                    'roll_no' => $value->recordDetail->roll_no ? $value->recordDetail->roll_no: null,
+                    'registration_no' => $value->studentInfo->registration_no ? $value->studentInfo->registration_no: null,
+                    'member_id_no' => $value->recordDetail->member_id_no ? $value->recordDetail->member_id_no: null,
                     'name' => $value->studentInfo->full_name ? $value->studentInfo->full_name : null,
                     'due_date' => dateConvert($value->due_date),
                     'fine' => $value->Tfine,
@@ -103,8 +103,8 @@ class FeesReportController extends Controller
             $paymentReport = $data['fees_dues']->where('Tpaidamount','!=', 0)
             ->map(function ($value) {
                 return [
-                    'admission_no' => $value->studentInfo->admission_no ? $value->studentInfo->admission_no: null,
-                    'roll_no' => $value->recordDetail->roll_no ? $value->recordDetail->roll_no: null,
+                    'registration_no' => $value->studentInfo->registration_no ? $value->studentInfo->registration_no: null,
+                    'member_id_no' => $value->recordDetail->member_id_no ? $value->recordDetail->member_id_no: null,
                     'name' => $value->studentInfo->full_name ? $value->studentInfo->full_name : null,
                     'due_date' => dateConvert($value->due_date),
                     'paid' => $value->Tpaidamount,
@@ -139,8 +139,8 @@ class FeesReportController extends Controller
                 $balance = $sub_total - $paid_amount + $fine;
                 if($balance != 0){
                     return [
-                        'admission_no' => $value->studentInfo->admission_no ? $value->studentInfo->admission_no: null,
-                        'roll_no' => $value->recordDetail->roll_no ? $value->recordDetail->roll_no: null,
+                        'registration_no' => $value->studentInfo->registration_no ? $value->studentInfo->registration_no: null,
+                        'member_id_no' => $value->recordDetail->member_id_no ? $value->recordDetail->member_id_no: null,
                         'name' => $value->studentInfo->full_name ? $value->studentInfo->full_name : null,
                         'due_date' => dateConvert($value->due_date),
                         'balance' => $balance,
@@ -171,8 +171,8 @@ class FeesReportController extends Controller
             $classes = $data['classes'];
             $waiverReport = $data['fees_dues']->where('Tweaver','!=',0)->map(function ($value) {
                 return [
-                    'admission_no' => $value->studentInfo->admission_no ? $value->studentInfo->admission_no: null,
-                    'roll_no' => $value->recordDetail->roll_no ? $value->recordDetail->roll_no: null,
+                    'registration_no' => $value->studentInfo->registration_no ? $value->studentInfo->registration_no: null,
+                    'member_id_no' => $value->recordDetail->member_id_no ? $value->recordDetail->member_id_no: null,
                     'name' => $value->studentInfo->full_name ? $value->studentInfo->full_name : null,
                     'due_date' => dateConvert($value->due_date),
                     'waiver' => $value->Tweaver,
@@ -187,16 +187,16 @@ class FeesReportController extends Controller
 
     private function allClass()
     {
-            $data['classes'] = SmClass::where('school_id', auth()->user()->school_id)
-                        ->where('academic_id', getAcademicId())
+            $data['classes'] = SmClass::where('church_id', auth()->user()->church_id)
+                        ->where('church_year_id', getAcademicId())
                         ->get();
             return $data;
     }
 
     private function feesSearch($request)
     {
-            $data['classes'] = SmClass::where('school_id', auth()->user()->school_id)
-                        ->where('academic_id', getAcademicId())
+            $data['classes'] = SmClass::where('church_id', auth()->user()->church_id)
+                        ->where('church_year_id', getAcademicId())
                         ->get();
             $rangeArr = $request->date_range ? explode('-', $request->date_range) : [date('m/d/Y'), date('m/d/Y')];
             if ($request->date_range) {
@@ -205,11 +205,11 @@ class FeesReportController extends Controller
             }
 
             $data['fees_dues']  = FmFeesInvoice::when($request->class, function ($query) use ($request) {
-                        $query->where('class_id', $request->class);
+                        $query->where('age_group_id', $request->class);
                     })
                     ->when($request->section, function ($query) use ($request) {
                         $query->whereHas('recordDetail', function($q) use($request){
-                            return $q->where('section_id', $request->section);
+                            return $q->where('mgender_id', $request->section);
                         });
                     })
                     ->when($request->student, function ($query) use ($request) {
@@ -224,8 +224,8 @@ class FeesReportController extends Controller
                         $query->whereDate('created_at', '>=', $date_from)
                             ->whereDate('created_at', '<=', $date_to);
                     })
-                    ->where('school_id', auth()->user()->school_id)
-                    ->where('academic_id', getAcademicId())
+                    ->where('church_id', auth()->user()->church_id)
+                    ->where('church_year_id', getAcademicId())
                     ->get();
 
             return $data;

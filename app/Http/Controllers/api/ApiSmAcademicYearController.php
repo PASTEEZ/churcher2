@@ -30,11 +30,11 @@ class ApiSmAcademicYearController extends Controller
     {
 
         try {
-            $academic_years = SmAcademicYear::where('active_status', 1)->orderBy('year', 'ASC')->get();
+            $church_years = SmAcademicYear::where('active_status', 1)->orderBy('year', 'ASC')->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
-                return ApiBaseMethod::sendResponse($academic_years, null);
+                return ApiBaseMethod::sendResponse($church_years, null);
             }
-            return view('backEnd.systemSettings.academic_year', compact('academic_years'));
+            return view('backEnd.systemSettings.church_year', compact('church_years'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -80,21 +80,21 @@ class ApiSmAcademicYearController extends Controller
             foreach ($classes as $class) {
                 foreach ($sections as $section) {
                     $class_section = new SmClassSection();
-                    $class_section->class_id = $class->id;
-                    $class_section->section_id = $section->id;
+                    $class_section->age_group_id = $class->id;
+                    $class_section->mgender_id = $section->id;
                     $class_section->created_at = $created_year;
                     $class_section->save();
                 }
             }
-            $academic_year = new SmAcademicYear();
-            $academic_year->year = $request->year;
-            $academic_year->title = $request->title;
-            // $academic_year->starting_date = date('Y-m-d', strtotime($request->starting_date));
-            $academic_year->starting_date = $request->year . '-01-01';
-            // $academic_year->ending_date = date('Y-m-d', strtotime($request->ending_date));
-            $academic_year->ending_date = $request->year . '-12-31';
-            $academic_year->created_at = $created_year;
-            $result = $academic_year->save();
+            $church_year = new SmAcademicYear();
+            $church_year->year = $request->year;
+            $church_year->title = $request->title;
+            // $church_year->starting_date = date('Y-m-d', strtotime($request->starting_date));
+            $church_year->starting_date = $request->year . '-01-01';
+            // $church_year->ending_date = date('Y-m-d', strtotime($request->ending_date));
+            $church_year->ending_date = $request->year . '-12-31';
+            $church_year->created_at = $created_year;
+            $result = $church_year->save();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 if ($result) {
                     return ApiBaseMethod::sendResponse(null, 'Year has been created successfully');
@@ -126,15 +126,15 @@ class ApiSmAcademicYearController extends Controller
     {
 
         try {
-            $academic_year = SmAcademicYear::find($id);
-            $academic_years = SmAcademicYear::all();
+            $church_year = SmAcademicYear::find($id);
+            $church_years = SmAcademicYear::all();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
-                $data['academic_year'] = $academic_year->toArray();
-                $data['academic_years'] = $academic_years->toArray();
+                $data['church_year'] = $church_year->toArray();
+                $data['church_years'] = $church_years->toArray();
                 return ApiBaseMethod::sendResponse($data, null);
             }
-            return view('backEnd.systemSettings.academic_year', compact('academic_year', 'academic_years'));
+            return view('backEnd.systemSettings.church_year', compact('church_year', 'church_years'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -208,13 +208,13 @@ class ApiSmAcademicYearController extends Controller
                     }
                 }
             }
-            $academic_year = SmAcademicYear::find($request->id);
-            $academic_year->year = $request->year;
-            $academic_year->title = $request->title;
-            $academic_year->starting_date = $request->year . '-01-01';
-            $academic_year->ending_date = $request->year . '-12-31';
-            $academic_year->created_at = $created_year;
-            $result = $academic_year->save();
+            $church_year = SmAcademicYear::find($request->id);
+            $church_year->year = $request->year;
+            $church_year->title = $request->title;
+            $church_year->starting_date = $request->year . '-01-01';
+            $church_year->ending_date = $request->year . '-12-31';
+            $church_year->created_at = $created_year;
+            $result = $church_year->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 if ($result) {

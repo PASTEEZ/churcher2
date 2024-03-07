@@ -7,7 +7,7 @@
                 <div class="row">
                     <div class="col-lg-4 no-gutters">
                         <div class="main-title">
-                            <h3 class="mb-0">@lang('common.class'): {{$class->class_name}} ({{$section->section_name}})</h3>
+                            <h3 class="mb-0">@lang('common.class'): {{$class->age_group_name}} ({{$section->mgender_name}})</h3>
                         </div>
                     </div>
                 </div>

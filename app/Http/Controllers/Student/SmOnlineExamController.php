@@ -38,7 +38,7 @@ class SmOnlineExamController extends Controller
     {
         try {
             $time_zone_setup = SmGeneralSettings::join('sm_time_zones', 'sm_time_zones.id', '=', 'sm_general_settings.time_zone_id')
-                ->where('school_id', Auth::user()->school_id)->first();
+                ->where('church_id', Auth::user()->church_id)->first();
             date_default_timezone_set($time_zone_setup->time_zone);
             $student = Auth::user()->student;
             $records = studentRecords(null, $student->id)->get();
@@ -53,13 +53,13 @@ class SmOnlineExamController extends Controller
     {
         try {
             $online_exam_info=SmOnlineExam::find($request->online_exam_id);
-            $teacher_info=SmAssignSubject::where('class_id',$online_exam_info->class_id)
-            ->where('section_id',$online_exam_info->section_id)
+            $teacher_info=SmAssignSubject::where('age_group_id',$online_exam_info->age_group_id)
+            ->where('mgender_id',$online_exam_info->mgender_id)
             ->where('subject_id',$online_exam_info->subject_id)
             ->first();
             $obtain_marks=DB::table('online_exam_student_answer_markings')
                 ->where('online_exam_id',$request->online_exam_id)
-                ->where('student_id', Auth::user()->student->id)
+                ->where('member_id', Auth::user()->student->id)
                 ->sum('obtain_marks');
             $question_types_array=[];
             if ($online_exam_info->auto_mark==1) {
@@ -72,7 +72,7 @@ class SmOnlineExamController extends Controller
 
                 if (!in_array('F',$question_types_array)) {
                    $online_take_exam_mark = SmStudentTakeOnlineExam::where('online_exam_id', $request->online_exam_id)
-                        ->where('student_id', Auth::user()->student->id)->first();
+                        ->where('member_id', Auth::user()->student->id)->first();
          
                     $online_take_exam_mark->total_marks=$obtain_marks;
                     $online_take_exam_mark->status=2;
@@ -81,7 +81,7 @@ class SmOnlineExamController extends Controller
             }
            
             $online_take_exam_mark = SmStudentTakeOnlineExam::where('online_exam_id', $request->online_exam_id)
-            ->where('student_id', Auth::user()->student->id)->first();
+            ->where('member_id', Auth::user()->student->id)->first();
             $online_take_exam_mark->student_done=1;
             $online_take_exam_mark->save();
             
@@ -91,8 +91,8 @@ class SmOnlineExamController extends Controller
             $notification->role_id = $teacher_info->teacher->role_id;
             $notification->date = date('Y-m-d');
             $notification->message = Auth::user()->student->full_name .' Submit answer for '.$online_exam_info->title;
-            $notification->school_id = Auth::user()->school_id;
-            $notification->academic_id = getAcademicId();
+            $notification->church_id = Auth::user()->church_id;
+            $notification->church_year_id = getAcademicId();
             $notification->save();
 
             Toastr::success('Online Exam Taken Successfully', 'Success');
@@ -112,17 +112,17 @@ class SmOnlineExamController extends Controller
             $online_exam = SmOnlineExam::find($id);
 
             $assigned_questions = SmOnlineExamQuestionAssign::where('online_exam_id', $online_exam->id)
-            ->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)
+            ->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)
             ->get();
             return view('backEnd.studentPanel.take_online_exam', compact('online_exam', 'assigned_questions'));
             
             // if (moduleStatusCheck('MultipleImageQuestion')== TRUE) {
             //     $assigned_questions = SmOnlineExamQuestionAssign::where('online_exam_id', $online_exam->id)
-            //     ->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)
+            //     ->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)
             //     ->simplePaginate(1);
             //     return view('multipleimagequestion::take_exam', compact('online_exam', 'assigned_questions'));
             // } else {
-            //     $assigned_questions = SmOnlineExamQuestionAssign::where('online_exam_id', $online_exam->id)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            //     $assigned_questions = SmOnlineExamQuestionAssign::where('online_exam_id', $online_exam->id)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
             //     return view('backEnd.studentPanel.take_online_exam', compact('online_exam', 'assigned_questions'));
             // }
 
@@ -131,7 +131,7 @@ class SmOnlineExamController extends Controller
             return redirect()->back();
         }
     }
-    public function autoMarking($online_exam_id, $student_id, $question_id, $user_choose,$ajax_post)
+    public function autoMarking($online_exam_id, $member_id, $question_id, $user_choose,$ajax_post)
     {
 
         
@@ -139,15 +139,15 @@ class SmOnlineExamController extends Controller
         $question_info = SmQuestionBank::find($question_id);
 
         if ($question_info->type != 'MI') {
-            $question_answer = OnlineExamStudentAnswerMarking::where('online_exam_id', $online_exam_id)->where('student_id', $student_id)->where('question_id', $question_id)->first();
+            $question_answer = OnlineExamStudentAnswerMarking::where('online_exam_id', $online_exam_id)->where('member_id', $member_id)->where('question_id', $question_id)->first();
        
         } else {
             if ($question_info->answer_type=='radio') {
-                $question_answer = OnlineExamStudentAnswerMarking::where('online_exam_id', $online_exam_id)->where('student_id', $student_id)->where('question_id', $question_id)->first();
+                $question_answer = OnlineExamStudentAnswerMarking::where('online_exam_id', $online_exam_id)->where('member_id', $member_id)->where('question_id', $question_id)->first();
        
             } else {
                 $question_answer = OnlineExamStudentAnswerMarking::where('online_exam_id', $online_exam_id)
-                ->where('student_id', $student_id)
+                ->where('member_id', $member_id)
                 ->where('question_id', $question_id)
                 ->where('user_answer', $user_choose)
                 ->first();
@@ -159,7 +159,7 @@ class SmOnlineExamController extends Controller
             $question_answer = new OnlineExamStudentAnswerMarking();
         }
         $question_answer->online_exam_id = $online_exam_id;
-        $question_answer->student_id = $student_id;
+        $question_answer->member_id = $member_id;
         $question_answer->question_id = $question_id;
         $question_answer->user_answer = $user_choose;
         if ($question_info->type == 'M') {
@@ -188,7 +188,7 @@ class SmOnlineExamController extends Controller
                 $question_answer->save();
                 if ($ajax_post->submit_value==null) {
                     $user_post = OnlineExamStudentAnswerMarking::where('online_exam_id', $online_exam_id)
-                    ->where('student_id', $student_id)
+                    ->where('member_id', $member_id)
                     ->where('question_id', $question_id)
                     ->where('user_answer', $ajax_post->option)
                     ->first();
@@ -196,7 +196,7 @@ class SmOnlineExamController extends Controller
                 }
                 $wrong=OnlineExamStudentAnswerMarking::where('user_answer','=','')->delete();
                 $user_answers = OnlineExamStudentAnswerMarking::where('online_exam_id', $online_exam_id)
-                    ->where('student_id', $student_id)
+                    ->where('member_id', $member_id)
                     ->where('question_id', $question_id)
                     ->get();
                 $student_given_answer=[];
@@ -214,7 +214,7 @@ class SmOnlineExamController extends Controller
                 sort($student_given_answer);
                 sort($question_currect_answer);
 
-                $answer_marking = OnlineExamStudentAnswerMarking::where('online_exam_id', $online_exam_id)->where('student_id', $student_id)->where('question_id', $question_id)->first();
+                $answer_marking = OnlineExamStudentAnswerMarking::where('online_exam_id', $online_exam_id)->where('member_id', $member_id)->where('question_id', $question_id)->first();
        
                 if ($student_given_answer===$question_currect_answer) {
                     $answer_marking->answer_status = 1;
@@ -226,7 +226,7 @@ class SmOnlineExamController extends Controller
 
                     
                     $wrong = OnlineExamStudentAnswerMarking::where('online_exam_id', $online_exam_id)
-                    ->where('student_id', $student_id)
+                    ->where('member_id', $member_id)
                     ->where('question_id', $question_id)
                     ->update(array('obtain_marks' => 0,'answer_status' => 0));
                 }
@@ -250,7 +250,7 @@ class SmOnlineExamController extends Controller
 
         $question_answer->save();
     }
-    public function questionAnswer($online_exam_id, $student_id, $question_id, $user_choose,$ajax_post)
+    public function questionAnswer($online_exam_id, $member_id, $question_id, $user_choose,$ajax_post)
     {
 
         $exam_info = SmOnlineExam::find($online_exam_id);
@@ -261,7 +261,7 @@ class SmOnlineExamController extends Controller
 
                 if ($ajax_post->submit_value==null) {
                     $user_post = OnlineExamStudentAnswerMarking::where('online_exam_id', $online_exam_id)
-                    ->where('student_id', $student_id)
+                    ->where('member_id', $member_id)
                     ->where('question_id', $question_id)
                     ->where('user_answer', $ajax_post->option)
                     ->first();
@@ -270,7 +270,7 @@ class SmOnlineExamController extends Controller
                 $wrong=OnlineExamStudentAnswerMarking::where('user_answer','=','')->delete();
             }
                 $question_answer = OnlineExamStudentAnswerMarking::where('online_exam_id', $online_exam_id)
-                ->where('student_id', $student_id)
+                ->where('member_id', $member_id)
                 ->where('question_id', $question_id)
                 ->where('user_answer', $user_choose)
                 ->first();
@@ -278,7 +278,7 @@ class SmOnlineExamController extends Controller
                     $question_answer = new OnlineExamStudentAnswerMarking();
                 }
         } else {
-            $question_answer = OnlineExamStudentAnswerMarking::where('online_exam_id', $online_exam_id)->where('student_id', $student_id)->where('question_id', $question_id)->first();
+            $question_answer = OnlineExamStudentAnswerMarking::where('online_exam_id', $online_exam_id)->where('member_id', $member_id)->where('question_id', $question_id)->first();
             if ($question_answer == null) {
                 $question_answer = new OnlineExamStudentAnswerMarking();
             }
@@ -286,7 +286,7 @@ class SmOnlineExamController extends Controller
         
       
         $question_answer->online_exam_id = $online_exam_id;
-        $question_answer->student_id = $student_id;
+        $question_answer->member_id = $member_id;
         $question_answer->question_id = $question_id;
         $question_answer->user_answer = $user_choose;
         $question_answer->save();
@@ -296,7 +296,7 @@ class SmOnlineExamController extends Controller
     {
         
         $student = Auth::user()->student;
-        $exam_status = SmStudentTakeOnlineExam::where('student_id', $student->id)->where('online_exam_id', $request->online_exam_id)->where('school_id', Auth::user()->school_id)->first();
+        $exam_status = SmStudentTakeOnlineExam::where('member_id', $student->id)->where('online_exam_id', $request->online_exam_id)->where('church_id', Auth::user()->church_id)->first();
         if (!empty($exam_status) &&  $exam_status->status == 1) {
             Toastr::warning('You are already participated this exam', 'Failed');
             return redirect()->back();
@@ -306,14 +306,14 @@ class SmOnlineExamController extends Controller
         try {
             $online_exam = SmOnlineExam::findOrFail($request->$request->online_exam_id);
             
-            $record_id = studentRecords($request->merge(['class'=>$online_exam->class_id, 'section'=>$online_exam->section_id]), null)->first()->id;
+            $record_id = studentRecords($request->merge(['class'=>$online_exam->age_group_id, 'section'=>$online_exam->mgender_id]), null)->first()->id;
             $take_online_exam = new SmStudentTakeOnlineExam();
             $take_online_exam->online_exam_id = $request->online_exam_id;
-            $take_online_exam->student_id = $student->id;
+            $take_online_exam->member_id = $student->id;
             $take_online_exam->record_id = $record ?? null;
             $take_online_exam->status = 1;
-            $take_online_exam->school_id = Auth::user()->school_id;
-            $take_online_exam->academic_id =  getAcademicId();
+            $take_online_exam->church_id = Auth::user()->church_id;
+            $take_online_exam->church_year_id =  getAcademicId();
             $take_online_exam->save();
             $take_online_exam->toArray();
 
@@ -331,8 +331,8 @@ class SmOnlineExamController extends Controller
                 $exam_question->question_bank_id = $question_id;
                 $exam_question->trueFalse = $trueFalse;
                 $exam_question->suitable_words = $suitable_words;
-                $exam_question->school_id = Auth::user()->school_id;
-                $exam_question->academic_id =  getAcademicId();
+                $exam_question->church_id = Auth::user()->church_id;
+                $exam_question->church_year_id =  getAcademicId();
                 $exam_question->save();
                 $exam_question->toArray();
 
@@ -348,8 +348,8 @@ class SmOnlineExamController extends Controller
                     }
                 } else if ($question_bank->type == "M") {
                     $question_options = SmQuestionBankMuOption::where('question_bank_id', $question_bank->id)
-                        ->where('academic_id', getAcademicId())
-                        ->where('school_id', Auth::user()->school_id)
+                        ->where('church_year_id', getAcademicId())
+                        ->where('church_id', Auth::user()->church_id)
                         ->get();
 
                     $i = 0;
@@ -359,8 +359,8 @@ class SmOnlineExamController extends Controller
                         $exam_question_option = new SmStudentTakeOnlnExQuesOption();
                         $exam_question_option->take_online_exam_question_id = $exam_question->id;
                         $exam_question_option->title = $question_option->title;
-                        $exam_question_option->school_id = Auth::user()->school_id;
-                        $exam_question_option->academic_id =  getAcademicId();
+                        $exam_question_option->church_id = Auth::user()->church_id;
+                        $exam_question_option->church_year_id =  getAcademicId();
                         if (isset($request->$options)) {
                             $exam_question_option->status = $request->$options;
                         } else {
@@ -379,13 +379,13 @@ class SmOnlineExamController extends Controller
             }
             if (!in_array("F", $question_types) && $online_exam_info->auto_mark == 1) {
                 $online_take_exam_mark = SmStudentTakeOnlineExam::where('online_exam_id', $request->online_exam_id)
-                    ->where('student_id', $student->id)->where('academic_id', getAcademicId())->first();
+                    ->where('member_id', $student->id)->where('church_year_id', getAcademicId())->first();
                 // return Auth::user()->id;
                 if ($online_take_exam_mark) {
                     $total_marks = 0;
                     if (isset($request->marks)) {
                         foreach ($request->marks as $mark) {
-                            $question_marks = SmQuestionBank::select('marks')->where('id', $mark)->where('academic_id', getAcademicId())->first();
+                            $question_marks = SmQuestionBank::select('marks')->where('id', $mark)->where('church_year_id', getAcademicId())->first();
                             $total_marks = $total_marks + $question_marks->marks;
                         }
                     }
@@ -406,7 +406,7 @@ class SmOnlineExamController extends Controller
     public function AjaxStudentOnlineExamSubmit(Request $request)
     {
         $time_zone_setup = SmGeneralSettings::join('sm_time_zones', 'sm_time_zones.id', '=', 'sm_general_settings.time_zone_id')
-                ->where('school_id', Auth::user()->school_id)->first();
+                ->where('church_id', Auth::user()->church_id)->first();
             date_default_timezone_set($time_zone_setup->time_zone);
 
         $online_exam = SmOnlineExam::find($request->online_exam_id);
@@ -424,17 +424,17 @@ class SmOnlineExamController extends Controller
         } else {
             $student = Auth::user()->student;
 
-            $record_id = studentRecords($request->merge(['class'=>$online_exam->class_id,'section'=>$online_exam->section_id]), null)->first('id')->id;
+            $record_id = studentRecords($request->merge(['class'=>$online_exam->age_group_id,'section'=>$online_exam->mgender_id]), null)->first('id')->id;
           
-            $take_exam = SmStudentTakeOnlineExam::where('student_id', $student->id)
-                ->where('online_exam_id', $request->online_exam_id)->where('school_id', Auth::user()->school_id)->first();
+            $take_exam = SmStudentTakeOnlineExam::where('member_id', $student->id)
+                ->where('online_exam_id', $request->online_exam_id)->where('church_id', Auth::user()->church_id)->first();
             if (empty($take_exam)) {
                 $take_exam = new SmStudentTakeOnlineExam();
-                $take_exam->student_id = $student->id;
+                $take_exam->member_id = $student->id;
                 $take_exam->record_id = $record_id;
                 $take_exam->online_exam_id = $request->online_exam_id;
-                $take_exam->school_id = Auth::user()->school_id;
-                $take_exam->academic_id = getAcademicId();
+                $take_exam->church_id = Auth::user()->church_id;
+                $take_exam->church_year_id = getAcademicId();
                 $take_exam->save();
             }
 
@@ -470,8 +470,8 @@ class SmOnlineExamController extends Controller
                     $exam_question->suitable_words = $request->submit_value;
                 }
     
-                $exam_question->school_id = Auth::user()->school_id;
-                $exam_question->academic_id =  getAcademicId();
+                $exam_question->church_id = Auth::user()->church_id;
+                $exam_question->church_year_id =  getAcademicId();
                 $exam_question->save();
             }
           
@@ -481,7 +481,7 @@ class SmOnlineExamController extends Controller
             $msg['title'] = "Successful";
             $msg['type'] = "success";
 
-            $obtain_marks = OnlineExamStudentAnswerMarking::where('online_exam_id', $request->online_exam_id)->where('student_id', $student->id)->get();
+            $obtain_marks = OnlineExamStudentAnswerMarking::where('online_exam_id', $request->online_exam_id)->where('member_id', $student->id)->get();
             $total_marks = 0.00;
             foreach ($obtain_marks as $key => $mark) {
                 $total_marks += $mark->obtain_marks;
@@ -498,12 +498,12 @@ class SmOnlineExamController extends Controller
     {
         try {
             $time_zone_setup = SmGeneralSettings::join('sm_time_zones', 'sm_time_zones.id', '=', 'sm_general_settings.time_zone_id')
-                ->where('school_id', Auth::user()->school_id)->first();
+                ->where('church_id', Auth::user()->church_id)->first();
 
             $result_views = SmStudentTakeOnlineExam::where('active_status', 1)->where('status', 2)
-                ->where('academic_id', getAcademicId())
-                ->where('student_id', @Auth::user()->student->id)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('member_id', @Auth::user()->student->id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             return view('backEnd.studentPanel.student_view_result', compact('result_views', 'time_zone_setup'));
@@ -518,7 +518,7 @@ class SmOnlineExamController extends Controller
 
             $online_exam = SmOnlineExam::find($id);
             $assigned_questions = SmOnlineExamQuestionAssign::where('online_exam_id', $online_exam->id)
-            ->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            ->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
             return view('backEnd.studentPanel.view_online_question', compact('online_exam', 'assigned_questions'));
         } catch (\Exception $e) {
@@ -533,7 +533,7 @@ class SmOnlineExamController extends Controller
             
             $assign_questions=SmOnlineExamQuestionAssign::where('online_exam_id', $exam_id)->get();
 
-            $take_online_exam = SmStudentTakeOnlineExam::where('online_exam_id', $exam_id)->where('student_id', $s_id)->where('school_id', Auth::user()->school_id)->first();
+            $take_online_exam = SmStudentTakeOnlineExam::where('online_exam_id', $exam_id)->where('member_id', $s_id)->where('church_id', Auth::user()->church_id)->first();
            
             $assigned_question_list=[];
                $assigneds= SmOnlineExamQuestionAssign::where('online_exam_id', $exam_id)->select('question_bank_id')->get();
@@ -542,7 +542,7 @@ class SmOnlineExamController extends Controller
                     $assigned_question_list[]= $value->question_bank_id;
                }
             $answered_question_list=[];
-            $answereds=OnlineExamStudentAnswerMarking::where('online_exam_id', $exam_id)->where('student_id', $s_id)->select('question_id')->distinct()->get();
+            $answereds=OnlineExamStudentAnswerMarking::where('online_exam_id', $exam_id)->where('member_id', $s_id)->select('question_id')->distinct()->get();
                foreach ($answereds as $key => $value) {
                 $answered_question_list[]= $value->question_id;
                }
@@ -570,19 +570,19 @@ class SmOnlineExamController extends Controller
 
                 $data = [];
 
-                $student = SmStudent::where('user_id', $id)->where('school_id', Auth::user()->school_id)->first();
+                $student = SmStudent::where('user_id', $id)->where('church_id', Auth::user()->church_id)->first();
 
                 $now = date('H:i:s');
                 $today = date('Y-m-d');
 
                 $online_exams = SmOnlineExam::where('sm_online_exams.status', '=', 1)
-                    ->join('sm_subjects', 'sm_online_exams.class_id', '=', 'sm_subjects.id')
-                    ->where('class_id', $student->class_id)
-                    ->where('section_id', $student->section_id)
+                    ->join('sm_subjects', 'sm_online_exams.age_group_id', '=', 'sm_subjects.id')
+                    ->where('age_group_id', $student->age_group_id)
+                    ->where('mgender_id', $student->mgender_id)
                     ->where('end_time', '>', $now)
                     ->where('date', '=', $today)
                     ->select('sm_online_exams.id as exam_id', 'sm_online_exams.title as exam_title', 'sm_subjects.subject_name', 'sm_online_exams.date', 'sm_online_exams.status as onlineExamStatus', 'sm_online_exams.status as onlineExamTakeStatus')
-                    ->where('sm_online_exams.school_id', Auth::user()->school_id)->get();
+                    ->where('sm_online_exams.church_id', Auth::user()->church_id)->get();
                 $examStatus = '0 = Pending , 1 Published';
                 $examTakenStatus = '0 = Take Exam , 1 = Alreday Submitted';
                 $data['online_exams'] = $online_exams->toArray();
@@ -600,14 +600,14 @@ class SmOnlineExamController extends Controller
         try {
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
 
-                $student = SmStudent::where('user_id', $id)->where('school_id', Auth::user()->school_id)->first();
+                $student = SmStudent::where('user_id', $id)->where('church_id', Auth::user()->church_id)->first();
 
                 $student_exams = DB::table('sm_online_exams')
-                    ->where('class_id', $student->class_id)
-                    ->where('section_id', $student->section_id)
-                    ->where('school_id', $student->school_id)
+                    ->where('age_group_id', $student->age_group_id)
+                    ->where('mgender_id', $student->mgender_id)
+                    ->where('church_id', $student->church_id)
                     ->select('sm_online_exams.title as exam_name', 'id as exam_id')
-                    ->where('school_id', Auth::user()->school_id)->get();
+                    ->where('church_id', Auth::user()->church_id)->get();
                 return ApiBaseMethod::sendResponse($student_exams, null);
             }
         } catch (\Exception $e) {
@@ -620,22 +620,22 @@ class SmOnlineExamController extends Controller
         try {
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
-                $student = SmStudent::where('user_id', $id)->where('school_id', Auth::user()->school_id)->first();
+                $student = SmStudent::where('user_id', $id)->where('church_id', Auth::user()->church_id)->first();
 
                 $student_exams = DB::table('sm_online_exams')
-                    ->where('class_id', $student->class_id)
-                    ->where('section_id', $student->section_id)
-                    ->where('school_id', $student->school_id)
+                    ->where('age_group_id', $student->age_group_id)
+                    ->where('mgender_id', $student->mgender_id)
+                    ->where('church_id', $student->church_id)
                     ->select('sm_online_exams.title as exam_name', 'sm_online_exams.id as exam_id')
-                    ->where('school_id', Auth::user()->school_id)->get();
+                    ->where('church_id', Auth::user()->church_id)->get();
                 $exam_result = DB::table('sm_student_take_online_exams')
                     ->join('sm_online_exams', 'sm_online_exams.id', '=', 'online_exam_id')
                     ->join('sm_subjects', 'sm_online_exams.subject_id', '=', 'sm_subjects.id')
-                    ->where('sm_student_take_online_exams.student_id', $student->id)
-                    ->where('sm_student_take_online_exams.school_id', $student->school_id)
+                    ->where('sm_student_take_online_exams.member_id', $student->id)
+                    ->where('sm_student_take_online_exams.church_id', $student->church_id)
                     ->where('sm_online_exams.id', $exam_id)
                     ->where('sm_online_exams.status', '=', 1)
-                    ->where('sm_online_exams.school_id', Auth::user()->school_id)
+                    ->where('sm_online_exams.church_id', Auth::user()->church_id)
                     ->select(
                         'sm_online_exams.title as exam_name',
                         'sm_online_exams.id as exam_id',
@@ -653,7 +653,7 @@ class SmOnlineExamController extends Controller
                         ->where('percent_from', '<=', $mark)
                         ->where('percent_upto', '>=', $mark)
                         ->select('grade_name')
-                        ->where('school_id', Auth::user()->school_id)->first();
+                        ->where('church_id', Auth::user()->church_id)->first();
                     $gradeArray[] = array(
                         "grade" => $grades->grade_name,
                         "exam_id" => $row->exam_id,
@@ -681,7 +681,7 @@ class SmOnlineExamController extends Controller
                     ->where('percent_from', '<=', floor($marks))
                     ->where('percent_upto', '>=', floor($marks))
                     ->select('grade_name')
-                    ->where('school_id', Auth::user()->school_id)->first();
+                    ->where('church_id', Auth::user()->church_id)->first();
                 return ApiBaseMethod::sendResponse($grades, null);
             }
         } catch (\Exception $e) {

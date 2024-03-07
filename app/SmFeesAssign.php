@@ -29,26 +29,26 @@ class SmFeesAssign extends Model
 
     public function getApplyDiscountSumAttribute()
     {
-        return $this->feesPayments()->where('student_id', $this->student_id)->where('record_id', $this->record_id)->where('fees_type_id', $this->feesGroupMaster->feesTypes->id)->sum('applied_discount');
+        return $this->feesPayments()->where('member_id', $this->member_id)->where('record_id', $this->record_id)->where('fees_type_id', $this->feesGroupMaster->feesTypes->id)->sum('applied_discount');
     }
     public function getDiscountSumAttribute()
     {
-        return $this->feesPayments()->where('student_id', $this->student_id)->where('fees_type_id', $this->feesGroupMaster->feesTypes->id)->sum('discount_amount');
+        return $this->feesPayments()->where('member_id', $this->member_id)->where('fees_type_id', $this->feesGroupMaster->feesTypes->id)->sum('discount_amount');
     }
     public function getTotalPaidAttribute()
     {
-        return $this->feesPayments()->where('student_id', $this->student_id)->where('fees_type_id', $this->feesGroupMaster->feesTypes->id)->sum('amount');
+        return $this->feesPayments()->where('member_id', $this->member_id)->where('fees_type_id', $this->feesGroupMaster->feesTypes->id)->sum('amount');
     }
     public function getTotalFineAttribute()
     {
-        return $this->feesPayments()->where('student_id', $this->student_id)->where('fees_type_id', $this->feesGroupMaster->feesTypes->id)->sum('fine');
+        return $this->feesPayments()->where('member_id', $this->member_id)->where('fees_type_id', $this->feesGroupMaster->feesTypes->id)->sum('fine');
     }
 
-    public static function discountSum($student_id, $type_id, $perpose, $record_id)
+    public static function discountSum($member_id, $type_id, $perpose, $record_id)
     {
         try {
             $sum = SmFeesPayment::where('active_status',1)
-                ->where('student_id', $student_id)
+                ->where('member_id', $member_id)
                 ->where('record_id', $record_id)
                 ->where('fees_type_id', $type_id)
                 ->sum($perpose);
@@ -61,19 +61,19 @@ class SmFeesAssign extends Model
     }
 
     
-    public static function groups($student_id){
+    public static function groups($member_id){
       
-        $fees_assigneds=SmFeesAssign::where('student_id',$student_id)
-        ->where('academic_id', getAcademicId())->where('school_id',auth()->user()->school_id)                             
+        $fees_assigneds=SmFeesAssign::where('member_id',$member_id)
+        ->where('church_year_id', getAcademicId())->where('church_id',auth()->user()->church_id)                             
         ->get();
         return $fees_assigneds;
     }
 
-    public static function createdBy($student_id, $discount_id, $record_id){
+    public static function createdBy($member_id, $discount_id, $record_id){
 
         try {
             $created_by = SmFeesPayment::where('active_status',1)
-                        ->where('student_id', $student_id)
+                        ->where('member_id', $member_id)
                         ->where('record_id', $record_id)
                         ->where('fees_discount_id', $discount_id)
                         ->first();
@@ -84,11 +84,11 @@ class SmFeesAssign extends Model
         }
     }
 
-    public static function feesPayment($type_id, $student_id, $record_id){
+    public static function feesPayment($type_id, $member_id, $record_id){
         try {
             $payments = SmFeesPayment::where('active_status',1)
                         ->where('fees_type_id', $type_id)
-                        ->where('student_id', $student_id)
+                        ->where('member_id', $member_id)
                         ->where('record_id', $record_id)
                         ->get();
             return $payments;
@@ -97,16 +97,16 @@ class SmFeesAssign extends Model
             return $data;
         }
     }
-    public static function studentFeesTypeDiscount($group_id, $student_id,$discount_amount,$record_id){
+    public static function studentFeesTypeDiscount($group_id, $member_id,$discount_amount,$record_id){
         try {
-            $assigned_fees_type=SmFeesAssign::where('student_id',$student_id)
+            $assigned_fees_type=SmFeesAssign::where('member_id',$member_id)
                 ->where('record_id',$record_id)
                 ->join('sm_fees_masters','sm_fees_masters.id','=','sm_fees_assigns.fees_master_id')
                 ->join('sm_fees_types','sm_fees_types.id','=','sm_fees_masters.fees_type_id')
                 ->where('sm_fees_masters.fees_group_id','=',$group_id)
                 ->where('sm_fees_assigns.applied_discount','=',null)
                 ->where('sm_fees_assigns.fees_amount','>',0)
-                ->select('sm_fees_masters.id','sm_fees_types.id as fees_type_id','name','amount','sm_fees_assigns.student_id','applied_discount','sm_fees_masters.fees_group_id')
+                ->select('sm_fees_masters.id','sm_fees_types.id as fees_type_id','name','amount','sm_fees_assigns.member_id','applied_discount','sm_fees_masters.fees_group_id')
                 ->get();
             return $assigned_fees_type;
         } catch (\Exception $e) {
@@ -115,7 +115,7 @@ class SmFeesAssign extends Model
         }
     }
     public function studentInfo(){
-        return $this->belongsTo('App\SmStudent', 'student_id', 'id');
+        return $this->belongsTo('App\SmStudent', 'member_id', 'id');
     }
 
     public function recordDetail(){

@@ -38,7 +38,7 @@
                             <select class="w-100 niceSelect bb form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                 <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                 @foreach($classes as $class)
-                                <option value="{{$class->id}}"  {{ isset($class_id)? ($class_id == $class->id? 'selected':''): (old("class") == $class->id ? "selected":"")}}>{{$class->class_name}}</option>
+                                <option value="{{$class->id}}"  {{ isset($age_group_id)? ($age_group_id == $class->id? 'selected':''): (old("class") == $class->id ? "selected":"")}}>{{$class->age_group_name}}</option>
                                 @endforeach
                             </select>
                             @if ($errors->has('class'))
@@ -119,7 +119,7 @@
                                         <td>{{$fees_payment->studentInfo !=""?$fees_payment->studentInfo->full_name:""}}</td>
                                         <td>
                                             @if($fees_payment->studentInfo!="" && $fees_payment->studentInfo->class!="")
-                                            {{$fees_payment->studentInfo->class->class_name}}
+                                            {{$fees_payment->studentInfo->class->age_group_name}}
                                             @endif
                                         </td>
                                         <td>{{$fees_payment->feesType!=""?$fees_payment->feesType->name:""}}</td>

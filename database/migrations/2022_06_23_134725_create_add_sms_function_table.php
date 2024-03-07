@@ -15,53 +15,53 @@ class CreateAddSmsFunctionTable extends Migration
         });
         $schools = SmSchool::get();
         foreach($schools as $school){
-            $studenAttandance = SmsTemplate::where('purpose', 'parent_leave_approve_for_student')->where('school_id', $school->id)->first();
+            $studenAttandance = SmsTemplate::where('purpose', 'parent_leave_approve_for_student')->where('church_id', $school->id)->first();
             $studenAttandance->body= str_replace('[staff_name]','[parent_name]',$studenAttandance->body);
             $studenAttandance->variable= str_replace('[staff_name]','[parent_name]',$studenAttandance->variable);
             $studenAttandance->save();
 
-            $holiday = SmsTemplate::where('purpose', 'holiday')->where('school_id', $school->id)->first();
+            $holiday = SmsTemplate::where('purpose', 'holiday')->where('church_id', $school->id)->first();
             $holiday->body= str_replace('[holiday_name]',' ',$holiday->body);
             $holiday->variable= str_replace('[holiday_name]',' ',$holiday->variable);
             $holiday->save();
 
-            $BioMat1 = SmsTemplate::where('purpose', 'student_checkout')->where('school_id', $school->id)->first();
+            $BioMat1 = SmsTemplate::where('purpose', 'student_checkout')->where('church_id', $school->id)->first();
             $BioMat1->module= "InfixBiometrics";
             $BioMat1->save();
 
-            $BioMat2 = SmsTemplate::where('purpose', 'student_early_checkout')->where('school_id', $school->id)->first();
+            $BioMat2 = SmsTemplate::where('purpose', 'student_early_checkout')->where('church_id', $school->id)->first();
             $BioMat2->module= "InfixBiometrics";
             $BioMat2->save();
 
-            $check1 = SmsTemplate::where('purpose', 'student_fees_due')->where('school_id', $school->id)->first();
+            $check1 = SmsTemplate::where('purpose', 'student_fees_due')->where('church_id', $school->id)->first();
             if(!$check1){
                 $storeFeesDueStudent = new SmsTemplate();
                 $storeFeesDueStudent->type = "sms";
                 $storeFeesDueStudent->purpose = "student_fees_due";
                 $storeFeesDueStudent->subject = "";
-                $storeFeesDueStudent->body = "Hi [student_name], You fees due amount [dues_amount] for [fees_name] on [date]. Thank You [school_name]";
+                $storeFeesDueStudent->body = "Hi [member_name], You fees due amount [dues_amount] for [fees_name] on [date]. Thank You [church_name]";
                 $storeFeesDueStudent->module = "";
-                $storeFeesDueStudent->variable = "[student_name], [dues_amount], [fees_name], [date], [school_name]";
+                $storeFeesDueStudent->variable = "[member_name], [dues_amount], [fees_name], [date], [church_name]";
                 $storeFeesDueStudent->status = 1;
-                $storeFeesDueStudent->school_id = $school->id;
+                $storeFeesDueStudent->church_id = $school->id;
                 $storeFeesDueStudent->save();
             }
 
-            $check2 = SmsTemplate::where('purpose', 'student_fees_due_for_parent')->where('school_id', $school->id)->first();
+            $check2 = SmsTemplate::where('purpose', 'student_fees_due_for_parent')->where('church_id', $school->id)->first();
             if(!$check2){
                 $storeFeesDueStudent = new SmsTemplate();
                 $storeFeesDueStudent->type = "sms";
                 $storeFeesDueStudent->purpose = "student_fees_due_for_parent";
                 $storeFeesDueStudent->subject = "";
-                $storeFeesDueStudent->body = "Hi [parent_name], You fees due amount [dues_amount] for [fees_name] on [date]. Thank You [school_name]";
+                $storeFeesDueStudent->body = "Hi [parent_name], You fees due amount [dues_amount] for [fees_name] on [date]. Thank You [church_name]";
                 $storeFeesDueStudent->module = "";
-                $storeFeesDueStudent->variable = "[parent_name], [dues_amount], [fees_name], [date], [school_name]";
+                $storeFeesDueStudent->variable = "[parent_name], [dues_amount], [fees_name], [date], [church_name]";
                 $storeFeesDueStudent->status = 1;
-                $storeFeesDueStudent->school_id = $school->id;
+                $storeFeesDueStudent->church_id = $school->id;
                 $storeFeesDueStudent->save();
             }
 
-            $check3 = SmsTemplate::where('purpose', 'due_fees_payment')->where('school_id', $school->id)->first();
+            $check3 = SmsTemplate::where('purpose', 'due_fees_payment')->where('church_id', $school->id)->first();
             if(!$check3){
                 $storeFeesDueStudent = new SmsTemplate();
                 $storeFeesDueStudent->type = "email";
@@ -112,9 +112,9 @@ class CreateAddSmsFunctionTable extends Migration
                                                                             </h1>
                                                                             <div style="line-height:1.8;padding:20px 15px;">
                                                                                 <div class="txtTinyMce-wrapper" style="line-height:1.8;">
-                                                                                    <h1>Hi [student_name],</h1>
+                                                                                    <h1>Hi [member_name],</h1>
                                                                                     <p style="margin:10px 0px 30px;line-height:1.929;font-size:16px;color:rgb(113,128,150);">
-                                                                                        You fees due amount [due_amount] for [fees_name] on [date]. Thank You, [school_name]
+                                                                                        You fees due amount [due_amount] for [fees_name] on [date]. Thank You, [church_name]
                                                                                     </p>
                                                                                 </div>
                                                                             </div>
@@ -154,9 +154,9 @@ class CreateAddSmsFunctionTable extends Migration
                                             </table>
                                             ';
                 $storeFeesDueStudent->module = "";
-                $storeFeesDueStudent->variable = "[student_name], [due_amount], [fees_name], [date], [school_name]";
+                $storeFeesDueStudent->variable = "[member_name], [due_amount], [fees_name], [date], [church_name]";
                 $storeFeesDueStudent->status = 1;
-                $storeFeesDueStudent->school_id = $school->id;
+                $storeFeesDueStudent->church_id = $school->id;
                 $storeFeesDueStudent->save();
             }
         }

@@ -28,11 +28,11 @@ class SmExamSchedule extends Model
 
     public function class()
     {
-        return $this->belongsTo('App\SmClass', 'class_id', 'id');
+        return $this->belongsTo('App\SmClass', 'age_group_id', 'id');
     }
     public function section()
     {
-        return $this->belongsTo('App\SmSection', 'section_id', 'id');
+        return $this->belongsTo('App\SmSection', 'mgender_id', 'id');
     }
 
     public function classRoom()
@@ -49,16 +49,16 @@ class SmExamSchedule extends Model
         return $this->belongsTo('App\SmStaff', 'teacher_id', 'id');
     }
 
-    public static function assignedRoutine($class_id, $section_id, $exam_id, $subject_id, $exam_period_id)
+    public static function assignedRoutine($age_group_id, $mgender_id, $exam_id, $subject_id, $exam_period_id)
     {
         try {
-            return SmExamSchedule::where('class_id', $class_id)
-                ->where('section_id', $section_id)
+            return SmExamSchedule::where('age_group_id', $age_group_id)
+                ->where('mgender_id', $mgender_id)
                 ->where('exam_term_id', $exam_id)
                 ->where('subject_id', $subject_id)
                 ->where('exam_period_id', $exam_period_id)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->first();
         } catch (\Exception $e) {
             $data = [];
@@ -66,15 +66,15 @@ class SmExamSchedule extends Model
         }
     }
 
-    public static function assignedRoutineSubject($class_id, $section_id, $exam_id, $subject_id)
+    public static function assignedRoutineSubject($age_group_id, $mgender_id, $exam_id, $subject_id)
     {
         try {
-            return SmExamSchedule::where('class_id', $class_id)
-                ->where('section_id', $section_id)
+            return SmExamSchedule::where('age_group_id', $age_group_id)
+                ->where('mgender_id', $mgender_id)
                 ->where('exam_term_id', $exam_id)
                 ->where('subject_id', $subject_id)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->first();
         } catch (\Exception $e) {
             $data = [];
@@ -92,21 +92,21 @@ class SmExamSchedule extends Model
         }
     }
 
-    public static function assignedRoutineSubjectStudent($class_id, $section_id, $exam_id, $subject_id, $exam_period_id)
+    public static function assignedRoutineSubjectStudent($age_group_id, $mgender_id, $exam_id, $subject_id, $exam_period_id)
     {
 
         try {
-            return SmExamSchedule::where('class_id', $class_id)->where('section_id', $section_id)->where('exam_term_id', $exam_id)->where('subject_id', $subject_id)->where('exam_period_id', $exam_period_id)->first();
+            return SmExamSchedule::where('age_group_id', $age_group_id)->where('mgender_id', $mgender_id)->where('exam_term_id', $exam_id)->where('subject_id', $subject_id)->where('exam_period_id', $exam_period_id)->first();
         } catch (\Exception $e) {
             $data = [];
             return $data;
         }
     }
 
-    public static function examScheduleSubject($class_id, $section_id, $exam_id, $exam_period_id, $date)
+    public static function examScheduleSubject($age_group_id, $mgender_id, $exam_id, $exam_period_id, $date)
     {
         try {
-            return SmExamSchedule::where('class_id', $class_id)->where('section_id', $section_id)
+            return SmExamSchedule::where('age_group_id', $age_group_id)->where('mgender_id', $mgender_id)
                 ->where('exam_term_id', $exam_id)->where('exam_period_id', $exam_period_id)
                 ->where('date', $date)
                 ->first();

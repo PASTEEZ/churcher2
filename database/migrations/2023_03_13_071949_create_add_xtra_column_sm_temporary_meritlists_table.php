@@ -10,8 +10,8 @@ class CreateAddXtraColumnSmTemporaryMeritlistsTable extends Migration
     {
         if (Schema::hasTable('sm_temporary_meritlists')) {
             Schema::table('sm_temporary_meritlists', function (Blueprint $table) {
-                if (!Schema::hasColumn('sm_temporary_meritlists', 'roll_no')) {
-                    $table->integer('roll_no')->nullable();
+                if (!Schema::hasColumn('sm_temporary_meritlists', 'member_id_no')) {
+                    $table->integer('member_id_no')->nullable();
                 }
             });
         }
@@ -28,8 +28,8 @@ class CreateAddXtraColumnSmTemporaryMeritlistsTable extends Migration
     {
 
             Schema::table('sm_temporary_meritlists', function (Blueprint $table) {
-                if (Schema::hasColumn('sm_temporary_meritlists', 'roll_no')) {
-                    $table->dropColumn('roll_no');
+                if (Schema::hasColumn('sm_temporary_meritlists', 'member_id_no')) {
+                    $table->dropColumn('member_id_no');
                 }
             });
         Schema::table('custom_result_settings', function (Blueprint $table) {

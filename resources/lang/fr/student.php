@@ -110,9 +110,9 @@ return [
 
 "custom_field_list" => "Liste de zones personnalisées",
 
-"admission_number" => "Numéro d'admission",
+"registration_number" => "Numéro d'admission",
 
-"admission_date" => "Date d'admission",
+"registration_date" => "Date d'admission",
 
 "add_time_setup" => "Ajouter une configuration de temps",
 
@@ -140,9 +140,9 @@ return [
 
 "last" => "Dernier",
 
-"religion" => "Religion",
+"marital_status" => "Religion",
 
-"caste" => "Goût",
+"home_town" => "Goût",
 
 "height_in" => "Hauteur (In)",
 
@@ -268,7 +268,7 @@ return [
 
 "student_category" => "Catégorie d'étudiant",
 
-"promote_academic_year" => "Promouvoir l'année universitaire",
+"promote_church_year" => "Promouvoir l'année universitaire",
 
 "select_current_class" => "Sélectionner la classe en cours",
 
@@ -326,7 +326,7 @@ return [
 
 "marks_sheet_of" => "Feuille de notes de",
 
-"ifsc_code" => "BAPTISM STATUS",
+"baptism_status" => "BAPTISM STATUS",
 
 "import_student" => "Importer l'étudiant",
 
@@ -464,7 +464,7 @@ return [
 
 "contract_type" => "Type de contrat",
 
-"bank_name" => "Nom de la banque",
+"employer_name" => "Nom de la banque",
 
 "bank_account_number" => "Numéro de compte bancaire",
 
@@ -486,17 +486,17 @@ return [
 
 "date_of_birth" => "Date de naissance",
 
-"student_id_card" => "Carte d'identité de l'étudiant",
+"member_id_card" => "Carte d'identité de l'étudiant",
 
 "mother" => "Mère",
 
-"blood_group" => "Groupe sanguin",
+"region" => "Groupe sanguin",
 
 "relation_with_guardian" => "Relation avec Guardian",
 
 "class_section" => "Classe (sec.)",
 
-"admission_no" => "Droits d'entrée Non",
+"registration_no" => "Droits d'entrée Non",
 
 "first_name" => "Prénom",
 
@@ -514,7 +514,7 @@ return [
 
 "is_present" => "Est présent",
 
-"roll_no" => "Rouleau n °",
+"member_id_no" => "Rouleau n °",
 
 "pages" => "Pages",
 
@@ -524,7 +524,7 @@ return [
 
 "export_to_pdf" => "Exporter vers PDF",
 
-"student_name" => "Nom de l'étudiant",
+"member_name" => "Nom de l'étudiant",
 
 "title" => "Titre",
 
@@ -592,13 +592,13 @@ return [
 
 "email_address" => "Adresse électronique",
 
-"academic_year" => "Année universitaire",
+"church_year" => "Année universitaire",
 
 "select_class" => "Sélectionner une classe",
 
 "select_subject" => "Sélectionner le sujet",
 
-"select_academic_year" => "Sélectionner une année universitaire",
+"select_church_year" => "Sélectionner une année universitaire",
 
 "info" => "Infos",
 

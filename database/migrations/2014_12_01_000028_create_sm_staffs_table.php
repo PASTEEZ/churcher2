@@ -42,8 +42,8 @@ class CreateSmStaffsTable extends Migration
             $table->string('medical_leave', 15)->nullable();
             $table->string('metarnity_leave', 15)->nullable();
             $table->string('bank_account_name', 50)->nullable();
-            $table->string('bank_account_no', 50)->nullable();
-            $table->string('bank_name', 20)->nullable();
+            $table->string('day_born', 50)->nullable();
+            $table->string('employer_name', 20)->nullable();
             $table->string('bank_brach', 30)->nullable();
             $table->string('facebook_url', 100)->nullable();
             $table->string('twiteer_url', 100)->nullable();
@@ -80,11 +80,11 @@ class CreateSmStaffsTable extends Migration
             $table->integer('created_by')->nullable()->default(1)->unsigned();
             $table->integer('updated_by')->nullable()->default(1)->unsigned();
 
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
 
-            // $table->integer('academic_id')->nullable()->default(1)->unsigned();
-            // $table->foreign('academic_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
+            // $table->integer('church_year_id')->nullable()->default(1)->unsigned();
+            // $table->foreign('church_year_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
 
             
             $table->integer('is_saas')->nullable()->default(0)->unsigned();

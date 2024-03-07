@@ -130,8 +130,8 @@
                                                 $tr[$i][$sm_weekend->name][$loop->index]['teacher'] = $routine->teacherDetail ? $routine->teacherDetail->full_name : '';
                                                 $tr[$i][$sm_weekend->name][$loop->index]['start_time'] = $routine->start_time;
                                                 $tr[$i][$sm_weekend->name][$loop->index]['end_time'] = $routine->end_time;
-                                                $tr[$i][$sm_weekend->name][$loop->index]['class_name'] = $routine->class ? $routine->class->class_name : '';
-                                                $tr[$i][$sm_weekend->name][$loop->index]['section_name'] = $routine->section ? $routine->section->section_name : '';
+                                                $tr[$i][$sm_weekend->name][$loop->index]['age_group_name'] = $routine->class ? $routine->class->age_group_name : '';
+                                                $tr[$i][$sm_weekend->name][$loop->index]['mgender_name'] = $routine->section ? $routine->section->mgender_name : '';
                                                 $tr[$i][$sm_weekend->name][$loop->index]['is_break'] = $routine->is_break;
                                                 $used[] = $routine->id;
                                             }
@@ -173,10 +173,10 @@
                                                                 <span class=""> <strong>@lang('academics.room') :</strong>
                                                                     {{ $classes[$i]['class_room'] }}  </span><br>
                                                             @endif
-                                                            @if ($classes[$i]['class_name'])
-                                                                <span class=""> {{ $classes[$i]['class_name'] }}
-                                                                    @if ($classes[$i]['section_name']) (
-                                                                        {{ $classes[$i]['section_name'] }} ) @endif  </span>
+                                                            @if ($classes[$i]['age_group_name'])
+                                                                <span class=""> {{ $classes[$i]['age_group_name'] }}
+                                                                    @if ($classes[$i]['mgender_name']) (
+                                                                        {{ $classes[$i]['mgender_name'] }} ) @endif  </span>
                                                             @endif
 
 

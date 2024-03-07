@@ -25,11 +25,11 @@ class SectionRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required',Rule::unique('sm_sections', 'section_name')->when(moduleStatusCheck('University'), function ($query) {
-                $query->where('un_academic_id', getAcademicId());
+            'name' => ['required',Rule::unique('sm_sections', 'mgender_name')->when(moduleStatusCheck('University'), function ($query) {
+                $query->where('un_church_year_id', getAcademicId());
             }, function ($query) {
-                $query->where('academic_id', getAcademicId());
-            })->where('school_id', auth()->user()->school_id)->ignore($this->id)],
+                $query->where('church_year_id', getAcademicId());
+            })->where('church_id', auth()->user()->church_id)->ignore($this->id)],
         ];
     }
 }

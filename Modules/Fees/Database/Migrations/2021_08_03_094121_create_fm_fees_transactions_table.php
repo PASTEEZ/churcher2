@@ -16,7 +16,7 @@ class CreateFmFeesTransactionsTable extends Migration
         Schema::create('fm_fees_transactions', function (Blueprint $table) {
             $table->id();
             $table->string('invoice_number')->nullable();
-            $table->integer('student_id')->nullable();
+            $table->integer('member_id')->nullable();
             $table->integer('user_id')->nullable();
             $table->string('payment_method')->nullable();
             $table->integer('bank_id')->nullable();
@@ -26,8 +26,8 @@ class CreateFmFeesTransactionsTable extends Migration
             $table->string('paid_status')->nullable();
             $table->unsignedBigInteger('fees_invoice_id')->nullable()->unsigned();
             $table->foreign('fees_invoice_id')->references('id')->on('fm_fees_invoices')->onDelete('cascade');
-            $table->integer('school_id')->nullable();
-            $table->integer('academic_id')->nullable();
+            $table->integer('church_id')->nullable();
+            $table->integer('church_year_id')->nullable();
             $table->float('service_charge')->nullable();
             $table->timestamps();
         });

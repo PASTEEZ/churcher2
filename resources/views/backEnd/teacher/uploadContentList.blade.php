@@ -119,7 +119,7 @@
                                             id="contentDisabledDiv">
                                             @if(moduleStatusCheck('University'))
                                             @includeIf('university::common.session_faculty_depart_academic_semester_level',['required' => ['USN','UF', 'UD', 'US', 'USL'] , 'hide' => ['USUB','UA'],'row' => 1, 'div' => 'col-lg-12', 'mt' =>'mt-0'])
-                                            <input type="hidden" name="un_academic_id" id="select_academic" value="{{getAcademicId()}}">
+                                            <input type="hidden" name="un_church_year_id" id="select_academic" value="{{getAcademicId()}}">
                                             @else 
 
                                             <div class="row">
@@ -131,7 +131,7 @@
                                                             <option data-display="@lang('common.select_class') *"
                                                                     value="">@lang('common.select')</option>
                                                             @foreach($classes as $class)
-                                                                <option value="{{@$class->id}}" {{isset($editData) && $editData->class == $class->id? 'selected':''}}>{{@$class->class_name}}</option>
+                                                                <option value="{{@$class->id}}" {{isset($editData) && $editData->class == $class->id? 'selected':''}}>{{@$class->age_group_name}}</option>
                                                             @endforeach
                                                         </select>
                                                         <span class="focus-border"></span>
@@ -153,7 +153,7 @@
                                                             </option>
                                                             @if(isset($editData->section))
                                                                 @foreach($sections as $section)
-                                                                    <option value="{{$section->id}}" {{$editData->section == $section->id? 'selected': ''}}>{{$section->section_name}}</option>
+                                                                    <option value="{{$section->id}}" {{$editData->section == $section->id? 'selected': ''}}>{{$section->mgender_name}}</option>
                                                                 @endforeach
                                                             @endif
                                                         </select>
@@ -343,10 +343,10 @@
                                                             @lang('study.all_classes_student')
                                                         @endif
                                                         @if(@$value->classes != "" && $value->sections != "")
-                                                            @lang('study.all_students_of') ({{@$value->classes->class_name.'->'.@$value->sections->section_name}})
+                                                            @lang('study.all_students_of') ({{@$value->classes->age_group_name.'->'.@$value->sections->mgender_name}})
                                                         @endif
                                                         @if(@$value->classes != "" && $value->section ==null)
-                                                            @lang('study.all_students_of') ({{@$value->classes->class_name.'->'}} @lang('study.all_sections'))
+                                                            @lang('study.all_students_of') ({{@$value->classes->age_group_name.'->'}} @lang('study.all_sections'))
                                                         @endif
                                                     @endif 
                                                 </td>
@@ -357,10 +357,10 @@
                                                         @endif
                                                     @else 
                                                         @if(@$value->classes != "")
-                                                            {{@$value->classes->class_name}}
+                                                            {{@$value->classes->age_group_name}}
                                                         @endif
                                                         @if($value->sections != "")
-                                                            ({{@$value->sections->section_name}})
+                                                            ({{@$value->sections->mgender_name}})
                                                         @endif
                                                         @if($value->section == Null)
                                                             ( @lang('study.all_sections') )
@@ -368,7 +368,7 @@
                                                     @endif
                                                 </td>
                                                 @if(moduleStatusCheck('University'))
-                                                    <td>{{@$value->unSection->section_name}}</td>
+                                                    <td>{{@$value->unSection->mgender_name}}</td>
                                                 @endif
                                                 <td>
                                                     <div class="dropdown">

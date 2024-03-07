@@ -158,13 +158,13 @@
                                     <div class="row">
                                         <div class="col-lg-6 col-md-6">
                                             <div class="name">
-                                                @lang('common.school_name')
+                                                @lang('common.church_name')
                                             </div>
                                         </div>
                                         <div class="col-lg-6 col-md-6">
                                             <div class="value text-left">
                                                 @if(isset($editData))
-                                                {{@$editData->school_name}}
+                                                {{@$editData->church_name}}
                                                 @endif
                                             </div>
                                         </div>
@@ -256,13 +256,13 @@
                                     <div class="row">
                                         <div class="col-lg-6 col-md-6">
                                             <div class="name">
-                                                @lang('system_settings.school_code')
+                                                @lang('system_settings.church_code')
                                             </div>
                                         </div>
                                         <div class="col-lg-6 col-md-6">
                                             <div class="value text-left">
                                                 @if(isset($editData))
-                                                {{@$editData->school_code}}
+                                                {{@$editData->church_code}}
                                                 @endif
                                             </div>
                                         </div>
@@ -272,7 +272,7 @@
                                     <div class="row">
                                         <div class="col-lg-6 col-md-6">
                                             <div class="name">
-                                                @lang('common.academic_year')
+                                                @lang('common.church_year')
                                             </div>
                                         </div>
                                         <div class="col-lg-6 col-md-6">
@@ -281,8 +281,8 @@
                                                @if(moduleStatusCheck('University'))
                                                     {{@$editData->unAcademic->name }}   [ {{@dateConvert($editData->unAcademic->start_date) }} - {{@dateConvert($editData->unAcademic->end_date) }}   ]
                                                 @else
-                                                    {{@$editData->academic_Year->year }} -
-                                                    [ {{@$editData->academic_Year->title }}  ]
+                                                    {{@$editData->church_year->year }} -
+                                                    [ {{@$editData->church_year->title }}  ]
 
                                                 @endif
 

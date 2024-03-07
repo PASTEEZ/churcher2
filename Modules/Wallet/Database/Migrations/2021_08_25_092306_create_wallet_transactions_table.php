@@ -27,8 +27,8 @@ class CreateWalletTransactionsTable extends Migration
             $table->float('expense')->nullable();
             $table->string('status')->default('pending')->comment('pending, approve, reject');
             $table->integer('created_by')->nullable();
-            $table->integer('academic_id')->default(1);
-            $table->integer('school_id')->default(1);
+            $table->integer('church_year_id')->default(1);
+            $table->integer('church_id')->default(1);
             $table->timestamps();
         });
     }

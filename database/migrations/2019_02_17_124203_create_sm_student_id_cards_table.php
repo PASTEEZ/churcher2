@@ -13,7 +13,7 @@ class CreateSmStudentIdCardsTable extends Migration
      */
     public function up()
     {
-        Schema::create('sm_student_id_cards', function (Blueprint $table) {
+        Schema::create('sm_member_id_cards', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title')->nullable();
             $table->string('logo')->nullable();
@@ -31,8 +31,8 @@ class CreateSmStudentIdCardsTable extends Migration
             $table->integer('b_space')->nullable();
             $table->integer('r_space')->nullable();
             $table->integer('l_space')->nullable();
-            $table->string('admission_no')->default(0)->comment('0 for no 1 for yes');
-            $table->string('student_name')->default(0)->comment('0 for no 1 for yes');
+            $table->string('registration_no')->default(0)->comment('0 for no 1 for yes');
+            $table->string('member_name')->default(0)->comment('0 for no 1 for yes');
             $table->string('class')->default(0)->comment('0 for no 1 for yes');
             $table->string('father_name')->default(0)->comment('0 for no 1 for yes');
             $table->string('mother_name')->default(0)->comment('0 for no 1 for yes');
@@ -49,11 +49,11 @@ class CreateSmStudentIdCardsTable extends Migration
 
             $table->integer('updated_by')->nullable()->default(1)->unsigned();
 
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');  
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');  
             
-            $table->integer('academic_id')->nullable()->default(1)->unsigned();
-            $table->foreign('academic_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
+            $table->integer('church_year_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_year_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
 
         });
     }
@@ -65,6 +65,6 @@ class CreateSmStudentIdCardsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sm_student_id_cards');
+        Schema::dropIfExists('sm_member_id_cards');
     }
 }

@@ -13,7 +13,7 @@ namespace Carbon\Cli;
 
 class Invoker
 {
-    public const CLI_CLASS_NAME = 'Carbon\\Cli';
+    public const CLI_age_group_name = 'Carbon\\Cli';
 
     protected function runWithCli(string $className, array $parameters): bool
     {
@@ -24,8 +24,8 @@ class Invoker
 
     public function __invoke(...$parameters): bool
     {
-        if (class_exists(self::CLI_CLASS_NAME)) {
-            return $this->runWithCli(self::CLI_CLASS_NAME, $parameters);
+        if (class_exists(self::CLI_age_group_name)) {
+            return $this->runWithCli(self::CLI_age_group_name, $parameters);
         }
 
         $function = (($parameters[1] ?? '') === 'install' ? ($parameters[2] ?? null) : null) ?: 'shell_exec';

@@ -29,8 +29,8 @@ class sm_studentsSeeder extends Seeder
 
         for ($i = 1; $i <= 200; $i++) {
 
-            for ($class_id = 1; $class_id <= 1; $class_id++) {
-                for ($section_id = 1; $section_id <= 1; $section_id++) {
+            for ($age_group_id = 1; $age_group_id <= 1; $age_group_id++) {
+                for ($mgender_id = 1; $mgender_id <= 1; $mgender_id++) {
                     $gender_id = 1 + $i % 2;
 
                     $student_First_Name = $student_User_Name = $faker->firstName($gender = 'male');
@@ -64,7 +64,7 @@ class sm_studentsSeeder extends Seeder
                     $newUser->created_at = date('Y-m-d h:i:s');
                     $newUser->save();
                     $newUser->toArray();
-                    $student_id = $newUser->id;
+                    $member_id = $newUser->id;
 
                     //insert student user & pass
                     $newUser            = new User();
@@ -118,16 +118,16 @@ class sm_studentsSeeder extends Seeder
 
                     DB::table('sm_students')->insert([
                         [
-                            'user_id'                 => $student_id,
+                            'user_id'                 => $member_id,
                             'parent_id'               => $parents_id,
-                            'admission_no'            => $faker->numberBetween($min = 10000, $max = 90000),
-                            'roll_no'                 => $faker->numberBetween($min = 10000, $max = 90000),
-                            'class_id'                => $class_id,
+                            'registration_no'            => $faker->numberBetween($min = 10000, $max = 90000),
+                            'member_id_no'                 => $faker->numberBetween($min = 10000, $max = 90000),
+                            'age_group_id'                => $age_group_id,
                             'student_category_id'     => 1,
                             'role_id'     => 2,
-                            'section_id'              => $section_id,
+                            'mgender_id'              => $mgender_id,
                             'session_id'              => 1,
-                            'caste'                   => 'Asian',
+                            'home_town'                   => 'Asian',
                             'bloodgroup_id'           => 8 + $i % 8,
 
                             //transport section
@@ -139,7 +139,7 @@ class sm_studentsSeeder extends Seeder
                             'dormitory_id'            => $dormitory->id,
 
                             'national_id_no'          => '237864238764' . $i * $i,
-                            'local_id_no'             => '237864238764' . $i * $i,
+                            'communicant'             => '237864238764' . $i * $i,
 
                             'religion_id'             => 3 + $i % 5,
                             'height'                  => 56,
@@ -150,14 +150,14 @@ class sm_studentsSeeder extends Seeder
                             'full_name'               => $student_full_name,
 
                             'date_of_birth'           => $faker->date($format = 'Y-m-d', $max = 'now'),
-                            'admission_date'          => $faker->date($format = 'Y-m-d', $max = 'now'),
+                            'registration_date'          => $faker->date($format = 'Y-m-d', $max = 'now'),
 
                             'gender_id'               => $gender_id,
                             'email'                   => $studentEmail,
                             'mobile'                  => '+8801234567' . $i,
-                            'bank_account_no'         => '+8801234567' . $i,
+                            'day_born'         => '+8801234567' . $i,
 
-                            'bank_name'               => 'DBBL',
+                            'employer_name'               => 'DBBL',
                             'student_photo'           => '',
 
                             'current_address'         => 'Bangladesh',
@@ -184,9 +184,9 @@ class sm_studentsSeeder extends Seeder
                 'terminalid' => 1,
                 'name' => 'test ' . $row->full_name,
                 'area_id' => 1,
-                'class_id' =>  $row->class_id,
+                'age_group_id' =>  $row->age_group_id,
                 'role_id' =>  $row->role_id,
-                'section_id' => $row->section_id,
+                'mgender_id' => $row->mgender_id,
                 'profile_id' => $row->id,
                 'device_ip' => '192.168.0.1',
                 'cloud_upload' => 0,

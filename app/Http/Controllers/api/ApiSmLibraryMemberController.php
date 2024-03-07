@@ -33,7 +33,7 @@ class ApiSmLibraryMemberController extends Controller
             //$libraryMembers = SmLibraryMember::where('active_status', '=', 1)->get();
             $libraryMembers = SmLibraryMember::where('active_status', '=', 1)->get();
             $roles = InfixRole::where('active_status', 1)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
             $classes = SmClass::all();
 
@@ -359,7 +359,7 @@ class ApiSmLibraryMemberController extends Controller
             $members->student_staff_id = $student_staff_id;
             $members->member_ud_id = $request->member_ud_id;
             $members->created_by = $user_id;
-            $members->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+            $members->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
             $results = $members->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -380,7 +380,7 @@ class ApiSmLibraryMemberController extends Controller
                     'member_type' => "required",
                     'created_by' => "required",
                     'member_ud_id' => "required|unique:sm_library_members,member_ud_id",
-                    'school_id' => "required",
+                    'church_id' => "required",
                 ]);
             } elseif ($request->member_type == "2") {
 
@@ -389,7 +389,7 @@ class ApiSmLibraryMemberController extends Controller
                     'student' => "required",
                     'created_by' => "required",
                     'member_ud_id' => "required|unique:sm_library_members,member_ud_id",
-                    'school_id' => "required",
+                    'church_id' => "required",
                 ]);
             } else {
                 $validator = Validator::make($input, [
@@ -397,14 +397,14 @@ class ApiSmLibraryMemberController extends Controller
                     'staff' => "required",
                     'created_by' => "required",
                     'member_ud_id' => "required|unique:sm_library_members,member_ud_id",
-                    'school_id' => "required",
+                    'church_id' => "required",
                 ]);
             }
         }
         $student_staff_id = '';
         if ($request->student != 0) {
             $student_staff_id = $request->student;
-            $isData = SmLibraryMember::where('student_staff_id', '=', $student_staff_id)->where('active_status', '=', 1)->where('school_id', '=', $request->school_id)->first();
+            $isData = SmLibraryMember::where('student_staff_id', '=', $student_staff_id)->where('active_status', '=', 1)->where('church_id', '=', $request->church_id)->first();
             if (!empty($isData)) {
                 if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                     return ApiBaseMethod::sendError('This Member is already added in our library.');
@@ -413,7 +413,7 @@ class ApiSmLibraryMemberController extends Controller
         }
         if ($request->staff != 0) {
             $student_staff_id = $request->staff;
-            $isData = SmLibraryMember::where('student_staff_id', '=', $student_staff_id)->where('active_status', '=', 1)->where('school_id', '=', $request->school_id)->first();
+            $isData = SmLibraryMember::where('student_staff_id', '=', $student_staff_id)->where('active_status', '=', 1)->where('church_id', '=', $request->church_id)->first();
             if (!empty($isData)) {
                 if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                     return ApiBaseMethod::sendError('This Member is already added in our library.');
@@ -435,9 +435,9 @@ class ApiSmLibraryMemberController extends Controller
             $created_by = $request->created_by;
         }
 
-        $isExist_staff_id = SmLibraryMember::where('student_staff_id', '=', $student_staff_id)->where('school_id', '=', $request->school_id)->first();
+        $isExist_staff_id = SmLibraryMember::where('student_staff_id', '=', $student_staff_id)->where('church_id', '=', $request->church_id)->first();
         if (!empty($isExist_staff_id)) {
-            $members = SmLibraryMember::where('student_staff_id', '=', $student_staff_id)->where('school_id', '=', $request->school_id)->first();
+            $members = SmLibraryMember::where('student_staff_id', '=', $student_staff_id)->where('church_id', '=', $request->church_id)->first();
             $members->active_status = 1;
             $results = $members->update();
             return ApiBaseMethod::sendResponse(null, 'New Member has been added successfully');
@@ -446,9 +446,9 @@ class ApiSmLibraryMemberController extends Controller
             $members->member_type = $request->member_type;
             $members->student_staff_id = $student_staff_id;
             $members->member_ud_id = $request->member_ud_id;
-            $members->school_id = $request->school_id;
+            $members->church_id = $request->church_id;
             $members->created_by = $created_by;
-            $members->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+            $members->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
             $results = $members->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {

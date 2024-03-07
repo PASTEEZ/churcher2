@@ -43,8 +43,8 @@
                             <table id="table_id" class="display school-table " cellspacing="0" width="100%">
                                 <thead>
                                     <tr>
-                                        <th>@lang('student.admission_no')</th>
-                                        <th>@lang('student.roll_no')</th>
+                                        <th>@lang('student.registration_no')</th>
+                                        <th>@lang('student.member_id_no')</th>
                                         <th>@lang('common.name')</th>
                                         <th>@lang('fees::feesModule.due_date')</th>
                                         <th>@lang('fees::feesModule.amount') ({{generalSetting()->currency_symbol}})</th>
@@ -66,8 +66,8 @@
                                     @endphp
                                         @if($balance != 0)
                                             <tr>
-                                                <td>{{@$fees_due->studentInfo->admission_no}}</td>
-                                                <td>{{@$fees_due->recordDetail->roll_no}}</td>
+                                                <td>{{@$fees_due->studentInfo->registration_no}}</td>
+                                                <td>{{@$fees_due->recordDetail->member_id_no}}</td>
                                                 <td>{{@$fees_due->studentInfo->full_name}}</td>
                                                 <td>{{dateConvert($fees_due->due_date)}}</td>
                                                 <td>{{$amount}}</td>

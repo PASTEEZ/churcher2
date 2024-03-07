@@ -25,7 +25,7 @@ namespace Stripe;
  * @property null|string $account_holder_type The type of entity that holds the account. This can be either <code>individual</code> or <code>company</code>.
  * @property null|string $account_type The bank account type. This can only be <code>checking</code> or <code>savings</code> in most countries. In Japan, this can only be <code>futsu</code> or <code>toza</code>.
  * @property null|string[] $available_payout_methods A set of available payout methods for this bank account. Only values from this set should be passed as the <code>method</code> when creating a payout.
- * @property null|string $bank_name Name of the bank associated with the routing number (e.g., <code>WELLS FARGO</code>).
+ * @property null|string $employer_name Name of the bank associated with the routing number (e.g., <code>WELLS FARGO</code>).
  * @property string $country Two-letter ISO code representing the country the bank account is located in.
  * @property string $currency Three-letter <a href="https://stripe.com/docs/payouts">ISO code for the currency</a> paid out to the bank account.
  * @property null|string|\Stripe\Customer $customer The ID of the customer that the bank account is associated with.

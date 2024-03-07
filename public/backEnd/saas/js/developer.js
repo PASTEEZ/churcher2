@@ -1159,9 +1159,9 @@ $(".nav-link").click(function () {
     $("#selectTab").val(selectTab);
     $("#initialselectTab").val();
 });
-// get all section by class_id selection in email sms part
+// get all section by age_group_id selection in email sms part
 $(document).ready(function () {
-    $("#class_id_email_sms").change(function () {
+    $("#age_group_id_email_sms").change(function () {
         $("#checkbox_section").prop("checked", false);
         var url = $('#url').val();
         var formData = {
@@ -1183,9 +1183,9 @@ $(document).ready(function () {
                         $.each(item, function (i, section) {
                             $('#selectSectionss').append($('<option>', {
                                 value: section.id,
-                                text: section.section_name
+                                text: section.mgender_name
                             }));
-                            // $("#selectSectionsDiv ul").append("<li data-value='"+section.id+"' class='option'>"+section.section_name+"</li>");
+                            // $("#selectSectionsDiv ul").append("<li data-value='"+section.id+"' class='option'>"+section.mgender_name+"</li>");
                         });
                     } else {
                         $('#selectSectionsDiv .current').html('SELECT GROUP*');

@@ -12,7 +12,7 @@ class SmExamAttendanceChild extends Model
     protected $guarded = ['id'];
     public function studentInfo()
     {
-        return $this->belongsTo('App\SmStudent', 'student_id', 'id')->with('class', 'section');
+        return $this->belongsTo('App\SmStudent', 'member_id', 'id')->with('class', 'section');
     }
     public function studentRecord()
     {

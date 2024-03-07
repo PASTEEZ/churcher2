@@ -9,10 +9,10 @@ class SmOptionalSubjectAssign extends Model
 {
     use HasFactory;
 
-    public static function is_optional_subject($student_id, $subject_id)
+    public static function is_optional_subject($member_id, $subject_id)
     {
         try {
-            $result = SmOptionalSubjectAssign::where('student_id', $student_id)->where('subject_id', $subject_id)->first();
+            $result = SmOptionalSubjectAssign::where('member_id', $member_id)->where('subject_id', $subject_id)->first();
             if ($result) {
                 return true;
             } else {

@@ -22,7 +22,7 @@ class SmDormitoryListController extends Controller
     public function index(Request $request)
     {
         try {
-            $dormitory_lists = SmDormitoryList::where('school_id', Auth::user()->school_id)->orderby('id','DESC')->get();
+            $dormitory_lists = SmDormitoryList::where('church_id', Auth::user()->church_id)->orderby('id','DESC')->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($dormitory_lists, null);
             }
@@ -43,7 +43,7 @@ class SmDormitoryListController extends Controller
         ]);
 
         // school wise uquine validation
-        $is_duplicate = SmDormitoryList::where('school_id', Auth::user()->school_id)->where('dormitory_name', $request->dormitory_name)->first();
+        $is_duplicate = SmDormitoryList::where('church_id', Auth::user()->church_id)->where('dormitory_name', $request->dormitory_name)->first();
         if ($is_duplicate) {
             Toastr::error('Duplicate dormitory name found!', 'Failed');
             return redirect()->back()->withErrors($validator)->withInput();
@@ -63,8 +63,8 @@ class SmDormitoryListController extends Controller
             $dormitory_list->address = $request->address;
             $dormitory_list->intake = $request->intake;
             $dormitory_list->description = $request->description;
-            $dormitory_list->school_id = Auth::user()->school_id;
-            $dormitory_list->academic_id = getAcademicId();
+            $dormitory_list->church_id = Auth::user()->church_id;
+            $dormitory_list->church_year_id = getAcademicId();
             $result = $dormitory_list->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -94,9 +94,9 @@ class SmDormitoryListController extends Controller
              if (checkAdmin()) {
                 $dormitory_list = SmDormitoryList::find($id);
             }else{
-                $dormitory_list = SmDormitoryList::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+                $dormitory_list = SmDormitoryList::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
             }
-            $dormitory_lists = SmDormitoryList::where('school_id', Auth::user()->school_id)->get();
+            $dormitory_lists = SmDormitoryList::where('church_id', Auth::user()->church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -126,7 +126,7 @@ class SmDormitoryListController extends Controller
             'intake' => "required"
         ]);
         // school wise uquine validation
-        $is_duplicate = SmDormitoryList::where('school_id', Auth::user()->school_id)->where('dormitory_name', $request->dormitory_name)->where('id', '!=', $request->id)->first();
+        $is_duplicate = SmDormitoryList::where('church_id', Auth::user()->church_id)->where('dormitory_name', $request->dormitory_name)->where('id', '!=', $request->id)->first();
         if ($is_duplicate) {
             Toastr::error('Duplicate dormitory name found!', 'Failed');
             return redirect()->back()->withErrors($validator)->withInput();
@@ -143,7 +143,7 @@ class SmDormitoryListController extends Controller
             if (checkAdmin()) {
                 $dormitory_list = SmDormitoryList::find($request->id);
             }else{
-                $dormitory_list = SmDormitoryList::where('id',$request->id)->where('school_id',Auth::user()->school_id)->first();
+                $dormitory_list = SmDormitoryList::where('id',$request->id)->where('church_id',Auth::user()->church_id)->first();
             }
             $dormitory_list->dormitory_name = $request->dormitory_name;
             $dormitory_list->type = $request->type;
@@ -181,7 +181,7 @@ class SmDormitoryListController extends Controller
                      if (checkAdmin()) {
                         $dormitory_list = SmDormitoryList::destroy($id);
                     }else{
-                        $dormitory_list = SmDormitoryList::where('id',$id)->where('school_id',Auth::user()->school_id)->delete();
+                        $dormitory_list = SmDormitoryList::where('id',$id)->where('church_id',Auth::user()->church_id)->delete();
                     }
                     if ($dormitory_list) {
                         if (ApiBaseMethod::checkUrl($request->fullUrl())) {

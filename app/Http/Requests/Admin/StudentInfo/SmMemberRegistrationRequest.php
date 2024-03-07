@@ -30,21 +30,21 @@ class SmMemberRegistrationRequest extends FormRequest
     {
         $maxFileSize =generalSetting()->file_size*1024;
         $student = null;
-        $class_ids = [$this->class];
-        $section_ids = [$this->section];
+        $age_group_ids = [$this->class];
+        $mgender_ids = [$this->section];
    
         if ($this->id) {
             $student = SmStudent::with('parents', 'studentRecords')->findOrFail($this->id);
-            $class_ids = $student->studentRecords->pluck('class_id')->toArray();
-            $section_ids = $student->studentRecords->pluck('section_id')->toArray();
+            $age_group_ids = $student->studentRecords->pluck('age_group_id')->toArray();
+            $mgender_ids = $student->studentRecords->pluck('mgender_id')->toArray();
         }
 
 
-        $school_id = auth()->user()->school_id;
-        $academic_id = getAcademicId();
+        $church_id = auth()->user()->church_id;
+        $church_year_id = getAcademicId();
 
 
-        $field = SmStudentRegistrationField::where('school_id', $school_id)
+        $field = SmStudentRegistrationField::where('church_id', $church_id)
             ->when(auth()->user()->role_id == 2, function ($query) {
                 $query->where('student_edit', 1)->where('is_required', 1);
             })
@@ -75,8 +75,8 @@ class SmMemberRegistrationRequest extends FormRequest
 
         $rules= [
 
-            'admission_number' => [Rule::unique('sm_jymembers', 'admission_no')->ignore(optional($student)->id)->where('school_id', $school_id), Rule::requiredIf(function () use ($field) {
-                return in_array('admission_number', $field);
+            'registration_number' => [Rule::unique('sm_jymembers', 'registration_no')->ignore(optional($student)->id)->where('church_id', $church_id), Rule::requiredIf(function () use ($field) {
+                return in_array('registration_number', $field);
             })],
             
             'first_name' => ['max:100', Rule::requiredIf(function () use ($field) {
@@ -92,18 +92,18 @@ class SmMemberRegistrationRequest extends FormRequest
             'date_of_birth' => ['before:'. date('Y-m-d'),'after:1900-01-01', Rule::requiredIf(function () use ($field) {
                 return in_array('date_of_birth', $field);
             })],
-            'blood_group'=>[Rule::requiredIf(function () use ($field) {
-                return in_array('blood_group', $field);
+            'region'=>[Rule::requiredIf(function () use ($field) {
+                return in_array('region', $field);
             }),'nullable','integer'],
-            'religion'=>[Rule::requiredIf(function () use ($field) {
-                return in_array('religion', $field);
+            'marital_status'=>[Rule::requiredIf(function () use ($field) {
+                return in_array('marital_status', $field);
             }),'nullable','integer'],
-            'caste'=>[Rule::requiredIf(function () use ($field) {
-                return in_array('caste', $field);
+            'home_town'=>[Rule::requiredIf(function () use ($field) {
+                return in_array('home_town', $field);
             })],
 
-            'admission_date'=>['before:tomorrow', Rule::requiredIf(function () use ($field) {
-                return in_array('admission_date', $field);
+            'registration_date'=>['before:tomorrow', Rule::requiredIf(function () use ($field) {
+                return in_array('registration_date', $field);
             }),'date'],
             'student_category_id'=>[Rule::requiredIf(function () use ($field) {
                 return in_array('student_category_id', $field);
@@ -188,8 +188,8 @@ class SmMemberRegistrationRequest extends FormRequest
             'bank_account_number'=>[Rule::requiredIf(function () use ($field) {
                 return in_array('bank_account_number', $field);
             })],
-            'bank_name'=>[Rule::requiredIf(function () use ($field) {
-                return in_array('bank_name', $field);
+            'employer_name'=>[Rule::requiredIf(function () use ($field) {
+                return in_array('employer_name', $field);
             })],
             'previous_school_details'=>[Rule::requiredIf(function () use ($field) {
                 return in_array('previous_school_details', $field);
@@ -197,8 +197,8 @@ class SmMemberRegistrationRequest extends FormRequest
             'additional_notes'=>[Rule::requiredIf(function () use ($field) {
                 return in_array('additional_notes', $field);
             })],
-            'ifsc_code'=>[Rule::requiredIf(function () use ($field) {
-                return in_array('ifsc_code', $field);
+            'baptism_status'=>[Rule::requiredIf(function () use ($field) {
+                return in_array('baptism_status', $field);
             })],
             'document_file_1' => [Rule::requiredIf(function () use ($field) {
                 return in_array('document_file_1', $field);
@@ -233,8 +233,8 @@ class SmMemberRegistrationRequest extends FormRequest
                 'un_department_id' => [Rule::requiredIf(function () use ($field) {
                     return  in_array('un_department_id', $field);
                 })],
-                'un_academic_id' => [Rule::requiredIf(function () use ($field) {
-                    return  in_array('un_academic_id', $field);
+                'un_church_year_id' => [Rule::requiredIf(function () use ($field) {
+                    return  in_array('un_church_year_id', $field);
                 })],
                 'un_semester_id' => [Rule::requiredIf(function () use ($field) {
                     return  in_array('un_semester_id', $field);
@@ -242,7 +242,7 @@ class SmMemberRegistrationRequest extends FormRequest
                 'un_semester_label_id' => [Rule::requiredIf(function () use ($field) {
                     return  in_array('un_semester_label_id', $field);
                 })],
-                'un_section_id' => [Rule::requiredIf(function () use ($field) {
+                'un_mgender_id' => [Rule::requiredIf(function () use ($field) {
                     return  in_array('section', $field);
                 })],
             ];
@@ -278,7 +278,7 @@ class SmMemberRegistrationRequest extends FormRequest
                 }),'max:100', 'different:phone_number'],
                 'roll_number' => ['sometimes', 'nullable', Rule::requiredIf(function () use ($field) {
                     return $this->filled('session') && in_array('roll_number', $field);
-            }), Rule::unique('sm_jymembers', 'roll_no')->ignore(optional($student)->id)->where('school_id', $school_id)->where('academic_id', $academic_id)->whereIn('class_id', $class_ids)->whereIn('section_id', $section_ids)],
+            }), Rule::unique('sm_jymembers', 'member_id_no')->ignore(optional($student)->id)->where('church_id', $church_id)->where('church_year_id', $church_year_id)->whereIn('age_group_id', $age_group_ids)->whereIn('mgender_id', $mgender_ids)],
             ];
         }
         
@@ -304,10 +304,10 @@ class SmMemberRegistrationRequest extends FormRequest
             $attributes['un_session_id'] = 'Session';
             $attributes['un_faculty_id'] = 'Faculty';
             $attributes['un_department_id'] = 'Department';
-            $attributes['un_academic_id'] = 'Academic';
+            $attributes['un_church_year_id'] = 'Academic';
             $attributes['un_semester_id'] = 'Semester';
             $attributes['un_semester_label_id'] = 'Semester Label';
-            $attributes['un_section_id'] = 'Section';
+            $attributes['un_mgender_id'] = 'Section';
         }
         return $attributes;
     }

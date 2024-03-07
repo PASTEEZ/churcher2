@@ -13,17 +13,17 @@ class SmAssignVehiclesTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run($school_id, $academic_id, $count = 10)
+    public function run($church_id, $church_year_id, $count = 10)
     {
         $i = 1;
-        $drivers = SmStaff::whereRole(9)->where('school_id',$school_id)->where('active_status', 1)->get();
+        $drivers = SmStaff::whereRole(9)->where('church_id',$church_id)->where('active_status', 1)->get();
         foreach ($drivers as $driver) {
             $store = new SmAssignVehicle();
             $store->route_id = $i;
             $store->vehicle_id = $i;
             $store->created_at = date('Y-m-d h:i:s');
-            $store->school_id = $school_id;
-            $store->academic_id = $academic_id;
+            $store->church_id = $church_id;
+            $store->church_year_id = $church_year_id;
             $store->save();
             $i++;
         }

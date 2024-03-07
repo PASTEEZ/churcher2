@@ -12,11 +12,11 @@ class SmStudentCertificateTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run($school_id, $academic_id, $count=1)
+    public function run($church_id, $church_year_id, $count=1)
     {
         $school_academic =[
-            'school_id'=>$school_id,
-            'academic_id'=>$academic_id,
+            'church_id'=>$church_id,
+            'church_year_id'=>$church_year_id,
         ];
         SmStudentCertificate::factory()->times($count)->create($school_academic);
 

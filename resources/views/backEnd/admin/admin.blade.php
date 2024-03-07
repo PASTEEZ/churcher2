@@ -30,7 +30,7 @@
                                     <div class="col-lg-12">
                                        
                                         <div class="input-effect">
-                                            <input class="primary-input form-control{{ @$errors->has('name') ? ' is-invalid' : '' }}" type="text" name="name" autocomplete="off" value="{{isset($section)? $section->section_name: ''}}">
+                                            <input class="primary-input form-control{{ @$errors->has('name') ? ' is-invalid' : '' }}" type="text" name="name" autocomplete="off" value="{{isset($section)? $section->mgender_name: ''}}">
                                             <input type="hidden" name="id" value="{{isset($section)? $section->id: ''}}">
                                             <label>@lang('common.name') <span>*</span></label>
                                             <span class="focus-border"></span>
@@ -120,7 +120,7 @@
                             <tbody>
                                 @foreach($sections as $section)
                                 <tr>
-                                    <td>{{@$section->section_name}}</td>
+                                    <td>{{@$section->mgender_name}}</td>
                                     <td>
                                         <div class="dropdown">
                                             <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">

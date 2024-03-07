@@ -68,7 +68,7 @@
                                 <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                     <option data-display="@lang('common.select_class')" value="">@lang('common.select_class')</option>
                                     @foreach($classes as $class)
-                                    <option value="{{$class->id}}"  {{( old('class') == $class->id ? "selected":"")}}>{{$class->class_name}}</option>
+                                    <option value="{{$class->id}}"  {{( old('class') == $class->id ? "selected":"")}}>{{$class->age_group_name}}</option>
                                     @endforeach
                                 </select>
                                 @if ($errors->has('class'))
@@ -150,7 +150,7 @@
                             <th width="10%">@lang('exam.student')</th>
                             <th width="10%">@lang('common.class_Sec')</th>
                             <th width="10%">@lang('dashboard.total_students')</th>
-                            <th width="15%">@lang('student.roll_no')</th>
+                            <th width="15%">@lang('student.member_id_no')</th>
                             <th width="10%">@lang('student.category')</th>
                             <th width="10%">@lang('exam.assign_students')</th>
                         </tr>
@@ -206,14 +206,14 @@
                                     $class = $seat_plan->class; 
                                     $section = $seat_plan->section; 
                                     if($i == 1){ 
-                                        echo $class->class_name.' ('.$section->section_name.')'; 
+                                        echo $class->age_group_name.' ('.$section->mgender_name.')'; 
                                     }
                                     @endphp
                                 </td>
                                 <td>
                                     @php 
                                     if($i == 1){ 
-                                        echo App\SmSeatPlan::total_student($seat_plan->class_id, $seat_plan->section_id);
+                                        echo App\SmSeatPlan::total_student($seat_plan->age_group_id, $seat_plan->mgender_id);
                                     }
                                     @endphp
                                 </td>

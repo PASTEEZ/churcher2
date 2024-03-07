@@ -61,8 +61,8 @@ class InstituteRegisteredListener
             'contract_type',
             'location',
             'bank_account_name',
-            'bank_account_no',
-            'bank_name',
+            'day_born',
+            'employer_name',
             'bank_brach',
             'facebook',
             'twitter',
@@ -95,7 +95,7 @@ class InstituteRegisteredListener
 
             ];
         foreach ($request_fields as $key=>$value) {
-            $exit = SmStaffRegistrationField::where('school_id', $school->id)->where('field_name', $value)->first();
+            $exit = SmStaffRegistrationField::where('church_id', $school->id)->where('field_name', $value)->first();
             if (!$exit) {
                 $field=new SmStaffRegistrationField;
                 $field->position=$key+1;
@@ -103,7 +103,7 @@ class InstituteRegisteredListener
                 $field->label_name=$value;
                 $field->is_required = in_array($value, $required_fields);
                 $field->staff_edit = in_array($value, $staff_edit);
-                $field->school_id = $school->id;
+                $field->church_id = $school->id;
                 $field->save();
             }
         }
@@ -116,18 +116,18 @@ class InstituteRegisteredListener
             'class',
             'section',
             'roll_number',
-            'admission_number',
+            'registration_number',
             'first_name',
             'last_name',
             'gender',
             'date_of_birth',
-            'blood_group',
+            'region',
             'email_address',
-            'caste',
+            'home_town',
             'phone_number',
             'id_number',
-            'religion',
-            'admission_date',
+            'marital_status',
+            'registration_date',
             'student_category_id',
             'student_group_id',
             'height',
@@ -156,10 +156,10 @@ class InstituteRegisteredListener
             'national_id_number',
             'local_id_number',
             'bank_account_number',
-            'bank_name',
+            'employer_name',
             'previous_school_details',
             'additional_notes',
-            'ifsc_code',
+            'baptism_status',
             'document_file_1',
             'document_file_2',
             'document_file_3',
@@ -183,7 +183,7 @@ class InstituteRegisteredListener
             'current_address', 'permanent_address'];
 
         foreach ($request_fields as $key => $value) {
-            $exit = SmStudentRegistrationField::where('school_id', $school->id)->where('field_name', $value)->first();
+            $exit = SmStudentRegistrationField::where('church_id', $school->id)->where('field_name', $value)->first();
             if (!$exit) {
                 $field = new SmStudentRegistrationField;
                 $field->position = $key + 1;
@@ -193,7 +193,7 @@ class InstituteRegisteredListener
                 $field->is_required = in_array($value, $required_fields);
                 $field->student_edit = in_array($value, $student_edit);
                 $field->parent_edit = in_array($value, $parent_edit);
-                $field->school_id = $school->id;
+                $field->church_id = $school->id;
                 $field->save();
             }
         }
@@ -201,7 +201,7 @@ class InstituteRegisteredListener
 
         if (moduleStatusCheck('ParentRegistration')) {
             $request_fields = [
-                'session', 'class', 'section', 'first_name', 'last_name', 'email_address', 'gender', 'date_of_birth', 'age', 'blood_group', 'religion', 'caste', 'phone_number', 'student_category_id', 'student_group_id', 'height', 'weight', 'photo', 'fathers_name', 'fathers_occupation', 'fathers_phone', 'fathers_photo', 'mothers_name', 'mothers_occupation', 'mothers_phone', 'mothers_photo', 'guardians_name', 'relation', 'guardians_email', 'guardians_photo', 'guardians_phone', 'guardians_occupation', 'guardians_address', 'current_address', 'permanent_address', 'route', 'vehicle', 'dormitory_name', 'room_number', 'national_id_number', 'local_id_number', 'bank_account_number', 'bank_name', 'previous_school_details', 'additional_notes', 'ifsc_code', 'document_file_1', 'document_file_2', 'document_file_3', 'document_file_4', 'custom_field', 'id_number'];
+                'session', 'class', 'section', 'first_name', 'last_name', 'email_address', 'gender', 'date_of_birth', 'age', 'region', 'marital_status', 'home_town', 'phone_number', 'student_category_id', 'student_group_id', 'height', 'weight', 'photo', 'fathers_name', 'fathers_occupation', 'fathers_phone', 'fathers_photo', 'mothers_name', 'mothers_occupation', 'mothers_phone', 'mothers_photo', 'guardians_name', 'relation', 'guardians_email', 'guardians_photo', 'guardians_phone', 'guardians_occupation', 'guardians_address', 'current_address', 'permanent_address', 'route', 'vehicle', 'dormitory_name', 'room_number', 'national_id_number', 'local_id_number', 'bank_account_number', 'employer_name', 'previous_school_details', 'additional_notes', 'baptism_status', 'document_file_1', 'document_file_2', 'document_file_3', 'document_file_4', 'custom_field', 'id_number'];
 
             if (moduleStatusCheck('Lead')) {
                 $request_fields[] = 'lead_city';
@@ -215,7 +215,7 @@ class InstituteRegisteredListener
             foreach ($request_fields as $key => $value) {
                 $fields[$key] = [
                     'position' => $key + 1,
-                    'school_id' => $school->id,
+                    'church_id' => $school->id,
                     'field_name' => $value,
                     'is_required' => in_array($value, $required) ? 1 : 0,
                     'created_at' => now(),

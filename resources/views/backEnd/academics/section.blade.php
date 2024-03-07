@@ -57,7 +57,7 @@
                                                 <input
                                                     class="primary-input form-control{{ @$errors->has('name') ? ' is-invalid' : '' }}"
                                                     type="text" name="name" autocomplete="off" id="levelText"
-                                                    value="{{ isset($section) ? $section->section_name : old('name') }}">
+                                                    value="{{ isset($section) ? $section->mgender_name : old('name') }}">
                                                 <input type="hidden" name="id"
                                                     value="{{ isset($section) ? $section->id : '' }}">
                                                 <label for="levelText">@lang('common.name') <span>*</span></label>
@@ -155,7 +155,7 @@
                                 <tbody>
                                     @foreach ($sections as $section)
                                         <tr>
-                                            <td>{{ @$section->section_name }}</td>
+                                            <td>{{ @$section->mgender_name }}</td>
                                             @if (moduleStatusCheck('MultiBranch') && isset($branches))
                                                 <td></td>
                                             @endif

@@ -30,12 +30,12 @@ class SmLibraryMemberController extends Controller
 
         try{
             $libraryMembers = SmLibraryMember::with('roles','studentDetails','staffDetails','parentsDetails','memberTypes')->where('active_status', '=', 1)
-                            ->where('school_id',Auth::user()->school_id)
+                            ->where('church_id',Auth::user()->church_id)
                             ->orderby('id','DESC')
                             ->get();
 
             $roles = InfixRole::where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
 
             $classes = SmClass::get();
@@ -121,15 +121,15 @@ class SmLibraryMemberController extends Controller
                 $members->student_staff_id = $student_staff_id;
                 $members->member_ud_id = $request->member_ud_id;
                 $members->created_by = $user_id;
-                $members->school_id = auth()->user()->school_id;
+                $members->church_id = auth()->user()->church_id;
                 if(moduleStatusCheck('University')){
                     $common = App::make(UnCommonRepositoryInterface::class);
                     $common->storeUniversityData($members, $request);
                     if($request->member_type != 2){
-                        $members->un_academic_id = getAcademicId();
+                        $members->un_church_year_id = getAcademicId();
                     }
                 }else{
-                    $members->academic_id = getAcademicId();
+                    $members->church_year_id = getAcademicId();
                 }
 
                 $results = $members->save();

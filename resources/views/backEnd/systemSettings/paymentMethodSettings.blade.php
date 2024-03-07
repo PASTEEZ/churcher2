@@ -334,7 +334,7 @@
                                                             <thead>
                                                                 <tr>
                                                                     <th>@lang('system_settings.value')</th>
-                                                                    <th>@lang('accounts.bank_name')</th>
+                                                                    <th>@lang('accounts.employer_name')</th>
                                                                     <th>@lang('accounts.account_name')</th>
                                                                     <th>@lang('accounts.account_number')</th>
                                                                     <th>@lang('accounts.account_type')</th>
@@ -356,7 +356,7 @@
                                                                                     for="bank{{ @$bank_account->id }}">{{ @$value->method }}</label>
                                                                             </div>
                                                                         </td>
-                                                                        <td>{{ @$bank_account->bank_name }}</td>
+                                                                        <td>{{ @$bank_account->employer_name }}</td>
                                                                         <td>{{ @$bank_account->account_name }}</td>
                                                                         <td>{{ @$bank_account->account_number }}</td>
                                                                         <td>{{ @$bank_account->account_type }}</td>

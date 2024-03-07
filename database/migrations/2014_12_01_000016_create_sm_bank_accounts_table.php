@@ -16,7 +16,7 @@ class CreateSmBankAccountsTable extends Migration
     {
         Schema::create('sm_bank_accounts', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('bank_name')->nullable();
+            $table->string('employer_name')->nullable();
             $table->string('account_name')->nullable();
             $table->string('account_number')->nullable();
             $table->string('account_type')->nullable();
@@ -30,11 +30,11 @@ class CreateSmBankAccountsTable extends Migration
 
             $table->integer('updated_by')->nullable()->default(1)->unsigned();
 
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
             
-            $table->integer('academic_id')->nullable()->unsigned();
-            $table->foreign('academic_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
+            $table->integer('church_year_id')->nullable()->unsigned();
+            $table->foreign('church_year_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
         });
     }
 

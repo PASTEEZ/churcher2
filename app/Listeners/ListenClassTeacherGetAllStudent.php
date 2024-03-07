@@ -30,14 +30,14 @@ class ListenClassTeacherGetAllStudent
      */
     public function handle(ClassTeacherGetAllStudent $event)
     {
-        $section = SmSection::find($event->assign_class_teacher->section_id);
+        $section = SmSection::find($event->assign_class_teacher->mgender_id);
         if($section){
             if ( $event->type == 'update'){
-                $old = InvitationType::where('type', 'class-teacher')->where('section_id', $section->id)->first();
+                $old = InvitationType::where('type', 'class-teacher')->where('mgender_id', $section->id)->first();
                 if($old){
                     Invitation::with(['type' =>function ($query) use($section, $event, $old){
                         $query->where('type', 'class-teacher');
-                        $query->where('section_id', $section->id);
+                        $query->where('mgender_id', $section->id);
                         $query->where('class_teacher_id', $old->class_teacher_id);
                     }])->delete();
                 }
@@ -63,7 +63,7 @@ class ListenClassTeacherGetAllStudent
                 InvitationType::create([
                     'invitation_id' => $invitation->id,
                     'type' => 'class-teacher',
-                    'section_id' => $section->id,
+                    'mgender_id' => $section->id,
                     'class_teacher_id' => $teacher->id,
                 ]);
             }

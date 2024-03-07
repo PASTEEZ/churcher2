@@ -17,10 +17,10 @@
                 <div class="card_text" style="line-height:1.02; display: flex; align-items: center; justify-content: space-between; width: 100%; flex-direction: column;">
                     <div class="card_text_head " style="line-height:1.02; display: flex; align-items: center; justify-content: space-between; width: 100%; margin-top:25px; margin-bottom:10px">
                         <div class="card_text_left hId">
-                            <div id="hName" style="{{($id_card->student_name==0)? 'display:none':''}}">
+                            <div id="hName" style="{{($id_card->member_name==0)? 'display:none':''}}">
                                 <h4 style="line-height:1.02; margin-top: 0; margin-bottom: 0px; font-size:11px; font-weight:600 ; text-transform: uppercase; color: #2656a6;">InfixEdu</h4>
                             </div>
-                            <div id="hAdmissionNumber" style="{{($id_card->admission_no==0)? 'display:none':''}}">
+                            <div id="hAdmissionNumber" style="{{($id_card->registration_no==0)? 'display:none':''}}">
                                 <h3 style="line-height:1.02; margin-top: 0; margin-bottom: 3px; font-size:10px; font-weight:500">Admission No : 001</h3>
                             </div>
                             @if(moduleStatusCheck('University'))
@@ -69,12 +69,12 @@
                                 <h3 style="line-height:1.02; margin-top: 0; margin-bottom: 3px; font-size:10px; font-weight:500">Date of Birth : Dec 25 , 2022</h3>
                             </div>
                             <div id="hBloodGroup"{{($id_card->blood==0)? 'display:none':''}}>
-                                <h3 style="line-height:1.02; margin-top: 0; margin-bottom: 3px; font-size:10px; font-weight:500">Blood Group : B+</h3>
+                                <h3 style="line-height:1.02; margin-top: 0; margin-bottom: 3px; font-size:10px; font-weight:500">Region : B+</h3>
                             </div>
                         </div>
                         {{-- <div class="card_text_right">
                             <h3 style="line-height:1.02; margin-top: 0; margin-bottom: 3px; font-size:10px; font-weight:500;  text-transform: uppercase;font-weight:500; text-align:center;">B+</h3>
-                            <h4 style="line-height:1.02; margin-top: 0; margin-bottom: 0; font-size:9px; text-transform: uppercase; font-weight:500">Blood Group</h4>
+                            <h4 style="line-height:1.02; margin-top: 0; margin-bottom: 0; font-size:9px; text-transform: uppercase; font-weight:500">Region</h4>
                         </div> --}}
                     </div>
                     <div class="card_text_head " style="line-height:1.02; display: flex; align-items: center; justify-content: space-between; width: 100%; margin-top:5px"> 
@@ -108,10 +108,10 @@
                 <div class="card_text" style="line-height:1.02; display: flex; align-items: center; justify-content: space-between; width: 100%; flex-direction: column;">
                     <div class="card_text_head " style="line-height:1.02; display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom:5px"> 
                         <div class="card_text_left vId">
-                            <div id="vName" style="{{($id_card->student_name==0)? 'display:none':''}}">
+                            <div id="vName" style="{{($id_card->member_name==0)? 'display:none':''}}">
                                 <h3 style="line-height:1.02; margin-top: 0; margin-bottom: 3px; font-size:11px; font-weight:600 ; text-transform: uppercase; color: #2656a6;">InfixEdu</h3>
                             </div>
-                            <div id="vAdmissionNumber" style="{{($id_card->admission_no==0)? 'display:none':''}}">
+                            <div id="vAdmissionNumber" style="{{($id_card->registration_no==0)? 'display:none':''}}">
                                 <h4 style="line-height:1.02; margin-top: 0; margin-bottom: 3px; font-size:10px;">Admission No : 001</h4>
                             </div>
                             @if(moduleStatusCheck('University'))
@@ -142,7 +142,7 @@
                                 <h3 style="line-height:1.02; margin-top: 0; margin-bottom: 3px; font-size:10px; font-weight:500;">DOB : jan 21. 2030</h3>
                             </div>
                             <div id="vBloodGroup" style="{{($id_card->blood==0)? 'display:none':''}}">
-                                <h3 style="line-height:1.02; margin-top: 0; margin-bottom: 3px; font-size:10px; font-weight:500;">Blood Group : B+</h3>
+                                <h3 style="line-height:1.02; margin-top: 0; margin-bottom: 3px; font-size:10px; font-weight:500;">Region : B+</h3>
                             </div>
                         </div>
                     </div>

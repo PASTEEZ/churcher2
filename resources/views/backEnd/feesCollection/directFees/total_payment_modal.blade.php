@@ -41,7 +41,7 @@
                   <input type="hidden" name="url" id="url" value="{{URL::to('/')}}">
                   <input type="hidden" name="installment_id" id="installment_id" value="{{@$installment_id}}">
                   <input type="hidden" name="real_amount" id="real_amount" value="{{$balace_amount}}">
-                  <input type="hidden" id="student_id" name="student_id" value="{{$student_id}}">
+                  <input type="hidden" id="member_id" name="member_id" value="{{$member_id}}">
                   <input type="hidden" name="fees_discount_id" value="{{@$discounts->fees_discount_id}}">
                   <input type="hidden" name="applied_amount" value="{{@$discounts->applied_amount}}">
                   <input type="hidden" name="record_id" value="{{@$record_id}}">
@@ -149,7 +149,7 @@
                               <select class="niceSelect1 w-100 bb form-control{{ $errors->has('bank_id') ? ' is-invalid' : '' }}" name="bank_id">
                               @if(isset($banks))
                               @foreach($banks as $key=>$value)
-                              <option value="{{$value->id}}">{{$value->bank_name}}</option>
+                              <option value="{{$value->id}}">{{$value->employer_name}}</option>
                               @endforeach
                               @endif
                               </select>

@@ -37,8 +37,8 @@ class InitRepository {
         });
 
         app()->singleton('school_info', function () {
-            $school_info = Auth::check() ? SmGeneralSettings::where('school_id', Auth::user()->school_id)->first() :
-                DB::table('sm_general_settings')->where('school_id', 1)->first();
+            $school_info = Auth::check() ? SmGeneralSettings::where('church_id', Auth::user()->church_id)->first() :
+                DB::table('sm_general_settings')->where('church_id', 1)->first();
             return $school_info;
         });
 
@@ -54,7 +54,7 @@ class InitRepository {
                 $permissions = InfixPermissionAssign::where('role_id', Auth::user()->role_id)->get(['id', 'module_id']);
             }
             if ($infixRole->is_saas == 0) {
-                $permissions = InfixPermissionAssign::where('role_id', Auth::user()->role_id)->where('school_id', Auth::user()->school_id)->get(['id', 'module_id']);
+                $permissions = InfixPermissionAssign::where('role_id', Auth::user()->role_id)->where('church_id', Auth::user()->church_id)->get(['id', 'module_id']);
             }
             foreach ($permissions as $permission) {
                 $module_links[] = $permission->module_id;

@@ -21,6 +21,6 @@ class SmStudentGroup extends Model
 
     public function scopeStatus($query)
     {
-        return  $query->where('active_status', 1)->where('school_id', auth()->user()->school_id);
+        return  $query->where('active_status', 1)->where('church_id', auth()->user()->church_id);
     }
 }

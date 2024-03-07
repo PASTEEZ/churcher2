@@ -27,7 +27,7 @@ class SmRoomTypeController extends Controller
     {
 
         try {
-            $room_types = SmRoomType::where('school_id', Auth::user()->school_id)->orderby('id','DESC')->get();
+            $room_types = SmRoomType::where('church_id', Auth::user()->church_id)->orderby('id','DESC')->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($room_types, null);
             }
@@ -45,7 +45,7 @@ class SmRoomTypeController extends Controller
         ]);
 
         // school wise uquine validation
-        $is_duplicate = SmRoomType::where('school_id', Auth::user()->school_id)->where('type', $request->type)->first();
+        $is_duplicate = SmRoomType::where('church_id', Auth::user()->church_id)->where('type', $request->type)->first();
         if ($is_duplicate) {
             Toastr::error('Duplicate room type found!', 'Failed');
             return redirect()->back()->withErrors($validator)->withInput();
@@ -66,8 +66,8 @@ class SmRoomTypeController extends Controller
             $room_type = new SmRoomType();
             $room_type->type = $request->type;
             $room_type->description = $request->description;
-            $room_type->school_id = Auth::user()->school_id;
-            $room_type->academic_id = getAcademicId();
+            $room_type->church_id = Auth::user()->church_id;
+            $room_type->church_year_id = getAcademicId();
             $result = $room_type->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -105,9 +105,9 @@ class SmRoomTypeController extends Controller
              if (checkAdmin()) {
                 $room_type = SmRoomType::find($id);
             }else{
-                $room_type = SmRoomType::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+                $room_type = SmRoomType::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
             }
-            $room_types = SmRoomType::where('school_id', Auth::user()->school_id)->get();
+            $room_types = SmRoomType::where('church_id', Auth::user()->church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -130,7 +130,7 @@ class SmRoomTypeController extends Controller
 
 
         // school wise uquine validation
-        $is_duplicate = SmRoomType::where('school_id', Auth::user()->school_id)->where('type', $request->type)->where('id', '!=', $request->id)->first();
+        $is_duplicate = SmRoomType::where('church_id', Auth::user()->church_id)->where('type', $request->type)->where('id', '!=', $request->id)->first();
         if ($is_duplicate) {
             Toastr::error('Duplicate room type found!', 'Failed');
             return redirect()->back()->withErrors($validator)->withInput();
@@ -151,7 +151,7 @@ class SmRoomTypeController extends Controller
              if (checkAdmin()) {
                 $room_type = SmRoomType::find($request->id);
             }else{
-                $room_type = SmRoomType::where('id',$request->id)->where('school_id',Auth::user()->school_id)->first();
+                $room_type = SmRoomType::where('id',$request->id)->where('church_id',Auth::user()->church_id)->first();
             }
             $room_type->type = $request->type;
             $room_type->description = $request->description;
@@ -193,7 +193,7 @@ class SmRoomTypeController extends Controller
                     if (checkAdmin()) {
                         $room_type = SmRoomType::destroy($id);
                     }else{
-                        $room_type = SmRoomType::where('id',$id)->where('school_id',Auth::user()->school_id)->delete();
+                        $room_type = SmRoomType::where('id',$id)->where('church_id',Auth::user()->church_id)->delete();
                     }
                     if ($room_type) {
                         if (ApiBaseMethod::checkUrl($request->fullUrl())) {

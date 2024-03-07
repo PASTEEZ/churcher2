@@ -55,7 +55,7 @@ class SmFrontendController extends Controller
     
         try {
            
-            $setting = SmGeneralSettings::where('school_id', app('school')->id)->first();
+            $setting = SmGeneralSettings::where('church_id', app('school')->id)->first();
             $permisions = SmFrontendPersmission::where('parent_id', 1)->where('is_published', 1)->get();
             $per = [];
             foreach ($permisions as $permision) {
@@ -68,17 +68,17 @@ class SmFrontendController extends Controller
             ];
 
             $home_data = [
-                'exams' => SmExam::where('school_id', app('school')->id)->get(),
-                'news' => SmNews::where('school_id', app('school')->id)->orderBy('order', 'asc')->limit(3)->get(),
-                'testimonial' => SmTestimonial::where('school_id', app('school')->id)->get(),
-                'academics' => SmCourse::where('school_id', app('school')->id)->orderBy('id', 'asc')->limit(3)->get(),
-                'exam_types' => SmExamType::where('school_id', app('school')->id)->get(),
-                'events' => SmEvent::where('school_id', app('school')->id)->get(),
-                'notice_board' => SmNoticeBoard::where('school_id', app('school')->id)->where('is_published', 1)->orderBy('created_at', 'DESC')->take(3)->get(),
-                'classes' => SmClass::where('school_id', app('school')->id)->where('active_status', 1)->get(),
-                'subjects' => SmSubject::where('school_id', app('school')->id)->where('active_status', 1)->get(),
-                'section' => SmSection::where('school_id', app('school')->id)->where('active_status', 1)->get(),
-                'homePage' => SmHomePageSetting::where('school_id', app('school')->id)->first(),
+                'exams' => SmExam::where('church_id', app('school')->id)->get(),
+                'news' => SmNews::where('church_id', app('school')->id)->orderBy('order', 'asc')->limit(3)->get(),
+                'testimonial' => SmTestimonial::where('church_id', app('school')->id)->get(),
+                'academics' => SmCourse::where('church_id', app('school')->id)->orderBy('id', 'asc')->limit(3)->get(),
+                'exam_types' => SmExamType::where('church_id', app('school')->id)->get(),
+                'events' => SmEvent::where('church_id', app('school')->id)->get(),
+                'notice_board' => SmNoticeBoard::where('church_id', app('school')->id)->where('is_published', 1)->orderBy('created_at', 'DESC')->take(3)->get(),
+                'classes' => SmClass::where('church_id', app('school')->id)->where('active_status', 1)->get(),
+                'subjects' => SmSubject::where('church_id', app('school')->id)->where('active_status', 1)->get(),
+                'section' => SmSection::where('church_id', app('school')->id)->where('active_status', 1)->get(),
+                'homePage' => SmHomePageSetting::where('church_id', app('school')->id)->first(),
             ];
   
            
@@ -121,20 +121,20 @@ class SmFrontendController extends Controller
     public function about()
     {
         try {
-            $exams = SmExam::where('school_id', app('school')->id)->get();
-            $exams_types = SmExamType::where('school_id', app('school')->id)->get();
-            $classes = SmClass::where('active_status', 1)->where('school_id', app('school')->id)->get();
-            $subjects = SmSubject::where('active_status', 1)->where('school_id', app('school')->id)->get();
-            $sections = SmSection::where('active_status', 1)->where('school_id', app('school')->id)->get();
-            $about = SmAboutPage::where('school_id', app('school')->id)->first();
-            $testimonial = SmTestimonial::where('school_id', app('school')->id)->get();
-            $totalStudents = SmStudent::where('active_status', 1)->where('school_id', app('school')->id)->get();
+            $exams = SmExam::where('church_id', app('school')->id)->get();
+            $exams_types = SmExamType::where('church_id', app('school')->id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_id', app('school')->id)->get();
+            $subjects = SmSubject::where('active_status', 1)->where('church_id', app('school')->id)->get();
+            $sections = SmSection::where('active_status', 1)->where('church_id', app('school')->id)->get();
+            $about = SmAboutPage::where('church_id', app('school')->id)->first();
+            $testimonial = SmTestimonial::where('church_id', app('school')->id)->get();
+            $totalStudents = SmStudent::where('active_status', 1)->where('church_id', app('school')->id)->get();
             $totalTeachers = SmStaff::where('active_status', 1)
                 ->where(function($q)  {
                     $q->where('role_id', 4)->orWhere('previous_role_id', 4);                   
-                })->where('school_id', app('school')->id)->get();
-            $history = SmNews::with('category')->histories()->limit(3)->where('school_id', app('school')->id)->get();
-            $mission = SmNews::with('category')->missions()->limit(3)->where('school_id', app('school')->id)->get();
+                })->where('church_id', app('school')->id)->get();
+            $history = SmNews::with('category')->histories()->limit(3)->where('church_id', app('school')->id)->get();
+            $mission = SmNews::with('category')->missions()->limit(3)->where('church_id', app('school')->id)->get();
         
             return view('frontEnd.home.light_about', compact('exams', 'classes', 'subjects', 'exams_types', 'sections', 'about', 'testimonial', 'totalStudents', 'totalTeachers', 'history', 'mission'));
         } catch (\Exception $e) {
@@ -147,11 +147,11 @@ class SmFrontendController extends Controller
     {
 
         try {
-            $exams = SmExam::where('school_id', app('school')->id)->get();
-            $exams_types = SmExamType::where('school_id', app('school')->id)->get();
-            $classes = SmClass::where('school_id', app('school')->id)->where('active_status', 1)->get();
-            $subjects = SmSubject::where('school_id', app('school')->id)->where('active_status', 1)->get();
-            $sections = SmSection::where('school_id', app('school')->id)->where('active_status', 1)->get();
+            $exams = SmExam::where('church_id', app('school')->id)->get();
+            $exams_types = SmExamType::where('church_id', app('school')->id)->get();
+            $classes = SmClass::where('church_id', app('school')->id)->where('active_status', 1)->get();
+            $subjects = SmSubject::where('church_id', app('school')->id)->where('active_status', 1)->get();
+            $sections = SmSection::where('church_id', app('school')->id)->where('active_status', 1)->get();
             return view('frontEnd.home.light_news', compact('exams', 'classes', 'subjects', 'exams_types', 'sections'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -162,13 +162,13 @@ class SmFrontendController extends Controller
     public function contact()
     {
         try {
-            $exams = SmExam::where('school_id', app('school')->id)->get();
-            $exams_types = SmExamType::where('school_id', app('school')->id)->get();
-            $classes = SmClass::where('school_id', app('school')->id)->where('active_status', 1)->get();
-            $subjects = SmSubject::where('school_id', app('school')->id)->where('active_status', 1)->get();
-            $sections = SmSection::where('school_id', app('school')->id)->where('active_status', 1)->get();
+            $exams = SmExam::where('church_id', app('school')->id)->get();
+            $exams_types = SmExamType::where('church_id', app('school')->id)->get();
+            $classes = SmClass::where('church_id', app('school')->id)->where('active_status', 1)->get();
+            $subjects = SmSubject::where('church_id', app('school')->id)->where('active_status', 1)->get();
+            $sections = SmSection::where('church_id', app('school')->id)->where('active_status', 1)->get();
 
-            $contact_info = SmContactPage::where('school_id', app('school')->id)->first();
+            $contact_info = SmContactPage::where('church_id', app('school')->id)->first();
             return view('frontEnd.home.light_contact', compact('exams', 'classes', 'subjects', 'exams_types', 'sections', 'contact_info'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -180,13 +180,13 @@ class SmFrontendController extends Controller
     {
 
         try {
-            $exams = SmExam::where('school_id', app('school')->id)->get();
-            $exams_types = SmExamType::where('school_id', app('school')->id)->get();
-            $classes = SmClass::where('school_id', app('school')->id)->where('active_status', 1)->get();
-            $subjects = SmSubject::where('school_id', app('school')->id)->where('active_status', 1)->get();
-            $sections = SmSection::where('school_id', app('school')->id)->where('active_status', 1)->get();
+            $exams = SmExam::where('church_id', app('school')->id)->get();
+            $exams_types = SmExamType::where('church_id', app('school')->id)->get();
+            $classes = SmClass::where('church_id', app('school')->id)->where('active_status', 1)->get();
+            $subjects = SmSubject::where('church_id', app('school')->id)->where('active_status', 1)->get();
+            $sections = SmSection::where('church_id', app('school')->id)->where('active_status', 1)->get();
 
-            $contact_info = SmContactPage::where('school_id', app('school')->id)->first();
+            $contact_info = SmContactPage::where('church_id', app('school')->id)->first();
             return view('frontEnd.home.institutionPrivacyPolicy', compact('exams', 'classes', 'subjects', 'exams_types', 'sections', 'contact_info'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -226,13 +226,13 @@ class SmFrontendController extends Controller
     {
 
         try {
-            $exams = SmExam::where('school_id', app('school')->id)->get();
-            $exams_types = SmExamType::where('school_id', app('school')->id)->get();
-            $classes = SmClass::where('school_id', app('school')->id)->where('active_status', 1)->get();
-            $subjects = SmSubject::where('school_id', app('school')->id)->where('active_status', 1)->get();
-            $sections = SmSection::where('school_id', app('school')->id)->where('active_status', 1)->get();
+            $exams = SmExam::where('church_id', app('school')->id)->get();
+            $exams_types = SmExamType::where('church_id', app('school')->id)->get();
+            $classes = SmClass::where('church_id', app('school')->id)->where('active_status', 1)->get();
+            $subjects = SmSubject::where('church_id', app('school')->id)->where('active_status', 1)->get();
+            $sections = SmSection::where('church_id', app('school')->id)->where('active_status', 1)->get();
 
-            $contact_info = SmContactPage::where('school_id', app('school')->id)->first();
+            $contact_info = SmContactPage::where('church_id', app('school')->id)->first();
             return view('frontEnd.home.institutionTermServices', compact('exams', 'classes', 'subjects', 'exams_types', 'sections', 'contact_info'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -242,9 +242,9 @@ class SmFrontendController extends Controller
 
     public function newsDetails($id)
     {
-        $news = SmNews::where('school_id', app('school')->id)->findOrFail($id);
-        $otherNews = SmNews::where('school_id', app('school')->id)->orderBy('id', 'asc')->whereNotIn('id', [$id])->limit(3)->get();
-        $notice_board = SmNoticeBoard::where('school_id', app('school')->id)->where('is_published', 1)->orderBy('created_at', 'DESC')->take(3)->get();
+        $news = SmNews::where('church_id', app('school')->id)->findOrFail($id);
+        $otherNews = SmNews::where('church_id', app('school')->id)->orderBy('id', 'asc')->whereNotIn('id', [$id])->limit(3)->get();
+        $notice_board = SmNoticeBoard::where('church_id', app('school')->id)->where('is_published', 1)->orderBy('created_at', 'DESC')->take(3)->get();
       
         return view('frontEnd.home.light_news_details', compact('news', 'notice_board', 'otherNews'));
        
@@ -254,8 +254,8 @@ class SmFrontendController extends Controller
     {
 
         try {
-            $news = SmNews::where('school_id', app('school')->id)->paginate(8);
-            $newsPage = SmNewsPage::where('school_id', app('school')->id)->first();
+            $news = SmNews::where('church_id', app('school')->id)->paginate(8);
+            $newsPage = SmNewsPage::where('church_id', app('school')->id)->first();
             return view('frontEnd.home.light_news', compact('news', 'newsPage'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -269,7 +269,7 @@ class SmFrontendController extends Controller
             $count = SmNews::count();
             $skip = $request->skip;
             $limit = $count - $skip;
-            $due_news = SmNews::skip($skip)->where('school_id', app('school')->id)->take(4)->get();
+            $due_news = SmNews::skip($skip)->where('church_id', app('school')->id)->take(4)->get();
             return view('frontEnd.home.loadMoreNews', compact('due_news', 'skip', 'count'));
         } catch (\Exception $e) {
             return response('error');
@@ -290,7 +290,7 @@ class SmFrontendController extends Controller
             $contact_message->email = $request->email;
             $contact_message->subject = $request->subject;
             $contact_message->message = $request->message;
-            $contact_message->school_id = app('school')->id;
+            $contact_message->church_id = app('school')->id;
             $contact_message->save();
 
             $receiver_name= "System Admin";
@@ -298,8 +298,8 @@ class SmFrontendController extends Controller
             $compact['contact_email'] = $request->email;
             $compact['subject'] = $request->subject;
             $compact['contact_message'] = $request->message;
-            $contact_page_email = SmContactPage::where('school_id',app('school')->id)->first();
-            $setting = SmGeneralSettings::where('school_id', app('school')->id)->first();
+            $contact_page_email = SmContactPage::where('church_id',app('school')->id)->first();
+            $setting = SmGeneralSettings::where('church_id', app('school')->id)->first();
             if($contact_page_email->email){
                 $email = $contact_page_email->email;
             } else {
@@ -317,8 +317,8 @@ class SmFrontendController extends Controller
     public function contactMessage(Request $request)
     {
         try {
-            $contact_messages = SmContactMessage::where('school_id', app('school')->id)->orderBy('id', 'desc')->get();
-            $module_links = InfixPermissionAssign::where('role_id', Auth::user()->role_id)->where('school_id', Auth::user()->school_id)->pluck('module_id')->toArray();
+            $contact_messages = SmContactMessage::where('church_id', app('school')->id)->orderBy('id', 'desc')->get();
+            $module_links = InfixPermissionAssign::where('role_id', Auth::user()->role_id)->where('church_id', Auth::user()->church_id)->pluck('module_id')->toArray();
             return view('frontEnd.contact_message', compact('contact_messages', 'module_links'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -377,7 +377,7 @@ class SmFrontendController extends Controller
 
             //insert data into staff table
             $st = new SmStaff();
-            $st->school_id = 1;
+            $st->church_id = 1;
             $st->user_id = $last_id;
             $st->role_id = 4;
             $st->first_name = $request->fullname;
@@ -407,14 +407,14 @@ class SmFrontendController extends Controller
     {
 
         try {
-            $exams = SmExam::where('school_id', app('school')->id)->get();
-            $course = SmCourse::where('school_id', app('school')->id)->paginate(3);
-            $news = SmNews::where('school_id', app('school')->id)->orderBy('order', 'asc')->limit(4)->get();
-            $exams_types = SmExamType::where('school_id', app('school')->id)->get();
-            $coursePage = SmCoursePage::where('school_id', app('school')->id)->first();
-            $classes = SmClass::where('school_id', app('school')->id)->where('active_status', 1)->get();
-            $subjects = SmSubject::where('school_id', app('school')->id)->where('active_status', 1)->get();
-            $sections = SmSection::where('school_id', app('school')->id)->where('active_status', 1)->get();
+            $exams = SmExam::where('church_id', app('school')->id)->get();
+            $course = SmCourse::where('church_id', app('school')->id)->paginate(3);
+            $news = SmNews::where('church_id', app('school')->id)->orderBy('order', 'asc')->limit(4)->get();
+            $exams_types = SmExamType::where('church_id', app('school')->id)->get();
+            $coursePage = SmCoursePage::where('church_id', app('school')->id)->first();
+            $classes = SmClass::where('church_id', app('school')->id)->where('active_status', 1)->get();
+            $subjects = SmSubject::where('church_id', app('school')->id)->where('active_status', 1)->get();
+            $sections = SmSection::where('church_id', app('school')->id)->where('active_status', 1)->get();
             return view('frontEnd.home.light_course', compact('exams', 'classes', 'coursePage', 'subjects', 'exams_types', 'sections', 'course', 'news'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -425,9 +425,9 @@ class SmFrontendController extends Controller
     public function courseDetails($id)
     {
         try {
-            $course = SmCourse::where('school_id', app('school')->id)->find($id);
-            $course_details = SmCoursePage::where('school_id', app('school')->id)->where('is_parent', 0)->first();
-            $courses = SmCourse::where('school_id', app('school')->id)->orderBy('id', 'asc')->whereNotIn('id', [$id])->limit(3)->get();
+            $course = SmCourse::where('church_id', app('school')->id)->find($id);
+            $course_details = SmCoursePage::where('church_id', app('school')->id)->where('is_parent', 0)->first();
+            $courses = SmCourse::where('church_id', app('school')->id)->orderBy('id', 'asc')->whereNotIn('id', [$id])->limit(3)->get();
             return view('frontEnd.home.light_course_details', compact('course', 'courses', 'course_details'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -441,7 +441,7 @@ class SmFrontendController extends Controller
             $count = SmCourse::count();
             $skip = $request->skip;
             $limit = $count - $skip;
-            $due_courses = SmCourse::skip($skip)->where('school_id', app('school')->id)->take(3)->get();
+            $due_courses = SmCourse::skip($skip)->where('church_id', app('school')->id)->take(3)->get();
             return view('frontEnd.home.loadMorePage', compact('due_courses', 'skip', 'count'));
         } catch (\Exception $e) {
             return response('error');
@@ -450,7 +450,7 @@ class SmFrontendController extends Controller
 
     public function socialMedia()
     {
-        $visitors = SmSocialMediaIcon::where('school_id', app('school')->id)->get();
+        $visitors = SmSocialMediaIcon::where('church_id', app('school')->id)->get();
         return view('frontEnd.socialMedia', compact('visitors'));
     }
 
@@ -462,7 +462,7 @@ class SmFrontendController extends Controller
     public function viewPage($slug)
     {
         try {
-            $page = SmPage::where('slug', $slug)->where('school_id', app('school')->id)->first();
+            $page = SmPage::where('slug', $slug)->where('church_id', app('school')->id)->first();
             return view('frontEnd.pages.pages', compact('page'));
         } catch (\Exception $e) {
 

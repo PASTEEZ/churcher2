@@ -54,7 +54,7 @@
                                             <select class="w-100 bb niceSelect1 form-control {{ $errors->has('bank_id') ? ' is-invalid' : '' }} bankId" name="bank_id">
                                                 <option data-display="@lang('fees::feesModule.select_bank')" value="">@lang('fees::feesModule.select_bank')</option>
                                                     @foreach($banks as $bank)
-                                                        <option value="{{$bank->id}}" data-id="{{$feesTranscation->id}}">{{$bank->bank_name}} ({{$bank->account_number}})</option>
+                                                        <option value="{{$bank->id}}" data-id="{{$feesTranscation->id}}">{{$bank->employer_name}} ({{$bank->account_number}})</option>
                                                     @endforeach
                                             </select>
                                         </div>

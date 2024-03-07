@@ -17,21 +17,21 @@
         <div class="single-meta mt-10">
             <div class="d-flex justify-content-between">
                 <div class="name">
-                    @lang('student.student_name')
+                    @lang('student.member_name')
                 </div>
                 <div class="value">
                     {{ @$student_detail->first_name . ' '. @$student_detail->middle_name . ' ' . @$student_detail->last_name }}
                 </div>
             </div>
         </div>
-        @if(is_show('admission_number'))
+        @if(is_show('registration_number'))
             <div class="single-meta">
                 <div class="d-flex justify-content-between">
                     <div class="name">
-                        @lang('student.admission_number')
+                        @lang('student.registration_number')
                     </div>
                     <div class="value">
-                        {{ @$student_detail->admission_no }}
+                        {{ @$student_detail->registration_no }}
                     </div>
                 </div>
             </div>
@@ -61,10 +61,10 @@
                 <div class="value">
                     @if ($student_detail->defaultClass != '')
                         
-                        {{ @$student_detail->defaultClass->class->class_name }}
+                        {{ @$student_detail->defaultClass->class->age_group_name }}
                       
                     @elseif ($student_detail->studentRecord != '')                      
-                        {{ @$student_detail->studentRecord->class->class_name }}
+                        {{ @$student_detail->studentRecord->class->age_group_name }}
                     
                     @endif
                 </div>
@@ -81,11 +81,11 @@
 
                     @if ($student_detail->defaultClass != '')
                      
-                            {{ @$student_detail->defaultClass->section->section_name }}
+                            {{ @$student_detail->defaultClass->section->mgender_name }}
                        
                     @elseif ($student_detail->studentRecord != '')
                        
-                            {{ @$student_detail->studentRecord->section->section_name }}
+                            {{ @$student_detail->studentRecord->section->mgender_name }}
                        
                     @endif
                 </div>
@@ -134,10 +134,10 @@
                     <div class="single-meta">
                         <div class="d-flex justify-content-between">
                             <div class="name">
-                                @lang('student.admission_number')
+                                @lang('student.registration_number')
                             </div>
                             <div class="value">
-                                {{ @$sibling->admission_no }}
+                                {{ @$sibling->registration_no }}
                             </div>
                         </div>
                     </div>
@@ -147,7 +147,7 @@
                                 @lang('student.roll_number')
                             </div>
                             <div class="value">
-                                {{ @$sibling->roll_no }}
+                                {{ @$sibling->member_id_no }}
                             </div>
                         </div>
                     </div>
@@ -159,14 +159,14 @@
                             
                             </div>
                             <div class="value">
-                                {{-- {{ @$sibling->class->class_name }} --}}
+                                {{-- {{ @$sibling->class->age_group_name }} --}}
                                 @if ($sibling->defaultClass != '')
                                 
-                                    {{ @$sibling->defaultClass->class->class_name }}
+                                    {{ @$sibling->defaultClass->class->age_group_name }}
                                 
                                 @elseif ($sibling->studentRecord != '')
                                 
-                                    {{ @$sibling->studentRecord->class->class_name }}
+                                    {{ @$sibling->studentRecord->class->age_group_name }}
                                 
                                 @endif
                             </div>
@@ -182,9 +182,9 @@
                             <div class="value">
                                 
                             @if ($sibling->defaultClass != '')                           
-                                {{ @$sibling->defaultClass->section->section_name }}
+                                {{ @$sibling->defaultClass->section->mgender_name }}
                             @elseif ($sibling->studentRecord != '')                          
-                                {{ @$sibling->studentRecord->section->section_name }}
+                                {{ @$sibling->studentRecord->section->mgender_name }}
                             @endif
                             </div>
                         </div>

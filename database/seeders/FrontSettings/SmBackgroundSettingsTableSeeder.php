@@ -14,7 +14,7 @@ class SmBackgroundSettingsTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run($school_id, $count=3)
+    public function run($church_id, $count=3)
     {
         //
         
@@ -26,7 +26,7 @@ class SmBackgroundSettingsTableSeeder extends Seeder
                 'image'         => 'public/backEnd/img/body-bg.jpg',
                 'color'         => '',
                 'is_default'    => 1,
-                'school_id'     => $school_id,
+                'church_id'     => $church_id,
 
             ],
 
@@ -37,7 +37,7 @@ class SmBackgroundSettingsTableSeeder extends Seeder
                 'image'         => 'public/backEnd/img/login-bg.jpg',
                 'color'         => '',
                 'is_default'    => 0,
-                'school_id'     => $school_id,
+                'church_id'     => $church_id,
 
 
             ],

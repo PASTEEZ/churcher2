@@ -21,7 +21,7 @@ class SmBackGroundSettingController extends Controller
     public function index()
     {
         try {
-            $background_settings = SmBackgroundSetting::where('school_id', Auth::user()->school_id)->orderby('id', 'DESC')->get();
+            $background_settings = SmBackgroundSetting::where('church_id', Auth::user()->church_id)->orderby('id', 'DESC')->get();
             return view('backEnd.style.background_setting', compact('background_settings'));
         } catch (\Exception$e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -50,7 +50,7 @@ class SmBackGroundSettingController extends Controller
             $background_setting->is_default = 0;
             $background_setting->title = $title;
             $background_setting->type = $request->background_type;
-            $background_setting->school_id = Auth::user()->school_id;
+            $background_setting->church_id = Auth::user()->church_id;
             if ($request->background_type == 'color') {
                 $background_setting->color = $request->color;
             } else {
@@ -72,25 +72,25 @@ class SmBackGroundSettingController extends Controller
         try {
             $background = SmBackgroundSetting::find($id);
             if ($background->is_default == 1 && $background->title == "Login Background") {
-                SmBackgroundSetting::where([['is_default', 1], ['title', 'Login Background']])->where('school_id', Auth::user()->school_id)->update(['is_default' => 0]);
+                SmBackgroundSetting::where([['is_default', 1], ['title', 'Login Background']])->where('church_id', Auth::user()->church_id)->update(['is_default' => 0]);
                 $result = SmBackgroundSetting::where('id', $id)->update(['is_default' => 1]);
             } else if ($background->is_default == 1 && $background->title == "Dashboard Background") {
-                SmBackgroundSetting::where([['is_default', 1], ['title', 'Dashboard Background']])->where('school_id', Auth::user()->school_id)->update(['is_default' => 0]);
+                SmBackgroundSetting::where([['is_default', 1], ['title', 'Dashboard Background']])->where('church_id', Auth::user()->church_id)->update(['is_default' => 0]);
                 $result = SmBackgroundSetting::where('id', $id)->update(['is_default' => 1]);
             } else if ($background->is_default == 0 && $background->title == "Login Background") {
-                SmBackgroundSetting::where([['is_default', 1], ['title', 'Login Background']])->where('school_id', Auth::user()->school_id)->update(['is_default' => 0]);
+                SmBackgroundSetting::where([['is_default', 1], ['title', 'Login Background']])->where('church_id', Auth::user()->church_id)->update(['is_default' => 0]);
                 $result = SmBackgroundSetting::where('id', $id)->update(['is_default' => 1]);
             } else if ($background->is_default == 0 && $background->title == "Dashboard Background") {
-                SmBackgroundSetting::where([['is_default', 1], ['title', 'Dashboard Background']])->where('school_id', Auth::user()->school_id)->update(['is_default' => 0]);
+                SmBackgroundSetting::where([['is_default', 1], ['title', 'Dashboard Background']])->where('church_id', Auth::user()->church_id)->update(['is_default' => 0]);
                 $result = SmBackgroundSetting::where('id', $id)->update(['is_default' => 1]);
             }
             //changes for lead form background -abunayem
             if (moduleStatusCheck('Lead')==true) {
                 if ($background->is_default == 1 && $background->title == "Lead Form Background") {
-                    SmBackgroundSetting::where([['is_default', 1], ['title', 'Lead Form Background']])->where('school_id', Auth::user()->school_id)->update(['is_default' => 0]);
+                    SmBackgroundSetting::where([['is_default', 1], ['title', 'Lead Form Background']])->where('church_id', Auth::user()->church_id)->update(['is_default' => 0]);
                     $result = SmBackgroundSetting::where('id', $id)->update(['is_default' => 1]);
                 } else if ($background->is_default == 0 && $background->title == "Lead Form Background") {
-                    SmBackgroundSetting::where([['is_default', 1], ['title', 'Lead Form Background']])->where('school_id', Auth::user()->school_id)->update(['is_default' => 0]);
+                    SmBackgroundSetting::where([['is_default', 1], ['title', 'Lead Form Background']])->where('church_id', Auth::user()->church_id)->update(['is_default' => 0]);
                     $result = SmBackgroundSetting::where('id', $id)->update(['is_default' => 1]);
                 }
             }
@@ -159,7 +159,7 @@ class SmBackGroundSettingController extends Controller
     public function colorTheme()
     {
         try {
-            $color_styles = SmStyle::where('school_id', Auth::user()->school_id)->get();
+            $color_styles = SmStyle::where('church_id', Auth::user()->church_id)->get();
             return view('backEnd.systemSettings.color_theme', compact('color_styles'));
         } catch (\Exception$e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -171,15 +171,15 @@ class SmBackGroundSettingController extends Controller
     {
         try {
 
-            SmStyle::where('is_active', 1)->where('school_id', Auth::user()->school_id)->update(['is_active' => 0]);
+            SmStyle::where('is_active', 1)->where('church_id', Auth::user()->church_id)->update(['is_active' => 0]);
             $result = SmStyle::where('id', $id)->update(['is_active' => 1]);
             if ($result) {
                 session()->forget('all_styles');
-                $all_styles = SmStyle::where('school_id', 1)->where('active_status', 1)->get();
+                $all_styles = SmStyle::where('church_id', 1)->where('active_status', 1)->get();
                 session()->put('all_styles', $all_styles);
 
                 session()->forget('active_style');
-                $active_style = SmStyle::where('school_id', 1)->where('is_active', 1)->first();
+                $active_style = SmStyle::where('church_id', 1)->where('is_active', 1)->first();
                 session()->put('active_style', $active_style);
 
                 Toastr::success('Operation successful', 'Success');

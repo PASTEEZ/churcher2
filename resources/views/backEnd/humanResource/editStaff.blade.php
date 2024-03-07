@@ -658,27 +658,27 @@
                             </div>
                         </div>
                         @endif
-                        @if (in_array('bank_account_no', $has_permission))
+                        @if (in_array('day_born', $has_permission))
                         <div class="col-lg-3">
                             <div class="input-effect">
                                 <input
-                                    class="primary-input form-control{{ $errors->has('bank_account_no') ? ' is-invalid' : '' }}"
-                                    type="text" name="bank_account_no" value="{{ $editData->bank_account_no }}">
+                                    class="primary-input form-control{{ $errors->has('day_born') ? ' is-invalid' : '' }}"
+                                    type="text" name="day_born" value="{{ $editData->day_born }}">
                                 <span class="focus-border"></span>
                                 <label>@lang('accounts.account_no')
-                                    {{ in_array('bank_account_no', $is_required) ? '*' : '' }}</label>
+                                    {{ in_array('day_born', $is_required) ? '*' : '' }}</label>
                             </div>
                         </div>
                         @endif
-                        @if (in_array('bank_name', $has_permission))
+                        @if (in_array('employer_name', $has_permission))
                         <div class="col-lg-3">
                             <div class="input-effect">
                                 <input
-                                    class="primary-input form-control{{ $errors->has('bank_name') ? ' is-invalid' : '' }}"
-                                    type="text" name="bank_name" value="{{ $editData->bank_name }}">
+                                    class="primary-input form-control{{ $errors->has('employer_name') ? ' is-invalid' : '' }}"
+                                    type="text" name="employer_name" value="{{ $editData->employer_name }}">
                                 <span class="focus-border"></span>
-                                <label>@lang('accounts.bank_name')
-                                    {{ in_array('bank_name', $is_required) ? '*' : '' }}</label>
+                                <label>@lang('accounts.employer_name')
+                                    {{ in_array('employer_name', $is_required) ? '*' : '' }}</label>
                             </div>
                         </div>
                         @endif

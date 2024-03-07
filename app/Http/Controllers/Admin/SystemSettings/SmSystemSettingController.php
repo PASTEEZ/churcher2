@@ -80,7 +80,7 @@ class SmSystemSettingController extends Controller
 
     public function sendTestMail()
     {
-        $e = SmEmailSetting::where('active_status',1)->where('school_id', Auth::user()->school_id)->first();
+        $e = SmEmailSetting::where('active_status',1)->where('church_id', Auth::user()->church_id)->first();
         if (empty($e)) {
             Toastr::error('Email Setting is Not Complete', 'Failed');
             return redirect()->back();
@@ -113,11 +113,11 @@ class SmSystemSettingController extends Controller
     {
 
         try {
-            return $exams = SmExam::where('academic_id', getAcademicId())->get();
-            $exams_types = SmExamType::where('academic_id', getAcademicId())->get();
-            $classes = SmClass::where('academic_id', getAcademicId())->where('active_status', 1)->get();
-            $subjects = SmSubject::where('academic_id', getAcademicId())->where('active_status', 1)->get();
-            $sections = SmSection::where('academic_id', getAcademicId())->where('active_status', 1)->get();
+            return $exams = SmExam::where('church_year_id', getAcademicId())->get();
+            $exams_types = SmExamType::where('church_year_id', getAcademicId())->get();
+            $classes = SmClass::where('church_year_id', getAcademicId())->where('active_status', 1)->get();
+            $subjects = SmSubject::where('church_year_id', getAcademicId())->where('active_status', 1)->get();
+            $sections = SmSection::where('church_year_id', getAcademicId())->where('active_status', 1)->get();
             return view('frontEnd.home.light_news', compact('exams', 'classes', 'subjects', 'exams_types', 'sections'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -303,19 +303,19 @@ class SmSystemSettingController extends Controller
     public function smsSettings()
     {
         try {
-            $sms_services['Twilio'] = SmSmsGateway::where('gateway_name','Twilio')->where('school_id',Auth::user()->school_id)->firstOrCreate();
-            $sms_services['Msg91'] = SmSmsGateway::where('gateway_name','Msg91')->where('school_id',Auth::user()->school_id)->firstOrCreate();
-            $sms_services['TextLocal'] = SmSmsGateway::where('gateway_name','TextLocal')->where('school_id',Auth::user()->school_id)->firstOrCreate();
-            $sms_services['AfricaTalking'] = SmSmsGateway::where('gateway_name','AfricaTalking')->where('school_id',Auth::user()->school_id)->firstOrCreate();
-            $sms_services['Mobile SMS'] = SmSmsGateway::where('gateway_name','Mobile SMS')->where('school_id',Auth::user()->school_id)->firstOrCreate();
+            $sms_services['Twilio'] = SmSmsGateway::where('gateway_name','Twilio')->where('church_id',Auth::user()->church_id)->firstOrCreate();
+            $sms_services['Msg91'] = SmSmsGateway::where('gateway_name','Msg91')->where('church_id',Auth::user()->church_id)->firstOrCreate();
+            $sms_services['TextLocal'] = SmSmsGateway::where('gateway_name','TextLocal')->where('church_id',Auth::user()->church_id)->firstOrCreate();
+            $sms_services['AfricaTalking'] = SmSmsGateway::where('gateway_name','AfricaTalking')->where('church_id',Auth::user()->church_id)->firstOrCreate();
+            $sms_services['Mobile SMS'] = SmSmsGateway::where('gateway_name','Mobile SMS')->where('church_id',Auth::user()->church_id)->firstOrCreate();
             if(moduleStatusCheck('HimalayaSms')){
-                $sms_services['HimalayaSms'] = SmSmsGateway::where('gateway_name','HimalayaSms')->where('school_id',Auth::user()->school_id)->first();
-                $all_sms_services= SmSmsGateway::where('school_id',Auth::user()->school_id)->get();
+                $sms_services['HimalayaSms'] = SmSmsGateway::where('gateway_name','HimalayaSms')->where('church_id',Auth::user()->church_id)->first();
+                $all_sms_services= SmSmsGateway::where('church_id',Auth::user()->church_id)->get();
             }
             elseif( ! moduleStatusCheck('HimalayaSms')){
-                $all_sms_services= SmSmsGateway::where('gateway_name', '!=','HimalayaSms')->where('school_id',Auth::user()->school_id)->get();
+                $all_sms_services= SmSmsGateway::where('gateway_name', '!=','HimalayaSms')->where('church_id',Auth::user()->church_id)->get();
             }
-            $active_sms_service = SmSmsGateway::where('school_id',Auth::user()->school_id)->where('active_status', 1)->first();
+            $active_sms_service = SmSmsGateway::where('church_id',Auth::user()->church_id)->where('active_status', 1)->first();
 
 
             return view('backEnd.systemSettings.smsSettings', compact('sms_services', 'active_sms_service','all_sms_services'));
@@ -328,7 +328,7 @@ class SmSystemSettingController extends Controller
     public function languageSettings()
     {
         try {
-            $sms_languages = SmLanguage::where('school_id', Auth::user()->school_id)->get();
+            $sms_languages = SmLanguage::where('church_id', Auth::user()->church_id)->get();
             $all_languages = Language::orderBy('code', 'ASC')->get()->except($sms_languages->pluck('lang_id')->toArray());
             return view('backEnd.systemSettings.languageSettings', compact('sms_languages', 'all_languages'));
         } catch (\Exception $e) {
@@ -342,8 +342,8 @@ class SmSystemSettingController extends Controller
 
         try {
             $selected_languages = SmLanguage::find($id);
-            $sms_languages = SmLanguage::where('school_id', Auth::user()->school_id)->get();
-            $all_languages = DB::table('languages')->where('school_id', Auth::user()->school_id)->orderBy('code', 'ASC')->get();
+            $sms_languages = SmLanguage::where('church_id', Auth::user()->church_id)->get();
+            $all_languages = DB::table('languages')->where('church_id', Auth::user()->church_id)->orderBy('code', 'ASC')->get();
             return view('backEnd.systemSettings.languageSettings', compact('sms_languages', 'all_languages', 'selected_languages'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -413,13 +413,13 @@ class SmSystemSettingController extends Controller
 
         try {
             //     $uni = $request->id;
-            //     SmLanguage::where('active_status', 1)->where('school_id', Auth::user()->school_id)->update(['active_status' => 0]);
+            //     SmLanguage::where('active_status', 1)->where('church_id', Auth::user()->church_id)->update(['active_status' => 0]);
 
-            //     $updateLang = SmLanguage::where('language_universal', $uni)->where('school_id', Auth::user()->school_id)->first();
+            //     $updateLang = SmLanguage::where('language_universal', $uni)->where('church_id', Auth::user()->church_id)->first();
 
             //     $updateLang->active_status = 1;
             //     $updateLang->update();
-            //     $langs = SmLanguage::where('school_id', Auth::user()->school_id)->get();
+            //     $langs = SmLanguage::where('church_id', Auth::user()->church_id)->get();
             //     session()->put('systemLanguage',$langs);
             //    if($uni != 'en'){
             //     session()->put('lang', strtolower($uni));
@@ -448,13 +448,13 @@ class SmSystemSettingController extends Controller
             //    return response()->json([$uni]);
 
             $uni = $request->id;
-            SmLanguage::where('active_status', 1)->where('school_id', Auth::user()->school_id)->update(['active_status' => 0]);
+            SmLanguage::where('active_status', 1)->where('church_id', Auth::user()->church_id)->update(['active_status' => 0]);
 
-            $updateLang = SmLanguage::where('language_universal', $uni)->where('school_id', Auth::user()->school_id)->first();
+            $updateLang = SmLanguage::where('language_universal', $uni)->where('church_id', Auth::user()->church_id)->first();
 
             $updateLang->active_status = 1;
             $updateLang->update();
-            $langs = SmLanguage::where('school_id', Auth::user()->school_id)->get();
+            $langs = SmLanguage::where('church_id', Auth::user()->church_id)->get();
             session()->put('systemLanguage', $langs);
 
             $values['APP_LOCALE'] = $updateLang->language_universal;
@@ -487,8 +487,8 @@ class SmSystemSettingController extends Controller
     {
 
         try {
-            $class_id = $request->class;
-            $allSubjects = SmAssignSubject::where([['section_id', '=', $request->id], ['class_id', $class_id]])->get();
+            $age_group_id = $request->class;
+            $allSubjects = SmAssignSubject::where([['mgender_id', '=', $request->id], ['age_group_id', $age_group_id]])->get();
 
             $subjectsName = [];
             foreach ($allSubjects as $allSubject) {
@@ -522,7 +522,7 @@ class SmSystemSettingController extends Controller
                 $sms_languages->native = $language_details->native;
                 $sms_languages->lang_id = $language_details->id;
                 $sms_languages->active_status = '0';
-                $sms_languages->school_id = Auth::user()->school_id;
+                $sms_languages->church_id = Auth::user()->church_id;
                 $sms_languages->save();
 
                 if ($language_details->code != 'en') {
@@ -547,7 +547,7 @@ class SmSystemSettingController extends Controller
     public function backupSettings()
     {
         try {
-            $sms_dbs = SmBackup::where('academic_id', getAcademicId())->orderBy('id', 'DESC')->whereNull('lang_type')->get();
+            $sms_dbs = SmBackup::where('church_year_id', getAcademicId())->orderBy('id', 'DESC')->whereNull('lang_type')->get();
             return view('backEnd.systemSettings.backupSettings', compact('sms_dbs'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -645,7 +645,7 @@ class SmSystemSettingController extends Controller
             if (checkAdmin()) {
                 $data = SmBackup::find($id);
             } else {
-                $data = SmBackup::where('id', $id)->where('school_id', Auth::user()->school_id)->first();
+                $data = SmBackup::where('id', $id)->where('church_id', Auth::user()->church_id)->first();
             }
             if (!empty($data)) {
                 $source_link = $data->source_link;
@@ -684,7 +684,7 @@ class SmSystemSettingController extends Controller
             if (checkAdmin()) {
                 $data = SmBackup::find($id);
             } else {
-                $data = SmBackup::where('id', $id)->where('school_id', Auth::user()->school_id)->first();
+                $data = SmBackup::where('id', $id)->where('church_id', Auth::user()->church_id)->first();
             }
             if (!empty($data)) {
                 $source_link = $data->source_link;
@@ -720,7 +720,7 @@ class SmSystemSettingController extends Controller
             if (checkAdmin()) {
                 $sm_db = SmBackup::find($id);
             } else {
-                $sm_db = SmBackup::where('id', $id)->where('school_id', Auth::user()->school_id)->first();
+                $sm_db = SmBackup::where('id', $id)->where('church_id', Auth::user()->church_id)->first();
             }
             if (!empty($sm_db)) {
                 $source_link = $sm_db->source_link;
@@ -805,7 +805,7 @@ class SmSystemSettingController extends Controller
             $store->file_type = $id;
             $store->created_by = Auth::user()->id;
             $store->updated_by = Auth::user()->id;
-            $store->academic_id = getAcademicId();
+            $store->church_year_id = getAcademicId();
             $result = $store->save();
             if ($id == 2) {
                 return response()->download($zip_file);
@@ -828,7 +828,7 @@ class SmSystemSettingController extends Controller
             if (checkAdmin()) {
                 $sm_db = SmBackup::find($id);
             } else {
-                $sm_db = SmBackup::where('id', $id)->where('school_id', Auth::user()->school_id)->first();
+                $sm_db = SmBackup::where('id', $id)->where('church_id', Auth::user()->church_id)->first();
             }
             $source_link = $sm_db->source_link;
             if (@file_exists(@$source_link)) {
@@ -866,7 +866,7 @@ class SmSystemSettingController extends Controller
             $get_backup->source_link = $full_path;
             $get_backup->active_status = 1;
             $get_backup->file_type = 0;
-            $get_backup->academic_id = getAcademicId();
+            $get_backup->church_year_id = getAcademicId();
             $get_backup->save();
             Toastr::success('Operation successful', 'Success');
 
@@ -887,7 +887,7 @@ class SmSystemSettingController extends Controller
             $clickatell_api_id = $_POST['clickatell_api_id'];
 
             if ($gateway_id) {
-                $gatewayDetails = SmSmsGateway::where('gateway_name', $request->gateway_name)->where('school_id',Auth::user()->school_id)->first();
+                $gatewayDetails = SmSmsGateway::where('gateway_name', $request->gateway_name)->where('church_id',Auth::user()->church_id)->first();
                 if (!empty($gatewayDetails)) {
 
                     $gatewayDetails = SmSmsGateway::find($gatewayDetails->id);
@@ -901,7 +901,7 @@ class SmSystemSettingController extends Controller
                     $gatewayDetail->clickatell_username = $clickatell_username;
                     $gatewayDetail->clickatell_password = $clickatell_password;
                     $gatewayDetail->clickatell_api_id = $clickatell_api_id;
-                    $gatewayDetail->school_id = Auth::user()->school_id;
+                    $gatewayDetail->church_id = Auth::user()->church_id;
                     $results = $gatewayDetail->save();
                 }
             }
@@ -924,14 +924,14 @@ class SmSystemSettingController extends Controller
             $twilio_registered_no = $_POST['twilio_registered_no'];
 
             if ($gateway_id) {
-                $gatewayDetails = SmSmsGateway::where('gateway_name', $_POST['gateway_name'])->where('school_id',Auth::user()->school_id)->first();
+                $gatewayDetails = SmSmsGateway::where('gateway_name', $_POST['gateway_name'])->where('church_id',Auth::user()->church_id)->first();
                 if (!empty($gatewayDetails)) {
 
                     $gatewayDetailss = SmSmsGateway::find($gatewayDetails->id);
                     $gatewayDetailss->twilio_account_sid = $twilio_account_sid;
                     $gatewayDetailss->twilio_authentication_token = $twilio_authentication_token;
                     $gatewayDetailss->twilio_registered_no = $twilio_registered_no;
-                    $gatewayDetailss->school_id = Auth::user()->school_id;
+                    $gatewayDetailss->church_id = Auth::user()->church_id;
                     $results = $gatewayDetailss->update();
                 } else {
 
@@ -940,7 +940,7 @@ class SmSystemSettingController extends Controller
                     $gatewayDetail->twilio_account_sid = $twilio_account_sid;
                     $gatewayDetail->twilio_authentication_token = $twilio_authentication_token;
                     $gatewayDetail->twilio_registered_no = $twilio_registered_no;
-                    $gatewayDetail->school_id = Auth::user()->school_id;
+                    $gatewayDetail->church_id = Auth::user()->church_id;
                     $results = $gatewayDetail->save();
                 }
             }
@@ -978,7 +978,7 @@ class SmSystemSettingController extends Controller
             $textlocal_type = $_POST['textlocal_type'];
 
             if ($gateway_id) {
-                $gatewayDetails = SmSmsGateway::where('gateway_name', $request->gateway_name)->where('school_id',Auth::user()->school_id)->first();
+                $gatewayDetails = SmSmsGateway::where('gateway_name', $request->gateway_name)->where('church_id',Auth::user()->church_id)->first();
                 if (!empty($gatewayDetails)) {
 
                     $gatewayDetails = SmSmsGateway::find($gatewayDetails->id);
@@ -994,7 +994,7 @@ class SmSystemSettingController extends Controller
                     $gatewayDetail->textlocal_hash = $textlocal_hash;
                     $gatewayDetail->textlocal_sender = $textlocal_sender;
                     $gatewayDetails->type = $textlocal_type;
-                    $gatewayDetail->school_id = Auth::user()->school_id;
+                    $gatewayDetail->church_id = Auth::user()->church_id;
                     $results = $gatewayDetail->save();
                 }
             }
@@ -1027,7 +1027,7 @@ class SmSystemSettingController extends Controller
             $africatalking_api_key = $_POST['africatalking_api_key'];
 
             if ($gateway_id) {
-                $gatewayDetails = SmSmsGateway::where('gateway_name', $request->gateway_name)->where('school_id',Auth::user()->school_id)->first();
+                $gatewayDetails = SmSmsGateway::where('gateway_name', $request->gateway_name)->where('church_id',Auth::user()->church_id)->first();
                 if (!empty($gatewayDetails)) {
 
                     $gatewayDetails = SmSmsGateway::find($gatewayDetails->id);
@@ -1040,7 +1040,7 @@ class SmSystemSettingController extends Controller
                     $gatewayDetail->gateway_name = $request->gateway_name;
                     $gatewayDetail->africatalking_username = $africatalking_username;
                     $gatewayDetail->africatalking_api_key = $africatalking_api_key;
-                    $gatewayDetail->school_id = Auth::user()->school_id;
+                    $gatewayDetail->church_id = Auth::user()->church_id;
                     $results = $gatewayDetail->save();
                 }
             }
@@ -1118,7 +1118,7 @@ class SmSystemSettingController extends Controller
             }
 
             if ($gateway_id) {
-                $gatewayDetails = SmSmsGateway::where('gateway_name', $request->gateway_name)->where('school_id',Auth::user()->school_id)->first();
+                $gatewayDetails = SmSmsGateway::where('gateway_name', $request->gateway_name)->where('church_id',Auth::user()->church_id)->first();
                 if (!empty($gatewayDetails)) {
 
                     $gatewayDetails = SmSmsGateway::find($gatewayDetails->id);
@@ -1135,7 +1135,7 @@ class SmSystemSettingController extends Controller
                     $gatewayDetail->msg91_route = $msg91_route;
                     $gatewayDetail->msg91_country_code = $msg91_country_code;
 
-                    $gatewayDetail->school_id = Auth::user()->school_id;
+                    $gatewayDetail->church_id = Auth::user()->church_id;
                     $results = $gatewayDetail->save();
                 }
             }
@@ -1160,7 +1160,7 @@ class SmSystemSettingController extends Controller
             $sms_service = $_GET['sms_service'];
 
             if ($sms_service) {
-                $gatewayDetails = SmSmsGateway::where('school_id',Auth::user()->school_id)->where('active_status', '=', 1)
+                $gatewayDetails = SmSmsGateway::where('church_id',Auth::user()->church_id)->where('active_status', '=', 1)
                     ->update(['active_status' => 0]);
             }
 
@@ -1202,18 +1202,18 @@ class SmSystemSettingController extends Controller
     {
       
         try {
-            $editData = SmGeneralSettings::where('school_id', Auth::user()->school_id)->first();
-            $session_ids = SmAcademicYear::where('school_id', Auth::user()->school_id)->where('active_status', 1)->get();
+            $editData = SmGeneralSettings::where('church_id', Auth::user()->church_id)->first();
+            $session_ids = SmAcademicYear::where('church_id', Auth::user()->church_id)->where('active_status', 1)->get();
             $dateFormats = SmDateFormat::where('active_status', 1)->get();
-            $languages = SmLanguage::where('school_id',auth()->user()->school_id)->get();
+            $languages = SmLanguage::where('church_id',auth()->user()->church_id)->get();
             $countries = SmCountry::select('currency')->groupBy('currency')->get();
-            $currencies = SmCurrency::where('school_id',auth()->user()->school_id)->get();
-            $academic_years = SmAcademicYear::where('school_id', Auth::user()->school_id)->get();
+            $currencies = SmCurrency::where('church_id',auth()->user()->church_id)->get();
+            $church_years = SmAcademicYear::where('church_id', Auth::user()->church_id)->get();
             $time_zones = SmTimeZone::all();
-            $weekends = SmWeekend::where('school_id', Auth::user()->school_id)->get();
+            $weekends = SmWeekend::where('church_id', Auth::user()->church_id)->get();
 
             $sell_heads = SmChartOfAccount::where('active_status', '=', 1)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->where('type', 'I')
                 ->get();
 
@@ -1225,10 +1225,10 @@ class SmSystemSettingController extends Controller
                 $data['languages'] = $languages->toArray();
                 $data['countries'] = $countries->toArray();
                 $data['currencies'] = $currencies->toArray();
-                $data['academic_years'] = $academic_years->toArray();
+                $data['church_years'] = $church_years->toArray();
                 return ApiBaseMethod::sendResponse($data, 'apply leave');
             }
-            return view('backEnd.systemSettings.updateGeneralSettings', compact('editData', 'session_ids', 'dateFormats', 'languages', 'countries', 'currencies', 'academic_years', 'time_zones', 'weekends', 'sell_heads'));
+            return view('backEnd.systemSettings.updateGeneralSettings', compact('editData', 'session_ids', 'dateFormats', 'languages', 'countries', 'currencies', 'church_years', 'time_zones', 'weekends', 'sell_heads'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -1238,21 +1238,21 @@ class SmSystemSettingController extends Controller
     public function updateGeneralSettingsData(SmGeneralSettingsRequest $request)
     {
         try {
-            $id = Auth::user()->school_id;
-            $generalSettData = SmGeneralSettings::where('school_id', $id)->first();
-            $generalSettData->school_name = $request->school_name;
+            $id = Auth::user()->church_id;
+            $generalSettData = SmGeneralSettings::where('church_id', $id)->first();
+            $generalSettData->church_name = $request->church_name;
             $generalSettData->site_title = $request->site_title;
-            $generalSettData->school_code = $request->school_code;
+            $generalSettData->church_code = $request->church_code;
             $generalSettData->address = $request->address;
             $generalSettData->phone = $request->phone;
             $generalSettData->email = $request->email;
             $generalSettData->income_head_id = $request->income_head;
 
             if(moduleStatusCheck('University')){
-                $generalSettData->un_academic_id = $request->session_id;
+                $generalSettData->un_church_year_id = $request->session_id;
             }else{
                 $generalSettData->session_id = $request->session_id;
-                $generalSettData->academic_id = $request->session_id;
+                $generalSettData->church_year_id = $request->session_id;
             }
             $generalSettData->language_id = $request->language_id;
             $generalSettData->week_start_id = $request->week_start_id;
@@ -1320,8 +1320,8 @@ class SmSystemSettingController extends Controller
             // weekend
             $w = SmWeekend::where('id', $request->week_start_id)->first();
             if ($w) {
-                $greater_weekends = SmWeekend::where('school_id', Auth::user()->school_id)->where('order', '>=', $w->order)->orderBy('order', 'ASC')->get();
-                $less_weekends = SmWeekend::where('school_id', Auth::user()->school_id)->where('order', '<', $w->order)->orderBy('order', 'ASC')->get();
+                $greater_weekends = SmWeekend::where('church_id', Auth::user()->church_id)->where('order', '>=', $w->order)->orderBy('order', 'ASC')->get();
+                $less_weekends = SmWeekend::where('church_id', Auth::user()->church_id)->where('order', '<', $w->order)->orderBy('order', 'ASC')->get();
 
                 $i = 1;
                 foreach ($greater_weekends as $greater_weekend) {
@@ -1329,7 +1329,7 @@ class SmSystemSettingController extends Controller
                     $g_weekend->order = $i++;
                     $g_weekend->save();
                 }
-                $max_order = SmWeekend::where('school_id', Auth::user()->school_id)->max('order');
+                $max_order = SmWeekend::where('church_id', Auth::user()->church_id)->max('order');
                 foreach ($less_weekends as $less_weekend) {
                     $l_weekend = SmWeekend::where('id', $less_weekend->id)->first();
                     $l_weekend->order = ++$max_order;
@@ -1340,9 +1340,9 @@ class SmSystemSettingController extends Controller
 
             // weekend end 
 
-            $school = SmSchool::find(Auth::user()->school_id);
-            $school->school_name = $request->school_name;
-            $school->school_code = $request->school_code;
+            $school = SmSchool::find(Auth::user()->church_id);
+            $school->church_name = $request->church_name;
+            $school->church_code = $request->church_code;
             $school->address = $request->address;
             $school->phone = $request->phone;
             $school->email = $request->email;
@@ -1427,13 +1427,13 @@ class SmSystemSettingController extends Controller
                 $main_school_logo = md5($file->getClientOriginalName() . time()) . "." . $file->getClientOriginalExtension();
                 $file->move('public/uploads/settings/', $main_school_logo);
                 $main_school_logo = 'public/uploads/settings/' . $main_school_logo;
-                $generalSettData = SmGeneralSettings::where('school_id', Auth::user()->school_id)->first();
+                $generalSettData = SmGeneralSettings::where('church_id', Auth::user()->church_id)->first();
                 $generalSettData->logo = $main_school_logo;
                 $results = $generalSettData->update();
 
                 if ($results) {
                     session()->forget('school_config');
-                    $school_config = SmGeneralSettings::where('school_id', Auth::user()->school_id)->first();
+                    $school_config = SmGeneralSettings::where('church_id', Auth::user()->church_id)->first();
                     session()->put('school_config', $school_config);
 
                     session()->forget('generalSetting');
@@ -1454,13 +1454,13 @@ class SmSystemSettingController extends Controller
                 $main_school_favicon = md5($file->getClientOriginalName() . time()) . "." . $file->getClientOriginalExtension();
                 $file->move('public/uploads/settings/', $main_school_favicon);
                 $main_school_favicon = 'public/uploads/settings/' . $main_school_favicon;
-                $generalSettData = SmGeneralSettings::where('school_id', Auth::user()->school_id)->first();
+                $generalSettData = SmGeneralSettings::where('church_id', Auth::user()->church_id)->first();
                 $generalSettData->favicon = $main_school_favicon;
                 $results = $generalSettData->update();
 
                 if ($results) {
                     session()->forget('school_config');
-                    $school_config = SmGeneralSettings::where('school_id', Auth::user()->school_id)->first();
+                    $school_config = SmGeneralSettings::where('church_id', Auth::user()->church_id)->first();
                     session()->put('school_config', $school_config);
                     session()->forget('generalSetting');
                     session()->put('generalSetting', $generalSettData);
@@ -1497,9 +1497,9 @@ class SmSystemSettingController extends Controller
     {
 
         try {
-            $editData = SmEmailSetting::where('email_engine_type','smtp')->where('school_id',Auth::user()->school_id)->first();
-            $editDataPhp = SmEmailSetting::where('email_engine_type','php')->where('school_id',Auth::user()->school_id)->first();
-            $active_mail_driver = SmGeneralSettings::where('school_id',Auth::user()->school_id)->select('email_driver')->first()->email_driver;
+            $editData = SmEmailSetting::where('email_engine_type','smtp')->where('church_id',Auth::user()->church_id)->first();
+            $editDataPhp = SmEmailSetting::where('email_engine_type','php')->where('church_id',Auth::user()->church_id)->first();
+            $active_mail_driver = SmGeneralSettings::where('church_id',Auth::user()->church_id)->select('email_driver')->first()->email_driver;
             Session::put($active_mail_driver, "active");
             return view('backEnd.systemSettings.emailSettingsView', compact('editData','editDataPhp','active_mail_driver'));
         } catch (\Exception $e) {
@@ -1516,14 +1516,14 @@ class SmSystemSettingController extends Controller
 
 
                 $e = SmEmailSetting::where('email_engine_type', 'smtp')
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->first();
 
                 if (empty($e)) {
                     $e = new SmEmailSetting();
                     $e->email_engine_type = 'smtp';
                     $e->mail_driver = $request->mail_driver;
-                    $e->school_id = Auth::user()->school_id;
+                    $e->church_id = Auth::user()->church_id;
                 }
                 $e->from_name = $request->from_name;
                 $e->from_email = $request->from_email;
@@ -1538,12 +1538,12 @@ class SmSystemSettingController extends Controller
 
                 if ($request->active_status == 1) {
 
-                    $gs = SmGeneralSettings::where('school_id',Auth::user()->school_id)->first();
+                    $gs = SmGeneralSettings::where('church_id',Auth::user()->church_id)->first();
 
                     $gs->email_driver = "smtp";
                     $gs->save();
                     $phpp = SmEmailSetting::where('email_engine_type', 'php')
-                        ->where('school_id', Auth::user()->school_id)
+                        ->where('church_id', Auth::user()->church_id)
                         ->first();
                     if ($phpp) {
                         $phpp->active_status = 0;
@@ -1555,13 +1555,13 @@ class SmSystemSettingController extends Controller
 
             if ($request->engine_type == "php") {
 
-                $php = SmEmailSetting::where('email_engine_type', 'php')->where('school_id', Auth::user()->school_id)->first();
+                $php = SmEmailSetting::where('email_engine_type', 'php')->where('church_id', Auth::user()->church_id)->first();
 
                 if (empty($php)) {
                     $php = new SmEmailSetting();
                     $php->mail_driver = 'php';
                     $php->email_engine_type = 'php';
-                    $php->school_id = Auth::user()->school_id;
+                    $php->church_id = Auth::user()->church_id;
                 }
                 $php->from_name = $request->from_name;
                 $php->from_email = $request->from_email;
@@ -1569,10 +1569,10 @@ class SmSystemSettingController extends Controller
                 $results = $php->save();
 
                 if ($request->active_status == 1) {
-                    $gs = SmGeneralSettings::where('school_id',Auth::user()->school_id)->first();
+                    $gs = SmGeneralSettings::where('church_id',Auth::user()->church_id)->first();
                     $gs->email_driver = "php";
                     $gs->save();
-                    $smtp = SmEmailSetting::where('email_engine_type', 'smtp')->where('school_id', Auth::user()->school_id)->first();
+                    $smtp = SmEmailSetting::where('email_engine_type', 'smtp')->where('church_id', Auth::user()->church_id)->first();
                     if ($smtp) {
                         $smtp->active_status = 0;
                         $smtp->save();
@@ -1586,7 +1586,7 @@ class SmSystemSettingController extends Controller
             //========================
 
             try {
-                $settings = SmEmailSetting::where('school_id',Auth::user()->school_id)->where('active_status', 1)->first();
+                $settings = SmEmailSetting::where('church_id',Auth::user()->church_id)->where('active_status', 1)->first();
                 $reciver_email = $settings->from_email;
                 $receiver_name = Auth::user()->full_name;
                 $subject = 'Email Setup Testing';
@@ -1628,7 +1628,7 @@ class SmSystemSettingController extends Controller
             $PaymentMethods = DB::select($statement);
 
             $paymeny_gateway = SmPaymentMethhod::query();
-            $paymeny_gateway = $paymeny_gateway->where('school_id', Auth::user()->school_id);
+            $paymeny_gateway = $paymeny_gateway->where('church_id', Auth::user()->church_id);
             if(moduleStatusCheck('XenditPayment') == False){
                 $paymeny_gateway->where('method','!=','Xendit');
             }
@@ -1650,7 +1650,7 @@ class SmSystemSettingController extends Controller
             $paymeny_gateway = $paymeny_gateway->get();
 
             $paymeny_gateway_settings = SmPaymentGatewaySetting::query();
-            $paymeny_gateway_settings = $paymeny_gateway_settings->where('school_id', Auth::user()->school_id);
+            $paymeny_gateway_settings = $paymeny_gateway_settings->where('church_id', Auth::user()->church_id);
             if(moduleStatusCheck('XenditPayment') == False){
                 $paymeny_gateway_settings->where('gateway_name','!=','Xendit');
             }
@@ -1672,7 +1672,7 @@ class SmSystemSettingController extends Controller
             $paymeny_gateway_settings = $paymeny_gateway_settings->get();
 
             $payment_methods = SmPaymentMethhod::query();
-            $payment_methods = $payment_methods->where('school_id', Auth::user()->school_id);
+            $payment_methods = $payment_methods->where('church_id', Auth::user()->church_id);
             if(moduleStatusCheck('XenditPayment') == False){
                 $payment_methods->where('method','!=','Xendit');
             }
@@ -1690,7 +1690,7 @@ class SmSystemSettingController extends Controller
 
             $payment_methods = $payment_methods->get();
 
-            $bank_accounts = SmBankAccount::where('school_id', Auth::user()->school_id)->get();
+            $bank_accounts = SmBankAccount::where('church_id', Auth::user()->church_id)->get();
             return view('backEnd.systemSettings.paymentMethodSettings', compact('PaymentMethods', 'paymeny_gateway', 'paymeny_gateway_settings', 'payment_methods', 'bank_accounts'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -1743,7 +1743,7 @@ class SmSystemSettingController extends Controller
                 'mercado_pago_public_key','mercado_pago_acces_token','service_charge', 'charge_type', 'charge'
             ];
             $count = 0;
-            $gatewayDetails = SmPaymentGatewaySetting::where('gateway_name', $request->gateway_name)->where('school_id', Auth::user()->school_id)->first();
+            $gatewayDetails = SmPaymentGatewaySetting::where('gateway_name', $request->gateway_name)->where('church_id', Auth::user()->church_id)->first();
 
             foreach ($paymeny_gateway as $input_field) {
                 if (isset($request->$input_field) && !empty($request->$input_field)) {
@@ -1774,11 +1774,11 @@ class SmSystemSettingController extends Controller
         );
 
         try {
-            $update = SmPaymentMethhod::where('school_id', Auth::user()->school_id)
+            $update = SmPaymentMethhod::where('church_id', Auth::user()->church_id)
                 ->where('active_status', '=', 1)
                 ->update(['active_status' => 0]);
             foreach ($request->gateways as $pid => $isChecked) {
-                $results = SmPaymentMethhod::where('school_id', Auth::user()->school_id)
+                $results = SmPaymentMethhod::where('church_id', Auth::user()->church_id)
                     ->where('id', '=', $pid)
                     ->withoutGlobalScope(ActiveStatusSchoolScope::class)
                     ->update(['active_status' => 1]);
@@ -1808,7 +1808,7 @@ class SmSystemSettingController extends Controller
             $paypal_secret_id = $_POST['paypal_secret_id'];
 
             if ($gateway_id) {
-                $gatewayDetails = SmPaymentGatewaySetting::where('school_id', Auth::user()->school_id)->where('id', $gateway_id)->first();
+                $gatewayDetails = SmPaymentGatewaySetting::where('church_id', Auth::user()->church_id)->where('id', $gateway_id)->first();
                 if (!empty($gatewayDetails)) {
 
                     $gatewayDetails = SmPaymentGatewaySetting::find($gatewayDetails->id);
@@ -1826,7 +1826,7 @@ class SmSystemSettingController extends Controller
                     $gatewayDetail->paypal_signature = $paypal_signature;
                     $gatewayDetail->paypal_client_id = $paypal_client_id;
                     $gatewayDetail->paypal_secret_id = $paypal_secret_id;
-                    $gatewayDetail->school_id = Auth::user()->school_id;
+                    $gatewayDetail->church_id = Auth::user()->church_id;
                     $results = $gatewayDetail->save();
                 }
             }
@@ -1854,7 +1854,7 @@ class SmSystemSettingController extends Controller
             $stripe_publisher_key = $_POST['stripe_publisher_key'];
 
             if ($gateway_id) {
-                $gatewayDetails = SmPaymentGatewaySetting::where('school_id', Auth::user()->school_id)->where('id', $gateway_id)->where('school_id', Auth::user()->school_id)->first();
+                $gatewayDetails = SmPaymentGatewaySetting::where('church_id', Auth::user()->church_id)->where('id', $gateway_id)->where('church_id', Auth::user()->church_id)->first();
                 if (!empty($gatewayDetails)) {
 
                     $gatewayDetails = SmPaymentGatewaySetting::find($gatewayDetails->id);
@@ -1866,7 +1866,7 @@ class SmSystemSettingController extends Controller
                     $gatewayDetail = new SmPaymentGatewaySetting();
                     $gatewayDetail->stripe_api_secret_key = $stripe_api_secret_key;
                     $gatewayDetail->stripe_publisher_key = $stripe_publisher_key;
-                    $gatewayDetail->school_id = Auth::user()->school_id;
+                    $gatewayDetail->church_id = Auth::user()->church_id;
                     $results = $gatewayDetail->save();
                 }
             }
@@ -1901,7 +1901,7 @@ class SmSystemSettingController extends Controller
                     $gatewayDetail = new SmPaymentGatewaySetting();
                     $gatewayDetail->pay_u_money_key = $pay_u_money_key;
                     $gatewayDetail->pay_u_money_salt = $pay_u_money_salt;
-                    $gatewayDetail->school_id = Auth::user()->school_id;
+                    $gatewayDetail->church_id = Auth::user()->church_id;
                     $results = $gatewayDetail->save();
                 }
             }
@@ -1920,7 +1920,7 @@ class SmSystemSettingController extends Controller
     {
         try {
             $active_bank = SmBankAccount::where('id', $request->account_id)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->update(array('active_status' => $request->account_status));
             return response()->json('success');
         } catch (\Exception $e) {
@@ -1935,11 +1935,11 @@ class SmSystemSettingController extends Controller
             $gateway_id = $_POST['gateway_id'];
 
             if ($gateway_id) {
-                $gatewayDetails = SmPaymentGatewaySetting::where('school_id', Auth::user()->school_id)->where('active_status', '=', 1)
+                $gatewayDetails = SmPaymentGatewaySetting::where('church_id', Auth::user()->church_id)->where('active_status', '=', 1)
                     ->update(['active_status' => 0]);
             }
 
-            $results = SmPaymentGatewaySetting::where('school_id', Auth::user()->school_id)->where('gateway_name', '=', $gateway_id)
+            $results = SmPaymentGatewaySetting::where('church_id', Auth::user()->church_id)->where('gateway_name', '=', $gateway_id)
                 ->update(['active_status' => 1]);
 
             if ($results) {
@@ -2013,11 +2013,11 @@ class SmSystemSettingController extends Controller
 
     private function setDefaultLanguge($id){
 
-        SmLanguage::where('active_status', '=', 1)->where('school_id', Auth::user()->school_id)->update(['active_status' => 0]);
+        SmLanguage::where('active_status', '=', 1)->where('church_id', Auth::user()->church_id)->update(['active_status' => 0]);
         if(is_integer($id)){
-            $language = SmLanguage::where('school_id', Auth::user()->school_id)->findOrFail($id);
+            $language = SmLanguage::where('church_id', Auth::user()->church_id)->findOrFail($id);
         } else{
-            $language = SmLanguage::where('school_id', Auth::user()->school_id)->where('language_universal', $id)->firstOrFail();
+            $language = SmLanguage::where('church_id', Auth::user()->church_id)->where('language_universal', $id)->firstOrFail();
         }
 
         $language->active_status = 1;
@@ -2027,7 +2027,7 @@ class SmSystemSettingController extends Controller
 
         $lang = Language::where('code', $language->language_universal)->first();
 
-        $users = User::where('school_id',Auth::user()->school_id)->get();
+        $users = User::where('church_id',Auth::user()->church_id)->get();
 
         foreach($users as $user){
             $user->language = $lang->code;
@@ -2264,7 +2264,7 @@ class SmSystemSettingController extends Controller
                 "sm_student_documents",
                 "sm_student_excel_formats",
                 "sm_student_groups",
-                "sm_student_id_cards",
+                "sm_member_id_cards",
                 "sm_student_promotions",
                 "sm_student_take_online_exams",
                 "sm_student_take_online_exam_questions",
@@ -2285,7 +2285,7 @@ class SmSystemSettingController extends Controller
 
 
             $MyUpdatedTable = [];
-            $academicYears = SmAcademicYear::select('year', 'id', 'school_id')->get();
+            $academicYears = SmAcademicYear::select('year', 'id', 'church_id')->get();
             $ids = [];
             foreach ($table_list as $table) {
 
@@ -2293,14 +2293,14 @@ class SmSystemSettingController extends Controller
 
                     $className = 'App\\' . Str::studly(Str::singular($table));
                     $rs = $className::whereYear('created_at', $ac->year)
-                        ->where('school_id', $ac->school_id)
+                        ->where('church_id', $ac->church_id)
                         ->first();
 
                     if (!empty($rs)) {
 
                         if (!in_array($rs->id, $ids)) {
                             $ids[] = $rs->id;
-                            $rs->academic_id = $ac->id;
+                            $rs->church_year_id = $ac->id;
                             $rs->save();
                             $MyUpdatedTable[] = $table;
                         }
@@ -2445,7 +2445,7 @@ class SmSystemSettingController extends Controller
                 "sm_student_excel_formats",
                 "sm_student_groups",
                 "sm_student_homeworks",
-                "sm_student_id_cards",
+                "sm_member_id_cards",
                 "sm_student_promotions",
                 "sm_student_take_online_exams",
                 "sm_student_take_online_exam_questions",
@@ -2466,7 +2466,7 @@ class SmSystemSettingController extends Controller
             ];
 
 
-            $name = 'academic_id';
+            $name = 'church_year_id';
             $data = [];
             foreach ($table_list as $row) {
                 if (!Schema::hasColumn($row, $name)) {
@@ -2565,7 +2565,7 @@ class SmSystemSettingController extends Controller
     public function ajaxSelectCurrency(Request $request)
     {
         try {
-            $select_currency_symbol = SmCurrency::select('symbol')->where('code', '=', $request->id)->where('school_id',auth()->user()->school_id)->first();
+            $select_currency_symbol = SmCurrency::select('symbol')->where('code', '=', $request->id)->where('church_id',auth()->user()->church_id)->first();
 
             $currency_symbol['symbol'] = $select_currency_symbol->symbol;
 
@@ -2682,19 +2682,19 @@ class SmSystemSettingController extends Controller
     public function sessionChange(Request $request)
     {
         try {
-            $school_id = Auth::user()->school_id;
+            $church_id = Auth::user()->church_id;
             if ($request->id) {
-                $selected = SmGeneralSettings::where('school_id', $school_id)->first();
+                $selected = SmGeneralSettings::where('church_id', $church_id)->first();
                 if(moduleStatusCheck('University')){
                     $data = UnAcademicYear::find($request->id);
                     $year = date('Y', strtotime($data->start_date));
-                    $selected->un_academic_id = $request->id;
+                    $selected->un_church_year_id = $request->id;
                 }else{
                     $data = SmAcademicYear::find($request->id);
                     $year = $data->year;
 
                     $selected->session_id = $request->id;
-                    $selected->academic_id = $request->id;
+                    $selected->church_year_id = $request->id;
                 }
 
                 $selected->session_year = $year;
@@ -2716,8 +2716,8 @@ class SmSystemSettingController extends Controller
     public function homePageBackend()
     {
         try {
-            $links = SmHomePageSetting::where('school_id', app('school')->id)->first();
-            $permisions = SmFrontendPersmission::where('school_id', app('school')->id)->where('parent_id', 1)->get();
+            $links = SmHomePageSetting::where('church_id', app('school')->id)->first();
+            $permisions = SmFrontendPersmission::where('church_id', app('school')->id)->where('parent_id', 1)->get();
             return view('backEnd.systemSettings.homePageBackend', compact('links', 'permisions'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -2746,7 +2746,7 @@ class SmSystemSettingController extends Controller
             }
 
             $permisionsArray = $request->permisions;
-            SmFrontendPersmission::where('school_id', app('school')->id)->where('parent_id', 1)->update(['is_published' => 0]);
+            SmFrontendPersmission::where('church_id', app('school')->id)->where('parent_id', 1)->update(['is_published' => 0]);
             foreach ($permisionsArray as $value) {
                 SmFrontendPersmission::where('id', $value)->update(['is_published' => 1]);
             }
@@ -2765,13 +2765,13 @@ class SmSystemSettingController extends Controller
             }
 
             //Update Home Page
-            $update = SmHomePageSetting::where('school_id', app('school')->id)->first();
+            $update = SmHomePageSetting::where('church_id', app('school')->id)->first();
             $update->title = $request->title;
             $update->long_title = $request->long_title;
             $update->short_description = $request->short_description;
             $update->link_label = $request->link_label;
             $update->link_url = $request->link_url;
-            $update->school_id = app('school')->id;
+            $update->church_id = app('school')->id;
             if ($request->file('image') != "") {
                 $update->image = $image;
             }
@@ -2935,7 +2935,7 @@ class SmSystemSettingController extends Controller
 
         try {
             if ($this->create_a_dynamic_column('sm_general_settings', 'ttl_rtl', 'integer', 11)) {
-                $s = SmGeneralSettings::where('school_id', Auth::user()->school_id)->first();
+                $s = SmGeneralSettings::where('church_id', Auth::user()->church_id)->first();
                 $s->ttl_rtl = $request->status;
                 $s->save();
                 return response()->json($s);
@@ -2956,7 +2956,7 @@ class SmSystemSettingController extends Controller
 
         try {
 
-            // $settings = SmGeneralSettings::where('school_id', Auth::user()->school_id)->first();
+            // $settings = SmGeneralSettings::where('church_id', Auth::user()->church_id)->first();
             return view('backEnd.systemSettings.buttonDisableEnable');
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -2969,7 +2969,7 @@ class SmSystemSettingController extends Controller
 
 
         try {
-            $gettings = SmGeneralSettings::where('school_id', Auth::user()->school_id)->first();
+            $gettings = SmGeneralSettings::where('church_id', Auth::user()->church_id)->first();
             $gettings->website_btn = $request->status;
             $result = $gettings->save();
             //Session put generalSetting
@@ -2990,7 +2990,7 @@ class SmSystemSettingController extends Controller
 
 
         try {
-            $gettings = SmGeneralSettings::where('school_id', Auth::user()->school_id)->first();
+            $gettings = SmGeneralSettings::where('church_id', Auth::user()->church_id)->first();
             $gettings->dashboard_btn = $request->status;
             $result = $gettings->save();
             //Session put generalSetting
@@ -3009,7 +3009,7 @@ class SmSystemSettingController extends Controller
     {
 
         try {
-            $gettings = SmGeneralSettings::where('school_id', Auth::user()->school_id)->first();
+            $gettings = SmGeneralSettings::where('church_id', Auth::user()->church_id)->first();
             $gettings->report_btn = $request->status;
             $result = $gettings->save();
             //Session put generalSetting
@@ -3028,7 +3028,7 @@ class SmSystemSettingController extends Controller
     {
 
         try {
-            $gettings = SmGeneralSettings::where('school_id', Auth::user()->school_id)->first();
+            $gettings = SmGeneralSettings::where('church_id', Auth::user()->church_id)->first();
             $gettings->style_btn = $request->status;
             $result = $gettings->save();
             //Session put generalSetting
@@ -3047,7 +3047,7 @@ class SmSystemSettingController extends Controller
     {
 
         try {
-            $gettings = SmGeneralSettings::where('school_id', Auth::user()->school_id)->first();
+            $gettings = SmGeneralSettings::where('church_id', Auth::user()->church_id)->first();
             $gettings->ltl_rtl_btn = $request->status;
             $result = $gettings->save();
             //Session put generalSetting
@@ -3066,7 +3066,7 @@ class SmSystemSettingController extends Controller
     {
 
         try {
-            $gettings = SmGeneralSettings::where('school_id', Auth::user()->school_id)->first();
+            $gettings = SmGeneralSettings::where('church_id', Auth::user()->church_id)->first();
             $gettings->lang_btn = $request->status;
             $result = $gettings->save();
             //Session put generalSetting
@@ -3096,7 +3096,7 @@ class SmSystemSettingController extends Controller
         }
         try {
 
-            $settings = SmGeneralSettings::where('school_id', Auth::user()->school_id)->first();
+            $settings = SmGeneralSettings::where('church_id', Auth::user()->church_id)->first();
             $settings->website_url = $request->website_url;
             $result = $settings->save();
 
@@ -3140,24 +3140,24 @@ class SmSystemSettingController extends Controller
     public function schoolSettingsView(Request $request)
     {
 
-        $editData = SmGeneralSettings::where('school_id', Auth::user()->school_id)->first();
-        $school = SmSchool::where('id', '=', Auth::user()->school_id)->first();
+        $editData = SmGeneralSettings::where('church_id', Auth::user()->church_id)->first();
+        $school = SmSchool::where('id', '=', Auth::user()->church_id)->first();
 
-        $academic_year = SmAcademicYear::findOrfail(@$editData->session_id);
+        $church_year = SmAcademicYear::findOrfail(@$editData->session_id);
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
 
             return ApiBaseMethod::sendResponse($editData, null);
         }
-        return view('saas::systemSettings.schoolGeneralSettingsView', compact('editData', 'school', 'academic_year'));
+        return view('saas::systemSettings.schoolGeneralSettingsView', compact('editData', 'school', 'church_year'));
     }
 
 
     public function viewAsSuperadmin()
     {
 
-        $school_id = Auth::user()->school_id;
+        $church_id = Auth::user()->church_id;
         $role_id = Auth::user()->role_id;
-        if ($school_id == 1 && $role_id == 1) {
+        if ($church_id == 1 && $role_id == 1) {
             if (Session::get('isSchoolAdmin') == TRUE) {
                 session(['isSchoolAdmin' => FALSE]);
                 // Session::set('isSchoolAdmin', FALSE);

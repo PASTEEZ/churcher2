@@ -11,5 +11,5 @@ class InvitationType extends Model
 
     protected $table = 'chat_invitation_types';
 
-    protected $fillable = ['invitation_id','type','section_id', 'class_teacher_id'];
+    protected $fillable = ['invitation_id','type','mgender_id', 'class_teacher_id'];
 }

@@ -60,19 +60,19 @@
 
                                         ).<br>
                                         6. @lang('student.point7')(
-                                        @foreach($blood_groups as $blood_group)
-                                            {{$blood_group->id.'='.$blood_group->base_setup_name.','}}
+                                        @foreach($blood_groups as $region)
+                                            {{$region->id.'='.$region->base_setup_name.','}}
 
                                         @endforeach
                                         ).<br>
                                         7. @lang('student.point8')(
-                                        @foreach($religions as $religion)
-                                            {{$religion->id.'='.$religion->base_setup_name.','}}
+                                        @foreach($religions as $marital_status)
+                                            {{$marital_status->id.'='.$marital_status->base_setup_name.','}}
 
                                         @endforeach
                                         ).<br>
                                         8. For relation with guardian (F=Father, M=Mother, O=Other)<br>
-                                        9. Please follow this date format(2020-06-15) for Date of birth & Admission date<br>
+                                        9. Please follow this date format(2003-06-15) for Date of birth & Registration date<br>
                                         <hr>
                                     </div>
                                 </div>
@@ -110,8 +110,8 @@
                             @else
                             <div class="col-lg-3">
                                 <div class="input-effect sm2_mb_20 md_mb_20">
-                                    <select class="niceSelect w-100 bb form-control{{ $errors->has('session') ? ' is-invalid' : '' }}" name="session" id="academic_year">
-                                        <option data-display="@lang('common.academic_year') *" value="">@lang('common.academic_year') *</option>
+                                    <select class="niceSelect w-100 bb form-control{{ $errors->has('session') ? ' is-invalid' : '' }}" name="session" id="church_year">
+                                        <option data-display="@lang('common.church_year') *" value="">@lang('common.church_year') *</option>
                                         @foreach($sessions as $session)
                                         <option value="{{$session->id}}" {{old('session') == $session->id? 'selected': ''}}>{{$session->year}}[{{$session->title}}]</option>
                                         @endforeach

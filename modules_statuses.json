@@ -28,6 +28,6 @@
     "Lead": false,
     "Lms": false,
     "KhaltiPayment": false,
-    "ExamPlan": false,
+    "ExamPlan": true,
     "University": false
 }

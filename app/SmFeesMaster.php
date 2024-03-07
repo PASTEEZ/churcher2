@@ -10,7 +10,7 @@ use App\Scopes\StatusAcademicSchoolScope;
 class SmFeesMaster extends Model
 {
     use HasFactory;
-    protected $fillable= ['fees_group_id', 'fees_type_id', 'date', 'amount', 'un_semester_label_id', 'academic_id', 'school_id','un_subject_id','un_academic_id'];
+    protected $fillable= ['fees_group_id', 'fees_type_id', 'date', 'amount', 'un_semester_label_id', 'church_year_id', 'church_id','un_subject_id','un_church_year_id'];
 	protected static function boot()
     {
         parent::boot();
@@ -46,6 +46,6 @@ class SmFeesMaster extends Model
 
     public function section()
     {
-        return $this->belongsTo('App\SmSection', 'section_id','id');
+        return $this->belongsTo('App\SmSection', 'mgender_id','id');
     }
 }

@@ -5,7 +5,7 @@ if(isset($setting->logo)) { generalSetting()->logo = $setting->logo; } else{ gen
 
 if(isset($setting->favicon)) { generalSetting()->favicon = $setting->favicon; } else{ generalSetting()->favicon = 'public/backEnd/img/favicon.png'; }
  
-$login_background = App\SmBackgroundSetting::where([['is_default',1],['title','Login Background']])->where('school_id', app('school')->id)->first();
+$login_background = App\SmBackgroundSetting::where([['is_default',1],['title','Login Background']])->where('church_id', app('school')->id)->first();
  
 if(empty($login_background)){
     $css = "background: url(".url('public/backEnd/img/login-bg.png').")  no-repeat center; background-size: cover; ";

@@ -14,7 +14,7 @@ class ReformatSchoolModulesTable extends Migration
      */
     public function up()
     {
-        $school_modules = SchoolModule::where('active_status', 1)->get()->groupBy('school_id');
+        $school_modules = SchoolModule::where('active_status', 1)->get()->groupBy('church_id');
 
         Schema::drop('school_modules');
 
@@ -23,13 +23,13 @@ class ReformatSchoolModulesTable extends Migration
             $table->longText('modules')->nullable();
             $table->longText('menus')->nullable();
 
-            $table->integer('school_id')->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_id')->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
             $table->timestamps();
         });
 
-        foreach($school_modules as $school_id => $school_module){
-            if($school_id == 1){
+        foreach($school_modules as $church_id => $school_module){
+            if($church_id == 1){
                 continue;
             }
             $module = $school_module->pluck('module_name')->unique()->map(function ($v){
@@ -42,7 +42,7 @@ class ReformatSchoolModulesTable extends Migration
             $s = new SchoolModule();
             $s->modules = $module;
             $s->menus = $menus;
-            $s->school_id = $school_id;
+            $s->church_id = $church_id;
             $s->save();
         }
 
@@ -62,21 +62,21 @@ class ReformatSchoolModulesTable extends Migration
             $table->string('module_name')->nullable();
             $table->integer('updated_by')->nullable();
             $table->tinyInteger('active_status')->default(1);
-            $table->integer('school_id')->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_id')->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
 
-            $table->integer('academic_id')->nullable()->unsigned();
-            $table->foreign('academic_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
+            $table->integer('church_year_id')->nullable()->unsigned();
+            $table->foreign('church_year_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
             $table->timestamps();
         });
 
         foreach($school_modules as $school_module){
             foreach($school_module->modules as $module){
-                $exists = SchoolModule::where('school_id', $school_module->school_id)->where('module_name', $module)->first();
+                $exists = SchoolModule::where('church_id', $school_module->church_id)->where('module_name', $module)->first();
                 if (!$exists){
                     $settings = new SchoolModule;
                     $settings->module_name = strtolower($module);
-                    $settings->school_id = $school_module->school_id;
+                    $settings->church_id = $school_module->church_id;
                     $settings->active_status = 1;
                     $settings->updated_by = 1;
                     $settings->save();

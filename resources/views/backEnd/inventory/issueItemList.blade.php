@@ -86,7 +86,7 @@
                                                         @foreach ($classes as $class)
                                                             <option value="{{ $class->id }}"
                                                                 {{ old('class') == $class->id ? 'selected' : '' }}>
-                                                                {{ $class->class_name }}</option>
+                                                                {{ $class->age_group_name }}</option>
                                                         @endforeach
                                                     </select>
                                                     @if ($errors->has('class'))

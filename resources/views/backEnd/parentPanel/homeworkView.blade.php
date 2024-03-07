@@ -106,7 +106,7 @@
                         <div class="col-lg-5">
                             <div class="name">
                                @if(isset($homeworkDetails))
-                               {{$homeworkDetails->classes->class_name}}
+                               {{$homeworkDetails->classes->age_group_name}}
                                @endif
                            </div>
                        </div>
@@ -123,7 +123,7 @@
                     <div class="col-lg-5">
                         <div class="name">
                             @if(isset($homeworkDetails))
-                            {{$homeworkDetails->sections->section_name}}
+                            {{$homeworkDetails->sections->mgender_name}}
                             @endif
                         </div>
                     </div>

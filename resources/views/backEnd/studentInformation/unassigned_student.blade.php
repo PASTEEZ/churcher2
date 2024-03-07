@@ -28,8 +28,8 @@
                                 <thead>
                                   
                                     <tr>
-                                        <th>@lang('student.admission_no')</th>
-                                        <th>@lang('student.roll_no')</th>
+                                        <th>@lang('student.registration_no')</th>
+                                        <th>@lang('student.member_id_no')</th>
                                         <th>@lang('student.name')</th>
                                         <th>@lang('common.class')</th>
                                         @if(generalSetting()->with_guardian)
@@ -46,10 +46,10 @@
                                 <tbody>
                                     @foreach($students as $student)
                                     <tr>
-                                        <td>{{$student->admission_no}}</td>
-                                        <td>{{$student->roll_no}}</td>
+                                        <td>{{$student->registration_no}}</td>
+                                        <td>{{$student->member_id_no}}</td>
                                         <td>{{$student->first_name.' '.$student->last_name}}</td>
-                                        <td>{{$student->class !=""?$student->class->class_name:""}}</td>
+                                        <td>{{$student->class !=""?$student->class->age_group_name:""}}</td>
                                         @if(generalSetting()->with_guardian)
                                         <td>{{$student->parents !=""?$student->parents->fathers_name:""}}</td>
                                         @endif 

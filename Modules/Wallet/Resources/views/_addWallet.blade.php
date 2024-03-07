@@ -207,7 +207,7 @@
                             <select class="niceSelect w-100 bb form-control{{ $errors->has('bank') ? ' is-invalid' : '' }}" name="bank">
                                 <option data-display="@lang('fees.select_bank')*" value="">@lang('fees.select_bank')*</option>
                                 @foreach ($bankAccounts as $bankAccount)
-                                    <option value="{{$bankAccount->id}}" {{old('bank') == $bankAccount->id ? 'selected' : ''}}>{{$bankAccount->bank_name}} ({{$bankAccount->account_number}})</option>
+                                    <option value="{{$bankAccount->id}}" {{old('bank') == $bankAccount->id ? 'selected' : ''}}>{{$bankAccount->employer_name}} ({{$bankAccount->account_number}})</option>
                                 @endforeach
                             </select>
                             <span class="walletError" id="bankError"></span>

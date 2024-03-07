@@ -18,7 +18,7 @@ class SmPageController extends Controller
     public function index()
     {
         try {
-            $pages = SmPage::where('school_id', app('school')->id)->where('is_dynamic', 1)->get();
+            $pages = SmPage::where('church_id', app('school')->id)->where('is_dynamic', 1)->get();
             return view('backEnd.frontSettings.pageList', compact('pages'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -43,7 +43,7 @@ class SmPageController extends Controller
             $data->slug = $request->slug;
             $data->details = $request->details;
             $data->header_image = $fileName;
-            $data->school_id = app('school')->id;
+            $data->church_id = app('school')->id;
             $data->save();
             Toastr::success('Operation successfull', 'Success');
             return redirect('create-page');
@@ -83,7 +83,7 @@ class SmPageController extends Controller
             $data->sub_title = $request->sub_title;
             $data->slug = $request->slug;
             $data->details = $request->details;
-            $data->school_id = app('school')->id;            
+            $data->church_id = app('school')->id;            
             $data->header_image = fileUpload($data->header_image,$request->header_image,$destination);         
             $data->save();
             

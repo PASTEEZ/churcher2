@@ -124,7 +124,7 @@
                         <img class="logo-img" src="{{ url('/')}}/{{generalSetting()->logo }}" alt=""> 
                     </th>
                     <th colspan="2"> 
-                        <h3 class="text-white"> {{isset(generalSetting()->school_name)?generalSetting()->school_name:'Infix School Management ERP'}} </h3> 
+                        <h3 class="text-white"> {{isset(generalSetting()->church_name)?generalSetting()->church_name:'Infix School Management ERP'}} </h3> 
                         <p class="text-white mb-0" style="padding-right:10px !important;"> {{isset(generalSetting()->address)?generalSetting()->address:'Infix School Address'}} </p>
                     </th> 
 
@@ -136,10 +136,10 @@
                     <td  style=" padding:10px; vertical-align:top;">
                         
                         <p class="mb-0" style="padding-right:10px !important; font-size:11px;"> @lang('common.name') : <span class="primary-color fw-500">{{$studentDetails->full_name}}</span> </p>
-                        <p class="mb-0" style="padding-right:10px !important; font-size:11px;"> @lang('common.academic_year') : <span class="primary-color fw-500">{{generalSetting()->session_year}}</span> </p>
+                        <p class="mb-0" style="padding-right:10px !important; font-size:11px;"> @lang('common.church_year') : <span class="primary-color fw-500">{{generalSetting()->session_year}}</span> </p>
                         {{-- <p class="mb-0" style="padding-right:10px !important; font-size:11px;"> @lang('exam.exam') : <span class="primary-color fw-500">{{@$exam_name}}</span> </p> --}}
-                        <p class="mb-0" style="padding-right:10px !important; font-size:11px;"> @lang('common.class') : <span class="primary-color fw-500">{{@$class->class_name}}</span> </p>
-                        <p class="mb-0" style="padding-right:10px !important; font-size:11px;"> @lang('common.section') : <span class="primary-color fw-500">{{@$section->section_name}}</span> </p>
+                        <p class="mb-0" style="padding-right:10px !important; font-size:11px;"> @lang('common.class') : <span class="primary-color fw-500">{{@$class->age_group_name}}</span> </p>
+                        <p class="mb-0" style="padding-right:10px !important; font-size:11px;"> @lang('common.section') : <span class="primary-color fw-500">{{@$section->mgender_name}}</span> </p>
                     </td>
                     <td  style="  padding:10px; vertical-align:top;"> 
                         <p style="font-weight: 700;">@lang('exam.subjects_list')</p> 
@@ -152,7 +152,7 @@
                         </div>
                     </td>
                     <td  style=" padding:10px; vertical-align:top;">
-                         @php $marks_grade=DB::table('sm_marks_grades')->where('academic_id', getAcademicId())->get(); @endphp
+                         @php $marks_grade=DB::table('sm_marks_grades')->where('church_year_id', getAcademicId())->get(); @endphp
                                                     @if(@$marks_grade)
                                                         <table class="table  table-bordered table-striped " id="grade_table">
                                                             <thead>

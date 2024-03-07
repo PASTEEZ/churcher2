@@ -57,26 +57,26 @@ class SmOptionalSubjectAssignController extends Controller
             ->whereHas('studentDetail', function($q){
                 return $q->where('active_status', 1);
             })
-                        ->where('class_id', $request->class)
-                        ->where('section_id', $request->section)
-                        ->where('academic_id', getAcademicId())
+                        ->where('age_group_id', $request->class)
+                        ->where('mgender_id', $request->section)
+                        ->where('church_year_id', getAcademicId())
                         ->where('is_promote', 0)
-                        ->where('school_id', Auth::user()->school_id)
+                        ->where('church_id', Auth::user()->church_id)
                         ->get();
 
             $subject_id = $request->subject;
             $subject_info = SmSubject::where('id', '=', $request->subject)->first();
-            $subjects = SmSubject::where('active_status', 1)->where('school_id', Auth::user()->school_id)->get();
+            $subjects = SmSubject::where('active_status', 1)->where('church_id', Auth::user()->church_id)->get();
             $teachers = SmStaff::where('active_status', 1)->where(function($q)  {
-	$q->where('role_id', 4)->orWhere('previous_role_id', 4);})->where('school_id', Auth::user()->school_id)->get();
+	$q->where('role_id', 4)->orWhere('previous_role_id', 4);})->where('church_id', Auth::user()->church_id)->get();
 
-            $class_id = $request->class;
-            $section_id = $request->section;
+            $age_group_id = $request->class;
+            $mgender_id = $request->section;
             $classes = SmClass::get();
-            $class = SmClass::with('classSection')->where('id', $class_id)->first();
-            $assignSubjects=SmAssignSubject::with('subject')->where('class_id', $class_id)->where('section_id', $section_id)->get();
+            $class = SmClass::with('classSection')->where('id', $age_group_id)->first();
+            $assignSubjects=SmAssignSubject::with('subject')->where('age_group_id', $age_group_id)->where('mgender_id', $mgender_id)->get();
 
-            return view('backEnd.academics.assign_optional_subject', compact('classes', 'teachers', 'subjects', 'class_id', 'section_id', 'students', 'subject_id', 'subject_info', 'class', 'assignSubjects'));
+            return view('backEnd.academics.assign_optional_subject', compact('classes', 'teachers', 'subjects', 'age_group_id', 'mgender_id', 'students', 'subject_id', 'subject_info', 'class', 'assignSubjects'));
         } catch (\Exception $e) {            
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -87,18 +87,18 @@ class SmOptionalSubjectAssignController extends Controller
 
         try {
             $old = SmOptionalSubjectAssign::where('subject_id', '=', $request->subject_id)
-                ->where('school_id', Auth::user()->school_id)
-                ->where('academic_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
+                ->where('church_year_id', getAcademicId())
                 ->first();
             if (!is_null($old)) {
                 SmOptionalSubjectAssign::where('subject_id', '=', $request->subject_id)
-                    ->where('school_id', Auth::user()->school_id)
-                    ->where('academic_id', getAcademicId())
+                    ->where('church_id', Auth::user()->church_id)
+                    ->where('church_year_id', getAcademicId())
                     ->delete();
             }
-            if ($request->student_id != "") {
+            if ($request->member_id != "") {
 
-                foreach ($request->student_id as $student) {
+                foreach ($request->member_id as $student) {
 
                     $student_info = StudentRecord::where('id', $student)->first();
                     $optional_subject = SmOptionalSubjectAssign::where('record_id', '=', $student)
@@ -109,17 +109,17 @@ class SmOptionalSubjectAssignController extends Controller
                         $optional_subject = SmOptionalSubjectAssign::find($optional_subject->id);
                         $optional_subject->subject_id = $request->subject_id;
                         $optional_subject->updated_by = Auth::user()->id;
-                        $optional_subject->academic_id = getAcademicId();
+                        $optional_subject->church_year_id = getAcademicId();
                         $optional_subject->save();
                     } else {
                         $optional_subject = new SmOptionalSubjectAssign();
-                        $optional_subject->student_id = $student_info->studentDetail->id;
+                        $optional_subject->member_id = $student_info->studentDetail->id;
                         $optional_subject->record_id = $student;
                         $optional_subject->subject_id = $request->subject_id;
                         $optional_subject->session_id = $student_info->session_id;
                         $optional_subject->created_by = Auth::user()->id;
-                        $optional_subject->school_id = Auth::user()->school_id;
-                        $optional_subject->academic_id = getAcademicId();
+                        $optional_subject->church_id = Auth::user()->church_id;
+                        $optional_subject->church_year_id = getAcademicId();
 
                         $optional_subject->save();
                     }
@@ -139,11 +139,11 @@ class SmOptionalSubjectAssignController extends Controller
     {
 
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-            $class_optionals = SmClassOptionalSubject::join('sm_classes', 'sm_classes.id', '=', 'sm_class_optional_subject.class_id')
-                ->select('sm_class_optional_subject.*', 'class_name')
-                ->where('sm_class_optional_subject.school_id', Auth::user()->school_id)
-                ->where('sm_class_optional_subject.academic_id', getAcademicId())
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+            $class_optionals = SmClassOptionalSubject::join('sm_classes', 'sm_classes.id', '=', 'sm_class_optional_subject.age_group_id')
+                ->select('sm_class_optional_subject.*', 'age_group_name')
+                ->where('sm_class_optional_subject.church_id', Auth::user()->church_id)
+                ->where('sm_class_optional_subject.church_year_id', getAcademicId())
                 ->orderby('sm_class_optional_subject.id', 'DESC')
                 ->get();
             return view('backEnd.systemSettings.optional_subject_setup', compact('classes', 'class_optionals'));
@@ -157,18 +157,18 @@ class SmOptionalSubjectAssignController extends Controller
 
         try {
             foreach ($request->class as $value) {
-                $optional_check = SmClassOptionalSubject::where('class_id', '=', $value)->first();
+                $optional_check = SmClassOptionalSubject::where('age_group_id', '=', $value)->first();
                 if ($optional_check == '') {
                     $class_optional = new SmClassOptionalSubject();
-                    $class_optional->class_id = $value;
+                    $class_optional->age_group_id = $value;
                 } else {
-                    $class_optional = SmClassOptionalSubject::where('class_id', '=', $value)->first();
+                    $class_optional = SmClassOptionalSubject::where('age_group_id', '=', $value)->first();
                 }
                 $class_optional->gpa_above = $request->gpa_above;
-                $class_optional->school_id = Auth::user()->school_id;
+                $class_optional->church_id = Auth::user()->church_id;
                 $class_optional->created_by = Auth::user()->id;
                 $class_optional->updated_by = Auth::user()->id;
-                $class_optional->academic_id = getAcademicId();
+                $class_optional->church_year_id = getAcademicId();
                 $class_optional->save();
             }
             Toastr::success('Operation successful', 'Success');
@@ -196,11 +196,11 @@ class SmOptionalSubjectAssignController extends Controller
 
         try {
             $editData = SmClassOptionalSubject::findOrfail($id);
-            $classes = SmClass::where('active_status', 1)->where('school_id', Auth::user()->school_id)->where('sm_classes.academic_id', getAcademicId())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_id', Auth::user()->church_id)->where('sm_classes.church_year_id', getAcademicId())->get();
             //    return $classes;
-            $class_optionals = SmClassOptionalSubject::join('sm_classes', 'sm_classes.id', '=', 'sm_class_optional_subject.class_id')
-                ->select('sm_class_optional_subject.*', 'class_name')
-                ->where('sm_class_optional_subject.school_id', Auth::user()->school_id)->get();
+            $class_optionals = SmClassOptionalSubject::join('sm_classes', 'sm_classes.id', '=', 'sm_class_optional_subject.age_group_id')
+                ->select('sm_class_optional_subject.*', 'age_group_name')
+                ->where('sm_class_optional_subject.church_id', Auth::user()->church_id)->get();
             return view('backEnd.systemSettings.optional_subject_setup', compact('classes', 'class_optionals', 'editData'));
         } catch (\Throwable $th) {
             Toastr::error('Operation Failed', 'Failed');

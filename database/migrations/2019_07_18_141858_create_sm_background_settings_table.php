@@ -21,8 +21,8 @@ class CreateSmBackgroundSettingsTable extends Migration
             $table->string('image',255)->nullable();
             $table->string('color',255)->nullable();
             $table->integer('is_default')->default(0);
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
             $table->timestamps();
         });
 

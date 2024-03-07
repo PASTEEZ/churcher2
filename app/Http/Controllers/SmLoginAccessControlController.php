@@ -33,7 +33,7 @@ class SmLoginAccessControlController extends Controller
 
         try {
             $roles = InfixRole::where('id', '!=', 1)->where('id', '!=', 3)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
             $classes = SmClass::get();
 
@@ -65,7 +65,7 @@ class SmLoginAccessControlController extends Controller
         try {
             $role = $request->role;
             $roles = InfixRole::where('id', '!=', 1)->where('id', '!=', 3)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
             $classes = SmClass::get();
             $students = SmStudent::query();
@@ -75,30 +75,30 @@ class SmLoginAccessControlController extends Controller
             if ($request->role == "2") {
                 if (moduleStatusCheck('University')) {
                     $records = universityFilter($records, $request)->where('is_promote', 0);
-                    $student_ids = $records->get('student_id')->toArray();
-                    $students->whereIn('id', $student_ids);
+                    $member_ids = $records->get('member_id')->toArray();
+                    $students->whereIn('id', $member_ids);
                 }else{
                     
                     $students->with(['parents', 'user','parents.parent_user', 'studentRecords' => function($q) use($request){
-                        return $q->where('class_id', $request->class)->when($request->section, function($q) use($request){
-                            $q->where('section_id', $request->section);
-                        })->where('school_id', auth()->user()->school_id);
+                        return $q->where('age_group_id', $request->class)->when($request->section, function($q) use($request){
+                            $q->where('mgender_id', $request->section);
+                        })->where('church_id', auth()->user()->church_id);
                     }])->whereHas('studentRecords', function($q) use($request){
-                        return $q->where('class_id', $request->class)->when($request->section, function($q) use($request){
-                            $q->where('section_id', $request->section);
-                        })->where('school_id', auth()->user()->school_id);
+                        return $q->where('age_group_id', $request->class)->when($request->section, function($q) use($request){
+                            $q->where('mgender_id', $request->section);
+                        })->where('church_id', auth()->user()->church_id);
                     });
                 }
 
                 $students->where('active_status', 1)
-                ->where('school_id', auth()->user()->school_id);
+                ->where('church_id', auth()->user()->church_id);
                 
                 $students = $students->get();
                
 
                 return view('backEnd.systemSettings.login_access_control', compact('students', 'role', 'roles', 'classes', 'class', 'section'));
             } elseif ($request->role == "3") {
-                $parents = SmParent::with('parent_user')->where('active_status', 1)->where('school_id', Auth::user()->school_id)->get();
+                $parents = SmParent::with('parent_user')->where('active_status', 1)->where('church_id', Auth::user()->church_id)->get();
                 return view('backEnd.systemSettings.login_access_control', compact('parents', 'role', 'roles', 'classes'));
             } else {
                 $staffs = SmStaff::with('staff_user','roles')->where(function($q) use ($request) {

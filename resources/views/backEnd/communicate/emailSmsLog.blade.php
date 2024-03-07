@@ -43,7 +43,7 @@
                                     <th>@lang('common.session')</th>
                                     <th>@lang('university::un.faculty')</th>
                                     <th>@lang('university::un.department')</th>
-                                    <th>@lang('common.academic_year')</th>
+                                    <th>@lang('common.church_year')</th>
                                     <th>@lang('university::un.semester')</th>
                                     <th>@lang('university::un.semester_label')</th>
                                     <th>@lang('common.section')</th>

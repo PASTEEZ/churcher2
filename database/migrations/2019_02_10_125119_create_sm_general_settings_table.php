@@ -16,9 +16,9 @@ class CreateSmGeneralSettingsTable extends Migration
     {
         Schema::create('sm_general_settings', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('school_name')->nullable();
+            $table->string('church_name')->nullable();
             $table->string('site_title')->nullable();
-            $table->string('school_code')->nullable();
+            $table->string('church_code')->nullable();
             $table->string('address')->nullable();
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
@@ -65,8 +65,8 @@ class CreateSmGeneralSettingsTable extends Migration
 
             $table->integer('ss_page_load')->nullable()->default(3);
 
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
             $table->string('software_version', 100)->nullable();
             $table->string('email_driver')->default('php');
 
@@ -102,11 +102,11 @@ class CreateSmGeneralSettingsTable extends Migration
             $table->integer('Gmeet')->default(0)->nullable();
             $table->integer('fees_status')->default(1)->nullable();
             $table->integer('lms_checkout')->default(0)->nullable();
-            $table->integer('academic_id')->nullable()->unsigned();
-            $table->foreign('academic_id')->references('id')->on('sm_academic_years')->onDelete('set null');
+            $table->integer('church_year_id')->nullable()->unsigned();
+            $table->foreign('church_year_id')->references('id')->on('sm_academic_years')->onDelete('set null');
 
             //for university
-            $table->integer('un_academic_id')->default(1)->nullable()->unsigned();
+            $table->integer('un_church_year_id')->default(1)->nullable()->unsigned();
             $table->boolean('direct_fees_assign')->default(0);
             $table->boolean('with_guardian')->default(1);
 
@@ -121,12 +121,12 @@ class CreateSmGeneralSettingsTable extends Migration
                 'logo' => 'public/uploads/settings/logo.png',
                 'favicon' => 'public/uploads/settings/favicon.png',
                 'phone' => '+8801841412141',
-                'school_code' => '12345678',
+                'church_code' => '12345678',
                 'email' => 'info@spondonit.com',
                 'address' => '89/2 Panthapath, Dhaka 1215, Bangladesh',
                 'currency' => 'USD',
                 'currency_symbol' => '$',
-                'school_name' => 'Infix Edu',
+                'church_name' => 'Infix Edu',
                 'site_title' => 'Infix Education software',
                 'session_id' => 1,
                 'week_start_id' => 3,
@@ -137,7 +137,7 @@ class CreateSmGeneralSettingsTable extends Migration
                 'system_domain' => url('/'),
                 'email_driver'=>"php",
                 'income_head_id'=>1,
-                'academic_id'=>1
+                'church_year_id'=>1
             ]
         ]);
     }

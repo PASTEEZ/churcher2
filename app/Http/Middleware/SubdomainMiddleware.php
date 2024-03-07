@@ -43,10 +43,10 @@ class SubdomainMiddleware
         view()->composer('frontEnd.home.front_master', function ($view) use ($school) {
 
             $data = [
-                'social_permission' => SmFrontendPersmission::where('name', 'Social Icons')->where('parent_id', 1)->where('is_published', 1)->where('school_id', app('school')->id)->first(),
-                'menus' => SmHeaderMenuManager::whereNull('parent_id')->where('school_id', app('school')->id)->orderBy('position')->get(),
-                'custom_link' => SmCustomLink::where('school_id', app('school')->id)->first(),
-                'social_icons' => SmSocialMediaIcon::where('school_id', app('school')->id)->where('status', 1)->get(),
+                'social_permission' => SmFrontendPersmission::where('name', 'Social Icons')->where('parent_id', 1)->where('is_published', 1)->where('church_id', app('school')->id)->first(),
+                'menus' => SmHeaderMenuManager::whereNull('parent_id')->where('church_id', app('school')->id)->orderBy('position')->get(),
+                'custom_link' => SmCustomLink::where('church_id', app('school')->id)->first(),
+                'social_icons' => SmSocialMediaIcon::where('church_id', app('school')->id)->where('status', 1)->get(),
                 'school' => $school,
             ];
 

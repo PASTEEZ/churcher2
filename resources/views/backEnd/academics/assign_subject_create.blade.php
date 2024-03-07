@@ -38,7 +38,7 @@
                                 <select class="w-100 bb niceSelect form-control {{ @$errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                     <option data-display="@lang('common.select_class')*" value="">@lang('common.select_class') *</option>
                                     @foreach($classes as $class)
-                                    <option value="{{@$class->id}}" {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{@$class->class_name}}</option>
+                                    <option value="{{@$class->id}}" {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{@$class->age_group_name}}</option>
                                     @endforeach
                                 </select>
                                 @if ($errors->has('class'))
@@ -97,8 +97,8 @@
                             <div class="col-lg-12">
                                 <div class="assign-subject" id="assign-subject">
                                     <input type="hidden" name="url" id="url" value="{{URL::to('/')}}">
-                                    <input type="hidden" name="class_id" id="class_id" value="{{@$class_id}}">
-                                    <input type="hidden" name="section_id" id="class_id" value="{{@$section_id}}">
+                                    <input type="hidden" name="age_group_id" id="age_group_id" value="{{@$age_group_id}}">
+                                    <input type="hidden" name="mgender_id" id="age_group_id" value="{{@$mgender_id}}">
                                     <input type="hidden" name="update" value="1">
                                     @php $i = 4; @endphp
                                     @foreach($assign_subjects as $assign_subject)
@@ -174,8 +174,8 @@
                             <div class="col-lg-12">
                                 <div class="assign-subject" id="assign-subject">
                                     <input type="hidden" name="url" id="url" value="{{URL::to('/')}}">
-                                    <input type="hidden" name="class_id" id="class_id" value="{{@$class_id}}">
-                                    <input type="hidden" name="section_id" id="class_id" value="{{@$section_id}}">
+                                    <input type="hidden" name="age_group_id" id="age_group_id" value="{{@$age_group_id}}">
+                                    <input type="hidden" name="mgender_id" id="age_group_id" value="{{@$mgender_id}}">
                                     <input type="hidden" name="update" value="0">
                                     <div class="col-lg-12 mb-30" id="assign-subject-4">
                                         <div class="row">

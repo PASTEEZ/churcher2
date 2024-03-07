@@ -448,7 +448,7 @@
                                         <div class="col-lg-7 col-md-6">
                                             <div class="">
                                                 @if(isset($staffDetails))
-                                                    {{$staffDetails->bank_account_no}}
+                                                    {{$staffDetails->day_born}}
                                                 @endif
                                             </div>
                                         </div>
@@ -459,14 +459,14 @@
                                     <div class="row">
                                         <div class="col-lg-5 col-md-5">
                                             <div class="">
-                                                @lang('accounts.bank_name')
+                                                @lang('accounts.employer_name')
                                             </div>
                                         </div>
 
                                         <div class="col-lg-7 col-md-6">
                                             <div class="">
                                                 @if(isset($staffDetails))
-                                                    {{$staffDetails->bank_name}}
+                                                    {{$staffDetails->employer_name}}
                                                 @endif
                                             </div>
                                         </div>
@@ -1006,7 +1006,7 @@
                                     'method' => 'POST', 'enctype' => 'multipart/form-data', 'name' => 'document_upload']) }}
                                     <div class="row">
                                         <div class="col-lg-12">
-                                            <input type="hidden" name="staff_student_id" value="{{$staffDetails->id}}">
+                                            <input type="hidden" name="staff_member_id" value="{{$staffDetails->id}}">
                                             <div class="row mt-25">
                                                 <div class="col-lg-12">
                                                     <div class="input-effect">

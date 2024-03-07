@@ -3,18 +3,18 @@
      id="studentProfile">
     <div class="white-box">
         {{--        <h4 class="stu-sub-head">@lang('student.personal_info')</h4>--}}
-        @if (is_show('admission_date'))
+        @if (is_show('registration_date'))
             <div class="single-info">
                 <div class="row">
                     <div class="col-lg-5 col-md-5">
                         <div class="">
-                            @lang('student.admission_date')
+                            @lang('student.registration_date')
                         </div>
                     </div>
 
                     <div class="col-lg-7 col-md-6">
                         <div class="">
-                            {{ !empty($student_detail->admission_date) ? dateConvert($student_detail->admission_date) : '' }}
+                            {{ !empty($student_detail->registration_date) ? dateConvert($student_detail->registration_date) : '' }}
                         </div>
                     </div>
                 </div>
@@ -86,18 +86,18 @@
                 </div>
             </div>
         </div>
-        @if (is_show('religion'))
+        @if (is_show('marital_status'))
             <div class="single-info">
                 <div class="row">
                     <div class="col-lg-5 col-md-6">
                         <div class="">
-                            @lang('student.religion')
+                            @lang('student.marital_status')
                         </div>
                     </div>
 
                     <div class="col-lg-7 col-md-7">
                         <div class="">
-                            {{ $student_detail->religion != '' ? $student_detail->religion->base_setup_name : '' }}
+                            {{ $student_detail->marital_status != '' ? $student_detail->marital_status->base_setup_name : '' }}
                         </div>
                     </div>
                 </div>
@@ -458,12 +458,12 @@
     
         <!-- Start Other Information Part -->
         <h4 class="stu-sub-head mt-40">@lang('student.other_information')</h4>
-        @if (is_show('blood_group'))
+        @if (is_show('region'))
             <div class="single-info">
                 <div class="row">
                     <div class="col-lg-5 col-md-5">
                         <div class="">
-                            @lang('common.blood_group')
+                            @lang('common.region')
                         </div>
                     </div>
 
@@ -572,7 +572,7 @@
 
                     <div class="col-lg-7 col-md-6">
                         <div class="">
-                            {{ isset($student_detail->local_id_no) ? @$student_detail->local_id_no : '' }}
+                            {{ isset($student_detail->communicant) ? @$student_detail->communicant : '' }}
                         </div>
                     </div>
                 </div>
@@ -589,40 +589,40 @@
 
                     <div class="col-lg-7 col-md-6">
                         <div class="">
-                            {{ isset($student_detail->bank_account_no) ? @$student_detail->bank_account_no : '' }}
+                            {{ isset($student_detail->day_born) ? @$student_detail->day_born : '' }}
                         </div>
                     </div>
                 </div>
             </div>
         @endif
-        @if (is_show('bank_name'))
+        @if (is_show('employer_name'))
             <div class="single-info">
                 <div class="row">
                     <div class="col-lg-5 col-md-5">
                         <div class="">
-                            @lang('student.bank_name')
+                            @lang('student.employer_name')
                         </div>
                     </div>
                     <div class="col-lg-7 col-md-6">
                         <div class="">
-                            {{ isset($student_detail->bank_name) ? @$student_detail->bank_name : '' }}
+                            {{ isset($student_detail->employer_name) ? @$student_detail->employer_name : '' }}
                         </div>
                     </div>
                 </div>
             </div>
         @endif
-        @if (is_show('ifsc_code'))
+        @if (is_show('baptism_status'))
             <div class="single-info">
                 <div class="row">
                     <div class="col-lg-5 col-md-5">
                         <div class="">
-                            @lang('student.ifsc_code')
+                            @lang('student.baptism_status')
                         </div>
                     </div>
 
                     <div class="col-lg-7 col-md-6">
                         <div class="">
-                            {{ isset($student_detail->ifsc_code) ? @$student_detail->ifsc_code : '' }}
+                            {{ isset($student_detail->baptism_status) ? @$student_detail->baptism_status : '' }}
                         </div>
                     </div>
                 </div>

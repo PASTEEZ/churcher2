@@ -16,23 +16,23 @@ class SmExamTypesTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run($school_id, $academic_id, $count = 3)
+    public function run($church_id, $church_year_id, $count = 3)
     {
         SmExamType::factory()->times($count)->create([
-            'school_id' => $school_id,
-            'academic_id' => $academic_id,
+            'church_id' => $church_id,
+            'church_year_id' => $church_year_id,
         ])->each(function($exam_type){
             $data = SmAssignSubject::withOutGlobalScopes()->where([
-                'school_id' => $exam_type->school_id, 
-                'academic_id' => $exam_type->academic_id])->get();
+                'church_id' => $exam_type->church_id, 
+                'church_year_id' => $exam_type->church_year_id])->get();
             foreach ($data as $row) {
                 $s = new SmExamSetup();
-                $s->class_id = $row->class_id;
-                $s->section_id = $row->section_id;
+                $s->age_group_id = $row->age_group_id;
+                $s->mgender_id = $row->mgender_id;
                 $s->subject_id = $row->subject_id;
                 $s->exam_term_id = $exam_type->id;
-                $s->school_id = $exam_type->school_id;
-                $s->academic_id = $exam_type->academic_id;
+                $s->church_id = $exam_type->church_id;
+                $s->church_year_id = $exam_type->church_year_id;
                 $s->exam_title = 'Exam';
                 $s->exam_mark = 100;
                 $s->created_at = date('Y-m-d h:i:s');
@@ -40,12 +40,12 @@ class SmExamTypesTableSeeder extends Seeder
 
                 SmExam::create([
                     'exam_type_id' => $exam_type->id,
-                    'school_id' => $exam_type->school_id,
-                    'class_id' => $row->class_id,
-                    'section_id' => $row->section_id,
+                    'church_id' => $exam_type->church_id,
+                    'age_group_id' => $row->age_group_id,
+                    'mgender_id' => $row->mgender_id,
                     'subject_id' => $row->subject_id,
                     'exam_mark' => 100,
-                    'academic_id' =>$exam_type->academic_id,
+                    'church_year_id' =>$exam_type->church_year_id,
                     'active_status' => 1,
                 ]);
             }

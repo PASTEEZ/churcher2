@@ -42,10 +42,10 @@ class BulkPrintController extends Controller
     }
     public function studentidBulkPrint(){
         try {
-            $id_cards = SmStudentIdCard::where('active_status', 1)->where('school_id', Auth::user()->school_id)->get();
+            $id_cards = SmStudentIdCard::where('active_status', 1)->where('church_id', Auth::user()->church_id)->get();
             $roles = InfixRole::where('is_saas',0)->where('active_status', '=', 1)
                 ->where(function ($q) {
-                    $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                    $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
                 })
                 ->where('id', '!=', 1)->get();
             return view('bulkprint::admin.generate_id_card', compact('id_cards','roles'));
@@ -67,7 +67,7 @@ class BulkPrintController extends Controller
             
            $s_students = $s_students->status()->get();
        }elseif($request->role==3){
-           $studentGuardian = SmStudent::where('school_id', Auth::user()->school_id)->get('parent_id');
+           $studentGuardian = SmStudent::where('church_id', Auth::user()->church_id)->get('parent_id');
            $s_students = SmParent::whereIn('id',$studentGuardian)->get();
        }
        else{
@@ -135,8 +135,8 @@ class BulkPrintController extends Controller
     }
     public function staffidBulkPrint(){
         try {
-            $id_cards = SmStudentIdCard::where('active_status', 1)->where('role_id','!=','["2"]')->where('school_id', Auth::user()->school_id)->get(['id','title']);
-            $roles = Role::where('school_id', Auth::user()->school_id)->whereNotIn('id',[1,2,3])->get();
+            $id_cards = SmStudentIdCard::where('active_status', 1)->where('role_id','!=','["2"]')->where('church_id', Auth::user()->church_id)->get(['id','title']);
+            $roles = Role::where('church_id', Auth::user()->church_id)->whereNotIn('id',[1,2,3])->get();
             return view('bulkprint::admin.staff_generate_id_card', compact('id_cards','roles'));
         } catch (\Exception $e) {
         
@@ -164,10 +164,10 @@ class BulkPrintController extends Controller
             if($request->role==2){
                 $s_students=SmStudent::query();
                 if($request->class){
-                    $s_students->where('class_id',$request->class_id);
+                    $s_students->where('age_group_id',$request->age_group_id);
                 }
                 if($request->section){
-                    $request->where('section_id',$request->section_id);
+                    $request->where('mgender_id',$request->mgender_id);
                 }
                $s_students=$s_students->status()->get();
              
@@ -193,14 +193,14 @@ class BulkPrintController extends Controller
     }
 
     public function settings(){
-        $invoiceSettings=InvoiceSetting::where('academic_id', getAcademicId())->where('school_id',Auth::user()->school_id)->first();
+        $invoiceSettings=InvoiceSetting::where('church_year_id', getAcademicId())->where('church_id',Auth::user()->church_id)->first();
 
         if(!$invoiceSettings){
             $invoiceSettings= new InvoiceSetting;
             $invoiceSettings->per_th=2;
             $invoiceSettings->prefix='SPN';
-            $invoiceSettings->school_id= Auth()->user()->school_id;
-            $invoiceSettings->academic_id= getAcademicId();
+            $invoiceSettings->church_id= Auth()->user()->church_id;
+            $invoiceSettings->church_year_id= getAcademicId();
             $invoiceSettings->save();
         }
 
@@ -229,12 +229,12 @@ class BulkPrintController extends Controller
             $invoiceSetting=InvoiceSetting::find($request->id);
 
             $invoiceSetting->per_th=$per_th;
-            $invoiceSetting->student_name=$request->student_name;
-            $invoiceSetting->student_section=$request->student_section;
-            $invoiceSetting->student_class=$request->student_class;   
+            $invoiceSetting->member_name=$request->member_name;
+            $invoiceSetting->member_gender=$request->member_gender;
+            $invoiceSetting->member_group=$request->member_group;   
             $invoiceSetting->student_roll=$request->student_roll;
             $invoiceSetting->student_group=$request->student_group;
-            $invoiceSetting->student_admission_no=$request->student_admission_no;
+            $invoiceSetting->member_registration_no=$request->member_registration_no;
 
             $invoiceSetting->footer_1=$request->footer_1;
             $invoiceSetting->footer_2=$request->footer_2;
@@ -255,8 +255,8 @@ class BulkPrintController extends Controller
             $invoiceSetting->copy_write_msg=$request->copy_write_msg;
 
             $invoiceSetting->updated_by=Auth::user()->id;
-            $invoiceSetting->school_id=Auth::user()->school_id;
-            $invoiceSetting->academic_id= getAcademicId();
+            $invoiceSetting->church_id=Auth::user()->church_id;
+            $invoiceSetting->church_year_id= getAcademicId();
             $invoiceSetting->update();
          
            
@@ -303,14 +303,14 @@ class BulkPrintController extends Controller
             } else {
                  $students = StudentRecord::query()->with('class', 'section', 'studentDetail.feesAssign', 'studentDetail.parents');
                 if (!empty($request->section)) {
-                    $students->where('section_id', $request->section);
+                    $students->where('mgender_id', $request->section);
                 }
-                $students = $students->where('class_id', $request->class)
-                                ->where('academic_id', getAcademicId())
-                                ->where('school_id', Auth::user()->school_id)
+                $students = $students->where('age_group_id', $request->class)
+                                ->where('church_year_id', getAcademicId())
+                                ->where('church_id', Auth::user()->church_id)
                                 ->get();
             }
-            $invoiceSettings=InvoiceSetting::where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->first();
+            $invoiceSettings=InvoiceSetting::where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->first();
 
             return view('bulkprint::feesCollection.fees_payment_invoice_bulk_print')->with(['students' => $students,'invoiceSettings'=>$invoiceSettings]);
         } catch (\Exception $e) {
@@ -323,7 +323,7 @@ class BulkPrintController extends Controller
         
 		try{
 			$roles = InfixRole::where('active_status', '=', '1')->where('id', '!=', 1)->where('id', '!=', 2)->where('id', '!=', 3)->where('id', '!=', 10)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })
 			->orderBy('name','asc')
 			->get();
@@ -361,7 +361,7 @@ class BulkPrintController extends Controller
                 $staff_ids->whereRole($request->role_id);
              }
            
-          $staff_ids= $staff_ids->where('school_id',Auth::user()->school_id)->get('id');
+          $staff_ids= $staff_ids->where('church_id',Auth::user()->church_id)->get('id');
 
             $payrollDetails=SmHrPayrollGenerate::query()->with('staffDetails','staffDetails.departments','staffDetails.designations');
             if($request->payroll_month){
@@ -373,19 +373,19 @@ class BulkPrintController extends Controller
             if($request->role_id){
                 $payrollDetails->whereIn('staff_id',$staff_ids);
             }
-            $payrollDetails=$payrollDetails->where('school_id',Auth::user()->school_id)->get();
+            $payrollDetails=$payrollDetails->where('church_id',Auth::user()->church_id)->get();
 
           if(count($payrollDetails)==0){
               Toastr::error('Not Found ! Generate Payroll', 'Failed');
 		     return redirect()->back();
           }
 
-			$schoolDetails = SmGeneralSettings::where('school_id',Auth::user()->school_id)->first();
+			$schoolDetails = SmGeneralSettings::where('church_id',Auth::user()->church_id)->first();
 		
 
-			$payrollEarnDetails = SmHrPayrollEarnDeduc::where('active_status', '=', '1')->where('earn_dedc_type', '=', 'E')->where('school_id',Auth::user()->school_id)->get();
+			$payrollEarnDetails = SmHrPayrollEarnDeduc::where('active_status', '=', '1')->where('earn_dedc_type', '=', 'E')->where('church_id',Auth::user()->church_id)->get();
 
-			$payrollDedcDetails = SmHrPayrollEarnDeduc::where('active_status', '=', '1')->where('earn_dedc_type', '=', 'D')->where('school_id',Auth::user()->school_id)->get();
+			$payrollDedcDetails = SmHrPayrollEarnDeduc::where('active_status', '=', '1')->where('earn_dedc_type', '=', 'D')->where('church_id',Auth::user()->church_id)->get();
 
 			return view('bulkprint::humanResource.payroll.payroll_bulk_print_invoice', compact('payrollDetails', 'payrollEarnDetails', 'payrollDedcDetails', 'schoolDetails'));
 		}catch (\Exception $e) {
@@ -421,19 +421,19 @@ class BulkPrintController extends Controller
             }
             if (moduleStatusCheck('University')) {
                 $model = StudentRecord::query();
-                $student_ids = universityFilter($model, $request)->get()->pluck('student_id')->toArray();
+                $member_ids = universityFilter($model, $request)->get()->pluck('member_id')->toArray();
             } else {
-                $student_ids = StudentRecord::when($request->academic_year, function ($query) use ($request) {
-                    $query->where('academic_id', $request->academic_year);
+                $member_ids = StudentRecord::when($request->church_year, function ($query) use ($request) {
+                    $query->where('church_year_id', $request->church_year);
                 })
                 ->when($request->certificateBulkClass, function ($query) use ($request) {
-                    $query->whereIn('class_id', $request->certificateBulkClass);
+                    $query->whereIn('age_group_id', $request->certificateBulkClass);
                 })
-                ->when(!$request->academic_year, function ($query) use ($request) {
-                    $query->where('academic_id', getAcademicId());
-                })->where('school_id', auth()->user()->school_id)->get()->pluck('student_id')->toArray();
+                ->when(!$request->church_year, function ($query) use ($request) {
+                    $query->where('church_year_id', getAcademicId());
+                })->where('church_id', auth()->user()->church_id)->get()->pluck('member_id')->toArray();
             }
-            $data['students'] = SmStudent::whereIn('id', $student_ids)->get();
+            $data['students'] = SmStudent::whereIn('id', $member_ids)->get();
             $data['users'] =$data['students'] ;
             $data['certificate'] = SmStudentCertificate::find($request->certificate);
 
@@ -466,7 +466,7 @@ class BulkPrintController extends Controller
             $courseLogs= $courses->purchaseLogs;
             $studenId= [];
             foreach ($courseLogs as $courseLog) {
-                $studenId []= $courseLog->student_id;
+                $studenId []= $courseLog->member_id;
             }
             $users =SmStudent::whereIn('user_id', $studenId)->get();
             
@@ -484,8 +484,8 @@ class BulkPrintController extends Controller
     public function feesInvoiceBulkPrint()
     {
         try {
-            $classes = SmClass::where('school_id', auth()->user()->school_id)
-                            ->where('academic_id', getAcademicId())
+            $classes = SmClass::where('church_id', auth()->user()->church_id)
+                            ->where('church_year_id', getAcademicId())
                             ->get();
             return view('bulkprint::feesInvoice.feesInvoiceBulk', compact('classes'));
         } catch (\Exception $e) {
@@ -498,11 +498,11 @@ class BulkPrintController extends Controller
     {
         try {
             $invoices  = FmFeesInvoice::when($request->class, function ($query) use ($request) {
-                        $query->where('class_id', $request->class);
+                        $query->where('age_group_id', $request->class);
                     })
                     ->when($request->section, function ($query) use ($request) {
                         $query->whereHas('recordDetail', function ($q) use ($request) {
-                            return $q->where('section_id', $request->section);
+                            return $q->where('mgender_id', $request->section);
                         });
                     })
                     ->when($request->student, function ($query) use ($request) {
@@ -528,10 +528,10 @@ class BulkPrintController extends Controller
                             $q->where('un_department_id', $request->un_department_id);
                         });
                     })
-                    ->when($request->un_academic_id, function ($query) use ($request) {
+                    ->when($request->un_church_year_id, function ($query) use ($request) {
 
                         $query->whereHas('recordDetail', function ($q) use ($request) {
-                            $q->where('un_academic_id', $request->un_academic_id);
+                            $q->where('un_church_year_id', $request->un_church_year_id);
                         });
                     })
                     ->when($request->un_semester_id, function ($query) use ($request) {
@@ -548,15 +548,15 @@ class BulkPrintController extends Controller
                     })
                     //end 
                     ->with('invoiceDetails')
-                    ->where('school_id', auth()->user()->school_id)
-                    ->where('academic_id', getAcademicId())
+                    ->where('church_id', auth()->user()->church_id)
+                    ->where('church_year_id', getAcademicId())
                     ->get();
 
             $banks = SmBankAccount::where('active_status', '=', 1)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->get();
 
-            $invoiceSettings = FeesInvoiceSetting::where('school_id', Auth::user()->school_id)
+            $invoiceSettings = FeesInvoiceSetting::where('church_id', Auth::user()->church_id)
                     ->first();
             if ($invoiceSettings->invoice_type == 'slip') {
                 return view('bulkprint::feesInvoice.feesInvoiceBulkPrintSlip', compact('invoices', 'invoiceSettings'));
@@ -571,13 +571,13 @@ class BulkPrintController extends Controller
 
     public function feesInvoiceBulkPrintSettings()
     {
-        $feesInvoiceSettings = FeesInvoiceSetting::where('academic_id', getAcademicId())
-                            ->where('school_id', Auth::user()->school_id)
+        $feesInvoiceSettings = FeesInvoiceSetting::where('church_year_id', getAcademicId())
+                            ->where('church_id', Auth::user()->church_id)
                             ->first();
         if(!$feesInvoiceSettings){
             $feesInvoiceSettings = new FeesInvoiceSetting();
-            $feesInvoiceSettings->academic_id = getAcademicId();
-            $feesInvoiceSettings->school_id = Auth::user()->school_id;
+            $feesInvoiceSettings->church_year_id = getAcademicId();
+            $feesInvoiceSettings->church_id = Auth::user()->church_id;
             $feesInvoiceSettings->per_th = 2;
             $feesInvoiceSettings->invoice_type = 'invoice';
             $feesInvoiceSettings->save();
@@ -606,12 +606,12 @@ class BulkPrintController extends Controller
             $invoiceSetting=FeesInvoiceSetting::find($request->id);
             $invoiceSetting->invoice_type=$request->invoice_type;
             $invoiceSetting->per_th=$per_th;
-            $invoiceSetting->student_name=$request->student_name;
-            $invoiceSetting->student_section=$request->student_section;
-            $invoiceSetting->student_class=$request->student_class;   
+            $invoiceSetting->member_name=$request->member_name;
+            $invoiceSetting->member_gender=$request->member_gender;
+            $invoiceSetting->member_group=$request->member_group;   
             $invoiceSetting->student_roll=$request->student_roll;
             $invoiceSetting->student_group=$request->student_group;
-            $invoiceSetting->student_admission_no=$request->student_admission_no;
+            $invoiceSetting->member_registration_no=$request->member_registration_no;
             $invoiceSetting->footer_1=$request->footer_1;
             $invoiceSetting->footer_2=$request->footer_2;
             $invoiceSetting->footer_3=$request->footer_3;
@@ -626,8 +626,8 @@ class BulkPrintController extends Controller
             $invoiceSetting->signature_o=$request->signature_o;
             $invoiceSetting->copy_write_msg=$request->copy_write_msg;
             $invoiceSetting->updated_by=Auth::user()->id;
-            $invoiceSetting->school_id=Auth::user()->school_id;
-            $invoiceSetting->academic_id= getAcademicId();
+            $invoiceSetting->church_id=Auth::user()->church_id;
+            $invoiceSetting->church_year_id= getAcademicId();
             $invoiceSetting->update();
 
             Toastr::success('Operation Successfully', 'Success');

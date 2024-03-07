@@ -58,14 +58,14 @@
                             <div class="add-visitor">
                                 @if(moduleStatusCheck('University'))
                                     @includeIf('university::common.session_faculty_depart_academic_semester_level',['row'=>1, 'div'=>'col-lg-12','mt'=>'mt-0','required'=>['USN','UD','US','USL','USUB'],'hide'=>['UA']])
-                                    <input type="hidden" name="un_academic_id" id="select_academic" value="{{getAcademicId()}}">
+                                    <input type="hidden" name="un_church_year_id" id="select_academic" value="{{getAcademicId()}}">
                                 @else
                                     <div class="row">
                                         <div class="col-lg-12">
                                         <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class_lesson" name="class">
                                                 <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class')*</option>
                                                 @foreach($classes as $class)
-                                                    <option value="{{ @$class->id}}"  {{( old('class') == @$class->id ? "selected":"")}}>{{ @$class->class_name}}</option>
+                                                    <option value="{{ @$class->id}}"  {{( old('class') == @$class->id ? "selected":"")}}>{{ @$class->age_group_name}}</option>
                                                 @endforeach
                                             </select>
                                             @if ($errors->has('class'))
@@ -220,15 +220,15 @@
                                     <td> {{ $lesson->unSemesterLabel->name }}</td>
                                     <td> {{ $lesson->unSubject->subject_name }}</td>
                                     @else                                    
-                                    <td>{{$lesson->class !=""?$lesson->class->class_name:""}}</td>
-                                    <td>{{$lesson->section !=""?$lesson->section->section_name:""}}</td>
+                                    <td>{{$lesson->class !=""?$lesson->class->age_group_name:""}}</td>
+                                    <td>{{$lesson->section !=""?$lesson->section->mgender_name:""}}</td>
                                     <td>{{$lesson->subject !=""?$lesson->subject->subject_name:""}}</td>
                                     @endif
                                    
                                     <td>
                                         
                                         @php
-                                            $lesson_title=Modules\Lesson\Entities\SmLesson::lessonName($lesson->class_id,$lesson->section_id,$lesson->subject_id);
+                                            $lesson_title=Modules\Lesson\Entities\SmLesson::lessonName($lesson->age_group_id,$lesson->mgender_id,$lesson->subject_id);
                                         @endphp
                                         @foreach($lesson_title as $data)
                                       
@@ -247,14 +247,14 @@
                                             <div class="dropdown-menu dropdown-menu-right">
                                                 @if(userPermission(803))
                                                     @if(moduleStatusCheck('University'))
-                                                        @if($lesson->class_id == null)
+                                                        @if($lesson->age_group_id == null)
                                                         <a class="dropdown-item"
-                                                        href="{{route('un-lesson-edit',[$lesson->un_session_id,$lesson->un_faculty_id ?? 0,$lesson->un_department_id,$lesson->un_academic_id,$lesson->un_semester_id,$lesson->un_semester_label_id,$lesson->un_subject_id ?? 0])}}">@lang('common.edit')</a>
+                                                        href="{{route('un-lesson-edit',[$lesson->un_session_id,$lesson->un_faculty_id ?? 0,$lesson->un_department_id,$lesson->un_church_year_id,$lesson->un_semester_id,$lesson->un_semester_label_id,$lesson->un_subject_id ?? 0])}}">@lang('common.edit')</a>
                                                         @endif
                                                     @else 
-                                                        @if($lesson->class_id != null)
+                                                        @if($lesson->age_group_id != null)
                                                             <a class="dropdown-item"
-                                                                href="{{route('lesson-edit',[$lesson->class_id,$lesson->section_id,$lesson->subject_id])}}">@lang('common.edit')</a>
+                                                                href="{{route('lesson-edit',[$lesson->age_group_id,$lesson->mgender_id,$lesson->subject_id])}}">@lang('common.edit')</a>
                                                         @endif
                                                     @endif
                                                 @endif

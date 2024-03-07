@@ -27,12 +27,12 @@
                    @if(moduleStatuscheck('University'))
                         <li class="nav-item">
                             <a class="nav-link @if($key== 0) active @endif " href="#tab{{$key}}" role="tab" data-toggle="tab">
-                                {{$record->semesterLabel->name}} ({{$record->unSection->section_name}}) - {{@$record->unAcademic->name}}
+                                {{$record->semesterLabel->name}} ({{$record->unSection->mgender_name}}) - {{@$record->unAcademic->name}}
                             </a>
                         </li>
                    @else
                         <li class="nav-item">
-                            <a class="nav-link @if($key== 0) active @endif " href="#tab{{$key}}" role="tab" data-toggle="tab">{{$record->class->class_name}} ({{$record->section->section_name}}) </a>
+                            <a class="nav-link @if($key== 0) active @endif " href="#tab{{$key}}" role="tab" data-toggle="tab">{{$record->class->age_group_name}} ({{$record->section->mgender_name}}) </a>
                         </li>
                     @endif
                     @endforeach
@@ -54,7 +54,7 @@
                                         </div>
                                     </div>
                                     <div class="col-lg-6 pull-right">
-                                        <a href="{{route('university.academics.classRoutinePrint', [$record->un_semester_label_id,$record->un_section_id])}}" class="primary-btn small fix-gr-bg pull-right" target="_blank"><i class="ti-printer"> </i> Print</a>
+                                        <a href="{{route('university.academics.classRoutinePrint', [$record->un_semester_label_id,$record->un_mgender_id])}}" class="primary-btn small fix-gr-bg pull-right" target="_blank"><i class="ti-printer"> </i> Print</a>
 
                                     </div>
                                 </div>
@@ -70,9 +70,9 @@
                                                     @foreach($sm_weekends as $sm_weekend)
                                                         @php
                                                            if(moduleStatusCheck('University')){
-                                                                $studentClassRoutine=App\SmWeekend::universityStudentClassRoutine($record->un_semester_label_id, $record->un_section_id, $sm_weekend->id);
+                                                                $studentClassRoutine=App\SmWeekend::universityStudentClassRoutine($record->un_semester_label_id, $record->un_mgender_id, $sm_weekend->id);
                                                             }else{
-                                                                $studentClassRoutine=App\SmWeekend::studentClassRoutineFromRecord($record->class_id, $record->section_id, $sm_weekend->id);
+                                                                $studentClassRoutine=App\SmWeekend::studentClassRoutineFromRecord($record->age_group_id, $record->mgender_id, $sm_weekend->id);
                                                             }
                                                         @endphp
                                                         @if($studentClassRoutine->count() > $height)
@@ -96,9 +96,9 @@
 
                                                     $i = 0;
                                                     if(moduleStatusCheck('University')){
-                                                        $studentClassRoutine=App\SmWeekend::universityStudentClassRoutine($record->un_semester_label_id, $record->un_section_id, $sm_weekend->id);
+                                                        $studentClassRoutine=App\SmWeekend::universityStudentClassRoutine($record->un_semester_label_id, $record->un_mgender_id, $sm_weekend->id);
                                                     }else{
-                                                        $studentClassRoutine=App\SmWeekend::studentClassRoutineFromRecord($record->class_id, $record->section_id, $sm_weekend->id);
+                                                        $studentClassRoutine=App\SmWeekend::studentClassRoutineFromRecord($record->age_group_id, $record->mgender_id, $sm_weekend->id);
                                                     }
 
                                                 @endphp
@@ -195,7 +195,7 @@
                                         </div>
                                     </div>
                                     <div class="col-lg-6 pull-right">
-                                        <a href="{{route('classRoutinePrint', [@$record->class_id, @$record->section_id])}}" class="primary-btn small fix-gr-bg pull-right" target="_blank"><i class="ti-printer"> </i> Print</a>
+                                        <a href="{{route('classRoutinePrint', [@$record->age_group_id, @$record->mgender_id])}}" class="primary-btn small fix-gr-bg pull-right" target="_blank"><i class="ti-printer"> </i> Print</a>
 
                                     </div>
                                 </div>
@@ -210,7 +210,7 @@
                                                     @endphp
                                                     @foreach($sm_weekends as $sm_weekend)
                                                         @php
-                                                            $studentClassRoutine=App\SmWeekend::studentClassRoutineFromRecord($record->class_id, $record->section_id, $sm_weekend->id);
+                                                            $studentClassRoutine=App\SmWeekend::studentClassRoutineFromRecord($record->age_group_id, $record->mgender_id, $sm_weekend->id);
                                                         @endphp
                                                         @if($studentClassRoutine->count() > $height)
                                                             @php
@@ -232,7 +232,7 @@
                                                 @php
 
                                                     $i = 0;
-                                                    $studentClassRoutine=App\SmWeekend::studentClassRoutineFromRecord($record->class_id, $record->section_id, $sm_weekend->id);
+                                                    $studentClassRoutine=App\SmWeekend::studentClassRoutineFromRecord($record->age_group_id, $record->mgender_id, $sm_weekend->id);
                                                 @endphp
                                                     @foreach($studentClassRoutine as $routine)
                                                         @php

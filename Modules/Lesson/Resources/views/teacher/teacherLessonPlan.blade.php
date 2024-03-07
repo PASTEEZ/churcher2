@@ -131,8 +131,8 @@
                                 $tr[$i][$sm_weekend->name][$loop->index]['teacher']= $routine->teacherDetail ? $routine->teacherDetail->full_name :'';
                                 $tr[$i][$sm_weekend->name][$loop->index]['start_time']=  $routine->start_time;
                                 $tr[$i][$sm_weekend->name][$loop->index]['end_time']= $routine->end_time;
-                                $tr[$i][$sm_weekend->name][$loop->index]['class_name']= $routine->class ? $routine->class->class_name : '';
-                                $tr[$i][$sm_weekend->name][$loop->index]['section_name']= $routine->section ? $routine->section->section_name : '';
+                                $tr[$i][$sm_weekend->name][$loop->index]['age_group_name']= $routine->class ? $routine->class->age_group_name : '';
+                                $tr[$i][$sm_weekend->name][$loop->index]['mgender_name']= $routine->section ? $routine->section->mgender_name : '';
                                 $tr[$i][$sm_weekend->name][$loop->index]['is_break']= $routine->is_break;
                                 $used[] = $routine->id;
                                 $tr[$i][$sm_weekend->name][$loop->index]['routine_id']= $routine->id;
@@ -171,8 +171,8 @@
                                     @if ($classes[$i]['class_room'])
                                         <span class=""> <strong>@lang('common.room') :</strong>  {{ $classes[$i]['class_room'] }}  <br>     </span>
                                     @endif    
-                                    @if ($classes[$i]['class_name'])
-                                    <span class=""> {{ $classes[$i]['class_name'] }}   @if ($classes[$i]['section_name']) ( {{ $classes[$i]['section_name'] }} )   @endif  <br> </span>
+                                    @if ($classes[$i]['age_group_name'])
+                                    <span class=""> {{ $classes[$i]['age_group_name'] }}   @if ($classes[$i]['mgender_name']) ( {{ $classes[$i]['mgender_name'] }} )   @endif  <br> </span>
                                     @endif 
 
                                     @php
@@ -182,8 +182,8 @@
                                       $lessonPlan   =  DB::table('lesson_planners')
                                                             ->where('lesson_date',$lesson_date)
                                                             ->where('routine_id',$routine_id)                                              
-                                                            ->where('academic_id', getAcademicId())
-                                                            ->where('school_id',Auth::user()->school_id)
+                                                            ->where('church_year_id', getAcademicId())
+                                                            ->where('church_id',Auth::user()->church_id)
                                                             ->first();
                             
                                                         

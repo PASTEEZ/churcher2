@@ -79,15 +79,15 @@
                         <input type="hidden" name="id" value="{{isset($apply_leave)? $apply_leave->id: ''}}">
                         <div class="row mt-25">
                             <div class="col-lg-12">
-                                <select class="niceSelect w-100 bb form-control{{ $errors->has('student_id') ? ' is-invalid' : '' }}" name="student_id">
+                                <select class="niceSelect w-100 bb form-control{{ $errors->has('member_id') ? ' is-invalid' : '' }}" name="member_id">
                                     <option data-display="@lang('leave.student') *" value="">@lang('leave.student') *</option>
                                     @foreach($user->parent->myChildrens() as $item)
                                         <option value="{{$item->user_id}}" {{isset($apply_leave)? ($apply_leave->staff_id == $item->user_id? 'selected':''):''}}>{{$item->full_name}}</option>
                                     @endforeach
                                 </select>
-                                @if ($errors->has('student_id'))
+                                @if ($errors->has('member_id'))
                                 <span class="invalid-feedback invalid-select" role="alert">
-                                    <strong>{{ $errors->first('student_id') }}</strong>
+                                    <strong>{{ $errors->first('member_id') }}</strong>
                                 </span>
                                 @endif
                             </div>

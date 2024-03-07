@@ -48,7 +48,7 @@ class SmDesignationController extends Controller
         try {
             $designation = new SmDesignation();
             $designation->title = $request->title;
-            $designation->school_id = Auth::user()->school_id;
+            $designation->church_id = Auth::user()->church_id;
             $result = $designation->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {

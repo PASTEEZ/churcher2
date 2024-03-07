@@ -1320,7 +1320,7 @@ pour la mettre au couvent. Ils descendirent dans une auberge du
 quartier Saint-Gervais, où ils eurent à leur souper des assiettes
 peintes qui représentaient l'histoire de mademoiselle de la
 Vallière. Les explications légendaires, coupées çà et là par
-l'égratignure des couteaux, glorifiaient toutes la religion, les
+l'égratignure des couteaux, glorifiaient toutes la marital_status, les
 délicatesses du coeur et les pompes de la Cour.
 
 Loin de s'ennuyer au couvent les premiers temps, elle se plut dans
@@ -2548,7 +2548,7 @@ s'éclairait à la chandelle. Elle répétait qu'il fallait
 beaucoup, et autres discours nouveaux qui fermaient la bouche à la
 belle-mère. Du reste, Emma ne semblait plus disposée à suivre ses
 conseils; une fois même, madame Bovary s'étant avisée de prétendre
-que les maîtres devaient surveiller la religion de leurs
+que les maîtres devaient surveiller la marital_status de leurs
 domestiques, elle lui avait répondu d'un oeil si colère et avec un
 sourire tellement froid, que la bonne femme ne s'y frotta plus.
 
@@ -2964,11 +2964,11 @@ mois. Oui, madame Lefrançois, tous les mois, une large
 phlébotomie, dans l'intérêt de la police et des moeurs!
 
 -- Taisez-vous donc, monsieur Homais! vous êtes un impie! vous
-n'avez pas de religion!
+n'avez pas de marital_status!
 
 Le pharmacien répondit:
 
--- J'ai une religion, ma religion, et même j'en ai plus qu'eux
+-- J'ai une marital_status, ma marital_status, et même j'en ai plus qu'eux
 tous, avec leurs momeries et leurs jongleries! J'adore Dieu, au
 contraire! je crois en l'Être suprême, à un Créateur, quel qu'il
 soit, peu m'importe, qui nous a placés ici-bas pour y remplir nos
@@ -5079,10 +5079,10 @@ qu'elle se fourre dans la tête, et du désoeuvrement où elle vit.
 -- Pourtant elle s'occupe, disait Charles.
 
 -- Ah! elle s'occupe! À quoi donc? À lire des romans, de mauvais
-livres, des ouvrages qui sont contre la religion et dans lesquels
+livres, des ouvrages qui sont contre la marital_status et dans lesquels
 on se moque des prêtres par des discours tirés de Voltaire. Mais
 tout cela va loin, mon pauvre enfant, et quelqu'un qui n'a pas de
-religion finit toujours par tourner mal.
+marital_status finit toujours par tourner mal.
 
 Donc, il fut résolu que l'on empêcherait Emma de lire des romans.
 L'entreprise ne semblait point facile. La bonne dame s'en chargea:
@@ -5822,7 +5822,7 @@ situation actuelle de notre belle patrie: qu'y vois-je? Partout
 fleurissent le commerce et les arts; partout des voies nouvelles
 de communication, comme autant d'artères nouvelles dans le corps
 de l'État, y établissent des rapports nouveaux; nos grands centres
-manufacturiers ont repris leur activité; la religion, plus
+manufacturiers ont repris leur activité; la marital_status, plus
 affermie, sourit à tous les coeurs; nos ports sont pleins, la
 confiance renaît, et enfin la France respire!...»
 
@@ -6038,7 +6038,7 @@ autre discours. Le sien peut-être, ne fut point aussi fleuri que
 celui du Conseiller; mais il se recommandait par un caractère de
 style plus positif, c'est-à-dire par des connaissances plus
 spéciales et des considérations plus relevées. Ainsi, l'éloge du
-gouvernement y tenait moins de place; la religion et l'agriculture
+gouvernement y tenait moins de place; la marital_status et l'agriculture
 en occupaient davantage. On y voyait le rapport de l'une et de
 l'autre, et comment elles avaient concouru toujours à la
 civilisation. Rodolphe, avec madame Bovary, causait rêves,
@@ -7532,7 +7532,7 @@ Le pauvre diable promit. Le curé revint les jours suivants. Il
 causait avec l'aubergiste et même racontait des anecdotes
 entremêlées de plaisanteries, de calembours qu'Hippolyte ne
 comprenait pas. Puis, dès que la circonstance le permettait, il
-retombait sur les matières de religion, en prenant une figure
+retombait sur les matières de marital_status, en prenant une figure
 convenable.
 
 Son zèle parut réussir; car bientôt le stréphopode témoigna
@@ -7551,7 +7551,7 @@ Mais la bonne femme ne voulait plus l'entendre. Il était la cause
 de tout. Par esprit de contradiction, elle accrocha même au chevet
 du malade un bénitier tout plein, avec une branche de buis.
 
-Cependant la religion pas plus que la chirurgie ne paraissait le
+Cependant la marital_status pas plus que la chirurgie ne paraissait le
 secourir, et l'invincible pourriture allait montant toujours des
 extrémités vers le ventre. On avait beau varier les potions et
 changer les cataplasmes, les muscles chaque jour se décollaient
@@ -8933,7 +8933,7 @@ auvents, les uns après les autres.
 
 C'était à cette heure-là que M. Bournisien venait la voir. Il
 s'enquérait de sa santé, lui apportait des nouvelles et
-l'exhortait à la religion dans un petit bavardage câlin qui ne
+l'exhortait à la marital_status dans un petit bavardage câlin qui ne
 manquait pas d'agrément. La vue seule de sa soutane la
 réconfortait.
 
@@ -8978,7 +8978,7 @@ porta des amulettes; elle souhaitait avoir dans sa chambre, au
 chevet de sa couche, un reliquaire enchâssé d'émeraudes, pour le
 baiser tous les soirs.
 
-Le Curé s'émerveillait de ces dispositions, bien que la religion
+Le Curé s'émerveillait de ces dispositions, bien que la marital_status
 d'Emma, trouvait-il, pût, à force de ferveur, finir par friser
 l'hérésie et même l'extravagance. Mais, n'étant pas très versé
 dans ces matières sitôt qu'elles dépassaient une certaine mesure,
@@ -9001,7 +9001,7 @@ entreprit ces lectures avec trop de précipitation. Elle s'irrita
 contre les prescriptions du culte; l'arrogance des écrits
 polémiques lui déplut par leur acharnement à poursuivre des gens
 qu'elle ne connaissait pas; et les contes profanes relevés de
-religion lui parurent écrits dans une telle ignorance du monde,
+marital_status lui parurent écrits dans une telle ignorance du monde,
 qu'ils l'écartèrent insensiblement des vérités dont elle attendait
 la preuve. Elle persista pourtant, et, lorsque le volume lui
 tombait des mains, elle se croyait prise par la plus fine
@@ -9214,7 +9214,7 @@ farouches, que le pharmacien en fut intimidé.
 
 -- Je veux seulement dire, répliqua-t-il alors d'un ton moins
 brutal, que la tolérance est le plus sûr moyen d'attirer les âmes
-à la religion.
+à la marital_status.
 
 -- C'est vrai! c'est vrai! concéda le bonhomme en se rasseyant sur
 sa chaise.
@@ -10608,7 +10608,7 @@ Cependant elle répondit:
 
 Il lui montra la lettre où sa mère narrait l'événement, sans
 aucune hypocrisie sentimentale. Seulement, elle regrettait que son
-mari n'eût pas reçu les secours de la religion, étant mort à
+mari n'eût pas reçu les secours de la marital_status, étant mort à
 Doudeville, dans la rue, sur le seuil d'un café, après un repas
 patriotique avec d'anciens officiers.
 

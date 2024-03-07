@@ -63,56 +63,56 @@
                             <input type="hidden" name="id" id="id" value="{{ $student->id }}">
 
                             <div class="row mb-20">
-                                @if(requiredOrPermission('blood_group'))
+                                @if(requiredOrPermission('region'))
                                 <div class="col-lg-2">
                                     <div class="input-effect sm2_mb_20 md_mb_20">
 
                                         <select
-                                            class="niceSelect w-100 bb form-control{{ $errors->has('blood_group') ? ' is-invalid' : '' }}"
-                                            name="blood_group">
-                                            <option data-display="@lang('student.blood_group')" value="">
-                                                @lang('student.blood_group')</option>
-                                            @foreach ($blood_groups as $blood_group)
+                                            class="niceSelect w-100 bb form-control{{ $errors->has('region') ? ' is-invalid' : '' }}"
+                                            name="region">
+                                            <option data-display="@lang('student.region')" value="">
+                                                @lang('student.region')</option>
+                                            @foreach ($blood_groups as $region)
                                                 @if (isset($student->bloodgroup_id))
-                                                    <option value="{{ $blood_group->id }}"
-                                                        {{ $blood_group->id == $student->bloodgroup_id ? 'selected' : '' }}>
-                                                        {{ $blood_group->base_setup_name }}</option>
+                                                    <option value="{{ $region->id }}"
+                                                        {{ $region->id == $student->bloodgroup_id ? 'selected' : '' }}>
+                                                        {{ $region->base_setup_name }}</option>
                                                 @else
-                                                    <option value="{{ $blood_group->id }}">
-                                                        {{ $blood_group->base_setup_name }}</option>
+                                                    <option value="{{ $region->id }}">
+                                                        {{ $region->base_setup_name }}</option>
                                                 @endif
                                             @endforeach
                                         </select>
                                         <span class="focus-border"></span>
-                                        @if ($errors->has('blood_group'))
+                                        @if ($errors->has('region'))
                                             <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $errors->first('blood_group') }}</strong>
+                                                <strong>{{ $errors->first('region') }}</strong>
                                             </span>
                                         @endif
                                     </div>
                                 </div>
                                 @endif
-                                @if(requiredOrPermission('religion'))
+                                @if(requiredOrPermission('marital_status'))
                                 <div class="col-lg-2">
                                     <div class="input-effect sm2_mb_20 md_mb_20">
 
                                         <select
-                                            class="niceSelect w-100 bb form-control{{ $errors->has('religion') ? ' is-invalid' : '' }}"
-                                            name="religion">
-                                            <option data-display="@lang('student.religion')" value="">
-                                                @lang('student.religion')</option>
-                                            @foreach ($religions as $religion)
-                                                <option value="{{ $religion->id }}"
-                                                    {{ $student->religion_id != '' ? ($student->religion_id == $religion->id ? 'selected' : '') : '' }}>
-                                                    {{ $religion->base_setup_name }}</option>
+                                            class="niceSelect w-100 bb form-control{{ $errors->has('marital_status') ? ' is-invalid' : '' }}"
+                                            name="marital_status">
+                                            <option data-display="@lang('student.marital_status')" value="">
+                                                @lang('student.marital_status')</option>
+                                            @foreach ($religions as $marital_status)
+                                                <option value="{{ $marital_status->id }}"
+                                                    {{ $student->religion_id != '' ? ($student->religion_id == $marital_status->id ? 'selected' : '') : '' }}>
+                                                    {{ $marital_status->base_setup_name }}</option>
                                                 }
                                             @endforeach
 
                                         </select>
                                         <span class="focus-border"></span>
-                                        @if ($errors->has('religion'))
+                                        @if ($errors->has('marital_status'))
                                             <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $errors->first('religion') }}</strong>
+                                                <strong>{{ $errors->first('marital_status') }}</strong>
                                             </span>
                                         @endif
                                     </div>
@@ -155,16 +155,16 @@
                                     </div>
                                 </div>
                                 @endif
-                                @if(requiredOrPermission('admission_date'))
+                                @if(requiredOrPermission('registration_date'))
                                 <div class="col-lg-2">
                                     <div class="no-gutters input-right-icon">
                                         <div class="col">
                                             <div class="input-effect">
                                                 <input class="primary-input date" id="endDate" type="text"
-                                                    name="admission_date"
-                                                    value="{{ $student->admission_date != '' ? date('m/d/Y', strtotime($student->admission_date)) : date('m/d/Y') }}"
+                                                    name="registration_date"
+                                                    value="{{ $student->registration_date != '' ? date('m/d/Y', strtotime($student->registration_date)) : date('m/d/Y') }}"
                                                     autocomplete="off">
-                                                <label>@lang('student.admission_date')</label>
+                                                <label>@lang('student.registration_date')</label>
                                                 <span class="focus-border"></span>
                                             </div>
                                         </div>
@@ -310,7 +310,7 @@
                                 <div class="col-lg-3">
                                     <div class="input-effect">
                                         <input class="primary-input form-control" type="text" name="local_id_number"
-                                            value="{{ $student->local_id_no }}">
+                                            value="{{ $student->communicant }}">
                                         <label>@lang('student.local_Id_Number') <span></span> </label>
                                         <span class="focus-border"></span>
                                     </div>
@@ -320,18 +320,18 @@
                                 <div class="col-lg-3">
                                     <div class="input-effect">
                                         <input class="primary-input form-control" type="text" name="bank_account_number"
-                                            value="{{ $student->bank_account_no }}">
+                                            value="{{ $student->day_born }}">
                                         <label>@lang('student.bank_account_number') <span></span> </label>
                                         <span class="focus-border"></span>
                                     </div>
                                 </div>
                                 @endif
-                                @if(requiredOrPermission('bank_name'))
+                                @if(requiredOrPermission('employer_name'))
                                 <div class="col-lg-3">
                                     <div class="input-effect">
-                                        <input class="primary-input form-control" type="text" name="bank_name"
-                                            value="{{ $student->bank_name }}">
-                                        <label>@lang('student.bank_name') <span></span> </label>
+                                        <input class="primary-input form-control" type="text" name="employer_name"
+                                            value="{{ $student->employer_name }}">
+                                        <label>@lang('student.employer_name') <span></span> </label>
                                         <span class="focus-border"></span>
                                     </div>
                                 </div>
@@ -356,11 +356,11 @@
                                     </div>
                                 </div>
                                 @endif
-                                @if(requiredOrPermission('ifsc_code'))
+                                @if(requiredOrPermission('baptism_status'))
                                 <div class="col-lg-3">
                                     <div class="input-effect mt-50">
-                                        <input class="primary-input form-control" type="text" name="ifsc_code"
-                                            value="{{ old('ifsc_code') }}{{ $student->ifsc_code }}">
+                                        <input class="primary-input form-control" type="text" name="baptism_status"
+                                            value="{{ old('baptism_status') }}{{ $student->baptism_status }}">
                                         <label>@lang('student.IFSC_Code')</label>
                                         <span class="focus-border"></span>
                                     </div>
@@ -376,8 +376,8 @@
                                 @if(requiredOrPermission('document_file_1'))
                                 <div class="col-lg-3">
                                     <div class="input-effect">
-                                        <input class="primary-input" type="text" name="document_title_1"
-                                            value="{{ $student->document_title_1 }}">
+                                        <input class="primary-input" type="text" name="group_1"
+                                            value="{{ $student->group_1 }}">
                                         <label>@lang('student.document_01_title')</label>
                                         <span class="focus-border"></span>
                                     </div>
@@ -386,8 +386,8 @@
                                 @if(requiredOrPermission('document_file_2'))
                                 <div class="col-lg-3">
                                     <div class="input-effect">
-                                        <input class="primary-input" type="text" name="document_title_2"
-                                            value="{{ $student->document_title_2 }}">
+                                        <input class="primary-input" type="text" name="group_2"
+                                            value="{{ $student->group_2 }}">
                                         <label>@lang('student.document_02_title')</label>
                                         <span class="focus-border"></span>
                                     </div>
@@ -396,8 +396,8 @@
                                 @if(requiredOrPermission('document_file_3'))
                                 <div class="col-lg-3">
                                     <div class="input-effect">
-                                        <input class="primary-input" type="text" name="document_title_3"
-                                            value="{{ $student->document_title_3 }}">
+                                        <input class="primary-input" type="text" name="group_3"
+                                            value="{{ $student->group_3 }}">
                                         <label>@lang('student.document_03_title')</label>
                                         <span class="focus-border"></span>
                                     </div>
@@ -406,8 +406,8 @@
                                 @if(requiredOrPermission('document_file_4'))
                                 <div class="col-lg-3">
                                     <div class="input-effect">
-                                        <input class="primary-input" type="text" name="document_title_4"
-                                            value="{{ $student->document_title_4 }}">
+                                        <input class="primary-input" type="text" name="group_4"
+                                            value="{{ $student->group_4 }}">
                                         <label>@lang('student.document_04_title')</label>
                                         <span class="focus-border"></span>
                                     </div>

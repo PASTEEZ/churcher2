@@ -126,7 +126,7 @@
                                         <td>
                                         {{@$add_income->paymentMethod->method}}
                                         @if(@$add_income->payment_method_id==3)
-                                            ({{@$add_income->account->bank_name}})
+                                            ({{@$add_income->account->employer_name}})
                                         @endif
                                         </td>
                                         <td>{{@$add_income->amount}}</td>
@@ -186,7 +186,7 @@
                                         <td>
                                         {{@$add_expense->paymentMethod->method}}
                                         @if(@$add_expense->payment_method_id==3)
-                                            ({{@$add_expense->account->bank_name}})
+                                            ({{@$add_expense->account->employer_name}})
                                         @endif
                                         </td>
                                         <td>{{currency_format(@$add_expense->amount)}}</td>

@@ -12,10 +12,10 @@ class SmDesignationsTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run($school_id = 1, $count= 1)
+    public function run($church_id = 1, $count= 1)
     {
         SmDesignation::factory()->times($count)->create([
-            'school_id' => $school_id
+            'church_id' => $church_id
         ]);
     }
 }

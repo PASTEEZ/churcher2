@@ -43,7 +43,7 @@
                                         
                                         <option data-display="@lang('common.select_class')*" value="">@lang('common.select_class') *</option>
                                         @foreach($classes as $class)
-                                        <option value="{{ @$class->id}}" {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{ @$class->class_name }}</option>
+                                        <option value="{{ @$class->id}}" {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{ @$class->age_group_name }}</option>
                                         @endforeach
                                     </select>
                                     @if ($errors->has('class'))
@@ -102,8 +102,8 @@
 
 
     {{ Form::open(['class' => 'form-horizontal', 'files' => true, 'url' => 'assign-routine-store', 'method' => 'POST', 'enctype' => 'multipart/form-data', 'id' => 'search_student']) }} 
-    <input type="hidden" name="class_id" value="{{@$class_id}}">
-    <input type="hidden" name="section_id" value="{{@$section_id}}">
+    <input type="hidden" name="age_group_id" value="{{@$age_group_id}}">
+    <input type="hidden" name="mgender_id" value="{{@$mgender_id}}">
     <input type="hidden" name="subject_id" value="{{@$subject_id}}"> 
         <div class="row">
             <div class="col-lg-12">

@@ -68,16 +68,16 @@ class AcademicController extends Controller
 
 
         try {
-            $class_id = $request->class;
-            $section_id = $request->section;
+            $age_group_id = $request->class;
+            $mgender_id = $request->section;
             $subject_id = $request->subject;
-            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-            $class_routine = SmClassRoutine::where('class_id', $request->class)->where('section_id', $request->section)->where('subject_id', $request->subject)->first();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+            $class_routine = SmClassRoutine::where('age_group_id', $request->class)->where('mgender_id', $request->section)->where('subject_id', $request->subject)->first();
             if ($class_routine == "") {
                 $class_routine = "hello";
             }
 
-            return view('backEnd.academics.class_routine_create', compact('class_routine', 'class_id', 'section_id', 'subject_id', 'classes'));
+            return view('backEnd.academics.class_routine_create', compact('class_routine', 'age_group_id', 'mgender_id', 'subject_id', 'classes'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -87,14 +87,14 @@ class AcademicController extends Controller
     public function assignRoutineStore(Request $request)
     {
         try {
-            $class_routine = SmClassRoutine::where('class_id', $request->class_id)
-            ->where('section_id', $request->section_id)
+            $class_routine = SmClassRoutine::where('age_group_id', $request->age_group_id)
+            ->where('mgender_id', $request->mgender_id)
             ->where('subject_id', $request->subject_id)
             ->delete();
             // if($check_assigned != ""){
             $class_routine = new SmClassRoutine();
-            $class_routine->class_id = $request->class_id;
-            $class_routine->section_id = $request->section_id;
+            $class_routine->age_group_id = $request->age_group_id;
+            $class_routine->mgender_id = $request->mgender_id;
             $class_routine->subject_id = $request->subject_id;
 
             $class_routine->monday_start_from = $request->monday_start_from;
@@ -125,7 +125,7 @@ class AcademicController extends Controller
             $class_routine->sunday_end_to = $request->sunday_end_to;
             $class_routine->sunday_room_id = $request->sunday_room;
 
-            $class_routine->academic_id = getAcademicId();
+            $class_routine->church_year_id = getAcademicId();
             $class_routine->save();
             // }else{
 
@@ -149,9 +149,9 @@ class AcademicController extends Controller
 
             $classes = SmClass::get();
 
-            $class_routines = SmClassRoutine::where('class_id', $request->class)->where('section_id', $request->section)->where('school_id', Auth::user()->school_id)->get();
-            $class_id = $request->class;
-            return view('backEnd.academics.class_routine', compact('class_routines', 'classes', 'class_id'));
+            $class_routines = SmClassRoutine::where('age_group_id', $request->class)->where('mgender_id', $request->section)->where('church_id', Auth::user()->church_id)->get();
+            $age_group_id = $request->class;
+            return view('backEnd.academics.class_routine', compact('class_routines', 'classes', 'age_group_id'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -162,7 +162,7 @@ class AcademicController extends Controller
     {
         try {
 
-            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($classes, null);
@@ -202,27 +202,27 @@ class AcademicController extends Controller
             $students = SmStudent::query();
             $students->where('active_status', 1);
             if ($request->section != "") {
-                $students->where('section_id', $request->section);
+                $students->where('mgender_id', $request->section);
             }
-            $students->where('class_id', $request->class);
-            $students = $students->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $students->where('age_group_id', $request->class);
+            $students = $students->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
 
             $assign_subjects = SmAssignSubject::query();
             $assign_subjects->where('active_status', 1);
             if ($request->section != "") {
-                $assign_subjects->where('section_id', $request->section);
+                $assign_subjects->where('mgender_id', $request->section);
             }
-            $assign_subjects->where('class_id', $request->class);
-            $assign_subjects = $assign_subjects->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $assign_subjects->where('age_group_id', $request->class);
+            $assign_subjects = $assign_subjects->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
 
             $assign_class_teacher = SmAssignClassTeacher::query();
             $assign_class_teacher->where('active_status', 1);
             if ($request->section != "") {
-                $assign_class_teacher->where('section_id', $request->section);
+                $assign_class_teacher->where('mgender_id', $request->section);
             }
-            $assign_class_teacher->where('class_id', $request->class);
+            $assign_class_teacher->where('age_group_id', $request->class);
             $assign_class_teacher = $assign_class_teacher->first();
             if ($assign_class_teacher != "") {
                 $assign_class_teachers = $assign_class_teacher->classTeachers->first();
@@ -234,11 +234,11 @@ class AcademicController extends Controller
             $total_collection = 0;
             $total_assign = 0;
             foreach ($students as $student) {
-                $fees_assigns = SmFeesAssign::where("student_id", $student->id)->where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+                $fees_assigns = SmFeesAssign::where("member_id", $student->id)->where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
                 foreach ($fees_assigns as $fees_assign) {
-                    $fees_masters = SmFeesMaster::where('id', $fees_assign->fees_master_id)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+                    $fees_masters = SmFeesMaster::where('id', $fees_assign->fees_master_id)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
                     foreach ($fees_masters as $fees_master) {
-                        $total_collection = $total_collection + SmFeesPayment::where('active_status',1)->where('student_id', $student->id)->where('fees_type_id', $fees_master->fees_type_id)->sum('amount');
+                        $total_collection = $total_collection + SmFeesPayment::where('active_status',1)->where('member_id', $student->id)->where('fees_type_id', $fees_master->fees_type_id)->sum('amount');
                     }
                 }
 
@@ -249,7 +249,7 @@ class AcademicController extends Controller
             }
 
 
-            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];

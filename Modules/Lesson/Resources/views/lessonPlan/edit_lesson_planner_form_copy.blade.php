@@ -9,8 +9,8 @@
                 <input type="hidden" name="url" id="url" value="{{URL::to('/')}}">
                 <input type="hidden" name="day" id="day" value="{{@$day}}">
                 <input type="hidden" name="class_time_id" id="class_time_id" value="{{@$class_time_id}}">
-                <input type="hidden" name="class_id"   id="class_id" value="{{@$class_id}}">
-                <input type="hidden" name="section_id" id="section_id" value="{{@$section_id}}">
+                <input type="hidden" name="age_group_id"   id="age_group_id" value="{{@$age_group_id}}">
+                <input type="hidden" name="mgender_id" id="mgender_id" value="{{@$mgender_id}}">
                 <input type="hidden" name="subject_id" id="subject_id" value="{{@$subject_id}}">
                 <input type="hidden" name="lesson_date"  id="lesson_date" value="{{$lesson_date}}">
                 <input type="hidden" name="teacher_id" id="update_teacher_id" value="{{isset($teacher_id)? $teacher_id:''}}">
@@ -163,8 +163,8 @@
 
 
         var formData = {
-            class_id: $('#class_id').val(),
-            section_id: $('#section_id').val(),
+            age_group_id: $('#age_group_id').val(),
+            mgender_id: $('#mgender_id').val(),
             subject_id: $('#subject_id').val(),
             lesson_id:$('#select_lesson').val(),          
         };

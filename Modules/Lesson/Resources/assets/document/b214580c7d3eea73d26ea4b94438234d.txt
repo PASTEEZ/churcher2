@@ -12,7 +12,7 @@
 
                             <th width="6%">@lang('common.name')</th>
 
-                            <th width="6%">@lang('student.admission_no')</th>
+                            <th width="6%">@lang('student.registration_no')</th>
 
                             <th width="3%">P</th>
 
@@ -112,7 +112,7 @@
 
                                     @if($student == 1)
 
-                                        {{@$value->admission_no}}
+                                        {{@$value->registration_no}}
 
                                     @endif
 

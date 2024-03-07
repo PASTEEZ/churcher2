@@ -32,8 +32,8 @@
                   <input type="hidden" name="url" id="url" value="{{URL::to('/')}}"> 
                   <input type="hidden" name="id" value="{{$homeworkList->id}}"> 
                   <input type="hidden" name="course_id" value="{{$homeworkList->course_id}}"> 
-                  <input type="hidden" name="class_id" value="{{$homeworkList->class_id}}"> 
-                  <input type="hidden" name="section_id" value="{{$homeworkList->section_id}}"> 
+                  <input type="hidden" name="age_group_id" value="{{$homeworkList->age_group_id}}"> 
+                  <input type="hidden" name="mgender_id" value="{{$homeworkList->mgender_id}}"> 
                   <input type="hidden" name="subject_id" value="{{$homeworkList->subject_id}}">
                   
                 @if(moduleStatusCheck('University'))
@@ -44,32 +44,32 @@
                   <div class="row mb-30">
                      <div class="col-lg-4">
                         <div class="input-effect">
-                           <select class="niceSelect w-100 bb form-control{{ $errors->has('class_id') ? ' is-invalid' : '' }}" name="class_id" id="classSelectStudent">
+                           <select class="niceSelect w-100 bb form-control{{ $errors->has('age_group_id') ? ' is-invalid' : '' }}" name="age_group_id" id="classSelectStudent">
                               <option data-display="@lang('common.select_class') *" value="">@lang('common.select')</option>
                               @foreach($classes as $key=>$value)
-                              <option value="{{$value->id}}" {{$homeworkList->class_id == $value->id? 'selected':''}}>{{$value->class_name}}</option>
+                              <option value="{{$value->id}}" {{$homeworkList->age_group_id == $value->id? 'selected':''}}>{{$value->age_group_name}}</option>
                               @endforeach
                            </select>
                            <span class="focus-border"></span>
-                           @if ($errors->has('class_id'))
+                           @if ($errors->has('age_group_id'))
                            <span class="invalid-feedback invalid-select" role="alert">
-                           <strong>{{ $errors->first('class_id') }}</strong>
+                           <strong>{{ $errors->first('age_group_id') }}</strong>
                            </span>
                            @endif
                         </div>
                      </div>
                      <div class="col-lg-4">
                         <div class="input-effect" id="sectionStudentDiv">
-                           <select class="niceSelect w-100 bb form-control{{ $errors->has('section_id') ? ' is-invalid' : '' }}" name="section_id" id="sectionSelectStudent">
+                           <select class="niceSelect w-100 bb form-control{{ $errors->has('mgender_id') ? ' is-invalid' : '' }}" name="mgender_id" id="sectionSelectStudent">
                               <option data-display="@lang('common.select_section') *" value="">@lang('common.section') *</option>
                               @foreach($sections as $section)
-                              <option value="{{$section->sectionName->id}}" {{$homeworkList->section_id == $section->sectionName->id? 'selected':''}}>{{$section->sectionName->section_name}}</option>
+                              <option value="{{$section->sectionName->id}}" {{$homeworkList->mgender_id == $section->sectionName->id? 'selected':''}}>{{$section->sectionName->mgender_name}}</option>
                               @endforeach
                            </select>
                            <span class="focus-border"></span>
-                           @if ($errors->has('section_id'))
+                           @if ($errors->has('mgender_id'))
                            <span class="invalid-feedback invalid-select" role="alert">
-                           <strong>{{ $errors->first('section_id') }}</strong>
+                           <strong>{{ $errors->first('mgender_id') }}</strong>
                            </span>
                            @endif
                         </div>

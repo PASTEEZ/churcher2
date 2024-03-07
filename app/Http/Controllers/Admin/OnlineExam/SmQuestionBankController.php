@@ -65,12 +65,12 @@ class SmQuestionBankController extends Controller
                                 $online_question = new SmQuestionBank();
                                 $online_question->type = $request->question_type;
                                 $online_question->q_group_id = $request->group;
-                                $online_question->class_id = $request->class;
-                                $online_question->section_id = $section;
+                                $online_question->age_group_id = $request->class;
+                                $online_question->mgender_id = $section;
                                 $online_question->marks = $request->marks;
                                 $online_question->question = $request->question;
-                                $online_question->school_id = Auth::user()->school_id;
-                                $online_question->academic_id = getAcademicId();
+                                $online_question->church_id = Auth::user()->church_id;
+                                $online_question->church_year_id = getAcademicId();
                                 if ($request->question_type == "F") {
                                     $online_question->suitable_words = $request->suitable_words;
                                 } elseif ($request->question_type == "T") {
@@ -142,8 +142,8 @@ class SmQuestionBankController extends Controller
                                     $online_question = new SmQuestionBank();
                                     $online_question->type = $request->question_type;
                                     $online_question->q_group_id = $request->group;
-                                    $online_question->class_id = $request->class;
-                                    $online_question->section_id = $section;
+                                    $online_question->age_group_id = $request->class;
+                                    $online_question->mgender_id = $section;
                                     $online_question->marks = $request->marks;
                                     $online_question->question = $request->question;
                                     $online_question->answer_type = $request->answer_type;
@@ -154,8 +154,8 @@ class SmQuestionBankController extends Controller
 
                                         $online_question->number_of_option = $request->number_of_option;
                                     }
-                                    $online_question->school_id = Auth::user()->school_id;
-                                    $online_question->academic_id = getAcademicId();
+                                    $online_question->church_id = Auth::user()->church_id;
+                                    $online_question->church_year_id = getAcademicId();
                                     $online_question->save();
                                     $online_question->toArray();
                               }
@@ -178,8 +178,8 @@ class SmQuestionBankController extends Controller
 
                                     $online_question_option->title = $fileName;
 
-                                    $online_question_option->school_id = Auth::user()->school_id;
-                                    $online_question_option->academic_id = getAcademicId();
+                                    $online_question_option->church_id = Auth::user()->church_id;
+                                    $online_question_option->church_year_id = getAcademicId();
                                     if (isset($request->$option_check)) {
                                         $online_question_option->status = 1;
                                     } else {
@@ -206,13 +206,13 @@ class SmQuestionBankController extends Controller
                                     $online_question = new SmQuestionBank();
                                     $online_question->type = $request->question_type;
                                     $online_question->q_group_id = $request->group;
-                                    $online_question->class_id = $request->class;
-                                    $online_question->section_id = $section;
+                                    $online_question->age_group_id = $request->class;
+                                    $online_question->mgender_id = $section;
                                     $online_question->marks = $request->marks;
                                     $online_question->question = $request->question;
                                     $online_question->number_of_option = $request->number_of_option;
-                                    $online_question->school_id = Auth::user()->school_id;
-                                    $online_question->academic_id = getAcademicId();
+                                    $online_question->church_id = Auth::user()->church_id;
+                                    $online_question->church_year_id = getAcademicId();
                                     $online_question->save();
                                     $online_question->toArray();
                                     $i = 0;
@@ -223,8 +223,8 @@ class SmQuestionBankController extends Controller
                                             $online_question_option = new SmQuestionBankMuOption();
                                             $online_question_option->question_bank_id = $online_question->id;
                                             $online_question_option->title = $option;
-                                            $online_question_option->school_id = Auth::user()->school_id;
-                                            $online_question_option->academic_id = getAcademicId();
+                                            $online_question_option->church_id = Auth::user()->church_id;
+                                            $online_question_option->church_year_id = getAcademicId();
                                             if (isset($request->$option_check)) {
                                                 $online_question_option->status = 1;
                                             } else {
@@ -290,8 +290,8 @@ class SmQuestionBankController extends Controller
                 $online_question = SmQuestionBank::find($id);
                 $online_question->type = $request->question_type;
                 $online_question->q_group_id = $request->group;
-                $online_question->class_id = $request->class;
-                $online_question->section_id = $request->section;
+                $online_question->age_group_id = $request->class;
+                $online_question->mgender_id = $request->section;
                 $online_question->marks = $request->marks;
                 $online_question->question = $request->question;
                 if ($request->question_type == "F") {
@@ -322,8 +322,8 @@ class SmQuestionBankController extends Controller
                     $online_question = SmQuestionBank::find($id);
                     $online_question->type = $request->question_type;
                     $online_question->q_group_id = $request->group;
-                    $online_question->class_id = $request->class;
-                    $online_question->section_id = $request->section;
+                    $online_question->age_group_id = $request->class;
+                    $online_question->mgender_id = $request->section;
                     $online_question->marks = $request->marks;
                     $online_question->question = $request->question;
                     $online_question->answer_type = $request->answer_type;
@@ -368,8 +368,8 @@ class SmQuestionBankController extends Controller
                     $online_question->question_image = $fileName;
 
                     $online_question->number_of_option = $request->number_of_option;
-                    $online_question->school_id = Auth::user()->school_id;
-                    $online_question->academic_id = getAcademicId();
+                    $online_question->church_id = Auth::user()->church_id;
+                    $online_question->church_year_id = getAcademicId();
                     $online_question->save();
                     $online_question->toArray();
                     $i = 0;
@@ -400,8 +400,8 @@ class SmQuestionBankController extends Controller
 
                             $online_question_option->title = $fileName;
 
-                            $online_question_option->school_id = Auth::user()->school_id;
-                            $online_question_option->academic_id = getAcademicId();
+                            $online_question_option->church_id = Auth::user()->church_id;
+                            $online_question_option->church_year_id = getAcademicId();
                             if (isset($request->$option_check)) {
                                 $online_question_option->status = 1;
                             } else {
@@ -425,8 +425,8 @@ class SmQuestionBankController extends Controller
                     $online_question = SmQuestionBank::find($id);
                     $online_question->type = $request->question_type;
                     $online_question->q_group_id = $request->group;
-                    $online_question->class_id = $request->class;
-                    $online_question->section_id = $request->section;
+                    $online_question->age_group_id = $request->class;
+                    $online_question->mgender_id = $request->section;
                     $online_question->marks = $request->marks;
                     $online_question->question = $request->question;
                     $online_question->number_of_option = $request->number_of_option;
@@ -441,8 +441,8 @@ class SmQuestionBankController extends Controller
                             $online_question_option = new SmQuestionBankMuOption();
                             $online_question_option->question_bank_id = $online_question->id;
                             $online_question_option->title = $option;
-                            $online_question_option->school_id = Auth::user()->school_id;
-                            $online_question_option->academic_id = getAcademicId();
+                            $online_question_option->church_id = Auth::user()->church_id;
+                            $online_question_option->church_year_id = getAcademicId();
                             if (isset($request->$option_check)) {
                                 $online_question_option->status = 1;
                             } else {

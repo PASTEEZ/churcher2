@@ -15,17 +15,17 @@ class SmFeesAssignDiscountTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run($school_id, $academic_id, $count=5)
+    public function run($church_id, $church_year_id, $count=5)
     {
-        $classSection = SmClassSection::where('school_id',$school_id)->where('academic_id', $academic_id)->first();
-        $students = StudentRecord::where('class_id', $classSection->class_id)->where('section_id', $classSection->section_id)->where('school_id',$school_id)->where('academic_id', $academic_id)->get();
-        $feesDisCountId= SmFeesDiscount::where('school_id',$school_id)->where('academic_id', $academic_id)->value('id');
+        $classSection = SmClassSection::where('church_id',$church_id)->where('church_year_id', $church_year_id)->first();
+        $students = StudentRecord::where('age_group_id', $classSection->age_group_id)->where('mgender_id', $classSection->mgender_id)->where('church_id',$church_id)->where('church_year_id', $church_year_id)->get();
+        $feesDisCountId= SmFeesDiscount::where('church_id',$church_id)->where('church_year_id', $church_year_id)->value('id');
         foreach ($students as $record) {
             $store = new SmFeesAssignDiscount();
             $store->fees_discount_id = $feesDisCountId;
-            $store->student_id = $record->student_id;
-            $store->school_id = $school_id;
-            $store->academic_id = $academic_id;
+            $store->member_id = $record->member_id;
+            $store->church_id = $church_id;
+            $store->church_year_id = $church_year_id;
             $store->save();
         }
     }

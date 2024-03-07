@@ -18,30 +18,30 @@ class StudentsImport implements ToModel, WithStartRow, WithHeadingRow
     public function model(array $row)
     {
         $dob = null;
-        $admission_date = date('Y-m-d');
+        $registration_date = date('Y-m-d');
 
         if(gv($row, 'date_of_birth')){
             $dob = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['date_of_birth'])->format('Y-m-d');
         }
         
 
-        if(gv($row, 'admission_date')){
-            $admission_date = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['admission_date'])->format('Y-m-d');
+        if(gv($row, 'registration_date')){
+            $registration_date = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['registration_date'])->format('Y-m-d');
         }
         
         return new StudentBulkTemporary([
-          "admission_number" =>(string) @$row['admission_number'],
-          "roll_no" => (string) @$row['roll_no'],
+          "registration_number" =>(string) @$row['registration_number'],
+          "member_id_no" => (string) @$row['member_id_no'],
           "first_name" => @$row['first_name'],
           "last_name" => @$row['last_name'],
           "date_of_birth" => $dob,
-          "religion" => @$row['religion'],
+          "marital_status" => @$row['marital_status'],
           "gender" => @$row['gender'],
-          "caste" => @$row['caste'],
+          "home_town" => @$row['home_town'],
           "mobile" => (string) @$row['mobile'],
           "email" => @$row['email'],
-          "admission_date" => $admission_date,
-          "blood_group" => @$row['blood_group'],
+          "registration_date" => $registration_date,
+          "region" => @$row['region'],
           "height" => @$row['height'],
           "weight" => @$row['weight'],
           "father_name" => @$row['father_name'],
@@ -58,8 +58,8 @@ class StudentsImport implements ToModel, WithStartRow, WithHeadingRow
           "guardian_address" => @$row['guardian_address'],
           "current_address" => @$row['current_address'],
           "permanent_address" => @$row['permanent_address'],
-          "bank_account_no" => (string) @$row['bank_account_no'],
-          "bank_name" => @$row['bank_name'],
+          "day_born" => (string) @$row['day_born'],
+          "employer_name" => @$row['employer_name'],
           "national_identification_no" => (string) @$row['national_identification_no'],
           "local_identification_no" => (string) @$row['local_identification_no'],
           "previous_school_details" => (string) @$row['previous_school_details'],

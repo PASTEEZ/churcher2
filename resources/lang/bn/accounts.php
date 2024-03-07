@@ -84,7 +84,7 @@ return [
     "from" => "সেখান থেকে",
     "purchase" => "পূর্বাভাস",
     "account" => "অ্যাকাউন্ট",
-    "bank_name" => "ব্যাংক নাম",
+    "employer_name" => "ব্যাংক নাম",
     "profit" => "প্রফিট",
     "Method" => "পদ্ধতি",
     "opening_balance" => "ব্যালেন্স খোলা হচ্ছে",

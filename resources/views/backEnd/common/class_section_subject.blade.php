@@ -4,33 +4,33 @@
     $required = $required ?? [];
     $selected = isset($selected) ? $selected : null;
     
-    $class_id = $selected && isset($selected['class_id']) ? $selected['class_id'] : null;
+    $age_group_id = $selected && isset($selected['age_group_id']) ? $selected['age_group_id'] : null;
  
-    $section_id = $selected && isset($selected['section_id']) ? $selected['section_id'] : null;
+    $mgender_id = $selected && isset($selected['mgender_id']) ? $selected['mgender_id'] : null;
     $subject_id = $selected && isset($selected['subject_id']) ? $selected['subject_id'] : null;
-    $sections = $class_id ? sections($class_id) : null;
-    $subjects = $class_id && $section_id ? subjects($class_id, $section_id) : null;
+    $sections = $age_group_id ? sections($age_group_id) : null;
+    $subjects = $age_group_id && $mgender_id ? subjects($age_group_id, $mgender_id) : null;
     $visiable = $visiable ?? [];
 @endphp
 
 @if(in_array('class', $visiable))
 <div class="{{ $div . ' ' . $mt }}">
     <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class"
-        name="class_id">
+        name="age_group_id">
         <option data-display="@lang('common.select_class') {{ in_array('class', $required) ? ' *' : '' }}" value="">
             @lang('common.select_class') {{ in_array('class', $required) ? ' *' : '' }}</option>
         @if (isset($classes))
             @foreach ($classes as $class)
                 <option value="{{ $class->id }}"
-                    {{ isset($class_id) ? ($class_id == $class->id ? 'selected' : '') : '' }}>
-                    {{ $class->class_name }}</option>
+                    {{ isset($age_group_id) ? ($age_group_id == $class->id ? 'selected' : '') : '' }}>
+                    {{ $class->age_group_name }}</option>
             @endforeach
         @endif
     </select>
 
-    @if ($errors->has('class_id'))
+    @if ($errors->has('age_group_id'))
         <span class="invalid-feedback invalid-select d-block" role="alert">
-            <strong>{{ $errors->first('class_id') }}</strong>
+            <strong>{{ $errors->first('age_group_id') }}</strong>
         </span>
     @endif
 </div>
@@ -38,14 +38,14 @@
 @if(in_array('section', $visiable))
 <div class="{{ $div . ' ' . $mt }}" id="select_section_div">
     <select class="w-100 bb niceSelect form-control{{ $errors->has('section') ? ' is-invalid' : '' }} select_section"
-        id="select_section" name="section_id">
+        id="select_section" name="mgender_id">
         <option data-display="@lang('common.select_section') {{ in_array('section', $required) ? '*' : '' }}" value="">
             @lang('common.select_section') {{ in_array('section', $required) ? '*' : '' }}</option>
         @isset($sections)
             @foreach ($sections as $section)
                 <option value="{{ $section->id }}"
-                    {{ isset($section_id) ? ($section_id == $section->section_id ? 'selected' : '') : '' }}>
-                    {{ $section->sectionName->section_name }}
+                    {{ isset($mgender_id) ? ($mgender_id == $section->mgender_id ? 'selected' : '') : '' }}>
+                    {{ $section->sectionName->mgender_name }}
                 </option>
             @endforeach
         @endisset
@@ -53,9 +53,9 @@
     <div class="pull-right loader" id="select_section_loader" style="margin-top: -30px;padding-right: 21px;">
         <img src="{{ asset('public/backEnd/img/demo_wait.gif') }}" alt="" style="width: 28px;height:28px;">
     </div>
-    @if ($errors->has('section_id'))
+    @if ($errors->has('mgender_id'))
         <span class="invalid-feedback invalid-select d-block" role="alert">
-            <strong>{{ $errors->first('section_id') }}</strong>
+            <strong>{{ $errors->first('mgender_id') }}</strong>
         </span>
     @endif
 </div>

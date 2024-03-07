@@ -74,7 +74,7 @@
                                         <div class="input-effect">
                                             <select class="niceSelect w-100 bb form-control{{ $errors->has('bank_id') ? ' is-invalid' : '' }}" name="bank_id" id="account_id">
                                             @if(isset($editData))
-                                                    <option value="{{$editData->account_id}}" selected>{{@$editData->bankName->account_name}} ({{@$editData->bankName->bank_name}})</option>
+                                                    <option value="{{$editData->account_id}}" selected>{{@$editData->bankName->account_name}} ({{@$editData->bankName->employer_name}})</option>
                                             @endif
                                                 </select>
                                                 <span class="focus-border"></span>
@@ -107,7 +107,7 @@
                                         <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                             <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                                 @foreach($classes as $class)
-                                                <option value="{{$class->id}}" {{$editData->role_id == 2? ($class->id == @$studentClassSection->defaultClass->class_id? 'selected':''):""}}>{{$class->class_name}}</option>
+                                                <option value="{{$class->id}}" {{$editData->role_id == 2? ($class->id == @$studentClassSection->defaultClass->age_group_id? 'selected':''):""}}>{{$class->age_group_name}}</option>
                                                 @endforeach
                                             </select>
                                             <div class="text-danger" id="classError"></div>
@@ -126,11 +126,11 @@
                                             @foreach($sections as $section)
                                             <option value="{{$section->id}}"  {{( old("section") == $section->id ? "selected":"")}}
                                                 @if($editData)
-                                                @if(@$studentClassSection->defaultClass->section_id == $section->id)
+                                                @if(@$studentClassSection->defaultClass->mgender_id == $section->id)
                                                 selected
                                                 @endif
                                                 @endif
-                                                >{{$section->section_name}}</option>
+                                                >{{$section->mgender_name}}</option>
                                                 @endforeach
                                             </select>
                                             <div class="text-danger" id="sectionError"></div>

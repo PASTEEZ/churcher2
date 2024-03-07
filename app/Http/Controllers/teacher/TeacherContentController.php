@@ -89,8 +89,8 @@ class TeacherContentController extends Controller
             $uploadContents->description = $request->input('description');
             $uploadContents->upload_file = $fileName;
             $uploadContents->created_by = $request->input('created_by');
-            $uploadContents->school_id = Auth::user()->school_id;
-            $uploadContents->academic_id = getAcademicId();
+            $uploadContents->church_id = Auth::user()->church_id;
+            $uploadContents->church_year_id = getAcademicId();
             $results = $uploadContents->save();
 
 
@@ -108,7 +108,7 @@ class TeacherContentController extends Controller
             // foreach ($request->input('available_for') as $value) {
             if ($request->input('available_for') == 'admin') {
                 $roles = InfixRole::where('id', '!=', 1)->where('id', '!=', 2)->where('id', '!=', 3)->where('id', '!=', 9)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
 
                 foreach ($roles as $role) {
@@ -119,8 +119,8 @@ class TeacherContentController extends Controller
                         $notification->role_id = $role->id;
                         $notification->date = date('Y-m-d');
                         $notification->message = $purpose . ' updated';
-                        $notification->school_id = Auth::user()->school_id;
-                        $notification->academic_id = getAcademicId();
+                        $notification->church_id = Auth::user()->church_id;
+                        $notification->church_year_id = getAcademicId();
                         $notification->save();
                     }
                 }
@@ -134,20 +134,20 @@ class TeacherContentController extends Controller
                         $notification->role_id = 2;
                         $notification->date = date('Y-m-d');
                         $notification->message = $purpose . ' updated';
-                        $notification->school_id = Auth::user()->school_id;
-                        $notification->academic_id = getAcademicId();
+                        $notification->church_id = Auth::user()->church_id;
+                        $notification->church_year_id = getAcademicId();
                         $notification->save();
                     }
                 } else {
-                    $students = SmStudent::select('id')->where('class_id', $request->input('class'))->where('section_id', $request->input('section'))->get();
+                    $students = SmStudent::select('id')->where('age_group_id', $request->input('class'))->where('mgender_id', $request->input('section'))->get();
                     foreach ($students as $student) {
                         $notification = new SmNotification;
                         $notification->user_id = $student->id;
                         $notification->role_id = 2;
                         $notification->date = date('Y-m-d');
                         $notification->message = $purpose . ' updated';
-                        $notification->school_id = Auth::user()->school_id;
-                        $notification->academic_id = getAcademicId();
+                        $notification->church_id = Auth::user()->church_id;
+                        $notification->church_year_id = getAcademicId();
                         $notification->save();
                     }
                 }

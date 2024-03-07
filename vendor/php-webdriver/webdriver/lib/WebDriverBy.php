@@ -46,12 +46,12 @@ class WebDriverBy
      * Locates elements whose class name contains the search value; compound class
      * names are not permitted.
      *
-     * @param string $class_name
+     * @param string $age_group_name
      * @return static
      */
-    public static function className($class_name)
+    public static function className($age_group_name)
     {
-        return new static('class name', $class_name);
+        return new static('class name', $age_group_name);
     }
 
     /**

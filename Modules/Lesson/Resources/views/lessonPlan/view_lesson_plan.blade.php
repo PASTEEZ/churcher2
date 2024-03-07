@@ -34,7 +34,7 @@
     @else
     <tr>
         <th class="d-flex justify-content-between align-items-center"><span>@lang('common.class')</span><strong>:</strong></th>
-        <td>{{$lessonPlanDetail->class->class_name}}({{$lessonPlanDetail->sectionName->section_name}})</td>
+        <td>{{$lessonPlanDetail->class->age_group_name}}({{$lessonPlanDetail->sectionName->mgender_name}})</td>
     </tr>
     @endif
     <tr>

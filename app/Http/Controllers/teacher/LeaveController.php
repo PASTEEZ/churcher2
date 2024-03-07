@@ -31,7 +31,7 @@ class LeaveController extends Controller
                 ->where('sm_leave_defines.active_status', 1)
                 ->select('sm_leave_types.id', 'type', 'total_days')
                 ->distinct('sm_leave_defines.type_id')
-               ->where('sm_leave_defines.school_id',Auth::user()->school_id) ->get();
+               ->where('sm_leave_defines.church_id',Auth::user()->church_id) ->get();
 
             //return $leave_type;
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -51,7 +51,7 @@ class LeaveController extends Controller
             $leave_list = SmLeaveRequest::where('staff_id', '=', $teacher_id)
                 ->join('sm_leave_defines', 'sm_leave_defines.id', '=', 'sm_leave_requests.leave_define_id')
                 ->join('sm_leave_types', 'sm_leave_types.id', '=', 'sm_leave_defines.type_id')
-               ->where('sm_leave_defines.school_id',Auth::user()->school_id) ->get();
+               ->where('sm_leave_defines.church_id',Auth::user()->church_id) ->get();
             $status = 'P for Pending, A for Approve, R for reject';
             $data = [];
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -110,8 +110,8 @@ class LeaveController extends Controller
             $apply_leave->leave_to = $request->input('leave_to');
             $apply_leave->approve_status = 'P';
             $apply_leave->reason = $request->input('reason');
-            $apply_leave->school_id = Auth::user()->school_id;
-            $apply_leave->academic_id = getAcademicId();
+            $apply_leave->church_id = Auth::user()->church_id;
+            $apply_leave->church_year_id = getAcademicId();
             if ($fileName != "") {
                 $apply_leave->file = $fileName;
             }

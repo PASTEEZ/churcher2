@@ -34,8 +34,8 @@ class SmQuestionGroupController extends Controller
         try{
             $group = new SmQuestionGroup();
             $group->title = $request->title;
-            $group->school_id = Auth::user()->school_id;
-            $group->academic_id = getAcademicId();
+            $group->church_id = Auth::user()->church_id;
+            $group->church_year_id = getAcademicId();
             $group->save();
          
             Toastr::success('Operation successful', 'Success');

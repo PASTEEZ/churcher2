@@ -100,7 +100,7 @@
                     <select class="niceSelect1 w-100 bb form-control{{ $errors->has('bank_id') ? ' is-invalid' : '' }}" name="bank_id" id="account_id">
                     @if(isset($account_id))
                     @foreach($account_id as $key=>$value)
-                    <option value="{{$value->id}}">{{$value->bank_name}}</option>
+                    <option value="{{$value->id}}">{{$value->employer_name}}</option>
                     @endforeach
                     @endif
                     </select>

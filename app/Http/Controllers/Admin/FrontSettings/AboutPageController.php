@@ -60,7 +60,7 @@ class AboutPageController extends Controller
                 $about = new SmAboutPage();
                 $about->image     = fileUpload($request->image,$destination);
                 $about->main_image = fileUpload($request->main_image,$destination); 
-                $about->school_id = app('school')->id;
+                $about->church_id = app('school')->id;
             }
               
           

@@ -23,8 +23,8 @@ class CreateInfixRolesTable extends Migration
             $table->string('updated_by')->nullable()->default(1); 
             $table->timestamps();
 
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
             $table->integer('is_saas')->nullable()->default(0)->unsigned();
         });
 
@@ -33,55 +33,55 @@ class CreateInfixRolesTable extends Migration
             [
                 'name' => 'Super admin',    //      1
                 'type' => 'System',
-                'school_id' => 1,
+                'church_id' => 1,
                 'created_at' => date('Y-m-d h:i:s')
             ],
             [
                 'name' => 'Student',    //      2
                 'type' => 'System',
-                'school_id' => 1,
+                'church_id' => 1,
                 'created_at' => date('Y-m-d h:i:s')
             ],
             [
                 'name' => 'Parents',    //      3
                 'type' => 'System',
-                'school_id' => 1,
+                'church_id' => 1,
                 'created_at' => date('Y-m-d h:i:s')
             ],
             [
                 'name' => 'Teacher',    //      4
                 'type' => 'System',
-                'school_id' => 1,
+                'church_id' => 1,
                 'created_at' => date('Y-m-d h:i:s')
             ],
             [
                 'name' => 'Admin',    //      5
                 'type' => 'System',
-                'school_id' => 1,
+                'church_id' => 1,
                 'created_at' => date('Y-m-d h:i:s')
             ],
             [
                 'name' => 'Accountant',    //      6
                 'type' => 'System',
-                'school_id' => 1,
+                'church_id' => 1,
                 'created_at' => date('Y-m-d h:i:s')
             ],
             [
                 'name' => 'Receptionist',    //      7
                 'type' => 'System',
-                'school_id' => 1,
+                'church_id' => 1,
                 'created_at' => date('Y-m-d h:i:s')
             ],
             [
                 'name' => 'Librarian',    //      8
                 'type' => 'System',
-                'school_id' => 1,
+                'church_id' => 1,
                 'created_at' => date('Y-m-d h:i:s')
             ],
             [
                 'name' => 'Driver',    //      9
                 'type' => 'System',
-                'school_id' => 1,
+                'church_id' => 1,
                 'created_at' => date('Y-m-d h:i:s')
             ]
 

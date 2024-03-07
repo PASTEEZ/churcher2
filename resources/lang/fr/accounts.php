@@ -80,7 +80,7 @@ return [
 
 "account_number" => "Numéro de compte",
 
-"bank_name" => "Nom de la banque",
+"employer_name" => "Nom de la banque",
 
 "account_type" => "Type de compte",
 

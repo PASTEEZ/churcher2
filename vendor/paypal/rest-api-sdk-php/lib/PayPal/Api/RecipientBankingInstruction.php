@@ -11,7 +11,7 @@ use PayPal\Common\PayPalModel;
  *
  * @package PayPal\Api
  *
- * @property string bank_name
+ * @property string employer_name
  * @property string account_holder_name
  * @property string account_number
  * @property string routing_number
@@ -23,13 +23,13 @@ class RecipientBankingInstruction extends PayPalModel
     /**
      * Name of the financial institution.
      *
-     * @param string $bank_name
+     * @param string $employer_name
      * 
      * @return $this
      */
-    public function setBankName($bank_name)
+    public function setBankName($employer_name)
     {
-        $this->bank_name = $bank_name;
+        $this->employer_name = $employer_name;
         return $this;
     }
 
@@ -40,7 +40,7 @@ class RecipientBankingInstruction extends PayPalModel
      */
     public function getBankName()
     {
-        return $this->bank_name;
+        return $this->employer_name;
     }
 
     /**

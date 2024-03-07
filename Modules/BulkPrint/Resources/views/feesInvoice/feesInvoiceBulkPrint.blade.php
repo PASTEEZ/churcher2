@@ -400,11 +400,11 @@
                                     <thead>
                                         <td>
                                             <div class="logo_img">
-                                                <img  src="{{asset(generalSetting()->logo)}}" alt="{{generalSetting()->school_name}}">
+                                                <img  src="{{asset(generalSetting()->logo)}}" alt="{{generalSetting()->church_name}}">
                                             </div>
                                         </td>
                                         <td class="virtical_middle address_text">
-                                            <p>{{generalSetting()->school_name}}</p>
+                                            <p>{{generalSetting()->church_name}}</p>
                                             <p>{{generalSetting()->phone}}</p>
                                             <p>{{generalSetting()->email}}</p>
                                             <p>{{generalSetting()->address}}</p>
@@ -423,10 +423,10 @@
                                                         <td>
                                                             <div class="addressleft_text">
                                                                 <p><span>@lang('fees.fees_invoice_issued_to')</p>
-                                                                <p><span><strong>@lang('student.student_name') </span> <span class="nowrap">: {{$invoice->studentInfo->full_name}}</span> </strong></p>
-                                                                <p><span>@lang('student.class_section')</span> <span>: {{$invoice->recordDetail->class->class_name}} ({{$invoice->recordDetail->section->section_name}})</span> </p>
-                                                                <p><span>@lang('student.roll_no')</span> <span>: {{$invoice->recordDetail->roll_no}}</span> </p>
-                                                                <p><span>@lang('student.admission_no')</span> <span>: {{$invoice->studentInfo->admission_no}}</span> </p>
+                                                                <p><span><strong>@lang('student.member_name') </span> <span class="nowrap">: {{$invoice->studentInfo->full_name}}</span> </strong></p>
+                                                                <p><span>@lang('student.class_section')</span> <span>: {{$invoice->recordDetail->class->age_group_name}} ({{$invoice->recordDetail->section->mgender_name}})</span> </p>
+                                                                <p><span>@lang('student.member_id_no')</span> <span>: {{$invoice->recordDetail->member_id_no}}</span> </p>
+                                                                <p><span>@lang('student.registration_no')</span> <span>: {{$invoice->studentInfo->registration_no}}</span> </p>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -571,7 +571,7 @@
                             <thead>
                                 <tr>
                                     <th>@lang('common.sl')</th>
-                                    <th>@lang('accounts.bank_name')</th>
+                                    <th>@lang('accounts.employer_name')</th>
                                     <th>@lang('accounts.account_name')</th>
                                     <th>@lang('accounts.account_number')</th>
                                     <th>@lang('accounts.account_type')</th>
@@ -581,7 +581,7 @@
                                 @foreach($banks as $key=>$bank)
                                     <tr>
                                         <td>{{$key+1}}</td>
-                                        <td>{{$bank->bank_name}}</td>
+                                        <td>{{$bank->employer_name}}</td>
                                         <td>{{$bank->account_name}}</td>
                                         <td>{{$bank->account_number}}</td>
                                         <td>{{$bank->account_type}}</td>

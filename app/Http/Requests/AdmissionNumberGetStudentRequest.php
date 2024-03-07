@@ -14,7 +14,7 @@ class AdmissionNumberGetStudentRequest extends FormRequest
     public function rules()
     {
         return [
-            'admission_number' => 'required',
+            'registration_number' => 'required',
         ];
     }
 }

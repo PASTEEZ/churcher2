@@ -463,8 +463,8 @@ class InstallRepository
             $notes = $array[$name]['notes'][0];
 
             DB::beginTransaction();
-            $module_class_name = config('spondonit.module_manager_model');
-            $moduel_class = new $module_class_name;
+            $module_age_group_name = config('spondonit.module_manager_model');
+            $moduel_class = new $module_age_group_name;
             $s = $moduel_class->where('name', $name)->first();
             if (empty($s)) {
                 $s = $moduel_class;

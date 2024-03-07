@@ -42,7 +42,7 @@
                 </div>
               @elseif($memberDetails->member_type == 2)
                 <div class="name">
-                  @lang('common.student_name')
+                  @lang('common.member_name')
                 </div>
               @else
                 <div class="name">

@@ -3,17 +3,17 @@
     $divButton = generalSetting()->multiple_roll == 1 ? 'col-3' : 'col-4';
 @endphp
 @foreach ($student->studentRecords as $record)
-<div class="row mb-4 align-items-end" id="div_id_{{ $record->student_id.$record->id }}">
+<div class="row mb-4 align-items-end" id="div_id_{{ $record->member_id.$record->id }}">
     <div class="{{ $divButton }}">
         <div class="input-effect">
-            <select class="niceSelect w-100 bb classSelectClass class_{{ $record->student_id }} form-control{{ $errors->has('class') ? ' is-invalid' : '' }}"
+            <select class="niceSelect w-100 bb classSelectClass class_{{ $record->member_id }} form-control{{ $errors->has('class') ? ' is-invalid' : '' }}"
                 name="old_record[{{ $record->id }}][class][]">
                 <option data-display="@lang('common.class') *" value="">
                     @lang('common.class') *</option>
                    @isset($classes)
                         @foreach ($classes as $class)
-                            <option value="{{ $class->id }}" {{ $record->class_id == $class->id ? 'selected' : '' }}>
-                                {{ $class->class_name }}
+                            <option value="{{ $class->id }}" {{ $record->age_group_id == $class->id ? 'selected' : '' }}>
+                                {{ $class->age_group_name }}
                             </option>
                         @endforeach
                    @endisset
@@ -36,11 +36,11 @@
                 <option data-display="@lang('common.section') *" value="">
                     @lang('common.section') *</option>
                     @isset($record)
-                        @if ($record->session_id && $record->class_id)
+                        @if ($record->session_id && $record->age_group_id)
                             @foreach ($record->class->classSection as $section)
                                 <option value="{{ $section->sectionName->id }}"
-                                    {{ $record->section_id == $section->sectionName->id ? 'selected' : '' }}>
-                                    {{ $section->sectionName->section_name }}</option>
+                                    {{ $record->mgender_id == $section->sectionName->id ? 'selected' : '' }}>
+                                    {{ $section->sectionName->mgender_name }}</option>
                             @endforeach
                         @endif
                     @endisset
@@ -57,7 +57,7 @@
         </div>
     </div>
     <div class="col-3">
-        <input type="checkbox" name="old_record[{{ $record->id }}][default]" id="is_default_{{@$record->id}}" data-student_id="{{ $record->student_id }}"  data-row_id="{{ $record->id }}" class="common-checkbox is_default is_default_{{@$record->student_id}} form-control{{ @$errors->has('is_default') ? ' is-invalid' : '' }}" {{ $record->is_default ? 'checked':'' }}>
+        <input type="checkbox" name="old_record[{{ $record->id }}][default]" id="is_default_{{@$record->id}}" data-member_id="{{ $record->member_id }}"  data-row_id="{{ $record->id }}" class="common-checkbox is_default is_default_{{@$record->member_id}} form-control{{ @$errors->has('is_default') ? ' is-invalid' : '' }}" {{ $record->is_default ? 'checked':'' }}>
         <label class="mb-0" for="is_default_{{@$record->id}}">@lang('common.default')</label>
 
     </div>
@@ -85,7 +85,7 @@
         </div>
     @endif
     <div class="col-1 text-left">
-        <button class="primary-btn small fix-gr-bg icon-only removrButton" type="button" data-student_id="{{ $record->student_id }}" data-record_id={{ $record->id }}><i class="ti-trash"></i></button>
+        <button class="primary-btn small fix-gr-bg icon-only removrButton" type="button" data-member_id="{{ $record->member_id }}" data-record_id={{ $record->id }}><i class="ti-trash"></i></button>
     </div>
 </div>
 @endforeach

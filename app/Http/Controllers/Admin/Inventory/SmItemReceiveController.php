@@ -35,7 +35,7 @@ class SmItemReceiveController extends Controller
             $account_id = SmBankAccount::get();
             $expense_head = SmChartOfAccount::where('type', 'E')->get();
             $suppliers = SmSupplier::get();
-            $itemStores = SmItemStore::where('school_id', Auth::user()->school_id)->get();
+            $itemStores = SmItemStore::where('church_id', Auth::user()->church_id)->get();
             $items = SmItem::with('category')->get();
             $paymentMethhods = SmPaymentMethhod::get();
             return view('backEnd.inventory.itemReceive', compact('suppliers', 'itemStores', 'items', 'paymentMethhods','account_id', 'expense_head'));
@@ -48,7 +48,7 @@ class SmItemReceiveController extends Controller
     public function getReceiveItem()
     {
         try {
-            $searchData = SmItem::where('school_id', Auth::user()->school_id)->get();
+            $searchData = SmItem::where('church_id', Auth::user()->church_id)->get();
             if (!empty($searchData)) {
                 return json_encode($searchData);
             }
@@ -91,11 +91,11 @@ class SmItemReceiveController extends Controller
             $itemReceives->account_id = $request->bank_id;
             $itemReceives->expense_head_id = $request->expense_head_id;
             $itemReceives->payment_method = $request->payment_method;
-            $itemReceives->school_id = Auth::user()->school_id;
+            $itemReceives->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $itemReceives->un_academic_id = getAcademicId();
+                $itemReceives->un_church_year_id = getAcademicId();
             }else{
-                $itemReceives->academic_id = getAcademicId();
+                $itemReceives->church_year_id = getAcademicId();
             }
             $results = $itemReceives->save();
             $itemReceives->toArray();
@@ -110,17 +110,17 @@ class SmItemReceiveController extends Controller
             $add_expense->account_id = $request->bank_id;
             $add_expense->payment_method_id = $request->payment_method;
             $add_expense->created_by = Auth()->user()->id;
-            $add_expense->school_id = Auth::user()->school_id;
+            $add_expense->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $add_expense->un_academic_id = getAcademicId();
+                $add_expense->un_church_year_id = getAcademicId();
             }else{
-                $add_expense->academic_id = getAcademicId();
+                $add_expense->church_year_id = getAcademicId();
             }
             $add_expense->save();
 
             if(paymentMethodName($request->payment_method)){
                 $bank=SmBankAccount::where('id',$request->bank_id)
-                ->where('school_id',Auth::user()->school_id)
+                ->where('church_id',Auth::user()->church_id)
                 ->first();
                 $after_balance= $bank->current_balance - $total_paid;
 
@@ -132,7 +132,7 @@ class SmItemReceiveController extends Controller
                 $bank_statement->item_receive_id= $itemReceives->id;
                 $bank_statement->payment_date= date('Y-m-d', strtotime($request->receive_date));
                 $bank_statement->bank_id= $request->bank_id;
-                $bank_statement->school_id=Auth::user()->school_id;
+                $bank_statement->church_id=Auth::user()->church_id;
                 $bank_statement->payment_method= $request->payment_method;
                 $bank_statement->save();
 
@@ -153,7 +153,7 @@ class SmItemReceiveController extends Controller
                         $itemReceivedChild->quantity = $request->quantity[$i];
                         $itemReceivedChild->sub_total = $request->totalValue[$i];
                         $itemReceivedChild->created_by = Auth()->user()->id;
-                        $itemReceivedChild->school_id = Auth::user()->school_id;
+                        $itemReceivedChild->church_id = Auth::user()->church_id;
                         $result = $itemReceivedChild->save();
 
                         if ($result) {
@@ -271,22 +271,22 @@ class SmItemReceiveController extends Controller
             $add_expense->expense_head_id = $request->expense_head_id;
             $add_expense->payment_method_id = $request->payment_method;
             $add_expense->created_by = Auth()->user()->id;
-            $add_expense->school_id = Auth::user()->school_id;
+            $add_expense->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $add_expense->un_academic_id = getAcademicId();
+                $add_expense->un_church_year_id = getAcademicId();
             }else{
-                $add_expense->academic_id = getAcademicId();
+                $add_expense->church_year_id = getAcademicId();
             }
             $add_expense->save();
 
             if(paymentMethodName($request->payment_method)){
                 SmBankStatement::where('item_receive_id', $itemReceives->id)
-                                    ->where('school_id',Auth::user()->school_id)
+                                    ->where('church_id',Auth::user()->church_id)
                                     ->delete();
                 
                 
                 $bank=SmBankAccount::where('id',$request->bank_id)
-                    ->where('school_id',Auth::user()->school_id)
+                    ->where('church_id',Auth::user()->church_id)
                     ->first();
                 $after_balance= $bank->current_balance - $total_paid;
 
@@ -298,7 +298,7 @@ class SmItemReceiveController extends Controller
                 $bank_statement->item_receive_id= $itemReceives->id;
                 $bank_statement->payment_date= date('Y-m-d', strtotime($request->receive_date));
                 $bank_statement->bank_id= $request->bank_id;
-                $bank_statement->school_id= Auth::user()->school_id;
+                $bank_statement->church_id= Auth::user()->church_id;
                 $bank_statement->payment_method= $request->payment_method;
                 $bank_statement->save();
 
@@ -309,7 +309,7 @@ class SmItemReceiveController extends Controller
             }
 
             if ($results) {
-                $allItemReceiveChildren = SmItemReceiveChild::where('item_receive_id', $id)->where('school_id', Auth::user()->school_id)->get();
+                $allItemReceiveChildren = SmItemReceiveChild::where('item_receive_id', $id)->where('church_id', Auth::user()->church_id)->get();
                 foreach ($allItemReceiveChildren as $value) {
                     $items = SmItem::find($value->item_id);
                     $items->total_in_stock = $items->total_in_stock - $value->quantity;
@@ -330,9 +330,9 @@ class SmItemReceiveController extends Controller
                         $itemReceivedChild->quantity = $request->quantity[$i];
                         $itemReceivedChild->sub_total = $request->totalValue[$i];
                         $itemReceivedChild->created_by = Auth()->user()->id;
-                        $itemReceivedChild->school_id = Auth::user()->school_id;
+                        $itemReceivedChild->church_id = Auth::user()->church_id;
                         if(!moduleStatusCheck('University')){
-                            $itemReceivedChild->academic_id = getAcademicId();
+                            $itemReceivedChild->church_year_id = getAcademicId();
                         }
                         $result = $itemReceivedChild->save();
 
@@ -359,9 +359,9 @@ class SmItemReceiveController extends Controller
     public function viewItemReceive($id)
     {
         try {
-            $general_setting = SmGeneralSettings::where('school_id', Auth::user()->school_id)->first();
+            $general_setting = SmGeneralSettings::where('church_id', Auth::user()->church_id)->first();
             $viewData = SmItemReceive::find($id);
-            $editDataChildren = SmItemReceiveChild::where('item_receive_id', $id)->where('school_id', Auth::user()->school_id)->get();
+            $editDataChildren = SmItemReceiveChild::where('item_receive_id', $id)->where('church_id', Auth::user()->church_id)->get();
             return view('backEnd.inventory.viewItemReceive', compact('viewData', 'editDataChildren', 'general_setting'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -376,14 +376,14 @@ class SmItemReceiveController extends Controller
 
             $editData = SmItemReceive::find($id);
 
-            $paymentMethhods = SmPaymentMethhod::where('school_id', Auth::user()->school_id)
+            $paymentMethhods = SmPaymentMethhod::where('church_id', Auth::user()->church_id)
                 ->where('active_status', 1)
                 ->get();
-            $account_id = SmBankAccount::where('school_id', Auth::user()->school_id)
+            $account_id = SmBankAccount::where('church_id', Auth::user()->church_id)
                         ->get();
 
             $expense_head = SmChartOfAccount::where('active_status', '=', 1)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->where('type', 'E')
                 ->get();
 
@@ -407,11 +407,11 @@ class SmItemReceiveController extends Controller
             $payments->notes = $request->notes;
             $payments->payment_type = 'R';
             $payments->created_by = Auth()->user()->id;
-            $payments->school_id = Auth::user()->school_id;
+            $payments->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $payments->un_academic_id = getAcademicId();
+                $payments->un_church_year_id = getAcademicId();
             }else{
-                $payments->academic_id = getAcademicId();
+                $payments->church_year_id = getAcademicId();
             }
             $result = $payments->save();
 
@@ -424,9 +424,9 @@ class SmItemReceiveController extends Controller
                 $itemPaymentDue->total_due = $updated_total_due;
                 $itemPaymentDue->total_paid = $updated_total_paid;
                 if(moduleStatusCheck('University')){
-                    $itemPaymentDue->un_academic_id = getAcademicId();
+                    $itemPaymentDue->un_church_year_id = getAcademicId();
                 }else{
-                    $itemPaymentDue->academic_id = getAcademicId();
+                    $itemPaymentDue->church_year_id = getAcademicId();
                 }
                 $result = $itemPaymentDue->update();
 
@@ -440,17 +440,17 @@ class SmItemReceiveController extends Controller
                 $add_expense->inventory_id = $payments->id;
                 $add_expense->payment_method_id = $request->payment_method;
                 $add_expense->created_by = Auth()->user()->id;
-                $add_expense->school_id = Auth::user()->school_id;
+                $add_expense->church_id = Auth::user()->church_id;
                 if(moduleStatusCheck('University')){
-                    $add_expense->un_academic_id = getAcademicId();
+                    $add_expense->un_church_year_id = getAcademicId();
                 }else{
-                    $add_expense->academic_id = getAcademicId();
+                    $add_expense->church_year_id = getAcademicId();
                 }
                 $add_expense->save();
 
                 if(paymentMethodName($request->payment_method)){
                     $bank=SmBankAccount::where('id',$request->bank_id)
-                    ->where('school_id',Auth::user()->school_id)
+                    ->where('church_id',Auth::user()->church_id)
                     ->first();
                     $after_balance= $bank->current_balance - $request->amount;
     
@@ -463,7 +463,7 @@ class SmItemReceiveController extends Controller
                     $bank_statement->item_receive_bank_statement_id = $payments->id;
                     $bank_statement->payment_date= date('Y-m-d', strtotime($request->payment_date));
                     $bank_statement->bank_id= $request->bank_id;
-                    $bank_statement->school_id= Auth::user()->school_id;
+                    $bank_statement->church_id= Auth::user()->church_id;
                     $bank_statement->payment_method= $request->payment_method;
                     $bank_statement->save();
 
@@ -504,7 +504,7 @@ class SmItemReceiveController extends Controller
     {
 
         try {
-            $payments = SmInventoryPayment::where('item_receive_sell_id', $id)->where('payment_type', 'R')->where('school_id', Auth::user()->school_id)->get();
+            $payments = SmInventoryPayment::where('item_receive_sell_id', $id)->where('payment_type', 'R')->where('church_id', Auth::user()->church_id)->get();
             return view('backEnd.inventory.viewReceivePayments', compact('payments', 'id'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -526,7 +526,7 @@ class SmItemReceiveController extends Controller
 
             if(paymentMethodName($itemReceivesData->payment_method)){
                 $bank=SmBankAccount::where('id',$itemReceivesData->account_id)
-                ->where('school_id',Auth::user()->school_id)
+                ->where('church_id',Auth::user()->church_id)
                 ->first();
                 $after_balance= $bank->current_balance + $amount;
 
@@ -585,16 +585,16 @@ class SmItemReceiveController extends Controller
     {
         try {
             $itemReceivedChilds = SmItemReceiveChild::where('item_receive_id', $id)
-                                ->where('school_id', Auth::user()->school_id)
+                                ->where('church_id', Auth::user()->church_id)
                                 ->get();
             foreach ($itemReceivedChilds as $value) {
-                $items = SmItem::where('id', $value->item_id)->where('school_id', Auth::user()->school_id)->first();
+                $items = SmItem::where('id', $value->item_id)->where('church_id', Auth::user()->church_id)->first();
                 $items->total_in_stock = $items->total_in_stock - $value->quantity;
                 $results = $items->update();
-                $iReceChi = SmItemReceiveChild::where('id', $value->id)->where('school_id', Auth::user()->school_id)->delete();
+                $iReceChi = SmItemReceiveChild::where('id', $value->id)->where('church_id', Auth::user()->church_id)->delete();
             }
-            $result = SmItemReceive::where('id', $id)->where('school_id', Auth::user()->school_id)->delete();
-            $delete_expense=SmAddExpense::where('item_receive_id',$id)->where('school_id', Auth::user()->school_id)->delete();
+            $result = SmItemReceive::where('id', $id)->where('church_id', Auth::user()->church_id)->delete();
+            $delete_expense=SmAddExpense::where('item_receive_id',$id)->where('church_id', Auth::user()->church_id)->delete();
             
             if ($result) {
                 Toastr::success('Operation successful', 'Success');
@@ -653,16 +653,16 @@ class SmItemReceiveController extends Controller
 
             $itemReceives->expnese_head_id;
             $refund = SmAddExpense::where('item_receive_id',$itemReceives->id)
-                        ->where('school_id', Auth::user()->school_id)
+                        ->where('church_id', Auth::user()->church_id)
                         ->delete();
 
             if(paymentMethodName($itemReceives->payment_method)){
                 $reset_balance = SmBankStatement::where('item_receive_id',$itemReceives->id)
-                                ->where('school_id',Auth::user()->school_id)
+                                ->where('church_id',Auth::user()->church_id)
                                 ->sum('amount');
 
                     $bank=SmBankAccount::where('id',$itemReceives->account_id)
-                    ->where('school_id',Auth::user()->school_id)
+                    ->where('church_id',Auth::user()->church_id)
                     ->first();
                     $after_balance= $bank->current_balance + $reset_balance;
 
@@ -671,12 +671,12 @@ class SmItemReceiveController extends Controller
                     $current_balance->update();
 
                     $delete_balance = SmBankStatement::where('item_receive_id',$itemReceives->id)
-                                        ->where('school_id',Auth::user()->school_id)
+                                        ->where('church_id',Auth::user()->church_id)
                                         ->delete();
             }
             if ($results) {
                 $itemReceiveChild = SmItemReceiveChild::where('item_receive_id', $id)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->get();
 
                 if (!empty($itemReceiveChild)) {
