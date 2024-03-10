@@ -2555,8 +2555,8 @@ return view('backEnd.studentInformation.student_details', ['memberData' => $memb
                                     try {
                                         $student = new SmStudent();
                                         // $student->siblings_id = $value->sibling_id;
-                                        // $student->age_group_id = $request->class;
-                                        // $student->mgender_id = $request->section;
+                                        $student->age_group_id = $request->class;
+                                         $student->mgender_id = $request->section;
                                         $student->session_id = $request->session;
                                         $student->user_id = $user_stu->id;
 
@@ -2564,7 +2564,7 @@ return view('backEnd.studentInformation.student_details', ['memberData' => $memb
                                         $student->role_id = 2;
 
                                         $student->registration_no = $value->registration_number;
-                                        $student->member_id_no = $value->registration_number;
+                                        $student->member_id_no = $value->member_id_no;
                                         $student->first_name = $value->first_name;
                                         $student->last_name = $value->last_name;
                                         $student->full_name = $value->first_name . ' ' . $value->last_name;
@@ -2581,7 +2581,7 @@ return view('backEnd.studentInformation.student_details', ['memberData' => $memb
                                         $student->current_address = $value->current_address;
                                         $student->permanent_address = $value->permanent_address;
                                         $student->national_id_no = $value->national_identification_no;
-                                        $student->communicant = $value->local_identification_no;
+                                       
                                         $student->day_born = $value->day_born;
                                         $student->employer_name = $value->employer_name;
                                         $student->previous_school_details = $value->previous_school_details;

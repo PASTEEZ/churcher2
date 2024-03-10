@@ -70,23 +70,7 @@
                         <input type="hidden" name="url" id="url" value="{{URL::to('/')}}">
                      
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 
 
 
 
@@ -117,7 +101,7 @@
                        
                       
 
-                            @if(is_show('registration_number'))
+                          
                             <div class="col-lg-2">
                                 <div class="input-effect">
                                     <input class="primary-input  form-control{{ $errors->has('registration_number') ? ' is-invalid' : '' }}" type="text" onkeyup="GetAdmin(this.value)" name="registration_number"
@@ -135,9 +119,9 @@
                                     @endif
                                 </div>
                             </div>
-                            @endif
+                        
 
-                            @if(is_show('registration_date'))
+                          
                             <div class="col-lg-2">
                                 <div class="no-gutters input-right-icon">
                                     <div class="col">
@@ -160,11 +144,21 @@
                                     </div>
                                 </div>
                             </div>
-                            @endif 
+                        
 
                         </div>
                         
                   
+
+
+
+
+
+
+
+
+
+
                         <div class="col-lg-1">
                             <div class="input-effect sm2_mb_20 md_mb_20">
                                 <div class="input-effect sm2_mb_20 md_mb_20">

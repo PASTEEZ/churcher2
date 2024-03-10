@@ -61,7 +61,6 @@ class StudentsImport implements ToModel, WithStartRow, WithHeadingRow
           "day_born" => (string) @$row['day_born'],
           "employer_name" => @$row['employer_name'],
           "national_identification_no" => (string) @$row['national_identification_no'],
-          "local_identification_no" => (string) @$row['local_identification_no'],
           "previous_school_details" => (string) @$row['previous_school_details'],
           "note" => @$row['note'],
           "user_id" => Auth::user()->id

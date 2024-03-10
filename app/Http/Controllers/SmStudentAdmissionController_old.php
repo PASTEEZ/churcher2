@@ -2872,20 +2872,7 @@ class SmStudentAdmissionController extends Controller
 
 
                     foreach ($data as $key => $value) {
-
-                        if(isSubscriptionEnabled()){
-
-                            $active_student = SmStudent::where('church_id', Auth::user()->church_id)->where('active_status', 1)->count();
-
-                            if(\Modules\Saas\Entities\SmPackagePlan::student_limit() <= $active_student){
-
-                                DB::commit();
-                                StudentBulkTemporary::where('user_id', Auth::user()->id)->delete();
-                                Toastr::error('Your student limit has been crossed.', 'Failed');
-                                return redirect('student-list');
-
-                            }
-                        }
+ 
 
 
                         $ad_check = SmStudent::where('registration_no', (String) $value->registration_number)->where('church_id', Auth::user()->church_id)->get();

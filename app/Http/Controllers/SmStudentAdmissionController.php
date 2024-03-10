@@ -2035,7 +2035,7 @@ class SmStudentAdmissionController extends Controller
                 'file' => 'required'
             ],
             [
-                'session.required' => 'Academic year field is required.'
+                'session.required' => 'Church year field is required.'
             ]
         );
 
@@ -2080,7 +2080,7 @@ class SmStudentAdmissionController extends Controller
 
                                 DB::commit();
                                 StudentBulkTemporary::where('user_id', Auth::user()->id)->delete();
-                                Toastr::error('Your student limit has been crossed.', 'Failed');
+                                Toastr::error('Your membership limit has been crossed.', 'Failed');
                                 return redirect('member-list');
 
                             }
@@ -2093,7 +2093,7 @@ class SmStudentAdmissionController extends Controller
                         if ($ad_check->count() > 0) {
                             DB::rollback();
                             StudentBulkTemporary::where('user_id', Auth::user()->id)->delete();
-                            Toastr::error('Admission number should be unique.', 'Failed');
+                            Toastr::error('Reg. number should be unique.', 'Failed');
                             return redirect()->back();
                         }
 
@@ -2102,7 +2102,7 @@ class SmStudentAdmissionController extends Controller
                             if ($chk >= 1) {
                                 DB::rollback();
                                 StudentBulkTemporary::where('user_id', Auth::user()->id)->delete();
-                                Toastr::error('Student Email address should be unique.', 'Failed');
+                                Toastr::error('Member Email address should be unique.', 'Failed');
                                 return redirect()->back();
                             }
                         }
