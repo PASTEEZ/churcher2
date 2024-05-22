@@ -25,7 +25,7 @@ class AddColumnCurrencyFormatToSmCurrenciesTable extends Migration
         });
         $schools = SmSchool::all();
         foreach ($schools as $school) {
-            SmCurrency::where('school_id', $school->id)->update([
+            SmCurrency::where('church_id', $school->id)->update([
                 'currency_type'=>'S',
                 'currency_position'=>'S',
                 'space'=>true,

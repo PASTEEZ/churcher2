@@ -35,8 +35,8 @@ class FeesController extends Controller
 {
     public function feesGroup()
     {
-        $feesGroups = FmFeesGroup::where('school_id', Auth::user()->school_id)
-            ->where('academic_id', getAcademicId())
+        $feesGroups = FmFeesGroup::where('church_id', Auth::user()->church_id)
+            ->where('church_year_id', getAcademicId())
             ->get();
         return view('fees::feesGroup', compact('feesGroups'));
     }
@@ -44,7 +44,7 @@ class FeesController extends Controller
     public function feesGroupStore(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => ['required', 'max:100', Rule::unique('fm_fees_groups', 'name')->where('school_id', auth()->user()->school_id)],
+            'name' => ['required', 'max:100', Rule::unique('fm_fees_groups', 'name')->where('church_id', auth()->user()->church_id)],
         ]);
 
         if ($validator->fails()) {
@@ -55,8 +55,8 @@ class FeesController extends Controller
             $feesGroup = new FmFeesGroup();
             $feesGroup->name = $request->name;
             $feesGroup->description = $request->description;
-            $feesGroup->school_id = Auth::user()->school_id;
-            $feesGroup->academic_id = getAcademicId();
+            $feesGroup->church_id = Auth::user()->church_id;
+            $feesGroup->church_year_id = getAcademicId();
             $feesGroup->save();
 
             Toastr::success('Save Successful', 'Success');
@@ -73,10 +73,10 @@ class FeesController extends Controller
             if (checkAdmin()) {
                 $feesGroup = FmFeesGroup::find($id);
             } else {
-                $feesGroup = FmFeesGroup::where('id', $id)->where('school_id', Auth::user()->school_id)->first();
+                $feesGroup = FmFeesGroup::where('id', $id)->where('church_id', Auth::user()->church_id)->first();
             }
-            $feesGroups = FmFeesGroup::where('school_id', Auth::user()->school_id)
-                ->where('academic_id', getAcademicId())
+            $feesGroups = FmFeesGroup::where('church_id', Auth::user()->church_id)
+                ->where('church_year_id', getAcademicId())
                 ->get();
             return view('fees::feesGroup', compact('feesGroup', 'feesGroups'));
         } catch (\Exception $e) {
@@ -92,9 +92,9 @@ class FeesController extends Controller
         ]);
 
         $ifExistes = FmFeesGroup::where('name', $request->name)
-            ->where('school_id', Auth::user()->school_id)
+            ->where('church_id', Auth::user()->church_id)
             ->where('id', '!=', $request->id)
-            ->where('academic_id', getAcademicId())
+            ->where('church_year_id', getAcademicId())
             ->first();
         if ($ifExistes) {
             Toastr::Warning('Duplicate Name Found!', 'Warning');
@@ -110,12 +110,12 @@ class FeesController extends Controller
                 $feesGroup = FmFeesGroup::find($request->id);
             } else {
                 $feesGroup = FmFeesGroup::where('id', $request->id)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->first();
             }
             $feesGroup->name = $request->name;
             $feesGroup->description = $request->description;
-            $feesGroup->academic_id = getAcademicId();
+            $feesGroup->church_year_id = getAcademicId();
             $feesGroup->save();
 
             Toastr::success('Update Successful', 'Success');
@@ -133,7 +133,7 @@ class FeesController extends Controller
                 FmFeesGroup::destroy($request->id);
             } else {
                 FmFeesGroup::where('id', $request->id)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->delete();
             }
             Toastr::success('Delete Successful', 'Success');
@@ -146,13 +146,13 @@ class FeesController extends Controller
 
     public function feesType()
     {
-        $feesGroups = FmFeesGroup::where('school_id', Auth::user()->school_id)
-            ->where('academic_id', getAcademicId())
+        $feesGroups = FmFeesGroup::where('church_id', Auth::user()->church_id)
+            ->where('church_year_id', getAcademicId())
             ->get();
 
         $feesTypes = FmFeesType::where('type', 'fees')
-            ->where('school_id', Auth::user()->school_id)
-            ->where('academic_id', getAcademicId())
+            ->where('church_id', Auth::user()->church_id)
+            ->where('church_year_id', getAcademicId())
             ->get();
 
         return view('fees::feesType', compact('feesGroups', 'feesTypes'));
@@ -162,7 +162,7 @@ class FeesController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            'name' => ['required', 'max:50', Rule::unique('fm_fees_types', 'name')->where('fees_group_id', $request->fees_group)->where('school_id', auth()->user()->school_id)],
+            'name' => ['required', 'max:50', Rule::unique('fm_fees_types', 'name')->where('fees_group_id', $request->fees_group)->where('church_id', auth()->user()->church_id)],
         ]);
 
         if ($validator->fails()) {
@@ -174,8 +174,8 @@ class FeesController extends Controller
             $feesType->name = $request->name;
             $feesType->fees_group_id = $request->fees_group;
             $feesType->description = $request->description;
-            $feesType->school_id = Auth::user()->school_id;
-            $feesType->academic_id = getAcademicId();
+            $feesType->church_id = Auth::user()->church_id;
+            $feesType->church_year_id = getAcademicId();
             $feesType->save();
 
             Toastr::success('Save Successful', 'Success');
@@ -193,16 +193,16 @@ class FeesController extends Controller
                 $feesType = FmFeesType::find($id);
             } else {
                 $feesType = FmFeesType::where('id', $id)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->first();
             }
-            $feesGroups = FmFeesGroup::where('school_id', Auth::user()->school_id)
-                ->where('academic_id', getAcademicId())
+            $feesGroups = FmFeesGroup::where('church_id', Auth::user()->church_id)
+                ->where('church_year_id', getAcademicId())
                 ->get();
 
             $feesTypes = FmFeesType::where('type', 'fees')
-                ->where('school_id', Auth::user()->school_id)
-                ->where('academic_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
+                ->where('church_year_id', getAcademicId())
                 ->get();
 
             return view('fees::feesType', compact('feesGroups', 'feesTypes', 'feesType'));
@@ -215,15 +215,15 @@ class FeesController extends Controller
     public function feesTypeUpdate(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => ['required', 'max:50', Rule::unique('fm_fees_types', 'name')->where('fees_group_id', $request->fees_group)->where('school_id', auth()->user()->school_id)->ignore($request->id)],
+            'name' => ['required', 'max:50', Rule::unique('fm_fees_types', 'name')->where('fees_group_id', $request->fees_group)->where('church_id', auth()->user()->church_id)->ignore($request->id)],
         ]);
 
         $ifExistes = FmFeesType::where('id', '!=', $request->id)
             ->where('type', 'fees')
-            ->where('school_id', Auth::user()->school_id)
+            ->where('church_id', Auth::user()->church_id)
             ->where('name', $request->name)
             ->where('fees_group_id', $request->fees_group)
-            ->where('academic_id', getAcademicId())
+            ->where('church_year_id', getAcademicId())
             ->first();
 
         if ($ifExistes) {
@@ -241,7 +241,7 @@ class FeesController extends Controller
             } else {
                 $feesType = FmFeesType::where('type', 'fees')
                     ->where('id', $request->id)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->first();
             }
             $feesType->name = $request->name;
@@ -268,7 +268,7 @@ class FeesController extends Controller
                     FmFeesType::find($request->id)->delete();
                 } else {
                     FmFeesType::where('id', $request->id)
-                        ->where('school_id', Auth::user()->school_id)
+                        ->where('church_id', Auth::user()->church_id)
                         ->delete();
                 }
                 Toastr::success('Delete Successful', 'Success');
@@ -287,8 +287,8 @@ class FeesController extends Controller
     public function feesInvoiceList()
     {
         $studentInvoices = FmFeesInvoice::where('type', 'fees')
-            ->where('school_id', Auth::user()->school_id)
-            ->where('academic_id', getAcademicId())
+            ->where('church_id', Auth::user()->church_id)
+            ->where('church_year_id', getAcademicId())
             
           
             ->whereMonth('create_date', now()->month)  // Assuming 'created_at' is the timestamp of invoice creation
@@ -302,39 +302,39 @@ class FeesController extends Controller
     public function feesInvoice()
     {
         try {
-            $classes = SmClass::where('school_id', Auth::user()->school_id)
-                ->where('academic_id', getAcademicId())
+            $classes = SmClass::where('church_id', Auth::user()->church_id)
+                ->where('church_year_id', getAcademicId())
                 ->get();
-           $students = SmStudent::where('school_id', Auth::user()->school_id)
+           $students = SmStudent::where('church_id', Auth::user()->church_id)
                 ->get();
-            $feesGroups = FmFeesGroup::where('school_id', Auth::user()->school_id)
-                ->where('academic_id', getAcademicId())
+            $feesGroups = FmFeesGroup::where('church_id', Auth::user()->church_id)
+                ->where('church_year_id', getAcademicId())
                 ->get();
 
             $feesTypes = FmFeesType::where('type', 'fees')
-                ->where('school_id', Auth::user()->school_id)
-                ->where('academic_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
+                ->where('church_year_id', getAcademicId())
                 ->get();
 
             $paymentMethods = SmPaymentMethhod::whereIn('method', ["Cash", "Cheque", "Bank"])
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
-            $bankAccounts = SmBankAccount::where('school_id', Auth::user()->school_id)
-                ->where('academic_id', getAcademicId())
+            $bankAccounts = SmBankAccount::where('church_id', Auth::user()->church_id)
+                ->where('church_year_id', getAcademicId())
                 ->get();
 
-            $invoiceSettings = FmFeesInvoiceSettings::where('school_id', Auth::user()->school_id)->first();
+            $invoiceSettings = FmFeesInvoiceSettings::where('church_id', Auth::user()->church_id)->first();
             if(!$invoiceSettings){
                 $invoiceSettings = new FmFeesInvoiceSettings();
-                $invoiceSettings->invoice_positions = '[{"id":"prefix","text":"prefix"},{"id":"admission_no","text":"Admission No"},{"id":"class","text":"Class"},{"id":"section","text":"Section"}]';
+                $invoiceSettings->invoice_positions = '[{"id":"prefix","text":"prefix"},{"id":"registration_no","text":"Admission No"},{"id":"class","text":"Class"},{"id":"section","text":"Section"}]';
                 $invoiceSettings->uniq_id_start = "0011";
                 $invoiceSettings->prefix = 'PCG-IN';
                 $invoiceSettings->class_limit = 3;
                 $invoiceSettings->section_limit = 1;
                 $invoiceSettings->admission_limit = 3;
                 $invoiceSettings->weaver = 'amount';
-                $invoiceSettings->school_id = auth()->user()->school_id;
+                $invoiceSettings->church_id = auth()->user()->church_id;
                 $invoiceSettings->save();
             }
 
@@ -399,7 +399,7 @@ class FeesController extends Controller
                         $paid_amount[] = gv($group, 'paid_amount');
 
                         if($request->singleInvoice == 1){
-                            $invoiceStore->invStore($request->merge(['student' => $student->student_id,
+                            $invoiceStore->invStore($request->merge(['student' => $student->member_id,
                                 'record_id' => $student->id,
                                 'feesType' => $feesType,
                                 'amount' => $amount,
@@ -411,7 +411,7 @@ class FeesController extends Controller
                         }
                     }
                     if(empty($request->singleInvoice)){
-                        $invoiceStore->invStore($request->merge(['student' => $student->student_id,
+                        $invoiceStore->invStore($request->merge(['student' => $student->member_id,
                             'record_id' => $student->id,
                             'feesType' => $feesType,
                             'amount' => $amount,
@@ -440,7 +440,7 @@ class FeesController extends Controller
                         $tpaid_amount[] = gv($type, 'paid_amount');
 
                         $invoiceStore->invStore($request->merge(
-                            ['student' => $student->student_id,
+                            ['student' => $student->member_id,
                             'record_id' => $student->id,
                             'feesType' => $tfeesType,
                             'amount' => $tamount,
@@ -452,7 +452,7 @@ class FeesController extends Controller
                     }
                 }
                 //Notification
-                $students = SmStudent::with('parents')->find($student->student_id);
+                $students = SmStudent::with('parents')->find($student->member_id);
                 sendNotification("Fees Assign", null, $students->user_id, 2);
                 sendNotification("Fees Assign", null, $students->parents->user_id, 3);
             } else {
@@ -463,9 +463,9 @@ class FeesController extends Controller
                     return $q->where('active_status', 1);
                 })
                
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->where('is_promote', 0)
-                    ->where('academic_id', getAcademicId())
+                    ->where('church_year_id', getAcademicId())
                     ->get();
 
                 foreach ($allStudents as $key => $student) {
@@ -496,7 +496,7 @@ class FeesController extends Controller
                                 $paid_amount[] = gv($group, 'paid_amount');
 
                                 if($request->singleInvoice == 1){
-                                    $invoiceStore->invStore($request->merge(['student' => $student->student_id,
+                                    $invoiceStore->invStore($request->merge(['student' => $student->member_id,
                                         'record_id' => $student->id,
                                         'feesType' => $feesType,
                                         'amount' => $amount,
@@ -509,7 +509,7 @@ class FeesController extends Controller
 
                             }
                         if(empty($request->singleInvoice)){
-                            $invoiceStore->invStore($request->merge(['student' => $student->student_id,
+                            $invoiceStore->invStore($request->merge(['student' => $student->member_id,
                                 'record_id' => $student->id,
                                 'feesType' => $feesType,
                                 'amount' => $amount,
@@ -537,7 +537,7 @@ class FeesController extends Controller
                             $tnote[] = gv($type, 'note');
                             $tpaid_amount[] = gv($type, 'paid_amount');
     
-                            $invoiceStore->invStore($request->merge(['student' => $student->student_id,
+                            $invoiceStore->invStore($request->merge(['student' => $student->member_id,
                                 'record_id' => $student->id,
                                 'feesType' => $tfeesType,
                                 'amount' => $tamount,
@@ -566,40 +566,40 @@ class FeesController extends Controller
     {
         try {
             // View Start
-            $classes = SmClass::where('school_id', Auth::user()->school_id)
-                ->where('academic_id', getAcademicId())
+            $classes = SmClass::where('church_id', Auth::user()->church_id)
+                ->where('church_year_id', getAcademicId())
                 ->get();
 
-            $feesGroups = FmFeesGroup::where('school_id', Auth::user()->school_id)
-                ->where('academic_id', getAcademicId())
+            $feesGroups = FmFeesGroup::where('church_id', Auth::user()->church_id)
+                ->where('church_year_id', getAcademicId())
                 ->get();
 
             $feesTypes = FmFeesType::where('type', 'fees')
-                ->where('school_id', Auth::user()->school_id)
-                ->where('academic_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
+                ->where('church_year_id', getAcademicId())
                 ->get();
 
             $paymentMethods = SmPaymentMethhod::whereIn('method', ["Cash", "Cheque", "Bank"])
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
-            $bankAccounts = SmBankAccount::where('school_id', Auth::user()->school_id)
-                ->where('academic_id', getAcademicId())
+            $bankAccounts = SmBankAccount::where('church_id', Auth::user()->church_id)
+                ->where('church_year_id', getAcademicId())
                 ->get();
             // View End
 
-            $invoiceSettings = FmFeesInvoiceSettings::where('school_id', Auth::user()->school_id)->first();
+            $invoiceSettings = FmFeesInvoiceSettings::where('church_id', Auth::user()->church_id)->first();
 
             $invoiceInfo = FmFeesInvoice::find($id);
             $invoiceDetails = FmFeesInvoiceChield::where('fees_invoice_id', $invoiceInfo->id)
-                ->where('school_id', Auth::user()->school_id)
-                ->where('academic_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
+                ->where('church_year_id', getAcademicId())
                 ->get();
 
             $students = StudentRecord::where('id', $invoiceInfo->record_id)
-                ->where('class_id', $invoiceInfo->class_id)
-                ->where('school_id', Auth::user()->school_id)
-                ->where('academic_id', getAcademicId())
+                ->where('age_group_id', $invoiceInfo->age_group_id)
+                ->where('church_id', Auth::user()->church_id)
+                ->where('church_year_id', getAcademicId())
                 ->get();
 
             return view('fees::feesInvoice.feesInvoice', compact('classes', 'feesGroups', 'feesTypes', 'paymentMethods', 'bankAccounts', 'invoiceSettings', 'invoiceInfo', 'invoiceDetails', 'students'));
@@ -630,15 +630,15 @@ class FeesController extends Controller
             $student = StudentRecord::find($request->student);
 
             $storeFeesInvoice = FmFeesInvoice::find($request->id);
-            $storeFeesInvoice->class_id = $request->class;
+            $storeFeesInvoice->age_group_id = $request->class;
             $storeFeesInvoice->create_date = date('Y-m-d', strtotime($request->create_date));
             $storeFeesInvoice->due_date = date('Y-m-d', strtotime($request->due_date));
             $storeFeesInvoice->payment_status = $request->payment_status;
             $storeFeesInvoice->bank_id = $request->bank;
-            $storeFeesInvoice->student_id = $student->student_id;
+            $storeFeesInvoice->member_id = $student->member_id;
             $storeFeesInvoice->record_id = $request->student;
-            $storeFeesInvoice->school_id = Auth::user()->school_id;
-            $storeFeesInvoice->academic_id = getAcademicId();
+            $storeFeesInvoice->church_id = Auth::user()->church_id;
+            $storeFeesInvoice->church_year_id = getAcademicId();
             $storeFeesInvoice->update();
 
             FmFeesInvoiceChield::where('fees_invoice_id', $request->id)->delete();
@@ -658,23 +658,23 @@ class FeesController extends Controller
                     $storeFeesInvoiceChield->paid_amount = $request->paid_amount[$key];
                 }
 
-                $storeFeesInvoiceChield->school_id = Auth::user()->school_id;
-                $storeFeesInvoiceChield->academic_id = getAcademicId();
+                $storeFeesInvoiceChield->church_id = Auth::user()->church_id;
+                $storeFeesInvoiceChield->church_year_id = getAcademicId();
                 $storeFeesInvoiceChield->save();
 
                 $storeWeaver = new FmFeesWeaver();
                 $storeWeaver->fees_invoice_id = $storeFeesInvoice->id;
                 $storeWeaver->fees_type = $type;
-                $storeWeaver->student_id = $request->student;
+                $storeWeaver->member_id = $request->student;
                 $storeWeaver->weaver = $request->weaver[$key];
                 $storeWeaver->note = $request->note[$key];
-                $storeWeaver->school_id = Auth::user()->school_id;
-                $storeWeaver->academic_id = getAcademicId();
+                $storeWeaver->church_id = Auth::user()->church_id;
+                $storeWeaver->church_year_id = getAcademicId();
                 $storeWeaver->save();
             }
 
             //Notification
-            $student = SmStudent::with('parents')->find($storeFeesInvoice->student_id);
+            $student = SmStudent::with('parents')->find($storeFeesInvoice->member_id);
             sendNotification("Fees Assign Update", null, $student->user_id, 2);
             sendNotification("Fees Assign Update", null, $student->parents->user_id, 3);
             Toastr::success('Update Successful', 'Success');
@@ -687,15 +687,15 @@ class FeesController extends Controller
 
     public function feesInvoiceView($id, $state)
     {
-        $generalSetting = SmGeneralSettings::where('school_id', Auth::user()->school_id)->first();
+        $generalSetting = SmGeneralSettings::where('church_id', Auth::user()->church_id)->first();
         $invoiceInfo = FmFeesInvoice::find($id);
 
         $invoiceDetails = FmFeesInvoiceChield::where('fees_invoice_id', $invoiceInfo->id)
-            ->where('school_id', Auth::user()->school_id)
-            ->where('academic_id', getAcademicId())
+            ->where('church_id', Auth::user()->church_id)
+            ->where('church_year_id', getAcademicId())
             ->get();
         $banks = SmBankAccount::where('active_status', '=', 1)
-            ->where('school_id', Auth::user()->school_id)
+            ->where('church_id', Auth::user()->church_id)
             ->get();
 
         if ($state == 'view') {
@@ -724,40 +724,40 @@ class FeesController extends Controller
     public function addFeesPayment($id)
     {
         try {
-            $classes = SmClass::where('school_id', Auth::user()->school_id)
-                ->where('academic_id', getAcademicId())
+            $classes = SmClass::where('church_id', Auth::user()->church_id)
+                ->where('church_year_id', getAcademicId())
                 ->get();
 
-            $feesGroups = FmFeesGroup::where('school_id', Auth::user()->school_id)
-                ->where('academic_id', getAcademicId())
+            $feesGroups = FmFeesGroup::where('church_id', Auth::user()->church_id)
+                ->where('church_year_id', getAcademicId())
                 ->get();
 
-            $feesTypes = FmFeesType::where('school_id', Auth::user()->school_id)
-                ->where('academic_id', getAcademicId())
+            $feesTypes = FmFeesType::where('church_id', Auth::user()->church_id)
+                ->where('church_year_id', getAcademicId())
                 ->get();
 
             $feesTypes = FmFeesType::where('type', 'fees')
-                ->where('school_id', Auth::user()->school_id)
-                ->where('academic_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
+                ->where('church_year_id', getAcademicId())
                 ->get();
 
             $paymentMethods = SmPaymentMethhod::whereIn('method', ["Cash", "Cheque", "Bank"])
                 ->where('active_status', 1)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
-            $bankAccounts = SmBankAccount::where('school_id', Auth::user()->school_id)
-                ->where('academic_id', getAcademicId())
+            $bankAccounts = SmBankAccount::where('church_id', Auth::user()->church_id)
+                ->where('church_year_id', getAcademicId())
                 ->get();
 
             $invoiceInfo = FmFeesInvoice::find($id);
             $invoiceDetails = FmFeesInvoiceChield::where('fees_invoice_id', $invoiceInfo->id)
-                ->where('school_id', Auth::user()->school_id)
-                ->where('academic_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
+                ->where('church_year_id', getAcademicId())
                 ->get();
 
             $stripe_info = SmPaymentGatewaySetting::where('gateway_name', 'stripe')
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->first();
 
             return view('fees::addFessPayment', compact('classes', 'feesGroups', 'feesTypes', 'paymentMethods', 'bankAccounts', 'invoiceInfo', 'invoiceDetails', 'stripe_info'));
@@ -788,9 +788,9 @@ class FeesController extends Controller
             $destination = 'public/uploads/student/document/';
             $file = fileUpload($request->file('file'), $destination);
 
-            $record = StudentRecord::find($request->student_id);
+            $record = StudentRecord::find($request->member_id);
 
-            $student = SmStudent::with('parents')->find($record->student_id);
+            $student = SmStudent::with('parents')->find($record->member_id);
 
             if ($request->add_wallet > 0) {
                 $user = User::find($student->user_id);
@@ -805,17 +805,17 @@ class FeesController extends Controller
                 $addPayment->type = 'diposit';
                 $addPayment->status = 'approve';
                 $addPayment->note = 'Fees Extra Payment Add';
-                $addPayment->school_id = Auth::user()->school_id;
-                $addPayment->academic_id = getAcademicId();
+                $addPayment->church_id = Auth::user()->church_id;
+                $addPayment->church_year_id = getAcademicId();
                 $addPayment->save();
 
-                $school = SmSchool::find($user->school_id);
+                $school = SmSchool::find($user->church_id);
 
                 $compact['user_email'] = $user->email;
                 $compact['full_name'] = $user->full_name;
                 $compact['method'] = $request->payment_method;
                 $compact['create_date'] = date('Y-m-d');
-                $compact['school_name'] = $school->school_name;
+                $compact['church_name'] = $school->church_name;
                 $compact['current_balance'] = $user->wallet_balance;
                 $compact['add_balance'] = $request->total_paid_amount;
                 $compact['previous_balance'] = $user->wallet_balance - $request->add_wallet;
@@ -831,13 +831,13 @@ class FeesController extends Controller
             $storeTransaction->payment_note = $request->payment_note;
             $storeTransaction->payment_method = $request->payment_method;
             $storeTransaction->bank_id = $request->bank;
-            $storeTransaction->student_id = $student->id;
+            $storeTransaction->member_id = $student->id;
             $storeTransaction->record_id = $request->record_id;
             $storeTransaction->user_id = Auth::user()->id;
             $storeTransaction->file = $file;
             $storeTransaction->paid_status = 'approve';
-            $storeTransaction->school_id = Auth::user()->school_id;
-            $storeTransaction->academic_id = getAcademicId();
+            $storeTransaction->church_id = Auth::user()->church_id;
+            $storeTransaction->church_year_id = getAcademicId();
             $storeTransaction->save();
 
             foreach ($request->fees_type as $key => $type) {
@@ -852,11 +852,11 @@ class FeesController extends Controller
                 $storeWeaver = new FmFeesWeaver();
                 $storeWeaver->fees_invoice_id = $request->invoice_id;
                 $storeWeaver->fees_type = $type;
-                $storeWeaver->student_id = $student->id;
+                $storeWeaver->member_id = $student->id;
                 $storeWeaver->weaver = $request->weaver[$key];
                 $storeWeaver->note = $request->note[$key];
-                $storeWeaver->school_id = Auth::user()->school_id;
-                $storeWeaver->academic_id = getAcademicId();
+                $storeWeaver->church_id = Auth::user()->church_id;
+                $storeWeaver->church_year_id = getAcademicId();
                 $storeWeaver->save();
 
                 if ($request->paid_amount[$key] > 0) {
@@ -867,8 +867,8 @@ class FeesController extends Controller
                     $storeTransactionChield->fine = $request->fine[$key];
                     $storeTransactionChield->paid_amount = $request->paid_amount[$key];
                     $storeTransactionChield->note = $request->note[$key];
-                    $storeTransactionChield->school_id = Auth::user()->school_id;
-                    $storeTransactionChield->academic_id = getAcademicId();
+                    $storeTransactionChield->church_id = Auth::user()->church_id;
+                    $storeTransactionChield->church_year_id = getAcademicId();
                     $storeTransactionChield->save();
                 }
 
@@ -888,15 +888,15 @@ class FeesController extends Controller
                     $add_income->account_id = $request->bank;
                 }
                 $add_income->created_by = Auth()->user()->id;
-                $add_income->school_id = Auth::user()->school_id;
-                $add_income->academic_id = getAcademicId();
+                $add_income->church_id = Auth::user()->church_id;
+                $add_income->church_year_id = getAcademicId();
                 $add_income->save();
 
                 // Bank
                 if ($request->payment_method == "Bank") {
                     $payment_method = SmPaymentMethhod::where('method', $request->payment_method)->first();
                     $bank = SmBankAccount::where('id', $request->bank)
-                        ->where('school_id', Auth::user()->school_id)
+                        ->where('church_id', Auth::user()->church_id)
                         ->first();
                     $after_balance = $bank->current_balance + $request->paid_amount[$key];
 
@@ -908,7 +908,7 @@ class FeesController extends Controller
                     $bank_statement->item_sell_id = $storeTransaction->id;
                     $bank_statement->payment_date = date('Y-m-d');
                     $bank_statement->bank_id = $request->bank;
-                    $bank_statement->school_id = Auth::user()->school_id;
+                    $bank_statement->church_id = Auth::user()->church_id;
                     $bank_statement->payment_method = $payment_method->id;
                     $bank_statement->save();
 
@@ -932,7 +932,7 @@ class FeesController extends Controller
     public function feesInvoiceSettings()
     {
         try {
-            $invoiceSettings = FmFeesInvoiceSettings::where('school_id', Auth::user()->school_id)->first();
+            $invoiceSettings = FmFeesInvoiceSettings::where('church_id', Auth::user()->church_id)->first();
             return view('fees::feesInvoiceSettings', compact('invoiceSettings'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -943,15 +943,15 @@ class FeesController extends Controller
     public function bankPayment()
     {
         $classes = SmClass::where('active_status', 1)
-            ->where('academic_id', getAcademicId())
-            ->where('school_id', Auth::user()->school_id)
+            ->where('church_year_id', getAcademicId())
+            ->where('church_id', Auth::user()->church_id)
             ->get();
 
         $feesPayments = FmFeesTransaction::with('feeStudentInfo', 'transcationDetails', 'transcationDetails.transcationFeesType')
             ->where('paid_status', 0)
             ->whereIn('payment_method', ['Bank', 'Cheque'])
-            ->where('school_id', auth()->user()->school_id)
-            ->where('academic_id', getAcademicId())
+            ->where('church_id', auth()->user()->church_id)
+            ->where('church_year_id', getAcademicId())
             ->get();
 
         return view('fees::bankPayment', compact('classes', 'feesPayments'));
@@ -968,22 +968,22 @@ class FeesController extends Controller
             }
 
             $classes = SmClass::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
-            $class_id = $request->class;
-            $section_id = $request->section;
+            $age_group_id = $request->class;
+            $mgender_id = $request->section;
             $class = SmClass::with('classSections')->where('id', $request->class)->first();
 
-            $student_ids = StudentRecord::when($request->class, function ($query) use ($request) {
-                $query->where('class_id', $request->class);
+            $member_ids = StudentRecord::when($request->class, function ($query) use ($request) {
+                $query->where('age_group_id', $request->class);
             })
                 ->when($request->section, function ($query) use ($request) {
-                    $query->where('section_id', $request->section);
+                    $query->where('mgender_id', $request->section);
                 })
-                ->where('school_id', auth()->user()->school_id)
-                ->pluck('student_id')
+                ->where('church_id', auth()->user()->church_id)
+                ->pluck('member_id')
                 ->unique();
 
             $feesPayments = FmFeesTransaction::when($request->approve_status, function ($query) use ($request) {
@@ -991,25 +991,25 @@ class FeesController extends Controller
             })
                 ->when($request->class, function ($query) use ($request) {
                     $query->whereHas('recordDetail', function ($q) use ($request) {
-                        return $q->where('class_id', $request->class);
+                        return $q->where('age_group_id', $request->class);
                     });
                 })
                 ->when($request->section, function ($query) use ($request) {
                     $query->whereHas('recordDetail', function ($q) use ($request) {
-                        return $q->where('section_id', $request->section);
+                        return $q->where('mgender_id', $request->section);
                     });
                 })
                 ->when($request->payment_date, function ($query) use ($date_from, $date_to) {
                     $query->whereDate('created_at', '>=', $date_from)
                         ->whereDate('created_at', '<=', $date_to);
                 })
-                ->whereIn('student_id', $student_ids)
+                ->whereIn('member_id', $member_ids)
                 ->whereIn('payment_method', ['Bank', 'Cheque'])
-                ->where('school_id', Auth::user()->school_id)
-                ->where('academic_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
+                ->where('church_year_id', getAcademicId())
                 ->get();
 
-            return view('fees::bankPayment', compact('classes', 'feesPayments', 'class_id', 'section_id', 'class'));
+            return view('fees::bankPayment', compact('classes', 'feesPayments', 'age_group_id', 'mgender_id', 'class'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -1027,7 +1027,7 @@ class FeesController extends Controller
             $updateData->section_limit = $request->sectionLimit;
             $updateData->admission_limit = $request->admissionLimit;
             $updateData->weaver = $request->weaver;
-            $updateData->school_id = Auth::user()->school_id;
+            $updateData->church_id = Auth::user()->church_id;
             $updateData->update();
             return response()->json(['success']);
         } catch (\Exception $e) {
@@ -1051,7 +1051,7 @@ class FeesController extends Controller
             $extendedController->addFeesAmount($transcation, $total_paid_amount);
 
             //Notification
-            $student = SmStudent::with('parents')->find($transcationInfo->student_id);
+            $student = SmStudent::with('parents')->find($transcationInfo->member_id);
             sendNotification("Approve Bank Payment", null, 1, 1);
             sendNotification("Approve Bank Payment", null, $student->user_id, 2);
             sendNotification("Approve Bank Payment", null, $student->parents->user_id, 3);
@@ -1073,7 +1073,7 @@ class FeesController extends Controller
             $fees_transcation->update();
 
             //Notification
-            $student = SmStudent::with('parents')->find($transcation->student_id);
+            $student = SmStudent::with('parents')->find($transcation->member_id);
             sendNotification("Approve Bank Payment", null, 1, 1);
             sendNotification("Approve Bank Payment", null, $student->user_id, 2);
             sendNotification("Approve Bank Payment", null, $student->parents->user_id, 3);
@@ -1119,8 +1119,8 @@ class FeesController extends Controller
                 $addPayment->type = 'fees_refund';
                 $addPayment->status = 'approve';
                 $addPayment->note = 'Fees Payment';
-                $addPayment->school_id = Auth::user()->school_id;
-                $addPayment->academic_id = getAcademicId();
+                $addPayment->church_id = Auth::user()->church_id;
+                $addPayment->church_year_id = getAcademicId();
                 $addPayment->save();
             }
 
@@ -1128,7 +1128,7 @@ class FeesController extends Controller
             $transcation->delete();
 
             //Notification
-            $student = SmStudent::with('parents')->find($transcation->student_id);
+            $student = SmStudent::with('parents')->find($transcation->member_id);
             sendNotification("Delete Fees Payment", null, 1, 1);
             sendNotification("Delete Fees Payment", null, $student->user_id, 2);
             sendNotification("Delete Fees Payment", null, $student->parents->user_id, 3);
@@ -1144,13 +1144,13 @@ class FeesController extends Controller
 
     public function singlePaymentView($id)
     {
-        $generalSetting = SmGeneralSettings::where('school_id', Auth::user()->school_id)->first();
+        $generalSetting = SmGeneralSettings::where('church_id', Auth::user()->church_id)->first();
 
         $transcationInfo = FmFeesTransaction::find($id);
 
         $transcationDetails = FmFeesTransactionChield::where('fees_transaction_id', $transcationInfo->id)
-            ->where('school_id', Auth::user()->school_id)
-            ->where('academic_id', getAcademicId())
+            ->where('church_id', Auth::user()->church_id)
+            ->where('church_year_id', getAcademicId())
             ->get();
 
         $invoiceInfo = FmFeesInvoice::find($transcationInfo->fees_invoice_id);

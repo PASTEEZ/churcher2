@@ -20,11 +20,11 @@ class AddTypeToSmSmsGatewaysTable extends Migration
             }
         });
         Schema::table('sm_sections', function (Blueprint $table) {
-            if(!Schema::hasColumn($table->getTable(), 'un_academic_id')) {
-                $table->integer('un_academic_id')->nullable()->unsigned();
+            if(!Schema::hasColumn($table->getTable(), 'un_church_year_id')) {
+                $table->integer('un_church_year_id')->nullable()->unsigned();
             }
         });
-        $sql = ("INSERT INTO `infix_module_infos` (`id`, `module_id`, `parent_id`, `type`, `is_saas`, `name`, `route`, `lang_name`, `icon_class`, `active_status`, `created_by`, `updated_by`, `school_id`, `created_at`, `updated_at`) VALUES
+        $sql = ("INSERT INTO `infix_module_infos` (`id`, `module_id`, `parent_id`, `type`, `is_saas`, `name`, `route`, `lang_name`, `icon_class`, `active_status`, `created_by`, `updated_by`, `church_id`, `created_at`, `updated_at`) VALUES
         
         (15201, 3, 61, '2', 0,'Multi Class Student','student.multi-class-student','','', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22'),
         (15205, 3, 61, '2', 0,'Delete Student Record','student.delete-student-record','delete_student_record','', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22'),
@@ -45,7 +45,7 @@ class AddTypeToSmSmsGatewaysTable extends Migration
             $table->dropColumn($dropColumns);
         });
         Schema::table('sm_sections', function (Blueprint $table) {
-            $sectionDropColumns = ['un_academic_id'];
+            $sectionDropColumns = ['un_church_year_id'];
             $table->dropColumn($sectionDropColumns);
         });
     }

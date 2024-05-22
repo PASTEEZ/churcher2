@@ -26,8 +26,8 @@ class CreateTranscationsTable extends Migration
             $table->date('transaction_date')->nullable();
             $table->integer('user_id')->nullable()->unsigned();
             $table->foreign('user_id')->on('users')->references('id')->onDelete('set null');
-            $table->integer('school_id')->default(1);
-            $table->integer('academic_id')->default(1);
+            $table->integer('church_id')->default(1);
+            $table->integer('church_year_id')->default(1);
             $table->timestamps();
         });
     }

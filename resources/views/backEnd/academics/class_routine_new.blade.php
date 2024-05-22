@@ -54,7 +54,7 @@
                                 <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                     <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                     @foreach($classes as $class)
-                                        <option value="{{ @$class->id }}"  {{isset($class_id)? ($class_id == $class->id?'selected':''):''}}>{{ @$class->class_name }}</option>
+                                        <option value="{{ @$class->id }}"  {{isset($age_group_id)? ($age_group_id == $class->id?'selected':''):''}}>{{ @$class->age_group_name }}</option>
                                     @endforeach
                                 </select>
                                 @if ($errors->has('class'))
@@ -70,9 +70,9 @@
                                     @isset($smClass)
                                     
                                         @foreach ($smClass->classSection as $item)
-                                        <option value="{{ $item->section_id }}"
-                                            {{ isset($section_id) ?( $section_id == $item->section_id ? 'selected' : ''):'' }}
-                                            >{{ $item->sectionName->section_name }}</option>
+                                        <option value="{{ $item->mgender_id }}"
+                                            {{ isset($mgender_id) ?( $mgender_id == $item->mgender_id ? 'selected' : ''):'' }}
+                                            >{{ $item->sectionName->mgender_name }}</option>
                                         @endforeach
                                     @endisset
                                 </select>
@@ -109,15 +109,15 @@
                         </div>
                     </div>
                     <div class="col-lg-6 pull-right">
-                        <a href="{{route('classRoutinePrint', [$class_id, $section_id])}}" class="primary-btn small fix-gr-bg pull-right" target="_blank"><i class="ti-printer"> </i> @lang('academics.print')</a>
+                        <a href="{{route('classRoutinePrint', [$age_group_id, $mgender_id])}}" class="primary-btn small fix-gr-bg pull-right" target="_blank"><i class="ti-printer"> </i> @lang('academics.print')</a>
                     </div>
                 </div>
               
                 <div class="row">
                     <div class="col-lg-12 student-details up_admin_visitor">
                         <ul class="nav nav-tabs tabs_scroll_nav" role="tablist" id="tabs_ul">
-                            <input type="hidden" name="routine_class_id" id="routine_class_id" value="{{ $class_id }}">
-                            <input type="hidden" name="routine_section_id" id="routine_section_id" value="{{ $section_id }}">
+                            <input type="hidden" name="routine_age_group_id" id="routine_age_group_id" value="{{ $age_group_id }}">
+                            <input type="hidden" name="routine_mgender_id" id="routine_mgender_id" value="{{ $mgender_id }}">
                             @foreach($sm_weekends as $sm_weekend)
                                 <li class="nav-item">
                                     <a class="nav-link  {{ Session::get('session_day_id') !=null ? ( Session::get('session_day_id')==$sm_weekend->id ? 'active' :'') : ( $loop->index == 0 ? 'active' : '' )}} tab_link "  href="{{ $sm_weekend->name }}" data-sm_weekend_id="{{ $sm_weekend->id }}" role="tab" data-toggle="tab">{{ @$sm_weekend->name }}</a>
@@ -208,13 +208,13 @@
 
             var url          = $("#url").val();
             var day_id = day_id;
-            var class_id = $('#routine_class_id').val();
-            var section_id = $('#routine_section_id').val();
+            var age_group_id = $('#routine_age_group_id').val();
+            var mgender_id = $('#routine_mgender_id').val();
         
             var formData={
                 day_id : day_id,
-                class_id :class_id,
-                section_id :section_id,
+                age_group_id :age_group_id,
+                mgender_id :mgender_id,
             };
 
             $.ajax({
@@ -551,8 +551,8 @@
         {
             let url =$('#url').val();
 
-            let class_id = $('#select_class').val();
-            let section_id = $('#select_section').val();
+            let age_group_id = $('#select_class').val();
+            let mgender_id = $('#select_section').val();
             let day_id = $('#tabs_ul li a.active').attr('data-sm_weekend_id');
             let start_time = $('#start_time_'+id).val();
             let end_time = $('#end_time_'+id).val();
@@ -563,10 +563,10 @@
             let room_id = $('#room_'+id).val();
            
             var formatData = {
-                class_id : class_id,
+                age_group_id : age_group_id,
                 day_id : day_id,
                 type : type,
-                section_id : section_id,
+                mgender_id : mgender_id,
                 subject_id : subject_id,
                 teacher_id : teacher_id,
                 start_time : start_time,

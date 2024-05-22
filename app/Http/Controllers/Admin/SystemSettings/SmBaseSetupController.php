@@ -41,7 +41,7 @@ class SmBaseSetupController extends Controller
 			$base_setup = new SmBaseSetup();
 			$base_setup->base_setup_name = $request->name;
 			$base_setup->base_group_id = $request->base_group;
-			$base_setup->school_id = Auth::user()->school_id;
+			$base_setup->church_id = Auth::user()->church_id;
 			$base_setup->save();
 
 			Toastr::success('Operation successful', 'Success');

@@ -40,11 +40,11 @@ class SmPhoneCallLogController extends Controller
             $phone_call_log->next_follow_up_date = date('Y-m-d', strtotime($request->follow_up_date));
             $phone_call_log->call_duration = $request->call_duration;
             $phone_call_log->call_type = $request->call_type;
-            $phone_call_log->school_id = Auth::user()->school_id;
+            $phone_call_log->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $phone_call_log->un_academic_id = getAcademicId();
+                $phone_call_log->un_church_year_id = getAcademicId();
             }else{
-                $phone_call_log->academic_id = getAcademicId();
+                $phone_call_log->church_year_id = getAcademicId();
             }
             $phone_call_log->save();
 
@@ -80,7 +80,7 @@ class SmPhoneCallLogController extends Controller
             $phone_call_log->call_duration = $request->call_duration;
             $phone_call_log->call_type = $request->call_type;
             if(moduleStatusCheck('University')){
-                $phone_call_log->un_academic_id = getAcademicId();
+                $phone_call_log->un_church_year_id = getAcademicId();
             }
             $phone_call_log->save();
 

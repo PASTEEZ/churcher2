@@ -54,7 +54,7 @@ class SmItemSellController extends Controller
             $roles      =  InfixRole::when((generalSetting()->with_guardian !=1), function ($query) {
                             $query->where('id', '!=', 3);
                                 })->where(function ($q) {
-                                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
                                 })->get();
          
             $classes    = SmClass::get();
@@ -70,7 +70,7 @@ class SmItemSellController extends Controller
     public function getReceiveItem()
     {
         try {
-            $searchData = SmItem::where('school_id', Auth::user()->school_id)->get();
+            $searchData = SmItem::where('church_id', Auth::user()->church_id)->get();
             if (!empty($searchData)) {
                 return json_encode($searchData);
             }
@@ -125,11 +125,11 @@ class SmItemSellController extends Controller
             $itemSells->income_head_id = $request->income_head_id;
             $itemSells->payment_method = $request->payment_method;
             $itemSells->description = $request->description;
-            $itemSells->school_id = Auth::user()->school_id;
+            $itemSells->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $itemSells->un_academic_id = getAcademicId();
+                $itemSells->un_church_year_id = getAcademicId();
             }else{
-                $itemSells->academic_id = getAcademicId();
+                $itemSells->church_year_id = getAcademicId();
             }
             $results = $itemSells->save();
             $itemSells->toArray();
@@ -144,18 +144,18 @@ class SmItemSellController extends Controller
             $add_income->account_id = $request->bank_id;
             $add_income->payment_method_id = $request->payment_method;
             $add_income->created_by = Auth()->user()->id;
-            $add_income->school_id = Auth::user()->school_id;
+            $add_income->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $add_income->un_academic_id = getAcademicId();
+                $add_income->un_church_year_id = getAcademicId();
             }else{
-                $add_income->academic_id = getAcademicId();
+                $add_income->church_year_id = getAcademicId();
             }
             $add_income->save();
 
 
             if(paymentMethodName($request->payment_method)){
                 $bank=SmBankAccount::where('id',$request->bank_id)
-                ->where('school_id',Auth::user()->school_id)
+                ->where('church_id',Auth::user()->church_id)
                 ->first();
                 $after_balance= $bank->current_balance + $total_paid;
 
@@ -167,7 +167,7 @@ class SmItemSellController extends Controller
                 $bank_statement->item_sell_id= $itemSells->id;
                 $bank_statement->payment_date= date('Y-m-d h:i:sa', strtotime($request->sell_date));
                 $bank_statement->bank_id= $request->bank_id;
-                $bank_statement->school_id= Auth::user()->school_id;
+                $bank_statement->church_id= Auth::user()->church_id;
                 $bank_statement->payment_method= $request->payment_method;
                 $bank_statement->save();
 
@@ -188,9 +188,9 @@ class SmItemSellController extends Controller
                         $itemSellChild->quantity = $request->quantity[$i];
                         $itemSellChild->sub_total = $request->totalValue[$i];
                         $itemSellChild->created_by = Auth()->user()->id;
-                        $itemSellChild->school_id = Auth::user()->school_id;
+                        $itemSellChild->church_id = Auth::user()->church_id;
                         if(!moduleStatusCheck('University')){
-                            $itemSellChild->academic_id = getAcademicId();
+                            $itemSellChild->church_year_id = getAcademicId();
                         }
                         $result = $itemSellChild->save();
 
@@ -198,9 +198,9 @@ class SmItemSellController extends Controller
                             $items = SmItem::find($request->item_id[$i]);
                             $items->total_in_stock = $items->total_in_stock - $request->quantity[$i];
                             if(moduleStatusCheck('University')){
-                                $items->un_academic_id = getAcademicId();
+                                $items->un_church_year_id = getAcademicId();
                             }else{
-                                $items->academic_id = getAcademicId();
+                                $items->church_year_id = getAcademicId();
                             }
                             $results = $items->update();
                         }
@@ -232,7 +232,7 @@ class SmItemSellController extends Controller
     {
         try {
             $allItemSellLists = SmItemSell::where('active_status', '=', 1)
-                                ->where('school_id', Auth::user()->school_id)
+                                ->where('church_id', Auth::user()->church_id)
                                 ->orderby('id','DESC')
                                 ->get();
 
@@ -276,7 +276,7 @@ class SmItemSellController extends Controller
             $editData = SmItemSell::find($id);
             
             $roles = InfixRole::where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
 
             $sell_heads = SmChartOfAccount::where('type', 'I')
@@ -289,10 +289,10 @@ class SmItemSellController extends Controller
             $staffsByRole = '';
             if ($editData->role_id == 2) {
                 $studentClassSection = SmStudent::where('id', $editData->student_staff_id)->first();
-                $student_ids = StudentRecord::when($studentClassSection->defaultClass, function($q) use($studentClassSection){
-                    $q->where('class_id', $studentClassSection->defaultClass->class_id)->where('section_id', $studentClassSection->defaultClass->section_id);
-                })->pluck('student_id')->unique()->toArray();
-                $allStudentsSameClassSection = SmStudent::whereIn('id', $student_ids)->get();
+                $member_ids = StudentRecord::when($studentClassSection->defaultClass, function($q) use($studentClassSection){
+                    $q->where('age_group_id', $studentClassSection->defaultClass->age_group_id)->where('mgender_id', $studentClassSection->defaultClass->mgender_id);
+                })->pluck('member_id')->unique()->toArray();
+                $allStudentsSameClassSection = SmStudent::whereIn('id', $member_ids)->get();
             } elseif ($editData->role_id == 3) {
                 $staffsByRole = SmParent::where('active_status', 1)                  
                                         ->get();
@@ -393,22 +393,22 @@ class SmItemSellController extends Controller
             $add_income->income_head_id = $request->income_head_id;
             $add_income->payment_method_id = $request->payment_method;
             $add_income->created_by = Auth()->user()->id;
-            $add_income->school_id = Auth::user()->school_id;
+            $add_income->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $add_income->un_academic_id = getAcademicId();
+                $add_income->un_church_year_id = getAcademicId();
             }else{
-                $add_income->academic_id = getAcademicId();
+                $add_income->church_year_id = getAcademicId();
             }
             $add_income->save();
 
             if(paymentMethodName($request->payment_method)){
                SmBankStatement::where('item_sell_id', $itemSells->id)
-                                    ->where('school_id',Auth::user()->school_id)
+                                    ->where('church_id',Auth::user()->church_id)
                                     ->delete();
                 
                 
                 $bank=SmBankAccount::where('id',$request->bank_id)
-                ->where('school_id',Auth::user()->school_id)
+                ->where('church_id',Auth::user()->church_id)
                 ->first();
                 $after_balance= $bank->current_balance + $total_paid;
 
@@ -420,7 +420,7 @@ class SmItemSellController extends Controller
                 $bank_statement->item_sell_id= $itemSells->id;
                 $bank_statement->payment_date= date('Y-m-d', strtotime($request->sell_date));
                 $bank_statement->bank_id= $request->bank_id;
-                $bank_statement->school_id= Auth::user()->school_id;
+                $bank_statement->church_id= Auth::user()->church_id;
                 $bank_statement->payment_method= $request->payment_method;
                 $bank_statement->save();
 
@@ -443,9 +443,9 @@ class SmItemSellController extends Controller
                         $itemSellChild->quantity = $request->quantity[$i];
                         $itemSellChild->sub_total = $request->totalValue[$i];
                         $itemSellChild->created_by = Auth()->user()->id;
-                        $itemSellChild->school_id = Auth::user()->school_id;
+                        $itemSellChild->church_id = Auth::user()->church_id;
                         if(!moduleStatusCheck('University')){
-                            $itemSellChild->academic_id = getAcademicId();
+                            $itemSellChild->church_year_id = getAcademicId();
                         }
                         $result = $itemSellChild->save();
 
@@ -453,9 +453,9 @@ class SmItemSellController extends Controller
                             $items = SmItem::find($request->item_id[$i]);
                             $items->total_in_stock = $items->total_in_stock - $request->quantity[$i];
                             if(moduleStatusCheck('University')){
-                                $items->un_academic_id = getAcademicId();
+                                $items->un_church_year_id = getAcademicId();
                             }else{
-                                $items->academic_id = getAcademicId();
+                                $items->church_year_id = getAcademicId();
                             }
                             $results = $items->update();
                         }
@@ -527,14 +527,14 @@ class SmItemSellController extends Controller
                         $itemReceivedChild->quantity = $request->quantity[$i];
                         $itemReceivedChild->sub_total = $request->totalValue[$i];
                         $itemReceivedChild->created_by = Auth()->user()->id;
-                        $itemReceivedChild->school_id = Auth::user()->school_id;
-                        $itemReceivedChild->academic_id = getAcademicId();
+                        $itemReceivedChild->church_id = Auth::user()->church_id;
+                        $itemReceivedChild->church_year_id = getAcademicId();
                         $result = $itemReceivedChild->save();
 
                         if ($result) {
                             $items = SmItem::find($request->item_id[$i]);
                             $items->total_in_stock = $items->total_in_stock + $request->quantity[$i];
-                            $items->academic_id = getAcademicId();
+                            $items->church_year_id = getAcademicId();
                             $results = $items->update();
                         }
                     }
@@ -554,8 +554,8 @@ class SmItemSellController extends Controller
     public function viewItemReceive($id)
     {
         try {
-            $viewData = SmItemReceive::where('id', $id)->where('school_id', Auth::user()->school_id)->first();
-            $editDataChildren = SmItemReceiveChild::where('item_receive_id', $id)->where('school_id', Auth::user()->school_id)->get();
+            $viewData = SmItemReceive::where('id', $id)->where('church_id', Auth::user()->church_id)->first();
+            $editDataChildren = SmItemReceiveChild::where('item_receive_id', $id)->where('church_id', Auth::user()->church_id)->get();
             return view('backEnd.inventory.viewItemReceive', compact('viewData', 'editDataChildren'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -569,16 +569,16 @@ class SmItemSellController extends Controller
             $editData = SmItemSell::find($id);
 
             $sell_heads = SmChartOfAccount::where('active_status', '=', 1)
-                        ->where('school_id', Auth::user()->school_id)
+                        ->where('church_id', Auth::user()->church_id)
                         ->where('type', 'I')
                         ->get();
 
             $paymentDue = SmItemSell::select('total_due')
                         ->where('id', $id)
-                        ->where('school_id', Auth::user()->school_id)
+                        ->where('church_id', Auth::user()->church_id)
                         ->first();
 
-            $paymentMethhods = SmPaymentMethhod::where('school_id', Auth::user()->school_id)
+            $paymentMethhods = SmPaymentMethhod::where('church_id', Auth::user()->church_id)
                             ->where('active_status', 1)
                             ->get();
 
@@ -603,18 +603,18 @@ class SmItemSellController extends Controller
             $payments->notes = $request->notes;
             $payments->payment_type = 'S';
             $payments->created_by = Auth()->user()->id;
-            $payments->school_id = Auth::user()->school_id;
+            $payments->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $payments->un_academic_id = getAcademicId();
+                $payments->un_church_year_id = getAcademicId();
             }else{
-                $payments->academic_id = getAcademicId();
+                $payments->church_year_id = getAcademicId();
             }
             $result = $payments->save();
 
             if (checkAdmin()) {
                 $itemPaymentDue = SmItemSell::find($request->item_sell_id);
             } else {
-                $itemPaymentDue = SmItemSell::where('id', $request->item_sell_id)->where('school_id', Auth::user()->school_id)->first();
+                $itemPaymentDue = SmItemSell::where('id', $request->item_sell_id)->where('church_id', Auth::user()->church_id)->first();
             }
             if (isset($itemPaymentDue)) {
                 $total_due = $itemPaymentDue->total_due;
@@ -649,18 +649,18 @@ class SmItemSellController extends Controller
             $add_income->inventory_id = $payments->id;
             $add_income->payment_method_id = $request->payment_method;
             $add_income->created_by = Auth()->user()->id;
-            $add_income->school_id = Auth::user()->school_id;
+            $add_income->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $add_income->un_academic_id = getAcademicId();
+                $add_income->un_church_year_id = getAcademicId();
             }else{
-                $add_income->academic_id = getAcademicId();
+                $add_income->church_year_id = getAcademicId();
             }
             $add_income->save();
 
 
             if(paymentMethodName($request->payment_method)){
                 $bank=SmBankAccount::where('id',$request->bank_id)
-                ->where('school_id',Auth::user()->school_id)
+                ->where('church_id',Auth::user()->church_id)
                 ->first();
                 $after_balance= $bank->current_balance + $request->amount;
 
@@ -673,7 +673,7 @@ class SmItemSellController extends Controller
                 $bank_statement->item_sell_bank_statement_id = $payments->id;
                 $bank_statement->payment_date= date('Y-m-d', strtotime($request->payment_date));
                 $bank_statement->bank_id= $request->bank_id;
-                $bank_statement->school_id= Auth::user()->school_id;
+                $bank_statement->church_id= Auth::user()->church_id;
                 $bank_statement->payment_method= $request->payment_method;
                 $bank_statement->save();
 
@@ -705,11 +705,11 @@ class SmItemSellController extends Controller
             $roles = InfixRole::when((generalSetting()->with_guardian !=1), function ($query) {
                 $query->where('id', '!=', 3);
             })->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
-            $classes = SmClass::where('school_id', Auth::user()->school_id)->where('academic_id',getAcademicId())->get();
-            $itemCat = SmItemCategory::where('school_id', Auth::user()->school_id)->get();
-            $issuedItems = SmItemIssue::where('active_status', '=', 1)->where('school_id', Auth::user()->school_id)->orderby('id','DESC')->get();
+            $classes = SmClass::where('church_id', Auth::user()->church_id)->where('church_year_id',getAcademicId())->get();
+            $itemCat = SmItemCategory::where('church_id', Auth::user()->church_id)->get();
+            $issuedItems = SmItemIssue::where('active_status', '=', 1)->where('church_id', Auth::user()->church_id)->orderby('id','DESC')->get();
 
   
             return view('backEnd.inventory.issueItemList', compact('issuedItems', 'roles', 'classes', 'itemCat'));
@@ -721,7 +721,7 @@ class SmItemSellController extends Controller
 
     public function getItemByCategory(Request $request)
     {
-        $allitems = SmItem::where('item_category_id', '=', $request->id)->where('school_id', Auth::user()->school_id)->get();
+        $allitems = SmItem::where('item_category_id', '=', $request->id)->where('church_id', Auth::user()->church_id)->get();
         $items = [];
         foreach ($allitems as $item) {
             $items[] = SmItem::find($item->id);
@@ -768,11 +768,11 @@ class SmItemSellController extends Controller
             $itemIssue->quantity = $request->quantity;
             $itemIssue->issue_status = 'I';
             $itemIssue->note = $request->description;
-            $itemIssue->school_id = Auth::user()->school_id;
+            $itemIssue->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $itemIssue->un_academic_id = getAcademicId();
+                $itemIssue->un_church_year_id = getAcademicId();
             }else{
-                $itemIssue->academic_id = getAcademicId();
+                $itemIssue->church_year_id = getAcademicId();
             }
             $results = $itemIssue->save();
             $itemIssue->toArray();
@@ -781,7 +781,7 @@ class SmItemSellController extends Controller
                 $items = SmItem::find($request->item_id);
                 $items->total_in_stock = $items->total_in_stock - $request->quantity;
                 if(moduleStatusCheck('University')){
-                    $items->un_academic_id = getAcademicId();
+                    $items->un_church_year_id = getAcademicId();
                 }
                 $items->update(); 
 
@@ -814,9 +814,9 @@ class SmItemSellController extends Controller
             $items = SmItem::find($iuusedItem->item_id);
             $items->total_in_stock = $items->total_in_stock + $iuusedItem->quantity;
             if(moduleStatusCheck('University')){
-                $items->un_academic_id = getAcademicId();
+                $items->un_church_year_id = getAcademicId();
             }else{
-                $items->academic_id = getAcademicId();
+                $items->church_year_id = getAcademicId();
             }
             $result = $items->update();
             if ($result) {
@@ -861,7 +861,7 @@ class SmItemSellController extends Controller
 
             if(paymentMethodName($itemSellData->payment_method)){
                 $bank=SmBankAccount::where('id',$itemSellData->account_id)
-                ->where('school_id',Auth::user()->school_id)
+                ->where('church_id',Auth::user()->church_id)
                 ->first();
                 $after_balance= $bank->current_balance - $amount;
 
@@ -915,16 +915,16 @@ class SmItemSellController extends Controller
             $itemSell->paid_status = 'S';
             $results = $itemSell->update();
             SmAddIncome::where('item_sell_id',$itemSell->id)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->delete();
 
             if(paymentMethodName($itemSell->payment_method)){
                 $reset_balance = SmBankStatement::where('item_sell_id',$itemSell->id)
-                                ->where('school_id',Auth::user()->school_id)
+                                ->where('church_id',Auth::user()->church_id)
                                 ->sum('amount');
 
                     $bank=SmBankAccount::where('id',$itemSell->account_id)
-                    ->where('school_id',Auth::user()->school_id)
+                    ->where('church_id',Auth::user()->church_id)
                     ->first();
                     $after_balance= $bank->current_balance - $reset_balance;
 
@@ -933,12 +933,12 @@ class SmItemSellController extends Controller
                     $current_balance->update();
 
                    SmBankStatement::where('item_sell_id',$itemSell->id)
-                                    ->where('school_id',Auth::user()->school_id)
+                                    ->where('church_id',Auth::user()->church_id)
                                     ->delete();
             }
 
             if ($results) {
-                $itemSellChild = SmItemSellChild::where('item_sell_id', $id)->where('school_id', Auth::user()->school_id)->get();
+                $itemSellChild = SmItemSellChild::where('item_sell_id', $id)->where('church_id', Auth::user()->church_id)->get();
                 if (!empty($itemSellChild)) {
                     foreach ($itemSellChild as $value) {
                         $items = SmItem::find($value->item_id);

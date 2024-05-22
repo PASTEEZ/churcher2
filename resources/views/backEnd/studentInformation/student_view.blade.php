@@ -139,7 +139,7 @@
                         {{ Form::open(['class' => 'form-horizontal', 'files' => true, 'route' => 'student_timeline_store', 'method' => 'POST', 'enctype' => 'multipart/form-data', 'name' => 'document_upload']) }}
                         <div class="row">
                             <div class="col-lg-12">
-                                <input type="hidden" name="student_id" value="{{$student_detail->id}}">
+                                <input type="hidden" name="member_id" value="{{$student_detail->id}}">
                                 <div class="row mt-25">
                                     <div class="col-lg-12">
                                         <div class="input-effect">
@@ -232,15 +232,15 @@
                         {{ Form::open(['class' => 'form-horizontal', 'files' => true, 'route' => 'student.record.store','method' => 'POST']) }}
                       
                            
-                            <input type="hidden" name="student_id" value="{{ $student_detail->id }}">
+                            <input type="hidden" name="member_id" value="{{ $student_detail->id }}">
                             @if(moduleStatusCheck('University'))
                                 @includeIf('university::common.session_faculty_depart_academic_semester_level',['div'=>'col-lg-12','mt' => 'mt-0', 'row'=>1, 'required' => ['USN','UF', 'UD', 'UA', 'US', 'USL'],'hide' => ['USUB']])
                             @else 
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="input-effect sm2_mb_20 md_mb_20">
-                                        <select class="niceSelect w-100 bb form-control{{ $errors->has('session') ? ' is-invalid' : '' }}" name="session" id="academic_year">
-                                            <option data-display="@lang('common.academic_year') *" value="">@lang('common.academic_year') *</option>
+                                        <select class="niceSelect w-100 bb form-control{{ $errors->has('session') ? ' is-invalid' : '' }}" name="session" id="church_year">
+                                            <option data-display="@lang('common.church_year') *" value="">@lang('common.church_year') *</option>
                                             @foreach($sessions as $session)
                                             <option value="{{$session->id}}" {{old('session') == $session->id? 'selected': ''}}>{{$session->year}}[{{$session->title}}]</option>
                                             @endforeach
@@ -348,7 +348,7 @@
 <script>
     function deleteDoc(id,doc){
         var modal = $('#delete-doc');
-         modal.find('input[name=student_id]').val(id)
+         modal.find('input[name=member_id]').val(id)
          modal.find('input[name=doc_id]').val(doc)
          modal.modal('show');
     }

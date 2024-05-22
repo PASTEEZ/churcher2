@@ -62,7 +62,7 @@ Tabulation Report
                                 <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                     <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                     @foreach($classes as $class)
-                                    <option value="{{$class->id}}" {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{$class->class_name}}</option>
+                                    <option value="{{$class->id}}" {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{$class->age_group_name}}</option>
                                     @endforeach
                                 </select>
                                 @if ($errors->has('class'))
@@ -119,7 +119,7 @@ Tabulation Report
                                                 <img class="logo-img" src="{{ generalSetting()->logo }}" alt="">
                                             </div>
                                             <div class="ml-30">
-                                                <h3 class="text-white"> {{isset(generalSetting()->school_name)?generalSetting()->school_name:'Infix School Management ERP'}} </h3>
+                                                <h3 class="text-white"> {{isset(generalSetting()->church_name)?generalSetting()->church_name:'Infix School Management ERP'}} </h3>
 
                                                 <p class="text-white mb-0">House 25, Road 27, Block B, 54th Floor, New York, United States of America</p>
                                             </div>
@@ -139,10 +139,10 @@ Tabulation Report
                                                                 Exam : <span class="primary-color fw-500">{{$exam->name}}</span>
                                                             </p>
                                                             <p class="mb-0">
-                                                                Class : <span class="primary-color fw-500">{{$class->class_name}}</span>
+                                                                Class : <span class="primary-color fw-500">{{$class->age_group_name}}</span>
                                                             </p>
                                                             <p class="mb-0">
-                                                                Section : <span class="primary-color fw-500">{{$section->section_name}}</span>
+                                                                Section : <span class="primary-color fw-500">{{$section->mgender_name}}</span>
                                                             </p>
                                                         </div>
                                                     </div>
@@ -187,9 +187,9 @@ Tabulation Report
                                                
 
                                                 <tr>
-                                                    <td>{{$row->student_name}}</td>
+                                                    <td>{{$row->member_name}}</td>
                                                     <td>{{$i++}}</td>
-                                                    <td>{{$row->admission_no}}</td>
+                                                    <td>{{$row->registration_no}}</td>
                                                     @php $markslist = explode(',',$row->marks_string);   @endphp  
                                                     @foreach($markslist as $mark)
                                                         <td>{{$mark}}</td>

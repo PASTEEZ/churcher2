@@ -43,43 +43,43 @@ class MemberDataController extends Controller
                 $prefix = 'PMCB';
             }
 
-            // Update admission_no in SmStudent model
-            $newMemberId = $prefix . substr($change_member_id->admission_no, 4);
-            $change_member_id->admission_no = $newMemberId;
+            // Update registration_no in SmStudent model
+            $newMemberId = $prefix . substr($change_member_id->registration_no, 4);
+            $change_member_id->registration_no = $newMemberId;
             $change_member_id->save(); // Save the changes
 
 
                 // Debugging: Log the values for verification
              //   info("Member ID: {$member->id}, Age: $age, New Status: $newStatus, New Admission No: $newMemberId");
 
-                // Update class_id in student_records table
+                // Update age_group_id in student_records table
                 $updatedRecords = DB::table('student_records')
-                    ->where('student_id', $member->id)
-                    ->update(['class_id' => $newStatus]);
+                    ->where('member_id', $member->id)
+                    ->update(['age_group_id' => $newStatus]);
     
                 // Debugging: Log the number of updated records
                // info("Updated student_records: $updatedRecords");
-            // Update class_id in student_records table
+            // Update age_group_id in student_records table
  
 
-            // Update admission_no in sm_students table
+            // Update registration_no in sm_students table
             DB::table('sm_students')
                 ->where('id', $member->id)
-                ->update(['admission_no' => $newMemberId]);
+                ->update(['registration_no' => $newMemberId]);
         }
 
         try {
             $classes = SmClass::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
-            $students = SmStudent::where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+            $students = SmStudent::where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             $sessions = SmAcademicYear::where('active_status', 1)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             return view('backEnd.studentInformation.student_details', compact('classes', 'sessions'));

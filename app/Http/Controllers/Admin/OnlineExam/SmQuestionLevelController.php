@@ -25,7 +25,7 @@ class SmQuestionLevelController extends Controller
     public function index()
     {
         try{
-            $levels = SmQuestionLevel::where('active_status', 1)->where('school_id',Auth::user()->school_id)->get();
+            $levels = SmQuestionLevel::where('active_status', 1)->where('church_id',Auth::user()->church_id)->get();
             return view('backEnd.examination.question_level', compact('levels'));
         }catch (\Exception $e) {
            Toastr::error('Operation Failed', 'Failed');
@@ -40,8 +40,8 @@ class SmQuestionLevelController extends Controller
         try{
             $level = new SmQuestionLevel();
             $level->level = $request->level;
-            $level->school_id = Auth::user()->school_id;
-            $level->academic_id = getAcademicId();
+            $level->church_id = Auth::user()->church_id;
+            $level->church_year_id = getAcademicId();
             $result = $level->save();
             if($result){
                 Toastr::success('Operation successful', 'Success');
@@ -68,7 +68,7 @@ class SmQuestionLevelController extends Controller
     {
         try{
             $level = SmQuestionLevel::find($id);
-            $levels = SmQuestionLevel::where('active_status', 1)->where('school_id',Auth::user()->school_id)->get();
+            $levels = SmQuestionLevel::where('active_status', 1)->where('church_id',Auth::user()->church_id)->get();
             return view('backEnd.examination.question_level', compact('levels', 'level'));
         }catch (\Exception $e) {
            Toastr::error('Operation Failed', 'Failed');

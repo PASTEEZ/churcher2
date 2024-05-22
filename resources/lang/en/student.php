@@ -17,6 +17,7 @@ return [
     'add_student_category' => 'Add Title',
     'pages' => 'Page',
     'age' => 'Age',
+    
     'grade_point' => 'Grade Point',
     'without_additional' => 'Without Additional',
     'additional_subject' => 'Additional Service',
@@ -172,7 +173,7 @@ return [
     'permanent' => 'Permanent',
     'route_list' => 'Region',
     'driver' => 'Driver',
-    'student_name' => 'Member Name',
+    'member_name' => 'Member Name',
     'category_name' => 'Title',
     'email_address' => 'Email Address',
     'Parent_Guardian_Details' => 'Parent Guardian Details',
@@ -212,8 +213,15 @@ return [
     'document_02_title' => 'Group 2',
     'document_03_title' => 'Group 3',
     'document_04_title' => 'Group 4',
-
+    'interest_group_details' => 'Interest Group',
+    
     'student_details' => 'Member Details',
+
+
+
+    
+
+
     'search_by_name' => 'Search By Name',
     'search_by_roll_no' => 'Search By Phone No',
     'father_name' => 'Father Name',
@@ -289,14 +297,14 @@ return [
     'month' => 'Month',
     'year' => 'Year',
     'student_category' => 'Title',
-    'select_academic_year' => 'Select Financial Year',
-    'promote_academic_year' => 'Promote Financial Year',
+    'select_church_year' => 'Select Financial Year',
+    'promote_church_year' => 'Promote Financial Year',
     'select_current_class' => 'Select Current Membership Type',
     'current_roll' => 'Member ID',
     'promote_class' => 'Promote to?',
     'promote_section' => 'Membership Type',
     'next_roll_number' => 'Next Phone Number',
-    'academic_year' => 'Financial Year',
+    'church_year' => 'Financial Year',
     'student_category_list' => 'Membership Type List',
     'student_group' => 'Profession',
     'group' => 'Profession',
@@ -350,7 +358,7 @@ return [
     'add_nonadult' => 'Add Non-Adult',
     'import_student' => 'Import Member',
     'save_student' => 'Save Member',
-    'admission_no' => 'Registration No',
+    'registration_no' => 'Registration No',
     'name' => 'Name',
     'roll_no' => 'Phone No',
     'roll' => 'Mobile Number(Work)',
@@ -410,7 +418,7 @@ return [
     'student_number' => 'Member Number',
     'student_report' => 'Member Report',
     'parents_list' => 'Parent List',
-    'student_id_card' => 'Member Id Card',
+    'member_id_card' => 'Member Id Card',
     'transport' => 'Transport',
     'is_present' => 'Is Present',
     'excel_file' => 'Excel file',
@@ -515,10 +523,10 @@ return [
     'Your_teacher_has_marked_you_halfday_in_the_attendance_on '=> 'Your teacher has marked you HALFDAY in the attendance on :date',
     'Your_teacher_has_marked_holiday_in_the_attendance_on '=> 'Your institute has declared a HOLIDAY on :date',
 
-    'Your_child_is_marked_present_in_the_attendance_on' => 'Your child :student_name is marked PRESENT in the attendance on :date',
-    'Your_child_is_marked_late_in_the_attendance_on' => 'Your child :student_name is marked LATE in the attendance on :date',
-    'Your_child_is_marked_absent_in_the_attendance_on' => 'Your child :student_name is_marked ABSENT in the attendance on :date',
-    'Your_child_is_marked_halfday_in_the_attendance_on' => 'Your child :student_name is marked HALFDAY in the attendance on :date',
+    'Your_child_is_marked_present_in_the_attendance_on' => 'Your child :member_name is marked PRESENT in the attendance on :date',
+    'Your_child_is_marked_late_in_the_attendance_on' => 'Your child :member_name is marked LATE in the attendance on :date',
+    'Your_child_is_marked_absent_in_the_attendance_on' => 'Your child :member_name is_marked ABSENT in the attendance on :date',
+    'Your_child_is_marked_halfday_in_the_attendance_on' => 'Your child :member_name is marked HALFDAY in the attendance on :date',
 
 
     'Your_teacher_has_marked_you_present_in_the_attendance_on_subject' => 'Your teacher has marked you PRESENT in the attendance for :subject_name on :date',
@@ -526,15 +534,15 @@ return [
     'Your_teacher_has_marked_you_absent_in_the_attendance_on_subject' => 'Your teacher has marked you ABSENT in the attendance for :subject_name on :date',
     'Your_teacher_has_marked_you_halfday_in_the_attendance_on_subject' => 'Your teacher has marked you HALFDAY in the attendance for :subject_name on :date',
 
-    'Your_child_is_marked_present_in_the_attendance_on_subject'=> 'Your child :student_name attendance for :subject_name is marked PRESENT on :date',
-    'Your_child_is_marked_late_in_the_attendance_on_subject'=> 'Your child :student_name attendance for :subject_name is marked LATE on :date',
-    'Your_child_is_marked_absent_in_the_attendance_on_subject'=> 'Your child :student_name attendance for :subject_name is marked ABSENT on :date',
-    'Your_child_is_marked_halfday_in_the_attendance_on_subject'=> 'Your child :student_name attendance for :subject_name is marked HALFDAY on :date',
+    'Your_child_is_marked_present_in_the_attendance_on_subject'=> 'Your child :member_name attendance for :subject_name is marked PRESENT on :date',
+    'Your_child_is_marked_late_in_the_attendance_on_subject'=> 'Your child :member_name attendance for :subject_name is marked LATE on :date',
+    'Your_child_is_marked_absent_in_the_attendance_on_subject'=> 'Your child :member_name attendance for :subject_name is marked ABSENT on :date',
+    'Your_child_is_marked_halfday_in_the_attendance_on_subject'=> 'Your child :member_name attendance for :subject_name is marked HALFDAY on :date',
 
     'Your_teacher_has_marked_holiday_in_the_attendance_on_subject' => 'Your institute has declared a HOLIDAY for :subject_name subject on :date ',
-    'Your_child_is_marked_holiday_in_the_attendance_on_date' => 'Your child :student_name institute has declared a HOLIDAY on :date',
-    'Your_child_is_marked_holiday_in_the_attendance_on_subject' => 'Your child :student_name institute has declared a HOLIDAY for :subject_name subject on :date',
-    'student_names' => 'Member\'s Name',
+    'Your_child_is_marked_holiday_in_the_attendance_on_date' => 'Your child :member_name institute has declared a HOLIDAY on :date',
+    'Your_child_is_marked_holiday_in_the_attendance_on_subject' => 'Your child :member_name institute has declared a HOLIDAY for :subject_name subject on :date',
+    'member_names' => 'Member\'s Name',
     'father_names' => 'Father\'s Name',
     'mother_names' => 'Mother\'s Name',
     'unassigned_student_list' => 'Unassigned Member List',
@@ -561,10 +569,11 @@ return [
     
 
     'othercontact'=>'Other Number',
-    'area'=>'Area',
+    'area'=>'Landmark',
 
     'baptism_details'=>'Baptism Details',
     'baptism'=>'Baptism',
+    'baptism_status'=>'Baptism Status',
     'baptism_cert_no'=>'Baptism Cert No.',
     'baptism_type'=>'Baptism Type',
     'date_of_baptism' => 'Date of Baptism',
@@ -580,15 +589,20 @@ return [
     'date_of_marriage' => 'Date of Marriage',
     'marriage_off_minister'=>'Off. Minister',
     'marriage'=>'Marriage',
+    'marriage_status'=>'Marriage Status',
+   
 
     'family' => 'Family',
     'student' => 'Student',
-    'marriage_off_minister'=>'Off. Minister',
+    
+
+    
     
 
 
     'confirm'=>'Are you Confirmed',
     'confirmation'=>'Confirmation',
+    'confirmation_status'=>'Confirmation Status',
     'confirmation_details'=>'Confirmation Details',
     'confirmation_cert_no'=>'Confirmation Cert No.',
     'bibleverseused'=>'Bible Verse Used',
@@ -597,6 +611,6 @@ return [
     'date_of_confirmation' => 'Date of Confirmation',
     'confirmation_off_minister'=>'Off. Minister',
     
-
+    'marital_status'=> 'Marital Status'
     
 ];

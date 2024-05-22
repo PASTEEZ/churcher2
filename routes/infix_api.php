@@ -15,7 +15,7 @@
         $creator_info=DB::table('sm_staffs')->where('user_id',$request->user_id)->first();
             
             
-            SmAcademicYear::API_ACADEMIC_YEAR($creator_info->school_id);
+            SmAcademicYear::API_church_year($creator_info->church_id);
 
             
 // class InfixApi {
@@ -150,7 +150,7 @@ static String attendanceCheck(String date,String mClass,String mSection){
 return baseApi+"student-attendance-check?date="+date+"&class="+mClass+"&section="+mSection;
 }
 static String studentFeePayment(String stuId,int feesType,String amount,String paidBy,String paymentMethod){
-return baseApi+"student-fees-payment?student_id=$stuId&fees_type_id=$feesType&amount=$amount&paid_by=$paidBy&payment_mode=C";
+return baseApi+"student-fees-payment?member_id=$stuId&fees_type_id=$feesType&amount=$amount&paid_by=$paidBy&payment_mode=C";
 }
 static String about = baseApi+"parent-about";
 
@@ -210,7 +210,7 @@ static String sentNotificationByToken(String title,String body,String id){
 return baseApi+"flutter-notification-api?id=$id&body=$body&title=$title";
 }
 static String sentNotificationToSection(String title,String body,String classId,String sectionId){
-return baseApi+"homework-notification-api?body=$body&title=$title&class_id=$classId&section_id=$sectionId";
+return baseApi+"homework-notification-api?body=$body&title=$title&age_group_id=$classId&mgender_id=$sectionId";
 }
 
 =================================================14/11/2020============================================

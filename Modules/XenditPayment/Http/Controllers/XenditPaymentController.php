@@ -30,14 +30,14 @@ class XenditPaymentController extends Controller
         if(moduleStatusCheck('University')){
             $request->validate([
                 'amount' => "required|min:1",
-                'student_id' => "required",
+                'member_id' => "required",
                 'installment_id' => 'required'
                 ]);
 
         }else{
             $request->validate([
                 'amount' => "required|min:1",
-                'student_id' => "required",
+                'member_id' => "required",
                 'fees_type_id' => 'required'
                 ]);
         }
@@ -45,7 +45,7 @@ class XenditPaymentController extends Controller
 
         try{
             $email = "";
-            $student = SmStudent::find($request->student_id);
+            $student = SmStudent::find($request->member_id);
             
              
             if(!($student->email)){
@@ -56,14 +56,14 @@ class XenditPaymentController extends Controller
                 $email =   $student->email;
             }
          
-            $xendit_config = SmPaymentGatewaySetting::where('gateway_name','Xendit')->where('school_id',auth()->user()->school_id)->first('gateway_secret_key');
+            $xendit_config = SmPaymentGatewaySetting::where('gateway_name','Xendit')->where('church_id',auth()->user()->church_id)->first('gateway_secret_key');
             $withServiceCharge = $request->amount + chargeAmount('Xendit', $request->amount);
             if($xendit_config){
                 Xendit::setApiKey($xendit_config->gateway_secret_key);
                 $params = [ 
                     'external_id' => 'fees_collection_'.$request->fees_type_id,
                     'payer_email' => $email,
-                    'description' => generalSetting()->school_name.' Fees_Payment',
+                    'description' => generalSetting()->church_name.' Fees_Payment',
                     'amount' => $withServiceCharge,
                     'success_redirect_url'=>url('xenditpayment/payment_success_callback'),
                     'failure_redirect_url'=>url('xenditpayment/payment_fail_callback')
@@ -73,21 +73,21 @@ class XenditPaymentController extends Controller
                   if($createInvoice && $createInvoice['status']  =="PENDING"){
                         $user = Auth::user();
                         $fees_payment = new SmFeesPayment();
-                        $fees_payment->student_id = $request->student_id;
+                        $fees_payment->member_id = $request->member_id;
                         $fees_payment->amount = $request->amount / 1000;
                         $fees_payment->payment_date = date('Y-m-d');
                         $fees_payment->payment_mode = 'Xendit';
                         $fees_payment->created_by = $user->id;
                         $fees_payment->record_id = $request->record_id;
-                        $fees_payment->school_id = Auth::user()->school_id;
+                        $fees_payment->church_id = Auth::user()->church_id;
                         if(moduleStatusCheck('University')){
-                            $fees_payment->un_academic_id = getAcademicId();
+                            $fees_payment->un_church_year_id = getAcademicId();
                             $fees_payment->un_fees_installment_id  = $request->installment_id;
                             $fees_payment->un_semester_label_id = $request->un_semester_label_id;
                         }
                         else{
                             $fees_payment->fees_type_id = $request->fees_type_id;
-                            $fees_payment->academic_id = getAcademicId();
+                            $fees_payment->church_year_id = getAcademicId();
                         }
                         $fees_payment->active_status = 0;
                         $fees_payment->save();
@@ -143,8 +143,8 @@ class XenditPaymentController extends Controller
                     $add_income->income_head_id = $income_head->income_head_id ?? 1;
                     $add_income->payment_method_id = $payment_method->id ?? 1;
                     $add_income->created_by = Auth()->user()->id;
-                    $add_income->school_id = Auth::user()->school_id;
-                    $add_income->academic_id = getAcademicId();
+                    $add_income->church_id = Auth::user()->church_id;
+                    $add_income->church_year_id = getAcademicId();
                     $add_income->save();
                 }
                 Session::forget('xendit_payment_id');
@@ -155,7 +155,7 @@ class XenditPaymentController extends Controller
 
                 }elseif(auth()->user()->role_id == 3){
                     Toastr::success('Payment success', 'Success');
-                    return redirect('parent-fees',$success_payment->student_id);
+                    return redirect('parent-fees',$success_payment->member_id);
                 }
             }
             
@@ -180,7 +180,7 @@ class XenditPaymentController extends Controller
 
                 }elseif(auth()->user()->role_id == 3){
                     Toastr::error('Payment failed', 'Failed');
-                    return redirect('parent-fees',$success_payment->student_id);
+                    return redirect('parent-fees',$success_payment->member_id);
                 }
             }    
        }

@@ -26,7 +26,7 @@ class HomePageController extends Controller
     public function index()
     {
         try {
-            $links = SmHomePageSetting::where('school_id', app('school')->id)->first();
+            $links = SmHomePageSetting::where('church_id', app('school')->id)->first();
             $permisions = SmFrontendPersmission::where('parent_id', 1)->get();
             return view('backEnd.frontSettings.homePageBackend', compact('links', 'permisions'));
         } catch (\Exception $e) {
@@ -49,13 +49,13 @@ class HomePageController extends Controller
             
 
             //Update Home Page
-            $update = SmHomePageSetting::where('school_id', app('school')->id)->first();
+            $update = SmHomePageSetting::where('church_id', app('school')->id)->first();
             $update->title = $request->title;
             $update->long_title = $request->long_title;
             $update->short_description = $request->short_description;
             $update->link_label = $request->link_label;
             $update->link_url = $request->link_url;
-            $update->school_id = app('school')->id;            
+            $update->church_id = app('school')->id;            
             $update->image =fileUpdate($update->image,$request->image,$path);          
             $update->save();
 

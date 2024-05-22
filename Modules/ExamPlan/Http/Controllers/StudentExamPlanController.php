@@ -23,9 +23,9 @@ class StudentExamPlanController extends Controller
         try{
             $student = Auth::user()->student;
             $records = StudentRecord::where('is_promote',0)
-                                    ->where('student_id',$student->id)
-                                    ->where('academic_id',getAcademicId())
-                                    ->where('school_id',Auth::user()->school_id)
+                                    ->where('member_id',$student->id)
+                                    ->where('church_year_id',getAcademicId())
+                                    ->where('church_id',Auth::user()->church_id)
                                     ->get();
             return view('examplan::studentAdmitCard',compact('records'));
         }
@@ -41,25 +41,25 @@ class StudentExamPlanController extends Controller
         try{
             $smExam = SmExam::findOrFail($request->exam);
             if(auth()->user()->role_id == 3){
-                $student = SmStudent::find($request->student_id);
+                $student = SmStudent::find($request->member_id);
             }else{
                 $student = Auth::user()->student;
             }
-            $studentRecord =StudentRecord::where('student_id',$student->id)
-                                            ->where('class_id',$smExam->class_id)
-                                            ->where('section_id',$smExam->section_id)
-                                            ->where('school_id',Auth::user()->school_id)
-                                            ->where('academic_id',getAcademicId())
+            $studentRecord =StudentRecord::where('member_id',$student->id)
+                                            ->where('age_group_id',$smExam->age_group_id)
+                                            ->where('mgender_id',$smExam->mgender_id)
+                                            ->where('church_id',Auth::user()->church_id)
+                                            ->where('church_year_id',getAcademicId())
                                             ->first();
 
-            $exam_routines = SmExamSchedule::where('class_id', $smExam->class_id)
-                                            ->where('section_id', $smExam->section_id)
+            $exam_routines = SmExamSchedule::where('age_group_id', $smExam->age_group_id)
+                                            ->where('mgender_id', $smExam->mgender_id)
                                             ->where('exam_term_id', $smExam->exam_type_id)
                                             ->orderBy('date', 'ASC')
                                             ->get();
             if($exam_routines){
                 
-                $admit = AdmitCard::where('academic_id',getAcademicId())
+                $admit = AdmitCard::where('church_year_id',getAcademicId())
                                     ->where('student_record_id', $studentRecord->id)
                                     ->where('exam_type_id', $smExam->exam_type_id)
                                     ->first();
@@ -88,14 +88,14 @@ class StudentExamPlanController extends Controller
 
             $admit = AdmitCard::find($id);
             $studentRecord = StudentRecord::find($admit->student_record_id);
-            $student = SmStudent::find($studentRecord->student_id);
-            $setting = AdmitCardSetting::where('school_id',Auth::user()->school_id)
-                                         ->where('academic_id',getAcademicId())   
+            $student = SmStudent::find($studentRecord->member_id);
+            $setting = AdmitCardSetting::where('church_id',Auth::user()->church_id)
+                                         ->where('church_year_id',getAcademicId())   
                                         ->first();
-            $assign_subjects = SmAssignSubject::where('class_id', $studentRecord->class_id)->where('section_id', $studentRecord->section_id)
-                                        ->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-            $exam_routines = SmExamSchedule::where('class_id', $studentRecord->class_id)
-                                        ->where('section_id', $studentRecord->section_id)
+            $assign_subjects = SmAssignSubject::where('age_group_id', $studentRecord->age_group_id)->where('mgender_id', $studentRecord->mgender_id)
+                                        ->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+            $exam_routines = SmExamSchedule::where('age_group_id', $studentRecord->age_group_id)
+                                        ->where('mgender_id', $studentRecord->mgender_id)
                                         ->where('exam_term_id', $admit->exam_type_id)->orderBy('date', 'ASC')->get();
            
             if($setting->admit_layout == 1){
@@ -110,14 +110,14 @@ class StudentExamPlanController extends Controller
         }
     }
 
-    public function admitCardParent($student_id){
+    public function admitCardParent($member_id){
         try{
             $records = StudentRecord::where('is_promote',0)
-            ->where('student_id',$student_id)
-            ->where('academic_id',getAcademicId())
-            ->where('school_id',Auth::user()->school_id)
+            ->where('member_id',$member_id)
+            ->where('church_year_id',getAcademicId())
+            ->where('church_id',Auth::user()->church_id)
             ->get();
-            return view('examplan::studentAdmitCard',compact('records' ,'student_id'));
+            return view('examplan::studentAdmitCard',compact('records' ,'member_id'));
         }
         catch(\Exception $e){
             Toastr::error('Operation Failed','Error');

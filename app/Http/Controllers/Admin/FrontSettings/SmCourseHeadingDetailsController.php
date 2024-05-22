@@ -21,7 +21,7 @@ class SmCourseHeadingDetailsController extends Controller
     {
 
         try {
-            $SmCoursePage = SmCoursePage::where('is_parent', 0)->where('school_id', app('school')->id)->first();
+            $SmCoursePage = SmCoursePage::where('is_parent', 0)->where('church_id', app('school')->id)->first();
             $update = "";
 
             return view('backEnd.frontSettings.course.courseDetailsHeading', compact('SmCoursePage', 'update'));
@@ -40,7 +40,7 @@ class SmCourseHeadingDetailsController extends Controller
 
 
             $destination  = 'public/uploads/about_page/';
-            $course_heading = SmCoursePage::where('is_parent', 0)->where('school_id', app('school')->id)->first();
+            $course_heading = SmCoursePage::where('is_parent', 0)->where('church_id', app('school')->id)->first();
             if($course_heading){
                
                 $course_heading->image     = fileUpdate($course_heading->image,$request->image,$destination);
@@ -48,7 +48,7 @@ class SmCourseHeadingDetailsController extends Controller
             }else{
                 $course_heading = new SmCoursePage();
                 $course_heading->image     = fileUpload($request->image,$destination);               
-                $course_heading->school_id = app('school')->id;
+                $course_heading->church_id = app('school')->id;
                 $course_heading->is_parent = 0;
             }
             $course_heading->title = $request->title;

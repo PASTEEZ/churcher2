@@ -35,15 +35,15 @@ class CustomResultSettingController extends Controller
         try {
             $exams = SmExamType::get();
             $custom_settings = CustomResultSetting::query();
-            $custom_settings->where('school_id',Auth::user()->school_id);
+            $custom_settings->where('church_id',Auth::user()->church_id);
             if(moduleStatusCheck('University')){
-                $custom_settings = $custom_settings->where('un_academic_id',getAcademicId());
+                $custom_settings = $custom_settings->where('un_church_year_id',getAcademicId());
             }else{
-                $custom_settings = $custom_settings->where('academic_id',getAcademicId());
+                $custom_settings = $custom_settings->where('church_year_id',getAcademicId());
             }
             $custom_settings = $custom_settings->get();
             
-            $check_exist= CustomResultSetting::where('academic_year','=',generalSetting()->session_id)
+            $check_exist= CustomResultSetting::where('church_year','=',generalSetting()->session_id)
                 ->first();
 
             $edit_data= $custom_settings->count();
@@ -51,7 +51,7 @@ class CustomResultSettingController extends Controller
             $meritListSettings = CustomResultSetting::first();
 
             $skipSteps = ['exam_schedule', 'exam_attendance'];
-            $exitSkipSteps = ExamStepSkip::where('school_id', auth()->user()->school_id)->pluck('name')->toArray();
+            $exitSkipSteps = ExamStepSkip::where('church_id', auth()->user()->church_id)->pluck('name')->toArray();
             
             return view('backEnd.systemSettings.custom_result_setting_add', compact('custom_settings', 'exams','edit_data','meritListSettings', 'skipSteps', 'exitSkipSteps'));
         } catch (\Exception $e) {
@@ -66,13 +66,13 @@ class CustomResultSettingController extends Controller
                 $custom_setting = new CustomResultSetting();
                 $custom_setting->exam_type_id = $key;
                 $custom_setting->exam_percentage = $exam_percent;
-                $custom_setting->academic_year = getAcademicId();
-                $custom_setting->school_id = Auth::user()->school_id;
+                $custom_setting->church_year = getAcademicId();
+                $custom_setting->church_id = Auth::user()->church_id;
                 $custom_setting->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
                 if(moduleStatusCheck('University')){
-                    $custom_setting->un_academic_id = getAcademicId();
+                    $custom_setting->un_church_year_id = getAcademicId();
                 }else{
-                    $custom_setting->academic_id = getAcademicId();
+                    $custom_setting->church_year_id = getAcademicId();
                 }
                 $result=$custom_setting->save();
                 if($result){
@@ -95,11 +95,11 @@ class CustomResultSettingController extends Controller
             if(!$custom_setting){
                 $custom_setting = new CustomResultSetting();
                 $custom_setting->merit_list_setting = 'total_mark';
-                $custom_setting->school_id = Auth::user()->school_id;
+                $custom_setting->church_id = Auth::user()->church_id;
                 if(moduleStatusCheck('University')){
-                    $custom_setting->un_academic_id = getAcademicId();
+                    $custom_setting->un_church_year_id = getAcademicId();
                 }else{
-                    $custom_setting->academic_id = getAcademicId();
+                    $custom_setting->church_year_id = getAcademicId();
                 }
 
             }
@@ -178,10 +178,10 @@ class CustomResultSettingController extends Controller
                 }
                 $custom_setting->exam_type_id = $key;
                 $custom_setting->exam_percentage = $exam_persent;
-                $custom_setting->academic_year = $gs->session_id;
-                $custom_setting->school_id = Auth::user()->school_id;
+                $custom_setting->church_year = $gs->session_id;
+                $custom_setting->church_id = Auth::user()->church_id;
                 $custom_setting->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
-                $custom_setting->academic_id = getAcademicId();
+                $custom_setting->church_year_id = getAcademicId();
                 $result=$custom_setting->save();
 
                 if($result){
@@ -238,7 +238,7 @@ class CustomResultSettingController extends Controller
     {
         try {
 
-            $custom_result_setup = CustomResultSetting::where('academic_year', generalSetting()->session_id)->first();
+            $custom_result_setup = CustomResultSetting::where('church_year', generalSetting()->session_id)->first();
 
             if (!empty($custom_result_setup)) {
                 if ($key == 0) {
@@ -263,7 +263,7 @@ class CustomResultSettingController extends Controller
     function getGradeNameFromGPA($marks)
     {
         try {
-            $marks_gpa = DB::table('sm_marks_grades')->where('from', '<=', $marks)->where('up', '>=', $marks)->where('school_id', Auth::user()->school_id)->where('academic_id',getAcademicId())->first();
+            $marks_gpa = DB::table('sm_marks_grades')->where('from', '<=', $marks)->where('up', '>=', $marks)->where('church_id', Auth::user()->church_id)->where('church_year_id',getAcademicId())->first();
             if (!empty($marks_gpa)) {
                 return $marks_gpa->grade_name;
             } else {
@@ -307,23 +307,23 @@ class CustomResultSettingController extends Controller
             $class          = SmClass::find($InputClassId);
             $section        = SmSection::find($InputSectionId);
 
-            $class_name = $class->class_name;
+            $age_group_name = $class->age_group_name;
 
             $result_archive = [];
 
-            $assigned_exam = SmExam::where('class_id', $InputClassId)
-                ->where('section_id', $InputSectionId)
+            $assigned_exam = SmExam::where('age_group_id', $InputClassId)
+                ->where('mgender_id', $InputSectionId)
                 ->select('exam_type_id')
                 ->DISTINCT()
                 ->get();
 
             $classes = SmClass::get();
 
-            $eligible_students = SmStudent::where('class_id', $InputClassId)
-                ->where('section_id', $InputSectionId)
+            $eligible_students = SmStudent::where('age_group_id', $InputClassId)
+                ->where('mgender_id', $InputSectionId)
                 ->get();
 
-            $eligible_subjects = SmAssignSubject::where('class_id', $InputClassId)
+            $eligible_subjects = SmAssignSubject::where('age_group_id', $InputClassId)
                 ->get();
 
             $student_yearly_result = [];
@@ -332,15 +332,15 @@ class CustomResultSettingController extends Controller
 
             $student_result = [];
             foreach ($eligible_students as  $student) {
-                $store = SmCustomTemporaryResult::where('student_id',  $student->id)->first();
+                $store = SmCustomTemporaryResult::where('member_id',  $student->id)->first();
                 if ($store == null) {
                     $store = new SmCustomTemporaryResult();
                 }
 
-                $store->student_id = $student->id;
-                $store->admission_no = $student->admission_no;
+                $store->member_id = $student->id;
+                $store->registration_no = $student->registration_no;
                 $store->full_name = $student->full_name;
-                $store->school_id = Auth::user()->school_id;
+                $store->church_id = Auth::user()->church_id;
 
                 $resultk49 = 0;
                 $term_count = 1;
@@ -367,13 +367,13 @@ class CustomResultSettingController extends Controller
                 }
             }
 
-            $customresult = SmCustomTemporaryResult::orderBy('final_result', 'DESC')->where('school_id', Auth::user()->school_id)->get();
-            $assign_subjects = SmAssignSubject::where('class_id', $class->id)->where('section_id', $section->id)->get();
-            $custom_result_setup = CustomResultSetting::where('academic_year', generalSetting()->session_id)->first();
+            $customresult = SmCustomTemporaryResult::orderBy('final_result', 'DESC')->where('church_id', Auth::user()->church_id)->get();
+            $assign_subjects = SmAssignSubject::where('age_group_id', $class->id)->where('mgender_id', $section->id)->get();
+            $custom_result_setup = CustomResultSetting::where('church_year', generalSetting()->session_id)->first();
 
             if (!empty($custom_result_setup)) {
 
-                return view('backEnd.reports.custom_merit_list_report', compact('customresult', 'iid', 'classes', 'section', 'class_name', 'assign_subjects', 'InputClassId',  'InputSectionId', 'custom_result_setup'));
+                return view('backEnd.reports.custom_merit_list_report', compact('customresult', 'iid', 'classes', 'section', 'age_group_name', 'assign_subjects', 'InputClassId',  'InputSectionId', 'custom_result_setup'));
             } else {
                 Toastr::warning('Please Complete Custom Setup', 'Warning');
                 return redirect()->back();
@@ -405,31 +405,31 @@ class CustomResultSettingController extends Controller
 
                 $class          = SmClass::find($InputClassId);
                 $section        = SmSection::find($InputSectionId);
-                $class_name =$class ->class_name;
+                $age_group_name =$class ->age_group_name;
 
 
 
                 $result_archive = [];
 
-                $assigned_exam  = SmExam::where('class_id', $InputClassId)->where('section_id', $InputSectionId)->select('exam_type_id')->DISTINCT()->get();
+                $assigned_exam  = SmExam::where('age_group_id', $InputClassId)->where('mgender_id', $InputSectionId)->select('exam_type_id')->DISTINCT()->get();
                 $classes        = SmClass::get();
-                $eligible_students       = SmStudent::where('class_id', $InputClassId)->where('section_id', $InputSectionId)->where('academic_id', getAcademicId())->get();
-                $eligible_subjects       = SmAssignSubject::where('class_id', $InputClassId)->where('section_id', $InputSectionId)->where('academic_id', getAcademicId())->get();
+                $eligible_students       = SmStudent::where('age_group_id', $InputClassId)->where('mgender_id', $InputSectionId)->where('church_year_id', getAcademicId())->get();
+                $eligible_subjects       = SmAssignSubject::where('age_group_id', $InputClassId)->where('mgender_id', $InputSectionId)->where('church_year_id', getAcademicId())->get();
                 $student_yearly_result   = [];
                 $result_archive = [];
 
 
                 $student_result = [];
                 foreach ($eligible_students as  $student) {
-                    $store = SmCustomTemporaryResult::where('student_id',  $student->id)->first();
+                    $store = SmCustomTemporaryResult::where('member_id',  $student->id)->first();
                     if ($store == null) {
                         $store = new SmCustomTemporaryResult();
                     }
 
-                    $store->student_id = $student->id;
-                    $store->admission_no = $student->admission_no;
+                    $store->member_id = $student->id;
+                    $store->registration_no = $student->registration_no;
                     $store->full_name = $student->full_name;
-                    $store->school_id = Auth::user()->school_id;
+                    $store->church_id = Auth::user()->church_id;
 
                     $resultk49 = 0;
                     $term_count = 1;
@@ -450,16 +450,16 @@ class CustomResultSettingController extends Controller
                     $store->final_result  = number_format((float) $resultk49, 2, '.', '');
                     $store->final_grade  = $this->getGradeNameFromGPA(number_format((float) $resultk49, 2, '.', ''));
                     // return $store->final_grade;
-                    $store->academic_id = getAcademicId();
+                    $store->church_year_id = getAcademicId();
                     $store->save();
                 }
 
-                $customresult = SmCustomTemporaryResult::orderBy('final_result', 'DESC')->where('school_id', Auth::user()->school_id)->get();
-                $assign_subjects = SmAssignSubject::where('class_id', $class->id)->where('section_id', $section->id)->get();
+                $customresult = SmCustomTemporaryResult::orderBy('final_result', 'DESC')->where('church_id', Auth::user()->church_id)->get();
+                $assign_subjects = SmAssignSubject::where('age_group_id', $class->id)->where('mgender_id', $section->id)->get();
 
                 $system_setting = generalSetting()->session_id;
-                $custom_result_setup = CustomResultSetting::where('academic_year', $system_setting)->first();
-                return view('backEnd.reports.custom_merit_list_report_print', compact('customresult', 'iid', 'classes', 'section', 'class_name', 'assign_subjects', 'InputClassId',  'InputSectionId', 'custom_result_setup'));
+                $custom_result_setup = CustomResultSetting::where('church_year', $system_setting)->first();
+                return view('backEnd.reports.custom_merit_list_report_print', compact('customresult', 'iid', 'classes', 'section', 'age_group_name', 'assign_subjects', 'InputClassId',  'InputSectionId', 'custom_result_setup'));
 
 
 
@@ -519,14 +519,14 @@ class CustomResultSettingController extends Controller
             $section = SmClass::findOrfail($request->section);
             $studentDetails = SmStudent::where('sm_students.id', '=', $request->student)
                 ->join('sm_academic_years', 'sm_academic_years.id', '=', 'sm_students.session_id')
-                ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.class_id')
-                ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.section_id')
+                ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.age_group_id')
+                ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.mgender_id')
                 ->first();
 
             $system_setting = generalSetting()->session_id;
-            $custom_result_setup = CustomResultSetting::where('academic_year', $system_setting)->first();
-            $assign_subjects = SmAssignSubject::where('class_id', $class->id)->where('section_id', $section->id)->where('sm_assign_subjects.academic_id', getAcademicId())->join('sm_subjects', 'sm_subjects.id', '=', 'sm_assign_subjects.subject_id')->get();
-            $assigned_exam = SmExam::where('class_id', $class->id)->where('section_id', $section->id)->select('exam_type_id', 'title')->join('sm_exam_types', 'sm_exam_types.id', '=', 'sm_exams.exam_type_id')->DISTINCT()->get();
+            $custom_result_setup = CustomResultSetting::where('church_year', $system_setting)->first();
+            $assign_subjects = SmAssignSubject::where('age_group_id', $class->id)->where('mgender_id', $section->id)->where('sm_assign_subjects.church_year_id', getAcademicId())->join('sm_subjects', 'sm_subjects.id', '=', 'sm_assign_subjects.subject_id')->get();
+            $assigned_exam = SmExam::where('age_group_id', $class->id)->where('mgender_id', $section->id)->select('exam_type_id', 'title')->join('sm_exam_types', 'sm_exam_types.id', '=', 'sm_exams.exam_type_id')->DISTINCT()->get();
 
             if ($assigned_exam->count() != 3) {
                 Toastr::error('Result not found for this class, At least you have to complete 3 terms results', 'Failed');
@@ -567,14 +567,14 @@ class CustomResultSettingController extends Controller
             $section = SmSection::findOrfail($request->section);
             $studentDetails = SmStudent::where('sm_students.id', '=', $request->student)
                 ->join('sm_academic_years', 'sm_academic_years.id', '=', 'sm_students.session_id')
-                ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.class_id')
-                ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.section_id')
+                ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.age_group_id')
+                ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.mgender_id')
                 ->first();
 
             $system_setting = generalSetting()->session_id;
-            $custom_result_setup = CustomResultSetting::where('academic_year', $system_setting)->first();
-            $assign_subjects = SmAssignSubject::where('class_id', $class->id)->where('section_id', $section->id)->where('sm_assign_subjects.academic_id', getAcademicId())->join('sm_subjects', 'sm_subjects.id', '=', 'sm_assign_subjects.subject_id')->get();
-            $assigned_exam = SmExam::where('class_id', $class->id)->where('section_id', $section->id)->select('exam_type_id', 'title')->join('sm_exam_types', 'sm_exam_types.id', '=', 'sm_exams.exam_type_id')->DISTINCT()->get();
+            $custom_result_setup = CustomResultSetting::where('church_year', $system_setting)->first();
+            $assign_subjects = SmAssignSubject::where('age_group_id', $class->id)->where('mgender_id', $section->id)->where('sm_assign_subjects.church_year_id', getAcademicId())->join('sm_subjects', 'sm_subjects.id', '=', 'sm_assign_subjects.subject_id')->get();
+            $assigned_exam = SmExam::where('age_group_id', $class->id)->where('mgender_id', $section->id)->select('exam_type_id', 'title')->join('sm_exam_types', 'sm_exam_types.id', '=', 'sm_exams.exam_type_id')->DISTINCT()->get();
 
             if ($assigned_exam->count() != 3) {
                 Toastr::error('Result not found for this class', 'Failed');
@@ -613,14 +613,14 @@ class CustomResultSettingController extends Controller
             $section = SmSection::findOrfail($request->section);
             $studentDetails = SmStudent::where('sm_students.id', '=', $request->student)
                 ->join('sm_academic_years', 'sm_academic_years.id', '=', 'sm_students.session_id')
-                ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.class_id')
-                ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.section_id')
+                ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.age_group_id')
+                ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.mgender_id')
                 ->first();
 
             $system_setting =generalSetting()->session_id;
-            $custom_result_setup = CustomResultSetting::where('academic_year', $system_setting)->first();
-            $assign_subjects = SmAssignSubject::where('class_id', $class->id)->where('section_id', $section->id)->where('sm_assign_subjects.academic_id', getAcademicId())->join('sm_subjects', 'sm_subjects.id', '=', 'sm_assign_subjects.subject_id')->get();
-            $assigned_exam = SmExam::where('class_id', $class->id)->where('section_id', $section->id)->select('exam_type_id', 'title')->join('sm_exam_types', 'sm_exam_types.id', '=', 'sm_exams.exam_type_id')->DISTINCT()->get();
+            $custom_result_setup = CustomResultSetting::where('church_year', $system_setting)->first();
+            $assign_subjects = SmAssignSubject::where('age_group_id', $class->id)->where('mgender_id', $section->id)->where('sm_assign_subjects.church_year_id', getAcademicId())->join('sm_subjects', 'sm_subjects.id', '=', 'sm_assign_subjects.subject_id')->get();
+            $assigned_exam = SmExam::where('age_group_id', $class->id)->where('mgender_id', $section->id)->select('exam_type_id', 'title')->join('sm_exam_types', 'sm_exam_types.id', '=', 'sm_exams.exam_type_id')->DISTINCT()->get();
 
             if ($assigned_exam->count() != 3) {
                 Toastr::error('Result not found for this class', 'Failed');
@@ -666,13 +666,13 @@ class CustomResultSettingController extends Controller
         try {
            
             $steps = $request->item;
-            ExamStepSkip::where('school_id', auth()->user()->school_id)->delete();
+            ExamStepSkip::where('church_id', auth()->user()->church_id)->delete();
             if($steps) {
                
                 foreach($steps as $step) {
                     ExamStepSkip::updateOrCreate([
                         'name'=>$step,
-                        'school_id'=>auth()->user()->school_id
+                        'church_id'=>auth()->user()->church_id
                     ]);
                 }
             }
@@ -685,7 +685,7 @@ class CustomResultSettingController extends Controller
     }
     public static function isSkip(string $name)
     {
-        $data = ExamStepSkip::where('name', $name)->where('school_id', auth()->user()->school_id)->first();
+        $data = ExamStepSkip::where('name', $name)->where('church_id', auth()->user()->church_id)->first();
         if($data) {
             return true;
         }

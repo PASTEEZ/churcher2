@@ -175,7 +175,7 @@ $ttl_rtl = $setting->ttl_rtl;
                             <form method="POST" class="loginForm" action="{{route('customer_register')}}" id="infix_form">
                                 @csrf
 
-                                <input type="hidden" name="school_id" value="1">
+                                <input type="hidden" name="church_id" value="1">
                                 <input type="hidden" name="username" id="username-hidden">
 
                                 <?php if(session()->has('message-danger') != ""): ?>
@@ -201,16 +201,16 @@ $ttl_rtl = $setting->ttl_rtl;
                             <div class="col-12">
                             {{-- @if (moduleStatusCheck('Saas') == TRUE) --}}
                                     <div class="input-effect mb-40 in_single_input">
-                                        <select class="mb-26 niceSelect infix_theme_style w-100 bb form-control{{ $errors->has('school_id') ? ' is-invalid' : '' }}" name="school_id" id="select-school">
+                                        <select class="mb-26 niceSelect infix_theme_style w-100 bb form-control{{ $errors->has('church_id') ? ' is-invalid' : '' }}" name="church_id" id="select-school">
                                             <option data-display="Select School *" value="">Select school *</option>
                                             @foreach($schools as $school)
-                                                <option value="{{$school->id}}"> {{$school->school_name}} </option>
+                                                <option value="{{$school->id}}"> {{$school->church_name}} </option>
                                             @endforeach
                                         </select>
                                     </div>
-                                    @if ($errors->has('school_id'))
+                                    @if ($errors->has('church_id'))
                                         <span class="invalid-select text-left text-danger pl-3" role="alert">
-                                            <strong>{{ $errors->first('school_id') }}</strong>
+                                            <strong>{{ $errors->first('church_id') }}</strong>
                                         </span>
                                     @endif
                             {{-- @endif --}}

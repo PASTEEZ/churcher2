@@ -30,9 +30,9 @@
                         <li class="nav-item">
                             <a class="nav-link @if($key== 0) active @endif " href="#tab{{$key}}" role="tab" data-toggle="tab">
                                 @if(moduleStatusCheck('University'))
-                                {{$record->semesterLabel->name}} ({{$record->unSection->section_name}}) - {{@$record->unAcademic->name}}
+                                {{$record->semesterLabel->name}} ({{$record->unSection->mgender_name}}) - {{@$record->unAcademic->name}}
                                 @else
-                                {{$record->class->class_name}} ({{$record->section->section_name}})
+                                {{$record->class->age_group_name}} ({{$record->section->mgender_name}})
                                 @endif
                             </a>
                         </li>
@@ -98,10 +98,10 @@
                                                 @endif
 
                                                 @if(@$value->classes != "" && $value->sections != "")
-                                                    @lang('study.all_students_of') ({{@$value->classes->class_name.'->'.@$value->sections->section_name}})
+                                                    @lang('study.all_students_of') ({{@$value->classes->age_group_name.'->'.@$value->sections->mgender_name}})
                                                 @endif
                                                 @if(@$value->classes != "" && $value->sections ==null)
-                                                @lang('study.all_students_of') ({{@$value->classes->class_name.'->'.'All Sections'}})
+                                                @lang('study.all_students_of') ({{@$value->classes->age_group_name.'->'.'All Sections'}})
                                             @endif
                                             @endif
                                             </td>

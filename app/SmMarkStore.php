@@ -15,11 +15,11 @@ class SmMarkStore extends Model
     }
     
     public function class(){
-        return $this->belongsTo('App\SmClass', 'class_id', 'id');
+        return $this->belongsTo('App\SmClass', 'age_group_id', 'id');
     }
      public function section()
     {
-        return $this->belongsTo('App\SmSection', 'section_id', 'id');
+        return $this->belongsTo('App\SmSection', 'mgender_id', 'id');
     }
 
     public function subjectName()
@@ -27,14 +27,14 @@ class SmMarkStore extends Model
         return $this->belongsTo('App\SmSubject', 'subject_id', 'id');
     }
  
-    public static function get_mark_by_part($student_id, $exam_id, $class_id, $section_id, $subject_id, $exam_setup_id, $record_id){
+    public static function get_mark_by_part($member_id, $exam_id, $age_group_id, $mgender_id, $subject_id, $exam_setup_id, $record_id){
     	
         try {
             $getMark= SmMarkStore::where([
-                ['student_id',$student_id], 
+                ['member_id',$member_id], 
                 ['exam_term_id',$exam_id], 
-                ['class_id',$class_id], 
-                ['section_id',$section_id], 
+                ['age_group_id',$age_group_id], 
+                ['mgender_id',$mgender_id], 
                 ['exam_setup_id',$exam_setup_id], 
                 ['student_record_id', $record_id], 
                 ['subject_id',$subject_id]
@@ -53,13 +53,13 @@ class SmMarkStore extends Model
     }
 
 
-    public static function un_get_mark_by_part($student_id, $request, $exam_id, $subject_id, $exam_setup_id, $record_id)
+    public static function un_get_mark_by_part($member_id, $request, $exam_id, $subject_id, $exam_setup_id, $record_id)
     {
         try {
             $SmMarkStore = SmMarkStore::query();
             $getMark = universityFilter($SmMarkStore, $request)
                 ->where([
-                ['student_id',$student_id], 
+                ['member_id',$member_id], 
                 ['exam_term_id',$exam_id], 
                 ['exam_setup_id',$exam_setup_id], 
                 ['student_record_id', $record_id], 
@@ -78,16 +78,16 @@ class SmMarkStore extends Model
         }
     }
 
-    public static function is_absent_check($student_id, $exam_id, $class_id, $section_id, $subject_id, $record_id)
+    public static function is_absent_check($member_id, $exam_id, $age_group_id, $mgender_id, $subject_id, $record_id)
     {
         
         try {
             $getMark= SmMarkStore::where([
-                ['student_id',$student_id], 
+                ['member_id',$member_id], 
                 ['exam_term_id',$exam_id], 
-                ['class_id',$class_id], 
+                ['age_group_id',$age_group_id], 
                 ['student_record_id', $record_id], 
-                ['section_id',$section_id], 
+                ['mgender_id',$mgender_id], 
                 ['subject_id',$subject_id]
             ])->first();
             if (!empty($getMark)) {
@@ -102,13 +102,13 @@ class SmMarkStore extends Model
         }
     }
 
-    public static function un_is_absent_check($student_id, $exam_id, $request, $subject_id, $record_id)
+    public static function un_is_absent_check($member_id, $exam_id, $request, $subject_id, $record_id)
     {
         try {
             $SmMarkStore = SmMarkStore::query();
             $getMark = universityFilter($SmMarkStore, $request)
             ->where([
-                ['student_id',$student_id], 
+                ['member_id',$member_id], 
                 ['exam_term_id',$exam_id],
                 ['student_record_id', $record_id], 
                 ['subject_id',$subject_id]
@@ -125,13 +125,13 @@ class SmMarkStore extends Model
         }
     }
 
-    public static function teacher_remarks($student_id, $exam_id, $class_id, $section_id, $subject_id, $record_id) {
+    public static function teacher_remarks($member_id, $exam_id, $age_group_id, $mgender_id, $subject_id, $record_id) {
         
         $getMark= SmMarkStore::where([
-            ['student_id',$student_id], 
+            ['member_id',$member_id], 
             ['exam_term_id',$exam_id], 
-            ['class_id',$class_id], 
-            ['section_id',$section_id], 
+            ['age_group_id',$age_group_id], 
+            ['mgender_id',$mgender_id], 
             ['student_record_id', $record_id], 
             ['subject_id',$subject_id]
         ])->first();
@@ -145,12 +145,12 @@ class SmMarkStore extends Model
         return $output;
     }
 
-    public static function un_teacher_remarks($student_id, $exam_id, $request, $subject_id, $record_id) {
+    public static function un_teacher_remarks($member_id, $exam_id, $request, $subject_id, $record_id) {
         
         $SmMarkStore = SmMarkStore::query();
             $getMark = universityFilter($SmMarkStore, $request)
             ->where([
-            ['student_id',$student_id], 
+            ['member_id',$member_id], 
             ['exam_term_id',$exam_id],
             ['student_record_id', $record_id], 
             ['un_subject_id',$subject_id]
@@ -165,11 +165,11 @@ class SmMarkStore extends Model
         return $output;
     }
 
-    public static function allMarksArray($exam_id, $class_id, $section_id, $subject_id)
+    public static function allMarksArray($exam_id, $age_group_id, $mgender_id, $subject_id)
     {
         $all_student_marks = [];
 
-        $marks = SmResultStore::where('class_id', $class_id)->where('section_id', $section_id)->where('subject_id', $subject_id)->where('exam_type_id', $exam_id)->get();
+        $marks = SmResultStore::where('age_group_id', $age_group_id)->where('mgender_id', $mgender_id)->where('subject_id', $subject_id)->where('exam_type_id', $exam_id)->get();
 
         foreach($marks as $mark){
             $all_student_marks[] = $mark->total_marks;

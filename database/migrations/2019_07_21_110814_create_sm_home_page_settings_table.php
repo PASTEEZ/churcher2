@@ -21,8 +21,8 @@ class CreateSmHomePageSettingsTable extends Migration
             $table->string('link_label',255)->nullable();
             $table->string('link_url',255)->nullable();
             $table->string('image',255)->nullable();
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
             $table->timestamps();
         });
 

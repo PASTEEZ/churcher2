@@ -85,9 +85,9 @@ class JymembersRegistrationController extends Controller
     {
 
         try {
-            if (isSubscriptionEnabled() && auth()->user()->school_id != 1) {
+            if (isSubscriptionEnabled() && auth()->user()->church_id != 1) {
 
-                $active_student = SmStudent::where('school_id', Auth::user()->school_id)->where('active_status', 1)->count();
+                $active_student = SmStudent::where('church_id', Auth::user()->church_id)->where('active_status', 1)->count();
 
                 if (\Modules\Saas\Entities\SmPackagePlan::student_limit() <= $active_student) {
 
@@ -98,8 +98,8 @@ class JymembersRegistrationController extends Controller
             }
            
             $data = $this->loadData();
-            $data['max_admission_id'] = SmStudent::where('school_id', Auth::user()->school_id)->max('id');
-            $data['max_roll_id'] = SmStudent::where('school_id', Auth::user()->school_id)->max('roll_no');
+            $data['max_admission_id'] = SmStudent::where('church_id', Auth::user()->church_id)->max('id');
+            $data['max_roll_id'] = SmStudent::where('church_id', Auth::user()->church_id)->max('roll_no');
 
          
             return view('backEnd.studentInformation.jy_registration_form', $data);
@@ -125,7 +125,7 @@ class JymembersRegistrationController extends Controller
         $parentInfo = ($request->fathers_name || $request->fathers_phone || $request->mothers_name || $request->mothers_phone || $request->guardians_email || $request->guardians_phone )  ? true : false;
         // add student record
         if ($request->filled('phone_number') || $request->filled('email_address')) {
-            $user = User::where('school_id', auth()->user()->school_id)
+            $user = User::where('church_id', auth()->user()->church_id)
                 ->when($request->filled('phone_number') && !$request->email_address, function ($q) use ($request) {
                     $q->where(function ($q) use ($request) {
                         return $q->where('phone_number', $request->phone_number)->orWhere('username', $request->phone_number);
@@ -147,11 +147,11 @@ class JymembersRegistrationController extends Controller
                         $model = StudentRecord::query();
                         $studentRecord = universityFilter($model, $request)->first();
                     } else {
-                        $studentRecord = StudentRecord::where('class_id', $request->class)
-                        ->where('section_id', $request->section)
-                        ->where('academic_id', $request->session)
-                        ->where('student_id', $user->student->id)
-                        ->where('school_id', auth()->user()->school_id)
+                        $studentRecord = StudentRecord::where('age_group_id', $request->class)
+                        ->where('mgender_id', $request->section)
+                        ->where('church_year_id', $request->session)
+                        ->where('member_id', $user->student->id)
+                        ->where('church_id', auth()->user()->church_id)
                         ->first();
                     }
                     if (!$studentRecord) {
@@ -162,15 +162,15 @@ class JymembersRegistrationController extends Controller
                         }
 
                         $this->insertStudentRecord($request->merge([
-                            'student_id' => $user->student->id,
+                            'member_id' => $user->student->id,
 
                         ]));
                         if (moduleStatusCheck('Lead') == true && $request->lead_id) {
                             Lead::where('id', $request->lead_id)->update(['is_converted' => 1]);
                             Toastr::success('Operation successful', 'Success');
                             return redirect()->route('lead.index');
-                        } else if ($request->has('parent_registration_student_id') && moduleStatusCheck('ParentRegistration') == true) {
-                            $registrationStudent = \Modules\ParentRegistration\Entities\SmStudentRegistration::find($request->parent_registration_student_id);
+                        } else if ($request->has('parent_registration_member_id') && moduleStatusCheck('ParentRegistration') == true) {
+                            $registrationStudent = \Modules\ParentRegistration\Entities\SmStudentRegistration::find($request->parent_registration_member_id);
                             if ($registrationStudent) {
                                 $registrationStudent->delete();
                             }
@@ -216,9 +216,9 @@ class JymembersRegistrationController extends Controller
         try {
 
             if (moduleStatusCheck('University')) {
-                $academic_year = UnAcademicYear::find($request->un_academic_id);
+                $church_year = UnAcademicYear::find($request->un_church_year_id);
             } else {
-                $academic_year = SmAcademicYear::find($request->session);
+                $church_year = SmAcademicYear::find($request->session);
             }
            
             
@@ -229,8 +229,8 @@ class JymembersRegistrationController extends Controller
             $user_stu->email = $request->email_address;
             $user_stu->phone_number = $request->phone_number;
             $user_stu->password = Hash::make(123456);
-            $user_stu->school_id = Auth::user()->school_id;
-            $user_stu->created_at = $academic_year->year . '-01-01 12:00:00';
+            $user_stu->church_id = Auth::user()->church_id;
+            $user_stu->created_at = $church_year->year . '-01-01 12:00:00';
             $user_stu->save();
             $user_stu->toArray();
 
@@ -250,8 +250,8 @@ class JymembersRegistrationController extends Controller
                         $user_parent->email = $guardians_email;
                         $user_parent->phone_number = $guardians_phone;
                         $user_parent->password = Hash::make(123456);
-                        $user_parent->school_id = Auth::user()->school_id;
-                        $user_parent->created_at = $academic_year->year . '-01-01 12:00:00';
+                        $user_parent->church_id = Auth::user()->church_id;
+                        $user_parent->created_at = $church_year->year . '-01-01 12:00:00';
                         $user_parent->save();
                         $user_parent->toArray();
                     }
@@ -280,9 +280,9 @@ class JymembersRegistrationController extends Controller
                     $parent->guardians_photo = $guardians_photo;
                     $parent->guardians_address = $request->guardians_address;
                     $parent->is_guardian = $request->is_guardian;
-                    $parent->school_id = Auth::user()->school_id;
-                    $parent->academic_id = $request->session;
-                    $parent->created_at = $academic_year->year . '-01-01 12:00:00';
+                    $parent->church_id = Auth::user()->church_id;
+                    $parent->church_year_id = $request->session;
+                    $parent->created_at = $church_year->year . '-01-01 12:00:00';
                     $parent->save();
                     $parent->toArray();
                     $hasParent = $parent->id;
@@ -295,7 +295,7 @@ class JymembersRegistrationController extends Controller
                 $hasParent = $parent->id;
             }
             if($request->staff_parent) {
-                $hasParent = $staffParent->staffParentStore($staff, $request, $academic_year);
+                $hasParent = $staffParent->staffParentStore($staff, $request, $church_year);
                 $staff->update(['parent_id'=> $hasParent]);
                 $parent = SmParent::find($hasParent);
             }
@@ -303,7 +303,7 @@ class JymembersRegistrationController extends Controller
             $student->user_id = $user_stu->id;
             $student->parent_id = $exitStaffParent ? $exitStaffParent->id : ($request->parent_id == "" ? $hasParent : $request->parent_id);
             $student->role_id = 2;
-            $student->admission_no = $request->admission_number;
+            $student->registration_no = $request->admission_number;
             if ($request->roll_number) {
                 $student->roll_no = $request->admission_number;
             }
@@ -352,7 +352,7 @@ class JymembersRegistrationController extends Controller
             
 
             $student->student_status = $request->student_status;
-            $student->student_school_name = $request->student_school_name;
+            $student->student_church_name = $request->student_church_name;
             $student->school_admission_date = $request->school_admission_date;
             $student->school_completion_date = $request->school_completion_date;
             $student->school_telephone = $request->school_telephone;
@@ -402,11 +402,11 @@ class JymembersRegistrationController extends Controller
             $student->document_file_3 = fileUpload($request->file('document_file_3'), $destination);
             $student->document_title_4 = $request->document_title_4;
             $student->document_file_4 = fileUpload($request->file('document_file_4'), $destination);
-            $student->school_id = Auth::user()->school_id;
-            $student->academic_id = $request->session;
+            $student->church_id = Auth::user()->church_id;
+            $student->church_year_id = $request->session;
             $student->student_category_id = $request->student_category_id;
             $student->student_group_id = $request->student_group_id;
-            $student->created_at = $academic_year->year . '-01-01 12:00:00';
+            $student->created_at = $church_year->year . '-01-01 12:00:00';
 
             if ($request->customF) {
                 $dataImage = $request->customF;
@@ -437,7 +437,7 @@ class JymembersRegistrationController extends Controller
             }
             // insert Into student record
             $this->insertStudentRecord($request->merge([
-                'student_id' => $student->id,
+                'member_id' => $student->id,
                 'is_default' => 1,
 
             ]));
@@ -464,15 +464,15 @@ class JymembersRegistrationController extends Controller
             //add by abu nayem for lead convert to student
             if (moduleStatusCheck('Lead') == true && $request->lead_id) {
                 $lead = \Modules\Lead\Entities\Lead::find($request->lead_id);
-                $lead->class_id = $request->class;
-                $lead->section_id = $request->section;
+                $lead->age_group_id = $request->class;
+                $lead->mgender_id = $request->section;
                 $lead->save();
             }
             //end lead convert to student
             DB::commit();
-            if ($request->has('parent_registration_student_id') && moduleStatusCheck('ParentRegistration') == true) {
+            if ($request->has('parent_registration_member_id') && moduleStatusCheck('ParentRegistration') == true) {
 
-                $registrationStudent = \Modules\ParentRegistration\Entities\SmStudentRegistration::find($request->parent_registration_student_id);
+                $registrationStudent = \Modules\ParentRegistration\Entities\SmStudentRegistration::find($request->parent_registration_member_id);
                 if ($registrationStudent) {
                     $registrationStudent->delete();
                 }
@@ -510,7 +510,7 @@ class JymembersRegistrationController extends Controller
         $parentInfo = ($request->fathers_name || $request->fathers_phone || $request->mothers_name || $request->mothers_phone || $request->guardians_email || $request->guardians_phone )  ? true : false;
         // add student record
         if ($request->filled('phone_number') || $request->filled('email_address')) {
-            $user = User::where('school_id', auth()->user()->school_id)
+            $user = User::where('church_id', auth()->user()->church_id)
                 ->when($request->filled('phone_number') && !$request->email_address, function ($q) use ($request) {
                     $q->where(function ($q) use ($request) {
                         return $q->where('phone_number', $request->phone_number)->orWhere('username', $request->phone_number);
@@ -532,11 +532,11 @@ class JymembersRegistrationController extends Controller
                         $model = StudentRecord::query();
                         $studentRecord = universityFilter($model, $request)->first();
                     } else {
-                        $studentRecord = StudentRecord::where('class_id', $request->class)
-                        ->where('section_id', $request->section)
-                        ->where('academic_id', $request->session)
-                        ->where('student_id', $user->student->id)
-                        ->where('school_id', auth()->user()->school_id)
+                        $studentRecord = StudentRecord::where('age_group_id', $request->class)
+                        ->where('mgender_id', $request->section)
+                        ->where('church_year_id', $request->session)
+                        ->where('member_id', $user->student->id)
+                        ->where('church_id', auth()->user()->church_id)
                         ->first();
                     }
                     if (!$studentRecord) {
@@ -547,15 +547,15 @@ class JymembersRegistrationController extends Controller
                         }
 
                         $this->insertStudentRecord($request->merge([
-                            'student_id' => $user->student->id,
+                            'member_id' => $user->student->id,
 
                         ]));
                         if (moduleStatusCheck('Lead') == true && $request->lead_id) {
                             Lead::where('id', $request->lead_id)->update(['is_converted' => 1]);
                             Toastr::success('Operation successful', 'Success');
                             return redirect()->route('lead.index');
-                        } else if ($request->has('parent_registration_student_id') && moduleStatusCheck('ParentRegistration') == true) {
-                            $registrationStudent = \Modules\ParentRegistration\Entities\SmStudentRegistration::find($request->parent_registration_student_id);
+                        } else if ($request->has('parent_registration_member_id') && moduleStatusCheck('ParentRegistration') == true) {
+                            $registrationStudent = \Modules\ParentRegistration\Entities\SmStudentRegistration::find($request->parent_registration_member_id);
                             if ($registrationStudent) {
                                 $registrationStudent->delete();
                             }
@@ -601,9 +601,9 @@ class JymembersRegistrationController extends Controller
         try {
 
             if (moduleStatusCheck('University')) {
-                $academic_year = UnAcademicYear::find($request->un_academic_id);
+                $church_year = UnAcademicYear::find($request->un_church_year_id);
             } else {
-                $academic_year = SmAcademicYear::find($request->session);
+                $church_year = SmAcademicYear::find($request->session);
             }
            
             
@@ -614,8 +614,8 @@ class JymembersRegistrationController extends Controller
             $user_stu->email = $request->email_address;
             $user_stu->phone_number = $request->phone_number;
             $user_stu->password = Hash::make(123456);
-            $user_stu->school_id = Auth::user()->school_id;
-            $user_stu->created_at = $academic_year->year . '-01-01 12:00:00';
+            $user_stu->church_id = Auth::user()->church_id;
+            $user_stu->created_at = $church_year->year . '-01-01 12:00:00';
             $user_stu->save();
             $user_stu->toArray();
 
@@ -635,8 +635,8 @@ class JymembersRegistrationController extends Controller
                         $user_parent->email = $guardians_email;
                         $user_parent->phone_number = $guardians_phone;
                         $user_parent->password = Hash::make(123456);
-                        $user_parent->school_id = Auth::user()->school_id;
-                        $user_parent->created_at = $academic_year->year . '-01-01 12:00:00';
+                        $user_parent->church_id = Auth::user()->church_id;
+                        $user_parent->created_at = $church_year->year . '-01-01 12:00:00';
                         $user_parent->save();
                         $user_parent->toArray();
                     }
@@ -665,9 +665,9 @@ class JymembersRegistrationController extends Controller
                     $parent->guardians_photo = $guardians_photo;
                     $parent->guardians_address = $request->guardians_address;
                     $parent->is_guardian = $request->is_guardian;
-                    $parent->school_id = Auth::user()->school_id;
-                    $parent->academic_id = $request->session;
-                    $parent->created_at = $academic_year->year . '-01-01 12:00:00';
+                    $parent->church_id = Auth::user()->church_id;
+                    $parent->church_year_id = $request->session;
+                    $parent->created_at = $church_year->year . '-01-01 12:00:00';
                     $parent->save();
                     $parent->toArray();
                     $hasParent = $parent->id;
@@ -680,7 +680,7 @@ class JymembersRegistrationController extends Controller
                 $hasParent = $parent->id;
             }
             if($request->staff_parent) {
-                $hasParent = $staffParent->staffParentStore($staff, $request, $academic_year);
+                $hasParent = $staffParent->staffParentStore($staff, $request, $church_year);
                 $staff->update(['parent_id'=> $hasParent]);
                 $parent = SmParent::find($hasParent);
             }
@@ -688,7 +688,7 @@ class JymembersRegistrationController extends Controller
             $student->user_id = $user_stu->id;
             $student->parent_id = $exitStaffParent ? $exitStaffParent->id : ($request->parent_id == "" ? $hasParent : $request->parent_id);
             $student->role_id = 2;
-            $student->admission_no = $request->admission_number;
+            $student->registration_no = $request->admission_number;
             if ($request->roll_number) {
                 $student->roll_no = $request->admission_number;
             }
@@ -739,7 +739,7 @@ class JymembersRegistrationController extends Controller
             
 
             $student->student_status = $request->student_status;
-            $student->student_school_name = $request->student_school_name;
+            $student->student_church_name = $request->student_church_name;
             $student->school_admission_date = $request->school_admission_date;
             $student->school_completion_date = $request->school_completion_date;
             $student->school_telephone = $request->school_telephone;
@@ -790,11 +790,11 @@ class JymembersRegistrationController extends Controller
             $student->document_file_3 = fileUpload($request->file('document_file_3'), $destination);
             $student->document_title_4 = $request->document_title_4;
             $student->document_file_4 = fileUpload($request->file('document_file_4'), $destination);
-            $student->school_id = Auth::user()->school_id;
-            $student->academic_id = $request->session;
+            $student->church_id = Auth::user()->church_id;
+            $student->church_year_id = $request->session;
             $student->student_category_id = $request->student_category_id;
             $student->student_group_id = $request->student_group_id;
-            $student->created_at = $academic_year->year . '-01-01 12:00:00';
+            $student->created_at = $church_year->year . '-01-01 12:00:00';
 
             if ($request->customF) {
                 $dataImage = $request->customF;
@@ -825,7 +825,7 @@ class JymembersRegistrationController extends Controller
             }
             // insert Into student record
             $this->insertStudentRecord($request->merge([
-                'student_id' => $student->id,
+                'member_id' => $student->id,
                 'is_default' => 1,
 
             ]));
@@ -852,15 +852,15 @@ class JymembersRegistrationController extends Controller
             //add by abu nayem for lead convert to student
             if (moduleStatusCheck('Lead') == true && $request->lead_id) {
                 $lead = \Modules\Lead\Entities\Lead::find($request->lead_id);
-                $lead->class_id = $request->class;
-                $lead->section_id = $request->section;
+                $lead->age_group_id = $request->class;
+                $lead->mgender_id = $request->section;
                 $lead->save();
             }
             //end lead convert to student
             DB::commit();
-            if ($request->has('parent_registration_student_id') && moduleStatusCheck('ParentRegistration') == true) {
+            if ($request->has('parent_registration_member_id') && moduleStatusCheck('ParentRegistration') == true) {
 
-                $registrationStudent = \Modules\ParentRegistration\Entities\SmStudentRegistration::find($request->parent_registration_student_id);
+                $registrationStudent = \Modules\ParentRegistration\Entities\SmStudentRegistration::find($request->parent_registration_member_id);
                 if ($registrationStudent) {
                     $registrationStudent->delete();
                 }
@@ -1026,7 +1026,7 @@ class JymembersRegistrationController extends Controller
                 $student->parent_id = $parent->id;
             }
             $student->user_id = $user_stu->id;
-            $student->admission_no = $request->admission_number;
+            $student->registration_no = $request->admission_number;
             if ($request->roll_number) {
                 $student->roll_no = $request->admission_number;
             }
@@ -1076,7 +1076,7 @@ class JymembersRegistrationController extends Controller
             
 
             $student->student_status = $request->student_status;
-            $student->student_school_name = $request->student_school_name;
+            $student->student_church_name = $request->student_church_name;
             $student->school_admission_date = $request->school_admission_date;
             $student->school_completion_date = $request->school_completion_date;
             $student->school_telephone = $request->school_telephone;
@@ -1174,13 +1174,13 @@ class JymembersRegistrationController extends Controller
     {
 
         try {
-            $studentRecord = StudentRecord::where('student_id', $request->id)->orderBy('created_at')->where('school_id', auth()->user()->id)->first();
+            $studentRecord = StudentRecord::where('member_id', $request->id)->orderBy('created_at')->where('church_id', auth()->user()->id)->first();
             if (generalSetting()->multiple_roll == 0 && $request->roll_number && $studentRecord) {
-                $exitRoll = StudentRecord::where('class_id', $studentRecord->class_id)
-                ->where('section_id', $studentRecord->section_id)
+                $exitRoll = StudentRecord::where('age_group_id', $studentRecord->age_group_id)
+                ->where('mgender_id', $studentRecord->mgender_id)
                 ->where('roll_no', $request->roll_number)
                 ->where('id','!=', $studentRecord->id)
-                ->where('school_id', auth()->user()->school_id)->first();
+                ->where('church_id', auth()->user()->church_id)->first();
                 if($exitRoll) {
                     Toastr::error('Sorry! Roll Number Already Exit.', 'Failed');
                     return redirect()->route('student_edit',[$request->id] );
@@ -1224,40 +1224,40 @@ class JymembersRegistrationController extends Controller
 
             $records = studentRecords(null, $student_detail->id)->get();
             $siblings = SmStudent::where('parent_id', $student_detail->parent_id)->where('id', '!=', $id)->status()->whereNotNull('parent_id')->withoutGlobalScope(StatusAcademicSchoolScope::class)->get();
-            $exams = SmExamSchedule::where('class_id', $student_detail->class_id)
-                ->where('section_id', $student_detail->section_id)
-                ->where('school_id', Auth::user()->school_id)
+            $exams = SmExamSchedule::where('age_group_id', $student_detail->age_group_id)
+                ->where('mgender_id', $student_detail->mgender_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
-            $academic_year = SmAcademicYear::where('id', $student_detail->session_id)
+            $church_year = SmAcademicYear::where('id', $student_detail->session_id)
                 ->first();
 
-            $result_setting = CustomResultSetting::where('school_id',auth()->user()->school_id)->where('academic_id',getAcademicId())->get();
+            $result_setting = CustomResultSetting::where('church_id',auth()->user()->church_id)->where('church_year_id',getAcademicId())->get();
 
             $grades = SmMarksGrade::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             $max_gpa = SmMarksGrade::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->max('gpa');
 
             $fail_gpa = SmMarksGrade::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->min('gpa');
 
             $fail_gpa_name = SmMarksGrade::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->where('gpa', $fail_gpa)
                 ->first();
 
-            $timelines = SmStudentTimeline::where('staff_student_id', $id)
-                ->where('type', 'stu')->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+            $timelines = SmStudentTimeline::where('staff_member_id', $id)
+                ->where('type', 'stu')->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             if (!empty($student_detail->vechile_id)) {
@@ -1268,8 +1268,8 @@ class JymembersRegistrationController extends Controller
                 $driver_info = '';
             }
 
-            $exam_terms = SmExamType::where('school_id', Auth::user()->school_id)
-                ->where('academic_id', getAcademicId())
+            $exam_terms = SmExamType::where('church_id', Auth::user()->church_id)
+                ->where('church_year_id', getAcademicId())
                 ->get();
 
             $custom_field_data = $student_detail->custom_field;
@@ -1293,13 +1293,13 @@ class JymembersRegistrationController extends Controller
                                                         ]; 
                                                     });
                 }
-                $student_id = $student_detail->id;
-                $studentDetails = SmStudent::find($student_id);
-                $studentRecordDetails = StudentRecord::where('student_id',$student_id);
-                $studentRecords = StudentRecord::where('student_id',$student_id)->groupBy('un_academic_id')->get();
-                return view('backEnd.studentInformation.student_view', compact('timelines','student_detail', 'driver_info', 'exams', 'siblings', 'grades', 'academic_year', 'exam_terms', 'max_gpa', 'fail_gpa_name', 'custom_field_values', 'sessions', 'records', 'next_labels', 'type','studentRecordDetails','studentDetails','studentRecords','result_setting'));
+                $member_id = $student_detail->id;
+                $studentDetails = SmStudent::find($member_id);
+                $studentRecordDetails = StudentRecord::where('member_id',$member_id);
+                $studentRecords = StudentRecord::where('member_id',$member_id)->groupBy('un_church_year_id')->get();
+                return view('backEnd.studentInformation.student_view', compact('timelines','student_detail', 'driver_info', 'exams', 'siblings', 'grades', 'church_year', 'exam_terms', 'max_gpa', 'fail_gpa_name', 'custom_field_values', 'sessions', 'records', 'next_labels', 'type','studentRecordDetails','studentDetails','studentRecords','result_setting'));
             }else{
-                return view('backEnd.studentInformation.student_view', compact('timelines','student_detail', 'driver_info', 'exams', 'siblings', 'grades', 'academic_year', 'exam_terms', 'max_gpa', 'fail_gpa_name', 'custom_field_values', 'sessions', 'records', 'next_labels', 'type','result_setting'));
+                return view('backEnd.studentInformation.student_view', compact('timelines','student_detail', 'driver_info', 'exams', 'siblings', 'grades', 'church_year', 'exam_terms', 'max_gpa', 'fail_gpa_name', 'custom_field_values', 'sessions', 'records', 'next_labels', 'type','result_setting'));
             }
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -1311,16 +1311,16 @@ class JymembersRegistrationController extends Controller
     {
         try {
             $classes = SmClass::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
-            $students = SmStudent::where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+            $students = SmStudent::where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             $sessions = SmAcademicYear::where('active_status', 1)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             return view('backEnd.studentInformation.student_details', compact('classes', 'sessions'));
@@ -1335,11 +1335,11 @@ class JymembersRegistrationController extends Controller
           
 
                 //$students = DB::table('sm_jymembers')
-               // ->where('academic_id', getAcademicId())
+               // ->where('church_year_id', getAcademicId())
               
 
             $sessions = SmAcademicYear::where('active_status', 1)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             return view('backEnd.studentInformation.jymember_details', compact('sessions'));
@@ -1352,7 +1352,7 @@ class JymembersRegistrationController extends Controller
     public function settings()
     {
         try {
-            $student_settings = SmStudentRegistrationField::where('school_id', auth()->user()->school_id)->where('active_status', 1)->get()->filter(function($field){
+            $student_settings = SmStudentRegistrationField::where('church_id', auth()->user()->church_id)->where('active_status', 1)->get()->filter(function($field){
                 return !$field->admin_section || isMenuAllowToShow($field->admin_section);
             });
             $system_required = $student_settings->whereNotIn('field_name', ['guardians_email','email_address'])->where('is_system_required')->pluck('field_name')->toArray();
@@ -1366,7 +1366,7 @@ class JymembersRegistrationController extends Controller
 
     public function statusUpdate(Request $request)
     {
-        $field = SmStudentRegistrationField::where('school_id', auth()->user()->school_id)
+        $field = SmStudentRegistrationField::where('church_id', auth()->user()->church_id)
             ->where('id', $request->filed_id)->firstOrFail();
         if ($field) {
             if ($request->type == 'required') {
@@ -1379,7 +1379,7 @@ class JymembersRegistrationController extends Controller
                 $field->parent_edit = $request->field_status;
             }
             $field->save();
-            Cache::forget('student_field_'.auth()->user()->school_id);
+            Cache::forget('student_field_'.auth()->user()->church_id);
             return response()->json(['message' => 'Operation Success']);
         }
         return response()->json(['error' => 'Operation Failed']);
@@ -1388,7 +1388,7 @@ class JymembersRegistrationController extends Controller
 
     public function studentFieldShow(Request $request)
     {
-        $field = SmStudentRegistrationField::where('school_id', auth()->user()->school_id)
+        $field = SmStudentRegistrationField::where('church_id', auth()->user()->church_id)
             ->where('id', $request->filed_id)->firstOrFail();
         if($field){
             $field->is_show = $request->field_show;
@@ -1398,7 +1398,7 @@ class JymembersRegistrationController extends Controller
                 $field->parent_edit = 0;
             }
             $field->save();
-            Cache::forget('student_field_'.auth()->user()->school_id);
+            Cache::forget('student_field_'.auth()->user()->church_id);
             return response()->json(['message' => 'Operation Success']);
         }
        else{
@@ -1418,20 +1418,20 @@ class JymembersRegistrationController extends Controller
             if (moduleStatusCheck('University')) {
                 $model =  StudentRecord::query();
                 $studentRecord = universityFilter($model, $request)->first();
-                $pre_record = StudentRecord::where('student_id', $request->student_id)->orderBy('id', 'DESC')->first();
+                $pre_record = StudentRecord::where('member_id', $request->member_id)->orderBy('id', 'DESC')->first();
             } else {
-                $studentRecord = StudentRecord::where('class_id', $request->class)
-                    ->where('section_id', $request->section)
-                    ->where('academic_id', $request->session)
-                    ->where('student_id', $request->student_id)
-                    ->where('school_id', auth()->user()->school_id)
+                $studentRecord = StudentRecord::where('age_group_id', $request->class)
+                    ->where('mgender_id', $request->section)
+                    ->where('church_year_id', $request->session)
+                    ->where('member_id', $request->member_id)
+                    ->where('church_id', auth()->user()->church_id)
                     ->first();
                 $pre_record = null;
             }
             if (generalSetting()->multiple_roll == 1 && $request->roll_number) {
-                $exitRoll = StudentRecord::where('class_id', $request->class)
-                    ->where('section_id', $request->section)
-                    ->where('roll_no', $request->roll_number)->where('school_id', auth()->user()->school_id)->first();
+                $exitRoll = StudentRecord::where('age_group_id', $request->class)
+                    ->where('mgender_id', $request->section)
+                    ->where('roll_no', $request->roll_number)->where('church_id', auth()->user()->church_id)->first();
                 
             }
             if($exitRoll) {
@@ -1459,22 +1459,22 @@ class JymembersRegistrationController extends Controller
     {
         if (!$request->filled('is_default') || $request->is_default) {
             StudentRecord::when(moduleStatusCheck('University'), function ($query) {
-                $query->where('un_academic_id', getAcademicId());
+                $query->where('un_church_year_id', getAcademicId());
             }, function ($query) {
-                $query->where('academic_id', getAcademicId());
-            })->where('student_id', $request->student_id)
-            ->where('school_id', auth()->user()->school_id)->update([
+                $query->where('church_year_id', getAcademicId());
+            })->where('member_id', $request->member_id)
+            ->where('church_id', auth()->user()->church_id)->update([
                 'is_default' => 0,
             ]);
         }
         if (generalSetting()->multiple_roll == 0 && $request->roll_number) {
            
-            StudentRecord::where('student_id', $request->student_id)
-            ->where('school_id', auth()->user()->school_id)
+            StudentRecord::where('member_id', $request->member_id)
+            ->where('church_id', auth()->user()->church_id)
             ->when(moduleStatusCheck('University'), function ($query) {
-                $query->where('un_academic_id', getAcademicId());
+                $query->where('un_church_year_id', getAcademicId());
             }, function ($query) {
-                $query->where('academic_id', getAcademicId());
+                $query->where('church_year_id', getAcademicId());
             })->update([
                     'roll_no' => $request->roll_number,
                 ]);
@@ -1484,10 +1484,10 @@ class JymembersRegistrationController extends Controller
         if ($request->record_id) {
             $studentRecord = StudentRecord::with('studentDetail')->find($request->record_id);
             $groups = \Modules\Chat\Entities\Group::where([
-                'class_id' => $studentRecord->class_id,
-                'section_id' => $studentRecord->section_id,
-                'academic_id' => $studentRecord->academic_id,
-                'school_id' => $studentRecord->school_id
+                'age_group_id' => $studentRecord->age_group_id,
+                'mgender_id' => $studentRecord->mgender_id,
+                'church_year_id' => $studentRecord->church_year_id,
+                'church_id' => $studentRecord->church_id
                 ])->get();
             if($studentRecord->studentDetail){
                 $user = $studentRecord->studentDetail->user;
@@ -1501,7 +1501,7 @@ class JymembersRegistrationController extends Controller
             $studentRecord = new StudentRecord;
         }
 
-        $studentRecord->student_id = $request->student_id;
+        $studentRecord->member_id = $request->member_id;
         if ($request->roll_number) {
             $studentRecord->roll_no = $request->admission_number;
         }
@@ -1512,36 +1512,36 @@ class JymembersRegistrationController extends Controller
             $studentRecord->lead_id = $request->lead_id;
         }
         if (moduleStatusCheck('University')) {
-            $studentRecord->un_academic_id = $request->un_academic_id;
-            $studentRecord->un_section_id = $request->un_section_id;
+            $studentRecord->un_church_year_id = $request->un_church_year_id;
+            $studentRecord->un_mgender_id = $request->un_mgender_id;
             $studentRecord->un_session_id = $request->un_session_id;
             $studentRecord->un_department_id = $request->un_department_id;
             $studentRecord->un_faculty_id = $request->un_faculty_id;
             $studentRecord->un_semester_id = $request->un_semester_id;
             $studentRecord->un_semester_label_id = $request->un_semester_label_id;
         } else {
-            $studentRecord->class_id = $request->class;
-            $studentRecord->section_id = $request->section;
+            $studentRecord->age_group_id = $request->class;
+            $studentRecord->mgender_id = $request->section;
             $studentRecord->session_id = $request->session;
         }
-        $studentRecord->school_id = Auth::user()->school_id;
-        $studentRecord->academic_id = $request->session;
+        $studentRecord->church_id = Auth::user()->church_id;
+        $studentRecord->church_year_id = $request->session;
         $studentRecord->save();
        
         if (moduleStatusCheck('University')) {
             $this->assignSubjectStudent($studentRecord, $pre_record);
         }
         if(directFees()){
-            $this->assignDirectFees($studentRecord->id, $studentRecord->class_id, $studentRecord->section_id,null);
+            $this->assignDirectFees($studentRecord->id, $studentRecord->age_group_id, $studentRecord->mgender_id,null);
         }
 
         $groups = \Modules\Chat\Entities\Group::where([
-            'class_id' => $request->class,
-            'section_id' => $request->section,
-            'academic_id' => $request->session,
-            'school_id' => auth()->user()->school_id
+            'age_group_id' => $request->class,
+            'mgender_id' => $request->section,
+            'church_year_id' => $request->session,
+            'church_id' => auth()->user()->church_id
             ])->get();
-        $student = SmStudent::where('school_id', auth()->user()->school_id)->find($request->student_id);
+        $student = SmStudent::where('church_id', auth()->user()->church_id)->find($request->member_id);
         if($student){
             $user = $student->user;
             foreach($groups as $group){
@@ -1554,17 +1554,17 @@ class JymembersRegistrationController extends Controller
     {
         $data['schools'] = SmSchool::get();
         $data['sessions'] = SmAcademicYear::get(['id', 'year', 'title']);
-        $data['student_records'] = StudentRecord::where('student_id', $id)
+        $data['student_records'] = StudentRecord::where('member_id', $id)
                                 ->when(moduleStatusCheck('University'), function ($query) {
-                                    $query->whereNull('class_id');
+                                    $query->whereNull('age_group_id');
                                 })->get();
         $data['student_detail'] = SmStudent::where('id', $id)->first();
-        $data['classes'] = SmClass::get(['id', 'class_name']);
+        $data['classes'] = SmClass::get(['id', 'age_group_name']);
         $data['siblings'] = SmStudent::where('parent_id', $data['student_detail']->parent_id)->whereNotNull('parent_id')->where('id', '!=', $id)->status()->withoutGlobalScope(StatusAcademicSchoolScope::class)->get();
         return view('backEnd.studentInformation.assign_class', $data);
     }
 
-    public function recordEdit($student_id, $record_id)
+    public function recordEdit($member_id, $record_id)
     {
 
         $data['schools'] = SmSchool::get();
@@ -1573,7 +1573,7 @@ class JymembersRegistrationController extends Controller
         $data['modelId'] = $data['record'];
         $request = [
             'semester_id' => $data['record']->un_semester_id,
-            'academic_id' => $data['record']->un_academic_id,
+            'church_year_id' => $data['record']->un_church_year_id,
             'session_id' => $data['record']->un_session_id,
             'department_id' => $data['record']->un_department_id,
             'faculty_id' => $data['record']->un_faculty_id,
@@ -1581,10 +1581,10 @@ class JymembersRegistrationController extends Controller
         ];
 
         $data['sessions'] = SmAcademicYear::get(['id', 'year', 'title']);
-        $data['student_records'] = StudentRecord::where('student_id', $student_id)->get();
-        $data['student_detail'] = SmStudent::where('id', $student_id)->first();
-        $data['classes'] = SmClass::get(['id', 'class_name']);
-        $data['siblings'] = SmStudent::where('parent_id', $data['student_detail']->parent_id)->where('id', '!=', $student_id)->status()->withoutGlobalScope(StatusAcademicSchoolScope::class)->get();
+        $data['student_records'] = StudentRecord::where('member_id', $member_id)->get();
+        $data['student_detail'] = SmStudent::where('id', $member_id)->first();
+        $data['classes'] = SmClass::get(['id', 'age_group_name']);
+        $data['siblings'] = SmStudent::where('parent_id', $data['student_detail']->parent_id)->where('id', '!=', $member_id)->status()->withoutGlobalScope(StatusAcademicSchoolScope::class)->get();
         if (moduleStatusCheck('University')) {
             $interface = App::make(UnCommonRepositoryInterface::class);
             $data += $interface->getCommonData($data['record']);
@@ -1601,29 +1601,29 @@ class JymembersRegistrationController extends Controller
             if (moduleStatusCheck('University')) {
                 $studentRecord = StudentRecord::where('un_faculty_id', $request->un_faculty_id)
                 ->where('un_department_id', $request->un_department_id)
-                ->where('un_academic_id', $request->un_academic_id)
+                ->where('un_church_year_id', $request->un_church_year_id)
                 ->where('un_semester_id', $request->un_semester_id)
                 ->where('un_semester_label_id', $request->un_semester_label_id)
-                ->where('un_academic_id', $request->un_academic_id)
-                ->where('student_id', $request->student_id)
+                ->where('un_church_year_id', $request->un_church_year_id)
+                ->where('member_id', $request->member_id)
                 ->where('id', '!=', $request->record_id)
-                ->where('school_id', auth()->user()->school_id)
+                ->where('church_id', auth()->user()->church_id)
                 ->first();
             } else {
-                $studentRecord = StudentRecord::where('class_id', $request->class)
-                ->where('section_id', $request->section)
-                ->where('academic_id', $request->session)
-                ->where('student_id', $request->student_id)
+                $studentRecord = StudentRecord::where('age_group_id', $request->class)
+                ->where('mgender_id', $request->section)
+                ->where('church_year_id', $request->session)
+                ->where('member_id', $request->member_id)
                 ->where('id', '!=', $request->record_id)
-                ->where('school_id', auth()->user()->school_id)
+                ->where('church_id', auth()->user()->church_id)
                 ->first();
             }
             if (generalSetting()->multiple_roll == 1 && $request->roll_number) {
-                $exitRoll = StudentRecord::where('class_id', $request->class)
-                    ->where('section_id', $request->section)
+                $exitRoll = StudentRecord::where('age_group_id', $request->class)
+                    ->where('mgender_id', $request->section)
                     ->where('id', '!=', $request->record_id)
                     ->where('roll_no', $request->roll_number)
-                    ->where('school_id', auth()->user()->school_id)
+                    ->where('church_id', auth()->user()->church_id)
                     ->first();                
             }
             if($exitRoll) {
@@ -1637,10 +1637,10 @@ class JymembersRegistrationController extends Controller
             } else {
                 $this->insertStudentRecord($request);
                 if(directFees() && $studentRecord){
-                    $this->assignDirectFees($studentRecord->id, $studentRecord->class_id, $studentRecord->section_id,null);
+                    $this->assignDirectFees($studentRecord->id, $studentRecord->age_group_id, $studentRecord->mgender_id,null);
                 }else{
                     $studentRecord = StudentRecord::find($request->record_id);
-                    $this->assignDirectFees($studentRecord->id, $studentRecord->class_id, $studentRecord->section_id,null);
+                    $this->assignDirectFees($studentRecord->id, $studentRecord->age_group_id, $studentRecord->mgender_id,null);
                 }
             }
             Toastr::success('Operation successful', 'Success');
@@ -1683,7 +1683,7 @@ class JymembersRegistrationController extends Controller
         }
         if ($subjectIds) {
             $assignSubjects = UnSubject::whereIn('id', $subjectIds)
-            ->where('school_id', auth()->user()->school_id)
+            ->where('church_id', auth()->user()->church_id)
             ->get()->map(function ($item, $key) {
                 return [
                     'un_subject_id' => $item->id
@@ -1692,7 +1692,7 @@ class JymembersRegistrationController extends Controller
             });
         } else {
             $assignSubjects = UnAssignSubject::where('un_semester_label_id', $studentRecord->un_semester_label_id)
-            ->where('school_id', auth()->user()->school_id)->get()->map(function ($item, $key) {
+            ->where('church_id', auth()->user()->church_id)->get()->map(function ($item, $key) {
                 return [
                     'un_subject_id' => $item->un_subject_id,
                 ];
@@ -1703,8 +1703,8 @@ class JymembersRegistrationController extends Controller
             foreach ($assignSubjects as $subject) {
                 $studentSubject = new UnSubjectAssignStudent;
                 $studentSubject->student_record_id = $studentRecord->id;
-                $studentSubject->student_id = $studentRecord->student_id;
-                $studentSubject->un_academic_id = $studentRecord->un_academic_id;
+                $studentSubject->member_id = $studentRecord->member_id;
+                $studentSubject->un_church_year_id = $studentRecord->un_church_year_id;
                 $studentSubject->un_semester_id = $studentRecord->un_semester_id;
                 $studentSubject->un_semester_label_id = $studentRecord->un_semester_label_id;
                 $studentSubject->un_subject_id = $subject['un_subject_id'];
@@ -1718,18 +1718,18 @@ class JymembersRegistrationController extends Controller
         if ($pre_record) {
             $preSubjects = UnSubjectAssignStudent::where('student_record_id', $pre_record->id)
                 ->where('un_semester_label_id', $pre_record->un_semester_label_id)
-                ->where('student_id', $pre_record->student_id)
-                ->where('un_academic_id', $pre_record->un_academic_id)
+                ->where('member_id', $pre_record->member_id)
+                ->where('un_church_year_id', $pre_record->un_church_year_id)
                 ->where('un_semester_id', $pre_record->un_semester_id)
                 ->get();
             foreach ($preSubjects as $subject) {
                 $result = labelWiseStudentResult($pre_record, $subject->un_subject_id);
                 $completeSubject = new UnSubjectComplete();
-                $completeSubject->student_id = $pre_record->student_id;
+                $completeSubject->member_id = $pre_record->member_id;
                 $completeSubject->student_record_id = $pre_record->id;
                 $completeSubject->un_semester_label_id = $pre_record->un_semester_label_id;
                 $completeSubject->un_subject_id = $subject->un_subject_id;
-                $completeSubject->un_academic_id = $pre_record->un_academic_id;
+                $completeSubject->un_church_year_id = $pre_record->un_church_year_id;
                 $completeSubject->is_pass = $result['result'];
                 $completeSubject->total_mark = $result['total_mark'];
                 $completeSubject->save();
@@ -1739,8 +1739,8 @@ class JymembersRegistrationController extends Controller
     public function getSchool(Request $request)
     {
         try {
-            $academic_years = SmAcademicYear::where('school_id', $request->school_id)->get();
-            return response()->json([$academic_years]);
+            $church_years = SmAcademicYear::where('church_id', $request->church_id)->get();
+            return response()->json([$church_years]);
         } catch (\Exception $e) {
             return response()->json("", 404);
         }
@@ -1750,20 +1750,20 @@ class JymembersRegistrationController extends Controller
     {
         try {
             $record = StudentRecord::with('studentDetail')->where('id', $request->record_id)
-            ->where('student_id', $request->student_id)
+            ->where('member_id', $request->member_id)
             ->first();
             $type = $request->type ? 'delete' : 'disable';
           
             $studentMultiRecordController = new StudentMultiRecordController();
-            $studentMultiRecordController->deleteRecordCondition( $record->student_id, $record->id, $type);
+            $studentMultiRecordController->deleteRecordCondition( $record->member_id, $record->id, $type);
             //code...
    
             if ($record && $type == 'delete') {
                 $groups = \Modules\Chat\Entities\Group::where([
-                    'class_id' => $record->class_id,
-                    'section_id' => $record->section_id,
-                    'academic_id' => $record->academic_id,
-                    'school_id' => $record->school_id
+                    'age_group_id' => $record->age_group_id,
+                    'mgender_id' => $record->mgender_id,
+                    'church_year_id' => $record->church_year_id,
+                    'church_id' => $record->church_id
                     ])->get();
                 if($record->studentDetail){
                     $user = $record->studentDetail->user;
@@ -1787,7 +1787,7 @@ class JymembersRegistrationController extends Controller
 
     public static function loadData()
     {
-        $data['classes'] = SmClass::get(['id', 'class_name']);
+        $data['classes'] = SmClass::get(['id', 'age_group_name']);
         $data['religions'] = SmBaseSetup::where('base_group_id', '=', '2')->get(['id', 'base_setup_name']);
         $data['blood_groups'] = SmBaseSetup::where('base_group_id', '=', '3')->get(['id', 'base_setup_name']);
         $data['genders'] = SmBaseSetup::where('base_group_id', '=', '1')->get(['id', 'base_setup_name']);
@@ -1796,21 +1796,21 @@ class JymembersRegistrationController extends Controller
         $data['categories'] = SmStudentCategory::get(['id', 'category_name']);
         $data['groups'] = SmStudentGroup::get(['id', 'group']);
         $data['sessions'] = SmAcademicYear::get(['id', 'year', 'title']);
-        $data['driver_lists'] = SmStaff::where([['active_status', '=', '1'], ['role_id', 9]])->where('school_id', Auth::user()->school_id)->get(['id', 'full_name']);
-        $data['custom_fields'] = SmCustomField::where('form_name', 'student_registration')->where('school_id', Auth::user()->school_id)->get();
+        $data['driver_lists'] = SmStaff::where([['active_status', '=', '1'], ['role_id', 9]])->where('church_id', Auth::user()->church_id)->get(['id', 'full_name']);
+        $data['custom_fields'] = SmCustomField::where('form_name', 'student_registration')->where('church_id', Auth::user()->church_id)->get();
         $data['vehicles'] = SmVehicle::get();
         $data['staffs'] = SmStaff::where('role_id', '!=', 1)->get(['first_name', 'last_name', 'full_name', 'id', 'user_id', 'parent_id']);
         $data['lead_city'] = [];
         $data['sources'] = [];
 
         if (moduleStatusCheck('Lead') == true) {
-            $data['lead_city'] = \Modules\Lead\Entities\LeadCity::where('school_id', auth()->user()->school_id)->get(['id', 'city_name']);
-            $data['sources'] = \Modules\Lead\Entities\Source::where('school_id', auth()->user()->school_id)->get(['id', 'source_name']);
+            $data['lead_city'] = \Modules\Lead\Entities\LeadCity::where('church_id', auth()->user()->church_id)->get(['id', 'city_name']);
+            $data['sources'] = \Modules\Lead\Entities\Source::where('church_id', auth()->user()->church_id)->get(['id', 'source_name']);
         }
 
         if (moduleStatusCheck('University') == true) {
-            $data['un_session'] = \Modules\University\Entities\UnSession::where('school_id', auth()->user()->school_id)->get(['id', 'name']);
-            $data['un_academic_year'] = \Modules\University\Entities\UnAcademicYear::where('school_id', auth()->user()->school_id)->get(['id', 'name']);
+            $data['un_session'] = \Modules\University\Entities\UnSession::where('church_id', auth()->user()->church_id)->get(['id', 'name']);
+            $data['un_church_year'] = \Modules\University\Entities\UnAcademicYear::where('church_id', auth()->user()->church_id)->get(['id', 'name']);
         }
 
         session()->forget('fathers_photo');
@@ -1829,10 +1829,10 @@ class JymembersRegistrationController extends Controller
                     'un_session_id' => 'required',
                     'un_faculty_id' => 'nullable',
                     'un_department_id' => 'required',
-                    'un_academic_id' => 'required',
+                    'un_church_year_id' => 'required',
                     'un_semester_id' => 'required',
                     'un_semester_label_id' => 'required',
-                    'un_section_id' => 'required',
+                    'un_mgender_id' => 'required',
                     'file' => 'required'
                 ],
                 [
@@ -1865,10 +1865,10 @@ class JymembersRegistrationController extends Controller
                 Excel::import(new StudentsImport, $request->file('file'), 's3', \Maatwebsite\Excel\Excel::XLSX);
                 $data = StudentBulkTemporary::where('user_id', Auth::user()->id)->get();
 
-                $shcool_details = SmGeneralSettings::where('school_id', auth()->user()->school_id)->first();
-                $school_name = explode(' ', $shcool_details->school_name);
+                $shcool_details = SmGeneralSettings::where('church_id', auth()->user()->church_id)->first();
+                $church_name = explode(' ', $shcool_details->church_name);
                 $short_form = '';
-                foreach ($school_name as $value) {
+                foreach ($church_name as $value) {
                     $ch = str_split($value);
                     $short_form = $short_form . '' . $ch[0];
                 }
@@ -1877,7 +1877,7 @@ class JymembersRegistrationController extends Controller
                     foreach ($data as $key => $value) {
                         if (isSubscriptionEnabled()) {
 
-                            $active_student = SmStudent::where('school_id', Auth::user()->school_id)->where('active_status', 1)->count();
+                            $active_student = SmStudent::where('church_id', Auth::user()->church_id)->where('active_status', 1)->count();
 
                             if (\Modules\Saas\Entities\SmPackagePlan::student_limit() <= $active_student) {
 
@@ -1890,7 +1890,7 @@ class JymembersRegistrationController extends Controller
                         }
 
 
-                        $ad_check = SmStudent::where('admission_no', (String)$value->admission_number)->where('school_id', Auth::user()->school_id)->get();
+                        $ad_check = SmStudent::where('registration_no', (String)$value->admission_number)->where('church_id', Auth::user()->church_id)->get();
                         //  return $ad_check;
 
                         if ($ad_check->count() > 0) {
@@ -1910,16 +1910,16 @@ class JymembersRegistrationController extends Controller
                                             $model = StudentRecord::query();
                                             $studentRecord = universityFilter($model, $request)->first();
                                         } else {
-                                            $studentRecord = StudentRecord::where('class_id', $request->class)
-                                                ->where('section_id', $request->section)
-                                                ->where('academic_id', $request->session)
-                                                ->where('student_id', $user->student->id)
-                                                ->where('school_id', auth()->user()->school_id)
+                                            $studentRecord = StudentRecord::where('age_group_id', $request->class)
+                                                ->where('mgender_id', $request->section)
+                                                ->where('church_year_id', $request->session)
+                                                ->where('member_id', $user->student->id)
+                                                ->where('church_id', auth()->user()->church_id)
                                                 ->first();
                                         }
                                         if (!$studentRecord) {
                                             $this->insertStudentRecord($request->merge([
-                                                'student_id' => $user->student->id,
+                                                'member_id' => $user->student->id,
                                                 'roll_number'=>$request->admission_number
                                             ]));
 
@@ -1935,7 +1935,7 @@ class JymembersRegistrationController extends Controller
                         }
 
                         if ($value->email != "") {
-                            $chk = DB::table('sm_students')->where('email', $value->email)->where('school_id', Auth::user()->school_id)->count();
+                            $chk = DB::table('sm_students')->where('email', $value->email)->where('church_id', Auth::user()->church_id)->count();
                             if ($chk >= 1) {
                                 DB::rollback();
                                 StudentBulkTemporary::where('user_id', Auth::user()->id)->delete();
@@ -1945,7 +1945,7 @@ class JymembersRegistrationController extends Controller
                         }
 
                         if ($value->guardian_email != "") {
-                            $chk = DB::table('sm_parents')->where('guardians_email', $value->guardian_email)->where('school_id', Auth::user()->school_id)->count();
+                            $chk = DB::table('sm_parents')->where('guardians_email', $value->guardian_email)->where('church_id', Auth::user()->church_id)->count();
                             if ($chk >= 1) {
                                 DB::rollback();
                                 StudentBulkTemporary::where('user_id', Auth::user()->id)->delete();
@@ -1963,7 +1963,7 @@ class JymembersRegistrationController extends Controller
 
                             }
 
-                            $academic_year = moduleStatusCheck('University') 
+                            $church_year = moduleStatusCheck('University') 
                             ? UnAcademicYear::find($request->un_session_id) : SmAcademicYear::find($request->session);
 
 
@@ -1979,11 +1979,11 @@ class JymembersRegistrationController extends Controller
 
                             $user_stu->email = $value->email;
 
-                            $user_stu->school_id = Auth::user()->school_id;
+                            $user_stu->church_id = Auth::user()->church_id;
 
                             $user_stu->password = Hash::make(123456);
 
-                            $user_stu->created_at = $academic_year->year . '-01-01 12:00:00';
+                            $user_stu->created_at = $church_year->year . '-01-01 12:00:00';
 
                             $user_stu->save();
 
@@ -2011,9 +2011,9 @@ class JymembersRegistrationController extends Controller
                                     $user_parent->email = $value->guardian_email;
 
                                     $user_parent->password = Hash::make(123456);
-                                    $user_parent->school_id = Auth::user()->school_id;
+                                    $user_parent->church_id = Auth::user()->church_id;
 
-                                    $user_parent->created_at = $academic_year->year . '-01-01 12:00:00';
+                                    $user_parent->created_at = $church_year->year . '-01-01 12:00:00';
 
                                     $user_parent->save();
                                     $user_parent->toArray();
@@ -2060,10 +2060,10 @@ class JymembersRegistrationController extends Controller
                                         $parent->guardians_occupation = $value->guardian_occupation;
                                         $parent->guardians_address = $value->guardian_address;
                                         $parent->guardians_email = $value->guardian_email;
-                                        $parent->school_id = Auth::user()->school_id;
-                                        $parent->academic_id = $request->session;
+                                        $parent->church_id = Auth::user()->church_id;
+                                        $parent->church_year_id = $request->session;
 
-                                        $parent->created_at = $academic_year->year . '-01-01 12:00:00';
+                                        $parent->created_at = $church_year->year . '-01-01 12:00:00';
 
                                         $parent->save();
                                         $parent->toArray();
@@ -2072,15 +2072,15 @@ class JymembersRegistrationController extends Controller
                                     try {
                                         $student = new SmStudent();
                                         // $student->siblings_id = $value->sibling_id;
-                                        // $student->class_id = $request->class;
-                                        // $student->section_id = $request->section;
+                                        // $student->age_group_id = $request->class;
+                                        // $student->mgender_id = $request->section;
                                         $student->session_id = $request->session;
                                         $student->user_id = $user_stu->id;
 
                                         $student->parent_id = $hasParent ? $parent->id : null;
                                         $student->role_id = 2;
 
-                                        $student->admission_no = $value->admission_number;
+                                        $student->registration_no = $value->admission_number;
                                         $student->roll_no = $value->admission_number;
                                         $student->first_name = $value->first_name;
                                         $student->last_name = $value->last_name;
@@ -2103,16 +2103,16 @@ class JymembersRegistrationController extends Controller
                                         $student->bank_name = $value->bank_name;
                                         $student->previous_school_details = $value->previous_school_details;
                                         $student->aditional_notes = $value->note;
-                                        $student->school_id = Auth::user()->school_id;
-                                        $student->academic_id = $request->session;
+                                        $student->church_id = Auth::user()->church_id;
+                                        $student->church_year_id = $request->session;
                                         if (moduleStatusCheck('University')) {
                                         
-                                            $student->un_academic_id = $request->un_academic_id;
+                                            $student->un_church_year_id = $request->un_church_year_id;
                                         }
-                                        $student->created_at = $academic_year->year . '-01-01 12:00:00';
+                                        $student->created_at = $church_year->year . '-01-01 12:00:00';
                                         $student->save();
                                         $this->insertStudentRecord($request->merge([
-                                            'student_id' => $student->id,
+                                            'member_id' => $student->id,
                                             'is_default' => 1,
                                             'roll_number'=>$value->admission_number
                                         ]));

@@ -4,8 +4,8 @@
 @endsection
 
 @section('mainContent')
-<input type="text" hidden value="{{ @$clas->class_name }}" id="cls">
-<input type="text" hidden value="{{ @$clas->section_name->sectionName->section_name }}" id="sec">
+<input type="text" hidden value="{{ @$clas->age_group_name }}" id="cls">
+<input type="text" hidden value="{{ @$clas->mgender_name->sectionName->mgender_name }}" id="sec">
 <section class="sms-breadcrumb mb-40 up_breadcrumb white-box">
     <div class="container-fluid">
         <div class="row justify-content-between">
@@ -38,7 +38,7 @@
                                     <select class="w-100 niceSelect bb form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" name="class">
                                         <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                         @foreach($classes as $class)
-                                        <option value="{{$class->id}}"  {{isset($class_id)? ($class_id == $class->id? 'selected': ''):''}}>{{$class->class_name}}</option>
+                                        <option value="{{$class->id}}"  {{isset($age_group_id)? ($age_group_id == $class->id? 'selected': ''):''}}>{{$class->age_group_name}}</option>
                                         @endforeach
                                     </select>
                                     @if ($errors->has('class'))
@@ -95,7 +95,7 @@
                                 <thead>
                                     
                                     <tr>
-                                        <th>@lang('student.admission_no')</th>
+                                        <th>@lang('student.registration_no')</th>
                                         <th>@lang('common.name')</th>
                                         <th>@lang('student.admission_date')</th>
                                         <th>@lang('reports.class_start_end')</th>
@@ -109,7 +109,7 @@
                                 <tbody>
                                     @foreach($students as $student)
                                     <tr>
-                                        <td>{{$student->admission_no}}</td>
+                                        <td>{{$student->registration_no}}</td>
                                         <td>{{$student->first_name.' '.$student->last_name}}</td>
                                         <td  data-sort="{{strtotime($student->admission_date)}}">
                                         {{$student->admission_date != ""? dateConvert($student->admission_date):''}}
@@ -117,7 +117,7 @@
                                         </td>
                                         
 
-                                        <td>{{$student->recordClass !="" ?$student->recordClass->class->class_name : ''}}</td>
+                                        <td>{{$student->recordClass !="" ?$student->recordClass->class->age_group_name : ''}}</td>
 
                                         <td>{{$student->sessions}}</td>
                                         <td>{{$student->mobile}}</td>

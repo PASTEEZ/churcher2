@@ -31,8 +31,8 @@ class RazorPayPayment
             $addPayment->payment_method = "RazorPay";
             $addPayment->user_id = $user->id;
             $addPayment->type = $data['wallet_type'];
-            $addPayment->school_id = Auth::user()->school_id;
-            $addPayment->academic_id = getAcademicId();
+            $addPayment->church_id = Auth::user()->church_id;
+            $addPayment->church_year_id = getAcademicId();
             $addPayment->status = 'approve';
             $addPayment->save();
 
@@ -40,7 +40,7 @@ class RazorPayPayment
             $compact['full_name'] = $user->full_name;
             $compact['method'] = $addPayment->payment_method;
             $compact['create_date'] = date('Y-m-d');
-            $compact['school_name'] = $gs->school_name;
+            $compact['church_name'] = $gs->church_name;
             $compact['current_balance'] = $user->wallet_balance;
             $compact['add_balance'] = $data['amount'];
             @send_mail($user->email, $user->full_name, "wallet_approve", $compact);

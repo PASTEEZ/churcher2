@@ -69,16 +69,16 @@ class SmStudentAttendanceController extends Controller
 
             $students = StudentRecord::with('studentDetail', 'studentDetail.DateWiseAttendances')
             ->when($request->class, function ($query) use ($request) {
-                $query->where('class_id', $request->class);
+                $query->where('age_group_id', $request->class);
             })
             ->whereHas('studentDetail', function ($q)  {
                 $q->where('active_status', 1);
             })
 
             ->when($request->section, function ($query) use ($request) {
-                $query->where('section_id', $request->section);
-            })->where('academic_id', getAcademicId())
-            ->where('school_id', Auth::user()->school_id)
+                $query->where('mgender_id', $request->section);
+            })->where('church_year_id', getAcademicId())
+            ->where('church_id', Auth::user()->church_id)
             ->get()->sortBy('roll_no');
 
             if (moduleStatusCheck('University')) {
@@ -97,20 +97,20 @@ class SmStudentAttendanceController extends Controller
 
             $attendance_type = $students[0]['studentDetail']['DateWiseAttendances'] != null ? $students[0]['studentDetail']['DateWiseAttendances']['attendance_type'] : '';
 
-            $class_id = $request->class;
-            $section_id = $request->section;
+            $age_group_id = $request->class;
+            $mgender_id = $request->section;
            if (moduleStatusCheck('University')) {
                 $interface = App::make(UnCommonRepositoryInterface::class);
                 $search_info = $interface->searchInfo($request);
                 $search_info += $interface->oldValueSelected($request);
             } else {
-                $search_info['class_name'] = SmClass::find($request->class)->class_name;
-                $search_info['section_name'] =  SmSection::find($request->section)->section_name;
+                $search_info['age_group_name'] = SmClass::find($request->class)->age_group_name;
+                $search_info['mgender_name'] =  SmSection::find($request->section)->mgender_name;
             }
             $search_info['date'] = $request->attendance_date;
-            $sections = SmClassSection::with('sectionName')->where('class_id', $request->class)->get();
+            $sections = SmClassSection::with('sectionName')->where('age_group_id', $request->class)->get();
 
-            return view('backEnd.studentInformation.student_attendance', compact('classes', 'sections', 'class_id', 'section_id', 'date', 'students', 'attendance_type', 'search_info'))->with($search_info);
+            return view('backEnd.studentInformation.student_attendance', compact('classes', 'sections', 'age_group_id', 'mgender_id', 'date', 'students', 'attendance_type', 'search_info'))->with($search_info);
         } catch (\Exception $e) {
 
             Toastr::error('Operation Failed', 'Failed');
@@ -125,7 +125,7 @@ class SmStudentAttendanceController extends Controller
 
             foreach ($request->attendance as $record_id => $student) {
                 if (moduleStatusCheck('University')) {
-                    $attendance = SmStudentAttendance::where('student_id', gv($student, 'student'))
+                    $attendance = SmStudentAttendance::where('member_id', gv($student, 'student'))
                     ->where('attendance_date', date('Y-m-d', strtotime($request->date)))
                     ->when(gv($student, 'un_session_id'), function ($q) use ($student) {
                         $q->where('un_session_id', gv($student, 'un_session_id'));
@@ -137,7 +137,7 @@ class SmStudentAttendanceController extends Controller
                         $q->where('un_department_id', gv($student, 'un_department_id'));
                     })
                     ->when(gv($student, 'un_semester_id'), function ($q) use ($student) {
-                        $q->where('un_academic_id', gv($student, 'un_academic_id'));
+                        $q->where('un_church_year_id', gv($student, 'un_church_year_id'));
                     })
                     ->when(gv($student, 'un_semester_id'), function ($q) use ($student) {
                         $q->where('un_semester_id', gv($student, 'un_semester_id'));
@@ -145,24 +145,24 @@ class SmStudentAttendanceController extends Controller
                     ->when(gv($student, 'un_semester_label_id'), function ($q) use ($student) {
                         $q->where('un_semester_label_id', gv($student, 'un_semester_label_id'));
                     })
-                    ->when(gv($student, 'un_section_id'), function ($q) use ($student) {
-                        $q->where('un_section_id', gv($student, 'un_section_id'));
+                    ->when(gv($student, 'un_mgender_id'), function ($q) use ($student) {
+                        $q->where('un_mgender_id', gv($student, 'un_mgender_id'));
                     })
 
                     ->where('student_record_id', $record_id)
-                    ->where('school_id', Auth::user()->school_id)->first();
+                    ->where('church_id', Auth::user()->church_id)->first();
                 } else {
-                    $attendance = SmStudentAttendance::where('student_id', gv($student, 'student'))
+                    $attendance = SmStudentAttendance::where('member_id', gv($student, 'student'))
                     ->where('attendance_date', date('Y-m-d', strtotime($request->date)))
 
                     ->when(!moduleStatusCheck('University'), function ($query) use ($student) {
-                        $query->where('class_id', gv($student, 'class'));
+                        $query->where('age_group_id', gv($student, 'class'));
                     })->when(!moduleStatusCheck('University'), function ($query) use ($student) {
-                        $query->where('section_id', gv($student, 'section'));
+                        $query->where('mgender_id', gv($student, 'section'));
                     })
                     ->where('student_record_id', $record_id)
-                    ->where('academic_id', getAcademicId())
-                    ->where('school_id', Auth::user()->school_id)->first();
+                    ->where('church_year_id', getAcademicId())
+                    ->where('church_id', Auth::user()->church_id)->first();
                 }
                 if ($attendance) {
                     $attendance->delete();
@@ -171,9 +171,9 @@ class SmStudentAttendanceController extends Controller
 
                 $attendance = new SmStudentAttendance();
                 $attendance->student_record_id = $record_id;
-                $attendance->student_id = gv($student, 'student');
-                $attendance->class_id = gv($student, 'class');
-                $attendance->section_id = gv($student, 'section');
+                $attendance->member_id = gv($student, 'student');
+                $attendance->age_group_id = gv($student, 'class');
+                $attendance->mgender_id = gv($student, 'section');
                 if (isset($request->mark_holiday)) {
                     $attendance->attendance_type = "H";
                 } else {
@@ -181,16 +181,16 @@ class SmStudentAttendanceController extends Controller
                     $attendance->notes = gv($student, 'note');
                 }
                 $attendance->attendance_date = date('Y-m-d', strtotime($request->date));
-                $attendance->school_id = Auth::user()->school_id;
-                $attendance->academic_id = getAcademicId();
+                $attendance->church_id = Auth::user()->church_id;
+                $attendance->church_year_id = getAcademicId();
                 if (moduleStatusCheck('University')) {
-                    $attendance->un_academic_id = gv($student, 'un_academic_id');
+                    $attendance->un_church_year_id = gv($student, 'un_church_year_id');
                     $attendance->un_session_id = gv($student, 'un_session_id');
                     $attendance->un_department_id = gv($student, 'un_department_id');
                     $attendance->un_faculty_id = gv($student, 'un_faculty_id');
                     $attendance->un_semester_id = gv($student, 'un_semester_id');
                     $attendance->un_semester_label_id =  gv($student, 'un_semester_label_id');
-                    $attendance->un_section_id =  gv($student, 'un_section_id');
+                    $attendance->un_mgender_id =  gv($student, 'un_mgender_id');
                 }
                 $attendance->save();
 
@@ -198,7 +198,7 @@ class SmStudentAttendanceController extends Controller
                 $compact['attendance_date'] = date('Y-m-d', strtotime($request->date));
                 if (gv($student, 'attendance_type') == "P") {
                     $compact['user_email'] = $studentInfo->studentDetail->email;
-                    $compact['student_name'] = $studentInfo->studentDetail->full_name;
+                    $compact['member_name'] = $studentInfo->studentDetail->full_name;
                     @send_sms($studentInfo->studentDetail->mobile, 'student_attendance', $compact);
 
                     $compact['user_email'] = $studentInfo->studentDetail->parents->guardians_email;
@@ -206,7 +206,7 @@ class SmStudentAttendanceController extends Controller
                     @send_sms($studentInfo->studentDetail->parents->guardians_mobile, 'student_attendance_for_parent', $compact);
                 } elseif (gv($student, 'attendance_type') == "L") {
                     $compact['user_email'] = $studentInfo->studentDetail->email;
-                    $compact['student_name'] = $studentInfo->studentDetail->full_name;
+                    $compact['member_name'] = $studentInfo->studentDetail->full_name;
                     @send_sms($studentInfo->studentDetail->mobile, 'student_late', $compact);
 
                     $compact['user_email'] = $studentInfo->studentDetail->parents->guardians_email;
@@ -214,7 +214,7 @@ class SmStudentAttendanceController extends Controller
                     @send_sms($studentInfo->studentDetail->parents->guardians_mobile, 'student_late_for_parent', $compact);
                 } elseif (gv($student, 'attendance_type') == "A") {
                     $compact['user_email'] = $studentInfo->studentDetail->email;
-                    $compact['student_name'] = $studentInfo->studentDetail->full_name;
+                    $compact['member_name'] = $studentInfo->studentDetail->full_name;
                     @send_sms($studentInfo->studentDetail->mobile, 'student_absent', $compact);
 
                     $compact['user_email'] = $studentInfo->studentDetail->parents->guardians_email;
@@ -246,8 +246,8 @@ class SmStudentAttendanceController extends Controller
                         $notification->role_id = 2;
                         $notification->date = date('Y-m-d');
                         $notification->message = $messege;
-                        $notification->school_id = Auth::user()->school_id;
-                        $notification->academic_id = getAcademicId();
+                        $notification->church_id = Auth::user()->church_id;
+                        $notification->church_year_id = getAcademicId();
                         $notification->save();
 
                         try{
@@ -265,17 +265,17 @@ class SmStudentAttendanceController extends Controller
                         $parent = SmParent::find($student_detail->parent_id);
                         if($parent){
                             if($attendance->attendance_type == "P"){
-                                $messege = app('translator')->get('student.Your_child_is_marked_present_in_the_attendance_on', ['date' => $date, 'student_name'=> $student_detail->full_name]);
+                                $messege = app('translator')->get('student.Your_child_is_marked_present_in_the_attendance_on', ['date' => $date, 'member_name'=> $student_detail->full_name]);
                                 
                             }
                             elseif($attendance->attendance_type == "L"){
-                                $messege = app('translator')->get('student.Your_child_is_marked_late_in_the_attendance_on', ['date' => $date, 'student_name'=> $student_detail->full_name]);
+                                $messege = app('translator')->get('student.Your_child_is_marked_late_in_the_attendance_on', ['date' => $date, 'member_name'=> $student_detail->full_name]);
                             }
                             elseif($attendance->attendance_type == "A"){
-                                $messege = app('translator')->get('student.Your_child_is_marked_absent_in_the_attendance_on', ['date' => $date, 'student_name'=> $student_detail->full_name]);
+                                $messege = app('translator')->get('student.Your_child_is_marked_absent_in_the_attendance_on', ['date' => $date, 'member_name'=> $student_detail->full_name]);
                             }
                             elseif($attendance->attendance_type == "F"){
-                                $messege = app('translator')->get('student.Your_child_is_marked_halfday_in_the_attendance_on', ['date' => $date, 'student_name'=> $student_detail->full_name]);
+                                $messege = app('translator')->get('student.Your_child_is_marked_halfday_in_the_attendance_on', ['date' => $date, 'member_name'=> $student_detail->full_name]);
                             }
                         
 
@@ -284,8 +284,8 @@ class SmStudentAttendanceController extends Controller
                             $notification->role_id = 3;
                             $notification->date = date('Y-m-d');
                             $notification->message = $messege;
-                            $notification->school_id = Auth::user()->school_id;
-                            $notification->academic_id = getAcademicId();
+                            $notification->church_id = Auth::user()->church_id;
+                            $notification->church_year_id = getAcademicId();
                             $notification->save();
 
                             try{
@@ -320,10 +320,10 @@ class SmStudentAttendanceController extends Controller
             $interface = App::make(UnCommonRepositoryInterface::class);
             $studentRecords  = $interface->searchStudentRecord($request)->get();
         } else {
-            $studentRecords = StudentRecord::where('class_id', $request->class_id)
-                            ->where('section_id', $request->section_id)
-                            ->where('academic_id', getAcademicId())
-                            ->where('school_id', Auth::user()->school_id)
+            $studentRecords = StudentRecord::where('age_group_id', $request->age_group_id)
+                            ->where('mgender_id', $request->mgender_id)
+                            ->where('church_year_id', getAcademicId())
+                            ->where('church_id', Auth::user()->church_id)
                             ->get();
         }
 
@@ -334,16 +334,16 @@ class SmStudentAttendanceController extends Controller
         }
         foreach ($studentRecords as $record) {
 
-            $attendance = SmStudentAttendance::where('student_id', $record->student_id)
+            $attendance = SmStudentAttendance::where('member_id', $record->member_id)
                         ->where('attendance_date', date('Y-m-d', strtotime($request->attendance_date)))
                         ->when(!moduleStatusCheck('University'), function ($query) use ($request) {
-                            $query->where('class_id', $request->class_id);
+                            $query->where('age_group_id', $request->age_group_id);
                         })->when(!moduleStatusCheck('University'), function ($query) use ($request) {
-                            $query->where('section_id', $request->section_id);
+                            $query->where('mgender_id', $request->mgender_id);
                         })
-                        ->where('academic_id', getAcademicId())
+                        ->where('church_year_id', getAcademicId())
                         ->where('student_record_id', $record->id)
-                        ->where('school_id', Auth::user()->school_id)
+                        ->where('church_id', Auth::user()->church_id)
                         ->first();
             if (!empty($attendance)) {
                 $attendance->delete();
@@ -353,12 +353,12 @@ class SmStudentAttendanceController extends Controller
                 $attendance->attendance_type = "H";
                 $attendance->notes = "Holiday";
                 $attendance->attendance_date = date('Y-m-d', strtotime($request->attendance_date));
-                $attendance->student_id = $record->student_id;
+                $attendance->member_id = $record->member_id;
                 $attendance->student_record_id = $record->id;
-                $attendance->class_id = $record->class_id;
-                $attendance->section_id = $record->section_id;
-                $attendance->academic_id = getAcademicId();
-                $attendance->school_id = Auth::user()->school_id;
+                $attendance->age_group_id = $record->age_group_id;
+                $attendance->mgender_id = $record->mgender_id;
+                $attendance->church_year_id = getAcademicId();
+                $attendance->church_id = Auth::user()->church_id;
                 if (moduleStatusCheck('University')) {
                     $interface = App::make(UnCommonRepositoryInterface::class);
                     $interface->storeUniversityData($attendance, $request);
@@ -371,7 +371,7 @@ class SmStudentAttendanceController extends Controller
 
                 // futter notification
                 $messege = "";
-                $student = SmStudent::find($record->student_id);
+                $student = SmStudent::find($record->member_id);
                 if($student){
                     $messege = app('translator')->get('student.Your_teacher_has_marked_holiday_in_the_attendance_on ', ['date' => dateconvert($attendance->attendance_date)]);
                     $notification = new SmNotification();
@@ -379,8 +379,8 @@ class SmStudentAttendanceController extends Controller
                     $notification->role_id = 2;
                     $notification->date = date('Y-m-d');
                     $notification->message = $messege ;
-                    $notification->school_id = Auth::user()->school_id;
-                    $notification->academic_id = getAcademicId();
+                    $notification->church_id = Auth::user()->church_id;
+                    $notification->church_year_id = getAcademicId();
                     $notification->save();
                     try{
                         if($student->user){
@@ -395,14 +395,14 @@ class SmStudentAttendanceController extends Controller
 
                     $parent = SmParent::find($student->parent_id);
                     if($parent){
-                        $messege = app('translator')->get('student.Your_child_is_marked_holiday_in_the_attendance_on_date', ['date' => dateConvert($attendance->attendance_date), 'student_name' => $student->full_name. "'s"]);
+                        $messege = app('translator')->get('student.Your_child_is_marked_holiday_in_the_attendance_on_date', ['date' => dateConvert($attendance->attendance_date), 'member_name' => $student->full_name. "'s"]);
                         $notification = new SmNotification();
                         $notification->user_id = $parent->user_id;
                         $notification->role_id = 3;
                         $notification->date = date('Y-m-d');
                         $notification->message = $messege;
-                        $notification->school_id = Auth::user()->school_id;
-                        $notification->academic_id = getAcademicId();
+                        $notification->church_id = Auth::user()->church_id;
+                        $notification->church_year_id = getAcademicId();
                         $notification->save();
     
                         try{
@@ -434,7 +434,7 @@ class SmStudentAttendanceController extends Controller
     {
 
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
             return view('backEnd.studentInformation.student_attendance_import', compact('classes'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -447,7 +447,7 @@ class SmStudentAttendanceController extends Controller
     {
 
         try {
-            $studentsArray = ['admission_no', 'class_id', 'section_id', 'attendance_date', 'in_time', 'out_time'];
+            $studentsArray = ['registration_no', 'age_group_id', 'mgender_id', 'attendance_date', 'in_time', 'out_time'];
 
             return Excel::create('student_attendance_sheet', function ($excel) use ($studentsArray) {
                 $excel->sheet('student_attendance_sheet', function ($sheet) use ($studentsArray) {
@@ -468,10 +468,10 @@ class SmStudentAttendanceController extends Controller
                 'un_session_id' =>'sometimes|nullable',
                 'un_faculty_id' =>'required',
                 'un_department_id' =>'required',
-                'un_academic_id' =>'required',
+                'un_church_year_id' =>'required',
                 'un_semester_id' =>'required',
                 'un_semester_label_id' =>'required',
-                'un_section_id' =>'required',
+                'un_mgender_id' =>'required',
                 'file' =>'required',
                 'attendance_date'=>'required',
             ]);
@@ -479,7 +479,7 @@ class SmStudentAttendanceController extends Controller
 
         try {
             if (moduleStatusCheck('University')) {
-                Excel::import(new UniversityStudentAttendanceImport($request->un_session_id, $request->un_faculty_id, $request->un_department_id, $request->un_academic_id, $request->un_semester_id, $request->un_semester_label_id, $request->un_section_id), $request->file('file'), 's3', \Maatwebsite\Excel\Excel::XLSX);
+                Excel::import(new UniversityStudentAttendanceImport($request->un_session_id, $request->un_faculty_id, $request->un_department_id, $request->un_church_year_id, $request->un_semester_id, $request->un_semester_label_id, $request->un_mgender_id), $request->file('file'), 's3', \Maatwebsite\Excel\Excel::XLSX);
             } else {
             Excel::import(new StudentAttendanceImport($request->class, $request->section), $request->file('file'), 's3', \Maatwebsite\Excel\Excel::XLSX);
             }
@@ -491,18 +491,18 @@ class SmStudentAttendanceController extends Controller
                 $university_data = [];
                 foreach ($data as $key => $value) {
                     if (date('d/m/Y', strtotime($request->attendance_date)) == date('d/m/Y', strtotime($value->attendance_date))) {
-                        $class_sections[] = $value->class_id . '-' . $value->section_id;
+                        $class_sections[] = $value->age_group_id . '-' . $value->mgender_id;
                     }
                     if (moduleStatusCheck('University')) {
                         $university_data [] = $value->un_session_id . '-' .$value->un_faculty_id .'-'.
-                        $value->un_department_id . '-' .$value->un_academic_id .'-'.
-                        $value->un_semester_id . '-' .$value->un_semester_label_id .'-'. $value->un_section_id;
+                        $value->un_department_id . '-' .$value->un_church_year_id .'-'.
+                        $value->un_semester_id . '-' .$value->un_semester_label_id .'-'. $value->un_mgender_id;
                     }
                 }
                 DB::beginTransaction();
 
 
-                $all_student_ids = [];
+                $all_member_ids = [];
                 $present_students = [];
                 $uniquesVales = moduleStatusCheck('University') ? $university_data : $class_sections;
                 foreach (array_unique($uniquesVales) as $value) {
@@ -511,20 +511,20 @@ class SmStudentAttendanceController extends Controller
                         $students = StudentRecord::where('un_session_id', $universityData[0])
                         ->where('un_faculty_id', $universityData[1])
                         ->where('un_department_id', $universityData[2])
-                        ->where('un_academic_id', $universityData[3])
+                        ->where('un_church_year_id', $universityData[3])
                         ->where('un_semester_id', $universityData[4])
                         ->where('un_semester_label_id', $universityData[5])
-                        ->where('un_section_id', $universityData[6])
-                        ->where('school_id', Auth::user()->school_id)
+                        ->where('un_mgender_id', $universityData[6])
+                        ->where('church_id', Auth::user()->church_id)
                         ->get();
                     } else {
                         $class_section = explode('-', $value);
-                        $students = StudentRecord::where('class_id', $class_section[0])->where('section_id', $class_section[1])->where('school_id', Auth::user()->school_id)->get();
+                        $students = StudentRecord::where('age_group_id', $class_section[0])->where('mgender_id', $class_section[1])->where('church_id', Auth::user()->church_id)->get();
                     }
                     foreach ($students as $student) {
                         StudentAttendanceBulk::where('student_record_id', $student->id)->where('attendance_date', date('Y-m-d', strtotime($request->attendance_date)))
                             ->delete();
-                        $all_student_ids[] = $student->id;
+                        $all_member_ids[] = $student->id;
                     }
 
                 }
@@ -535,7 +535,7 @@ class SmStudentAttendanceController extends Controller
                         if ($value != "") {
 
                             if (date('d/m/Y', strtotime($request->attendance_date)) == date('d/m/Y', strtotime($value->attendance_date))) {
-                                $student = StudentRecord::select('id')->where('id', $value->student_record_id)->where('school_id', Auth::user()->school_id)->first();
+                                $student = StudentRecord::select('id')->where('id', $value->student_record_id)->where('church_id', Auth::user()->church_id)->first();
 
 
                                 // return $student;
@@ -549,27 +549,27 @@ class SmStudentAttendanceController extends Controller
                                     }
                                     $present_students[] = $student->id;
                                     $import = new SmStudentAttendance();
-                                    $import->student_id = $student->id;
+                                    $import->member_id = $student->id;
                                     $import->student_record_id = $student->id;
                                     $import->attendance_date = date('Y-m-d', strtotime($value->attendance_date));
                                     $import->attendance_type = $value->attendance_type;
                                     $import->notes = $value->note;
-                                    $import->school_id = Auth::user()->school_id;
-                                    $import->academic_id = getAcademicId();
+                                    $import->church_id = Auth::user()->church_id;
+                                    $import->church_year_id = getAcademicId();
                                     if (moduleStatusCheck('University')) {
-                                        $import->un_academic_id =$value->un_academic_id;
+                                        $import->un_church_year_id =$value->un_church_year_id;
                                         $import->un_session_id =$value->un_session_id;
                                         $import->un_department_id =$value->un_department_id;
                                         $import->un_faculty_id =$value->un_faculty_id;
                                         $import->un_semester_id =$value->un_semester_id;
                                         $import->un_semester_label_id = $value->un_semester_label_id;
-                                        $import->un_section_id = $value->un_section_id;
+                                        $import->un_mgender_id = $value->un_mgender_id;
                                     }
                                     $import->save();
                                 }
                             } else {
                                 // Toastr::error('Attendance Date not Matched', 'Failed');
-                                StudentAttendanceBulk::where('student_id', $value->student_id)->delete();
+                                StudentAttendanceBulk::where('member_id', $value->member_id)->delete();
                             }
 
                         }
@@ -597,7 +597,7 @@ class SmStudentAttendanceController extends Controller
     public static function activeStudent()
     {
         $active_students = SmStudent::where('active_status', 1)
-            ->where('school_id', Auth::user()->school_id)
+            ->where('church_id', Auth::user()->church_id)
             ->get();
         return $active_students;
     }

@@ -13,15 +13,15 @@ class SmQuestionGroupsTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run($school_id, $academic_id, $count=5)
+    public function run($church_id, $church_year_id, $count=5)
     {
         $faker = Faker::create();
         for($i=1; $i<=5; $i++){
             $store= new SmQuestionGroup();
             $store->title=$faker->word;
             $store->created_at = date('Y-m-d h:i:s');
-            $store->school_id = $school_id;
-            $store->academic_id = $academic_id;
+            $store->church_id = $church_id;
+            $store->church_year_id = $church_year_id;
             $store->save();
 
         }

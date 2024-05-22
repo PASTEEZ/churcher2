@@ -50,7 +50,7 @@ class LessonPlanController extends Controller
     {
         try {
             $data = $this->loadDefault();
-            $data['class_times'] = SmClassTime::where('type', 'class')->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->orderBy('period', 'ASC')->get();
+            $data['class_times'] = SmClassTime::where('type', 'class')->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->orderBy('period', 'ASC')->get();
             $data['teacher_id'] = $id;
 
             return view('lesson::lessonPlan.lesson_planner', $data);
@@ -95,12 +95,12 @@ class LessonPlanController extends Controller
 
         try {
             $routine = SmClassRoutineUpdate::where('id', $routine_id)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->first();
 
-            $class_id = $routine->class_id;
-            $section_id = $routine->section_id;
+            $age_group_id = $routine->age_group_id;
+            $mgender_id = $routine->mgender_id;
             $subject_id = $routine->subject_id;
             $lesson_date = $lesson_date;
             $lessons = SmLesson::when(moduleStatusCheck('University'), function ($query) use ($routine) {
@@ -110,19 +110,19 @@ class LessonPlanController extends Controller
             }, function ($query) use ($subject_id) {
                 $query->where('subject_id', $subject_id);
             })
-            ->when(!moduleStatusCheck('University'), function ($query) use ($class_id) {
-                $query->where('class_id', $class_id);
-            })->when(!moduleStatusCheck('University'), function ($query) use ($section_id) {
-                $query->where('section_id', $section_id);
+            ->when(!moduleStatusCheck('University'), function ($query) use ($age_group_id) {
+                $query->where('age_group_id', $age_group_id);
+            })->when(!moduleStatusCheck('University'), function ($query) use ($mgender_id) {
+                $query->where('mgender_id', $mgender_id);
             })
             ->when(!moduleStatusCheck('University'), function ($query) {
-                $query->where('academic_id', getAcademicId());
-            })->where('school_id', Auth::user()->school_id)
+                $query->where('church_year_id', getAcademicId());
+            })->where('church_id', Auth::user()->church_id)
             ->get();
             
             $teacher_detail = SmStaff::select('id', 'full_name')->where('id', $teacher_id)->first();
 
-            return view('lesson::lessonPlan.add_new_lesson_planner_form', compact('teacher_id', 'lesson_date', 'day', 'class_id', 'section_id', 'subject_id', 'teacher_detail', 'lessons', 'routine_id', 'routine'));
+            return view('lesson::lessonPlan.add_new_lesson_planner_form', compact('teacher_id', 'lesson_date', 'day', 'age_group_id', 'mgender_id', 'subject_id', 'teacher_detail', 'lessons', 'routine_id', 'routine'));
 
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -162,12 +162,12 @@ class LessonPlanController extends Controller
             $lessonPlanner->lesson_date = $request->lesson_date;
             $lessonPlanner->teacher_id = $request->teacher_id;
             $lessonPlanner->subject_id = $request->subject_id;
-            $lessonPlanner->class_id = $request->class_id;
-            $lessonPlanner->section_id = $request->section_id;
+            $lessonPlanner->age_group_id = $request->age_group_id;
+            $lessonPlanner->mgender_id = $request->mgender_id;
             $lessonPlanner->routine_id = $request->routine_id;
             $lessonPlanner->created_by = Auth::user()->id;
-            $lessonPlanner->school_id = Auth::user()->school_id;
-            $lessonPlanner->academic_id = getAcademicId();
+            $lessonPlanner->church_id = Auth::user()->church_id;
+            $lessonPlanner->church_year_id = getAcademicId();
             if (moduleStatusCheck('University')) {
                 $interface = App::make(UnCommonRepositoryInterface::class);
                 $interface->storeUniversityData($lessonPlanner, $request);
@@ -199,8 +199,8 @@ class LessonPlanController extends Controller
         try {
             $lessonPlanDetail = LessonPlanner::find($lessonPlan_id);
 
-            $class_id = $lessonPlanDetail->class_id;
-            $section_id = $lessonPlanDetail->section_id;
+            $age_group_id = $lessonPlanDetail->age_group_id;
+            $mgender_id = $lessonPlanDetail->mgender_id;
             $subject_id = $lessonPlanDetail->subject_id;
             $lesson_date = $lessonPlanDetail->lesson_date;
             $teacher_id = $lessonPlanDetail->teacher_id;
@@ -210,18 +210,18 @@ class LessonPlanController extends Controller
 
             return view('lesson::lessonPlan.view_lesson_plan', compact('lessonPlanDetail', 'teacher_detail'));
             $room_id = 401;
-            $lessons = SmLesson::where('class_id', $class_id)
-                ->where('section_id', $section_id)
+            $lessons = SmLesson::where('age_group_id', $age_group_id)
+                ->where('mgender_id', $mgender_id)
                 ->where('subject_id', $subject_id)
                 ->get();
-            $assinged_subjects = SmClassRoutineUpdate::select('subject_id')->where('class_id', $class_id)->where('section_id', $section_id)->where('day', $day)->where('subject_id', '!=', $subject_id)->where('school_id', Auth::user()->school_id)->get();
+            $assinged_subjects = SmClassRoutineUpdate::select('subject_id')->where('age_group_id', $age_group_id)->where('mgender_id', $mgender_id)->where('day', $day)->where('subject_id', '!=', $subject_id)->where('church_id', Auth::user()->church_id)->get();
 
             $assinged_subject = [];
             foreach ($assinged_subjects as $value) {
                 $assinged_subject[] = $value->subject_id;
             }
 
-            $assinged_rooms = SmClassRoutineUpdate::select('room_id')->where('room_id', '!=', $room_id)->where('class_period_id', $class_time_id)->where('day', $day)->where('school_id', Auth::user()->school_id)->get();
+            $assinged_rooms = SmClassRoutineUpdate::select('room_id')->where('room_id', '!=', $room_id)->where('class_period_id', $class_time_id)->where('day', $day)->where('church_id', Auth::user()->church_id)->get();
 
             $assinged_room = [];
             foreach ($assinged_rooms as $value) {
@@ -230,8 +230,8 @@ class LessonPlanController extends Controller
             $rooms = SmClassRoom::get();
             $teacher_detail = SmStaff::select('id', 'full_name')->where('id', $teacher_id)->first();
 
-            $subjects = SmAssignSubject::where('class_id', $class_id)->where('section_id', $section_id)->get();
-            return view('lesson::lessonPlan.view_lesson_plan', compact('lessonPlanDetail', 'lesson_date', 'rooms', 'lessons', 'subjects', 'day', 'class_time_id', 'class_id', 'section_id', 'assinged_subject', 'assinged_room', 'subject_id', 'room_id', 'assigned_id', 'teacher_detail'));
+            $subjects = SmAssignSubject::where('age_group_id', $age_group_id)->where('mgender_id', $mgender_id)->get();
+            return view('lesson::lessonPlan.view_lesson_plan', compact('lessonPlanDetail', 'lesson_date', 'rooms', 'lessons', 'subjects', 'day', 'class_time_id', 'age_group_id', 'mgender_id', 'assinged_subject', 'assinged_room', 'subject_id', 'room_id', 'assigned_id', 'teacher_detail'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -243,22 +243,22 @@ class LessonPlanController extends Controller
 
             $lessonPlanDetail = LessonPlanner::find($lessonPlan_id);
 
-            $class_id = $lessonPlanDetail->class_id;
-            $section_id = $lessonPlanDetail->section_id;
+            $age_group_id = $lessonPlanDetail->age_group_id;
+            $mgender_id = $lessonPlanDetail->mgender_id;
             $subject_id = $lessonPlanDetail->subject_id;
             $lesson_date = $lessonPlanDetail->lesson_date;
             $teacher_id = $lessonPlanDetail->teacher_id;
             $day = $lessonPlanDetail->day;
 
             $topic = SmLessonTopicDetail::where('lesson_id', $lessonPlanDetail->lesson_detail_id)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
-            $lessons = SmLesson::where('class_id', $class_id)
-                ->where('section_id', $section_id)
+            $lessons = SmLesson::where('age_group_id', $age_group_id)
+                ->where('mgender_id', $mgender_id)
                 ->where('subject_id', $subject_id)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             $lesson_date = $lesson_date;
@@ -266,11 +266,11 @@ class LessonPlanController extends Controller
             $topic = SmLessonTopicDetail::where('lesson_id', $lessonPlanDetail->lesson_detail_id)
                 ->get();
            
-            $lessons = SmLesson::where('class_id', $class_id)
-                ->where('section_id', $section_id)
+            $lessons = SmLesson::where('age_group_id', $age_group_id)
+                ->where('mgender_id', $mgender_id)
                 ->where('subject_id', $subject_id)
                 ->get();
-            $assinged_subjects = SmClassRoutineUpdate::select('subject_id')->where('class_id', $class_id)->where('section_id', $section_id)->where('day', $day)->where('subject_id', '!=', $subject_id)->where('school_id', Auth::user()->school_id)->get();
+            $assinged_subjects = SmClassRoutineUpdate::select('subject_id')->where('age_group_id', $age_group_id)->where('mgender_id', $mgender_id)->where('day', $day)->where('subject_id', '!=', $subject_id)->where('church_id', Auth::user()->church_id)->get();
 
             $assinged_subject = [];
             foreach ($assinged_subjects as $value) {
@@ -279,7 +279,7 @@ class LessonPlanController extends Controller
 
             $teacher_detail = SmStaff::select('id', 'full_name')->where('id', $teacher_id)->first();
 
-            return view('lesson::lessonPlan.edit_lesson_planner_form', compact('lessonPlanDetail', 'topic', 'lesson_date', 'lessons', 'day', 'class_id', 'section_id', 'subject_id', 'teacher_detail'));
+            return view('lesson::lessonPlan.edit_lesson_planner_form', compact('lessonPlanDetail', 'topic', 'lesson_date', 'lessons', 'day', 'age_group_id', 'mgender_id', 'subject_id', 'teacher_detail'));
             $assinged_room = [];
             foreach ($assinged_rooms as $value) {
                 $assinged_room[] = $value->room_id;
@@ -287,8 +287,8 @@ class LessonPlanController extends Controller
             $rooms = SmClassRoom::get();
             $teacher_detail = SmStaff::select('id', 'full_name')->where('id', $teacher_id)->first();
 
-            $subjects = SmAssignSubject::where('class_id', $class_id)->where('section_id', $section_id)->get();
-            return view('lesson::lessonPlan.edit_lesson_planner_form', compact('lessonPlanDetail', 'topic', 'lesson_date', 'rooms', 'lessons', 'subjects', 'day', 'class_time_id', 'class_id', 'section_id', 'assinged_subject', 'assinged_room', 'subject_id', 'room_id', 'assigned_id', 'teacher_detail'));
+            $subjects = SmAssignSubject::where('age_group_id', $age_group_id)->where('mgender_id', $mgender_id)->get();
+            return view('lesson::lessonPlan.edit_lesson_planner_form', compact('lessonPlanDetail', 'topic', 'lesson_date', 'rooms', 'lessons', 'subjects', 'day', 'class_time_id', 'age_group_id', 'mgender_id', 'assinged_subject', 'assinged_room', 'subject_id', 'room_id', 'assigned_id', 'teacher_detail'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -324,8 +324,8 @@ class LessonPlanController extends Controller
             $lessonPlanner->presentation = $request->presentation;
             $lessonPlanner->note = $request->note;
             $lessonPlanner->updated_by = Auth::user()->id;
-            $lessonPlanner->school_id = Auth::user()->school_id;
-            $lessonPlanner->academic_id = getAcademicId();
+            $lessonPlanner->church_id = Auth::user()->church_id;
+            $lessonPlanner->church_year_id = getAcademicId();
             $lessonPlanner->save();
             LessonPlanTopic::where('lesson_planner_id', $request->lessonPlan_id)->delete();
             if ($request->customize=="customize") {
@@ -417,20 +417,20 @@ class LessonPlanController extends Controller
         try {         
             
             $lesson_id = $request->lesson;
-            $class_id = $request->class_id;
-            $section_id = $request->section_id;
+            $age_group_id = $request->age_group_id;
+            $mgender_id = $request->mgender_id;
             $subject_id = $request->subject_id;
-            if(!$class_id && !$section_id && !$subject_id) {
+            if(!$age_group_id && !$mgender_id && !$subject_id) {
                 return redirect()->route('topic-overview');
             }
            
             $lessons = SmLesson::groupBy('lesson_title')->get();
             $classes = SmClass::get();
-            $lesson_ids = SmLessonTopic::when($class_id, function($q) use ($class_id) {
-                $q->where('class_id', $class_id);
+            $lesson_ids = SmLessonTopic::when($age_group_id, function($q) use ($age_group_id) {
+                $q->where('age_group_id', $age_group_id);
             })
-            ->when($section_id, function($q) use ($section_id) {
-                $q->where('section_id', $section_id);
+            ->when($mgender_id, function($q) use ($mgender_id) {
+                $q->where('mgender_id', $mgender_id);
             })
             ->when($subject_id, function($q) use ($subject_id) {
                 $q->where('subject_id', $subject_id);
@@ -441,10 +441,10 @@ class LessonPlanController extends Controller
             
             $topics_detail = SmLessonTopicDetail::whereIn('lesson_id', $lesson_ids)->get();
             $selected =[];
-            $selected['class_id']=$class_id;
-            $selected['section_id']=$section_id;
+            $selected['age_group_id']=$age_group_id;
+            $selected['mgender_id']=$mgender_id;
             $selected['subject_id']=$subject_id;
-            return view('lesson::lessonPlan.manage_lesson', compact('lesson_id', 'classes', 'lessons', 'topics_detail', 'class_id', 'section_id', 'subject_id', 'selected'));
+            return view('lesson::lessonPlan.manage_lesson', compact('lesson_id', 'classes', 'lessons', 'topics_detail', 'age_group_id', 'mgender_id', 'subject_id', 'selected'));
 
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -476,16 +476,16 @@ class LessonPlanController extends Controller
                 'un_session_id' => 'sometimes|nullable',
                 'un_faculty_id' => 'sometimes|nullable',
                 'un_department_id' => 'sometimes|nullable',
-                'un_academic_id' => 'sometimes|nullable',
+                'un_church_year_id' => 'sometimes|nullable',
                 'un_semester_id' => 'sometimes|nullable',
                 'un_semester_label_id' => 'sometimes|nullable',
                 'un_subject_id' => 'sometimes|nullable',
             ]);
         } else {
             $request->validate([
-                'class_id' => 'required',
+                'age_group_id' => 'required',
                 'teacher' => 'required',
-                'section_id' => 'required',
+                'mgender_id' => 'required',
                 'subject_id' => 'required',
     
             ]);
@@ -504,14 +504,14 @@ class LessonPlanController extends Controller
                 ->count();
             } else {
                 $total = LessonPlanner::where('teacher_id', $request->teacher)
-                ->where('class_id', $request->class_id)
-                ->where('section_id', $request->section_id)
+                ->where('age_group_id', $request->age_group_id)
+                ->where('mgender_id', $request->mgender_id)
                 ->where('subject_id', $request->subject_id)
                 ->get()->count();
                 $completed_total = LessonPlanner::where('completed_status', 'completed')
                 ->where('teacher_id', $request->teacher)
-                ->where('class_id', $request->class_id)
-                ->where('section_id', $request->section_id)
+                ->where('age_group_id', $request->age_group_id)
+                ->where('mgender_id', $request->mgender_id)
                 ->where('subject_id', $request->subject_id)
                 ->get()
                 ->count();
@@ -536,35 +536,35 @@ class LessonPlanController extends Controller
     
                 
             } else { 
-                if ($request->teacher != "" && $request->class_id != "" && $request->section_id != "" && $request->subject_id != "") {
+                if ($request->teacher != "" && $request->age_group_id != "" && $request->mgender_id != "" && $request->subject_id != "") {
                     $lessonPlanner = LessonPlanner::where('teacher_id', $request->teacher)
-                        ->where('class_id', $request->class_id)
-                        ->where('section_id', $request->section_id)
+                        ->where('age_group_id', $request->age_group_id)
+                        ->where('mgender_id', $request->mgender_id)
                         ->where('subject_id', $request->subject_id)
                         ->groupBy('lesson_detail_id')
                         ->get();
                     $alllessonPlanner = LessonPlanner::where('teacher_id', $request->teacher)
-                        ->where('class_id', $request->class_id)
-                        ->where('section_id', $request->section)
+                        ->where('age_group_id', $request->age_group_id)
+                        ->where('mgender_id', $request->section)
                         ->where('subject_id', $request->subject_id)
                         ->get();
 
                 }
             }
 
-            $class_id = $request->class_id;
+            $age_group_id = $request->age_group_id;
             $teacher_id = $request->teacher_id;
-            $section_id = $request->section_id;
+            $mgender_id = $request->mgender_id;
             $subject_id = $request->subject_id;
 
             $classes = SmClass::get();
 
           
             $sections = [];
-            if ($class_id) {
-                $sectionIds = SmClassSection::where('class_id', '=', $class_id)->get();
+            if ($age_group_id) {
+                $sectionIds = SmClassSection::where('age_group_id', '=', $age_group_id)->get();
                 foreach ($sectionIds as $sectionId) {
-                    $sections[] = SmSection::find($sectionId->section_id);
+                    $sections[] = SmSection::find($sectionId->mgender_id);
                 }
             }
             if (moduleStatusCheck('University')) {
@@ -572,14 +572,14 @@ class LessonPlanController extends Controller
                 ->where('un_semester_label_id', $request->un_semester_label_id)
                 ->get();
             } else {
-                $subjects = SmAssignSubject::with('subject')->where('class_id', $class_id)->where('section_id', $section_id)->get();
+                $subjects = SmAssignSubject::with('subject')->where('age_group_id', $age_group_id)->where('mgender_id', $mgender_id)->get();
             }
             $teachers = SmStaff::where('role_id', 4)->get();
-            $selected['class_id']=$class_id;
-            $selected['section_id']=$section_id;
+            $selected['age_group_id']=$age_group_id;
+            $selected['mgender_id']=$mgender_id;
             $selected['subject_id']=$subject_id;
            
-            return view('lesson::lessonPlan.manage_lesson_planner', compact('total', 'completed_total', 'alllessonPlanner', 'lessonPlanner', 'classes', 'teachers', 'percentage', 'subjects', 'sections', 'class_id', 'section_id', 'subject_id', 'teacher_id', 'selected'));
+            return view('lesson::lessonPlan.manage_lesson_planner', compact('total', 'completed_total', 'alllessonPlanner', 'lessonPlanner', 'classes', 'teachers', 'percentage', 'subjects', 'sections', 'age_group_id', 'mgender_id', 'subject_id', 'teacher_id', 'selected'));
 
         } catch (\Exception $e) {
 
@@ -792,10 +792,10 @@ class LessonPlanController extends Controller
         foreach ($data['period'] as $date) {
             $data['dates'][] = $date->format('Y-m-d');
         }
-        $data['sm_weekends'] = SmWeekend::with('teacherClassRoutineAdmin')->where('school_id', Auth::user()->school_id)->orderBy('order', 'ASC')->where('active_status', 1)->get();
+        $data['sm_weekends'] = SmWeekend::with('teacherClassRoutineAdmin')->where('church_id', Auth::user()->church_id)->orderBy('order', 'ASC')->where('active_status', 1)->get();
         $data['teachers'] = SmStaff::where('active_status', 1)->where(function($q)  {
                                         $q->where('role_id', 4)->orWhere('previous_role_id', 4);
-                                    })->where('school_id', Auth::user()->school_id)->get();
+                                    })->where('church_id', Auth::user()->church_id)->get();
 
         return $data;
 
@@ -863,7 +863,7 @@ class LessonPlanController extends Controller
     public function postSetting(Request $request)
     {
         try {
-            $general_settings = SmGeneralSettings::where('school_id', auth()->user()->school_id)->first();
+            $general_settings = SmGeneralSettings::where('church_id', auth()->user()->church_id)->first();
             $general_settings->sub_topic_enable = $request->sub_topic_enable;
             $general_settings->save();
             session()->forget('generalSetting');

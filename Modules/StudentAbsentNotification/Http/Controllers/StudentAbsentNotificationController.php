@@ -14,7 +14,7 @@ class StudentAbsentNotificationController extends Controller
 {
     public function index()
     {
-        $setups=AbsentNotificationTimeSetup::where('school_id',Auth::user()->school_id)->get();
+        $setups=AbsentNotificationTimeSetup::where('church_id',Auth::user()->church_id)->get();
         return view('studentabsentnotification::index',compact('setups'));
     }
 
@@ -40,7 +40,7 @@ class StudentAbsentNotificationController extends Controller
             $setup->time_from= date('H:i', strtotime($request->start_time));
             $setup->time_to=date('H:i', strtotime($request->end_time));
             $setup->active_status=$request->active_status;
-            $setup->school_id=Auth::user()->school_id;
+            $setup->church_id=Auth::user()->church_id;
             $setup->save();
             Toastr::success('Operation successful', 'Success');
             return redirect()->back();
@@ -57,8 +57,8 @@ class StudentAbsentNotificationController extends Controller
 
     public function edit($id)
     {
-        $editData=AbsentNotificationTimeSetup::where('school_id',Auth::user()->school_id)->where('id',$id)->first();
-        $setups=AbsentNotificationTimeSetup::where('school_id',Auth::user()->school_id)->get();
+        $editData=AbsentNotificationTimeSetup::where('church_id',Auth::user()->church_id)->where('id',$id)->first();
+        $setups=AbsentNotificationTimeSetup::where('church_id',Auth::user()->church_id)->get();
         return view('studentabsentnotification::index',compact('setups','editData'));
     }
 

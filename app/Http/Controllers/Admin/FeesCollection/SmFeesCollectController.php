@@ -58,13 +58,13 @@ class SmFeesCollectController extends Controller
                                 $q->where('active_status', 1);
                             })->get();
             }else{
-                $students->where('class_id', $request->class);
+                $students->where('age_group_id', $request->class);
                 if ($request->section != "") {
-                    $students->where('section_id', $request->section);
+                    $students->where('mgender_id', $request->section);
                 }
                 if ($request->keyword != "") {
                     $students->whereHas('studentDetail', function($q) use($request) {
-                        $q->where('full_name', 'like', '%' . $request->keyword . '%')->orWhere('admission_no', $request->keyword)->orWhere('roll_no', $request->keyword)->orWhere('national_id_no', $request->keyword)->orWhere('local_id_no', $request->keyword);
+                        $q->where('full_name', 'like', '%' . $request->keyword . '%')->orWhere('registration_no', $request->keyword)->orWhere('roll_no', $request->keyword)->orWhere('national_id_no', $request->keyword)->orWhere('local_id_no', $request->keyword);
                     });
                     
                 }
@@ -84,10 +84,10 @@ class SmFeesCollectController extends Controller
             $classes = SmClass::get();
  
             $class_info = SmClass::find($request->class);
-            $search_info['class_name'] = @$class_info->class_name;
+            $search_info['age_group_name'] = @$class_info->age_group_name;
             if ($request->section != "") {
                 $section_info = SmSection::find($request->section);
-                $search_info['section_name'] = @$section_info->section_name;
+                $search_info['mgender_name'] = @$section_info->mgender_name;
             }
             if ($request->keyword != "") {
                 $search_info['keyword'] = $request->keyword;
@@ -114,10 +114,10 @@ class SmFeesCollectController extends Controller
        try {
         $student = StudentRecord::find($id);
         $fees_assigneds = SmFeesAssign::with('feesGroupMaster')
-                            ->where('student_id', $student->student_id)
+                            ->where('member_id', $student->member_id)
                             ->where('record_id', $id)
                             ->orderBy('id', 'desc')
-                            ->where('school_id',Auth::user()->school_id)
+                            ->where('church_id',Auth::user()->church_id)
                             ->get();
 
          if (count($fees_assigneds) <= 0) {
@@ -125,9 +125,9 @@ class SmFeesCollectController extends Controller
             return redirect('/collect-fees');
          }    
        
-        $fees_discounts = SmFeesAssignDiscount::where('student_id', $student->student_id)
+        $fees_discounts = SmFeesAssignDiscount::where('member_id', $student->member_id)
                         ->where('record_id', $id)
-                        ->where('school_id',Auth::user()->school_id)
+                        ->where('church_id',Auth::user()->church_id)
                         ->get();
 
         $applied_discount = [];
@@ -136,7 +136,7 @@ class SmFeesCollectController extends Controller
                         ->where('active_status',1)
                         ->where('record_id', $id)
                         ->where('fees_discount_id', $fees_discount->id)
-                        ->where('school_id',Auth::user()->school_id)
+                        ->where('church_id',Auth::user()->church_id)
                         ->first();
 
             if (isset($fees_payment->fees_discount_id)) {
@@ -145,10 +145,10 @@ class SmFeesCollectController extends Controller
         }
 
 
-        $fees_assigneds = SmFeesAssign::where('student_id', $student->student_id)
+        $fees_assigneds = SmFeesAssign::where('member_id', $student->member_id)
                         ->where('record_id', $id)
                         ->orderBy('id', 'desc')
-                        ->where('school_id', Auth::user()->school_id)
+                        ->where('church_id', Auth::user()->church_id)
                         ->get();
 
                         $data['student'] = $student;
@@ -156,10 +156,10 @@ class SmFeesCollectController extends Controller
                         $data['fees_discounts'] = $fees_discounts;
                         $data['applied_discount'] = $applied_discount;
                         if(moduleStatusCheck('University')){
-                            $data['feesInstallments'] = UnFeesInstallmentAssign::where('un_academic_id',$student->un_academic_id)->where('un_semester_label_id', $student->un_semester_label_id)->where('record_id', $student->id)->get();
+                            $data['feesInstallments'] = UnFeesInstallmentAssign::where('un_church_year_id',$student->un_church_year_id)->where('un_semester_label_id', $student->un_semester_label_id)->where('record_id', $student->id)->get();
                         }
                         elseif(directFees()){
-                            $data['feesInstallments'] = DirectFeesInstallmentAssign::where('academic_id',getAcademicId())->where('record_id', $student->id)->get();
+                            $data['feesInstallments'] = DirectFeesInstallmentAssign::where('church_year_id',getAcademicId())->where('record_id', $student->id)->get();
                         }
 
 
@@ -174,16 +174,16 @@ class SmFeesCollectController extends Controller
     public function collectFeesStudentApi(Request $request, $id)
     {
         try {
-            $student = SmStudent::where('user_id', $id)->where('school_id',Auth::user()->school_id)->first();
-            $fees_assigneds = SmFeesAssign::where('student_id', $id)->orderBy('id', 'desc')->where('school_id',Auth::user()->school_id)->get();
+            $student = SmStudent::where('user_id', $id)->where('church_id',Auth::user()->church_id)->first();
+            $fees_assigneds = SmFeesAssign::where('member_id', $id)->orderBy('id', 'desc')->where('church_id',Auth::user()->church_id)->get();
 
             $fees_assigneds2 = DB::table('sm_fees_assigns')
                 ->select('sm_fees_types.id as fees_type_id', 'sm_fees_types.name', 'sm_fees_masters.date as due_date', 'sm_fees_masters.amount as amount')
                 ->join('sm_fees_masters', 'sm_fees_masters.id', '=', 'sm_fees_assigns.fees_master_id')
                 ->join('sm_fees_types', 'sm_fees_types.id', '=', 'sm_fees_masters.fees_type_id')
                 // ->join('sm_fees_payments', 'sm_fees_payments.fees_type_id', '=', 'sm_fees_masters.fees_type_id')
-                ->where('sm_fees_assigns.student_id', $student->id)
-                ->where('sm_fees_assigns.school_id',Auth::user()->school_id)->get();
+                ->where('sm_fees_assigns.member_id', $student->id)
+                ->where('sm_fees_assigns.church_id',Auth::user()->church_id)->get();
 
             // return $fees_assigneds2;
             $i = 0;
@@ -193,25 +193,25 @@ class SmFeesCollectController extends Controller
                 $d[$i]['fees_name'] = $row->name;
                 $d[$i]['due_date'] = $row->due_date;
                 $d[$i]['amount'] = $row->amount;
-                $d[$i]['paid'] = DB::table('sm_fees_payments')->where('fees_type_id', $row->fees_type_id)->where('student_id', $student->id)->sum('amount');
-                $d[$i]['fine'] = DB::table('sm_fees_payments')->where('fees_type_id', $row->fees_type_id)->where('student_id', $student->id)->sum('fine');
-                $d[$i]['discount_amount'] = DB::table('sm_fees_payments')->where('fees_type_id', $row->fees_type_id)->where('student_id', $student->id)->sum('discount_amount');
+                $d[$i]['paid'] = DB::table('sm_fees_payments')->where('fees_type_id', $row->fees_type_id)->where('member_id', $student->id)->sum('amount');
+                $d[$i]['fine'] = DB::table('sm_fees_payments')->where('fees_type_id', $row->fees_type_id)->where('member_id', $student->id)->sum('fine');
+                $d[$i]['discount_amount'] = DB::table('sm_fees_payments')->where('fees_type_id', $row->fees_type_id)->where('member_id', $student->id)->sum('discount_amount');
                 $d[$i]['balance'] = ((float) $d[$i]['amount'] + (float) $d[$i]['fine'])  - ((float) $d[$i]['paid'] + (float) $d[$i]['discount_amount']);
                 $i++;
             }
 
             //, DB::raw("SUM(sm_fees_payments.amount) as total_paid where sm_fees_payments.fees_type_id==")
-            $fees_discounts = SmFeesAssignDiscount::where('student_id', $id)->where('school_id',Auth::user()->school_id)->get();
+            $fees_discounts = SmFeesAssignDiscount::where('member_id', $id)->where('church_id',Auth::user()->church_id)->get();
 
             $applied_discount = [];
             foreach ($fees_discounts as $fees_discount) {
-                $fees_payment = SmFeesPayment::select('fees_discount_id')->where('active_status',1)->where('fees_discount_id', $fees_discount->id)->where('school_id',Auth::user()->school_id)->first();
+                $fees_payment = SmFeesPayment::select('fees_discount_id')->where('active_status',1)->where('fees_discount_id', $fees_discount->id)->where('church_id',Auth::user()->church_id)->first();
                 if (isset($fees_payment->fees_discount_id)) {
                     $applied_discount[] = $fees_payment->fees_discount_id;
                 }
             }
 
-            $currency_symbol = SmGeneralSettings::select('currency_symbol')->where('school_id',Auth::user()->school_id)->first();
+            $currency_symbol = SmGeneralSettings::select('currency_symbol')->where('church_id',Auth::user()->church_id)->first();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];

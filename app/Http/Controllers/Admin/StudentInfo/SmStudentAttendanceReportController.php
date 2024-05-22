@@ -58,8 +58,8 @@ class SmStudentAttendanceReportController extends Controller
             $data=[];
             $year = $request->year;
             $month = $request->month;
-            $class_id = $request->class;
-            $section_id = $request->section;
+            $age_group_id = $request->class;
+            $mgender_id = $request->section;
             $current_day = date('d');
             $class = null;
             $section = null;
@@ -75,10 +75,10 @@ class SmStudentAttendanceReportController extends Controller
             } else {
                 $classes = SmClass::get();
             }
-            $students = StudentRecord::where('class_id', $request->class)
-            ->where('section_id', $request->section)
-            ->where('academic_id', getAcademicId())
-            ->where('school_id', Auth::user()->school_id)->get()->sortBy('roll_no');
+            $students = StudentRecord::where('age_group_id', $request->class)
+            ->where('mgender_id', $request->section)
+            ->where('church_year_id', getAcademicId())
+            ->where('church_id', Auth::user()->church_id)->get()->sortBy('roll_no');
            
             if (moduleStatusCheck('University')) {
                 $data['un_semester_label_id'] = $request->un_semester_label_id;
@@ -90,9 +90,9 @@ class SmStudentAttendanceReportController extends Controller
             }
             $attendances = [];
             foreach ($students as $record) {
-                $attendance = SmStudentAttendance::where('student_id', $record->student_id)
+                $attendance = SmStudentAttendance::where('member_id', $record->member_id)
                 ->where('attendance_date', 'like', $request->year . '-' . $request->month . '%')
-                ->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)
                 ->where('student_record_id', $record->id)
                 ->get();
                 if (count($attendance) != 0) {
@@ -108,12 +108,12 @@ class SmStudentAttendanceReportController extends Controller
                 $data['year'] = $year;
                 $data['month'] = $month;
                 $data['current_day'] = $current_day;
-                $data['class_id'] = $class_id;
-                $data['section_id'] = $section_id;
+                $data['age_group_id'] = $age_group_id;
+                $data['mgender_id'] = $mgender_id;
                 return ApiBaseMethod::sendResponse($data, null);
             }
 
-            return view('backEnd.studentInformation.student_attendance_report', compact('classes', 'attendances', 'students', 'days', 'year', 'month', 'current_day', 'class_id', 'section_id', 'class', 'section'))->with($data);
+            return view('backEnd.studentInformation.student_attendance_report', compact('classes', 'attendances', 'students', 'days', 'year', 'month', 'current_day', 'age_group_id', 'mgender_id', 'class', 'section'))->with($data);
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -121,27 +121,27 @@ class SmStudentAttendanceReportController extends Controller
     }
 
 
-    public function print($class_id, $section_id, $month, $year)
+    public function print($age_group_id, $mgender_id, $month, $year)
     {
         set_time_limit(2700);
         try {
             $current_day = date('d');
             $days = cal_days_in_month(CAL_GREGORIAN, $month, $year);
-            $active_students = SmStudent::where('active_status', 1)->where('school_id', Auth::user()->school_id)->where('academic_id', getAcademicId())->pluck('id')->toArray();
+            $active_students = SmStudent::where('active_status', 1)->where('church_id', Auth::user()->church_id)->where('church_year_id', getAcademicId())->pluck('id')->toArray();
             $students = DB::table('student_records')
-            ->where('class_id', $class_id)
-            ->where('section_id', $section_id)
-            ->where('academic_id', getAcademicId())
-            ->whereIn('student_id', $active_students)
-            ->where('school_id', Auth::user()->school_id)
+            ->where('age_group_id', $age_group_id)
+            ->where('mgender_id', $mgender_id)
+            ->where('church_year_id', getAcademicId())
+            ->whereIn('member_id', $active_students)
+            ->where('church_id', Auth::user()->church_id)
             ->get();
 
             $attendances = [];
             foreach ($students as $record) {
-                $attendance = SmStudentAttendance::where('student_id', $record->student_id)
+                $attendance = SmStudentAttendance::where('member_id', $record->member_id)
                 ->where('attendance_date', 'like', $year . '-' . $month . '%')
-                ->where('school_id', Auth::user()->school_id)
-                ->where('academic_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
+                ->where('church_year_id', getAcademicId())
                 ->where('student_record_id', $record->id)
                 ->get();
 
@@ -157,17 +157,17 @@ class SmStudentAttendanceReportController extends Controller
             //         'days' => $days,
             //         'year' => $year,
             //         'month' => $month,
-            //         'class_id' => $class_id,
-            //         'section_id' => $section_id,
-            //         'class' => SmClass::find($class_id),
-            //         'section' => SmSection::find($section_id),
+            //         'age_group_id' => $age_group_id,
+            //         'mgender_id' => $mgender_id,
+            //         'class' => SmClass::find($age_group_id),
+            //         'section' => SmSection::find($mgender_id),
             //     ]
             // )->setPaper('A4', 'landscape');
             // return $pdf->stream('student_attendance.pdf');
 
-            $class = SmClass::find($class_id);
-            $section = SmSection::find($section_id);
-            return view('backEnd.studentInformation.student_attendance_print', compact('class', 'section', 'attendances', 'days', 'year', 'month', 'current_day', 'class_id', 'section_id'));
+            $class = SmClass::find($age_group_id);
+            $section = SmSection::find($mgender_id);
+            return view('backEnd.studentInformation.student_attendance_print', compact('class', 'section', 'attendances', 'days', 'year', 'month', 'current_day', 'age_group_id', 'mgender_id'));
         } catch (\Exception $e) {
           
             Toastr::error('Operation Failed', 'Failed');
@@ -180,20 +180,20 @@ class SmStudentAttendanceReportController extends Controller
         try {
             $current_day = date('d');
             $days = cal_days_in_month(CAL_GREGORIAN, $month, $year);
-            $active_students = SmStudent::where('active_status', 1)->where('school_id', Auth::user()->school_id)->where('academic_id', getAcademicId())->pluck('id')->toArray();
+            $active_students = SmStudent::where('active_status', 1)->where('church_id', Auth::user()->church_id)->where('church_year_id', getAcademicId())->pluck('id')->toArray();
             $students = DB::table('student_records')
             ->where('un_semester_label_id', $semester_id)
-            // ->where('academic_id', getAcademicId())
-             ->whereIn('student_id', $active_students)
-            ->where('school_id', Auth::user()->school_id)
+            // ->where('church_year_id', getAcademicId())
+             ->whereIn('member_id', $active_students)
+            ->where('church_id', Auth::user()->church_id)
             ->get();
 
             $attendances = [];
             foreach ($students as $record) {
-                $attendance = SmStudentAttendance::where('student_id', $record->student_id)
+                $attendance = SmStudentAttendance::where('member_id', $record->member_id)
                 ->where('attendance_date', 'like', $year . '-' . $month . '%')
-                ->where('school_id', Auth::user()->school_id)
-                ->where('academic_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
+                ->where('church_year_id', getAcademicId())
                 ->where('student_record_id', $record->id)
                 ->get();
 
@@ -205,7 +205,7 @@ class SmStudentAttendanceReportController extends Controller
                 'un_session_id'=>null,
                 'un_faculty_id'=>null,
                 'un_department_id'=>null,
-                'un_academic_id'=>null,
+                'un_church_year_id'=>null,
                 'un_semester_id'=>null,
                 'un_semester_label_id'=>$semester_id,
             ];
@@ -218,10 +218,10 @@ class SmStudentAttendanceReportController extends Controller
             //         'days' => $days,
             //         'year' => $year,
             //         'month' => $month,
-            //         'class_id' => $class_id,
-            //         'section_id' => $section_id,
-            //         'class' => SmClass::find($class_id),
-            //         'section' => SmSection::find($section_id),
+            //         'age_group_id' => $age_group_id,
+            //         'mgender_id' => $mgender_id,
+            //         'class' => SmClass::find($age_group_id),
+            //         'section' => SmSection::find($mgender_id),
             //     ]
             // )->setPaper('A4', 'landscape');
             // return $pdf->stream('student_attendance.pdf');

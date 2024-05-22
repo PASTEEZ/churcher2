@@ -3,8 +3,8 @@
     MEMBERSHIP REPORT
     @endsection
 @section('mainContent')
-<input type="text" hidden value="{{ @$clas->class_name }}" id="cls">
-<input type="text" hidden value="{{ @$clas->section_name->sectionName->section_name }}" id="sec">
+<input type="text" hidden value="{{ @$clas->age_group_name }}" id="cls">
+<input type="text" hidden value="{{ @$clas->mgender_name->sectionName->mgender_name }}" id="sec">
 <section class="sms-breadcrumb mb-40 up_breadcrumb white-box">
     <div class="container-fluid">
         <div class="row justify-content-between">
@@ -53,7 +53,7 @@
                                 <div class="col-lg-6 mt-30-md" id="select_section_div">
                                     <select class="niceSelect w-100 bb form-control{{ $errors->has('section') ? ' is-invalid' : '' }}" id="select_section" name="section">
                                         <option data-display="@lang('common.select_section')" value="">@lang('common.select_section')</option>
-                                        @if(isset($class_id))
+                                        @if(isset($age_group_id))
                                             @foreach ($gender->classSection as $gender)
                                             <option value="{{ $gender->sectionName->id }}" {{ old('section')==$gender->sectionName->id ? 'selected' : '' }} >
                                                 {{ $gender->gender_name }}</option>
@@ -101,7 +101,7 @@
                                         <th>@lang('common.section')</th>
  
 
-                                        <th>@lang('student.admission_no')</th>
+                                        <th>@lang('student.registration_no')</th>
                                         <th>@lang('common.name')</th>
                                         <th>@lang('common.mobile')</th>
                                         <th>@lang('student.guardian_name')</th>
@@ -119,10 +119,10 @@
                                     @foreach($student_records as $record)
                                     <tr>
                                 
-                                        <td>{{@$record->class->class_name}}</td>
-                                        <td> {{@$record->section->section_name}}</td>
+                                        <td>{{@$record->class->age_group_name}}</td>
+                                        <td> {{@$record->section->mgender_name}}</td>
                                        
-                                        <td>{{@$record->student->admission_no}}</td>
+                                        <td>{{@$record->student->registration_no}}</td>
                                         <td>{{@$record->student->full_name}}</td>
                                         <td>{{@$record->student->mobile}}</td>
                                         <td>{{@$record->student->parents!=""?@$record->student->parents->guardians_name:""}}</td>

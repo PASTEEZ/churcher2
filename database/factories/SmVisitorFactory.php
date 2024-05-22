@@ -32,7 +32,7 @@ class SmVisitorFactory extends Factory
             'date' => $this->faker->dateTime()->format('Y-m-d'),
             'in_time' => $this->faker->time($format = 'H:i A', $max = 'now'),
             'out_time' => $this->faker->time($format = 'H:i A', $max = 'now'),
-            'school_id' => 1
+            'church_id' => 1
           
         ];
     }

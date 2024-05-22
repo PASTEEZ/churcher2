@@ -77,7 +77,7 @@
                                 @if(in_array('admission_number',$fields))
                                 <div class="col-lg-3">
                                     <div class="input-effect">
-                                        <input class="primary-input form-control{{ $errors->has('admission_number') ? ' is-invalid' : '' }}" type="text" name="admission_number" value="{{$student->admission_no}}" onkeyup="GetAdminUpdate(this.value,{{$student->id}})">
+                                        <input class="primary-input form-control{{ $errors->has('admission_number') ? ' is-invalid' : '' }}" type="text" name="admission_number" value="{{$student->registration_no}}" onkeyup="GetAdminUpdate(this.value,{{$student->id}})">
                                         <label>@lang('student.admission_number')  @if(is_required('admission_number')==true) * @endif</label>
                                         <span class="focus-border"></span>
                                         <span class="invalid-feedback" id="Admission_Number" role="alert"></span>
@@ -433,7 +433,7 @@
                                                                     <select class="niceSelect w-100 bb" name="sibling_class" id="select_sibling_class">
                                                                         <option data-display="@lang('common.class') *" value="">@lang('common.class') *</option>
                                                                         @foreach($classes as $class)
-                                                                        <option value="{{$class->id}}">{{$class->class_name}}</option>
+                                                                        <option value="{{$class->id}}">{{$class->age_group_name}}</option>
                                                                         @endforeach
                                                                     </select>
                                                                 </div>
@@ -515,7 +515,7 @@
                                                                 @lang('student.admission_number')
                                                             </div>
                                                             <div class="value">
-                                                                {{$sibling->admission_no}}
+                                                                {{$sibling->registration_no}}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -526,7 +526,7 @@
                                                                 @lang('common.class')
                                                             </div>
                                                             <div class="value">
-                                                                {{$sibling->class!=""?$sibling->class->class_name:""}}
+                                                                {{$sibling->class!=""?$sibling->class->age_group_name:""}}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -537,7 +537,7 @@
                                                                 @lang('common.section')
                                                             </div>
                                                             <div class="value">
-                                                                {{$sibling->section !=""?$sibling->section->section_name:""}}
+                                                                {{$sibling->section !=""?$sibling->section->mgender_name:""}}
                                                             </div>
                                                         </div>
                                                     </div>

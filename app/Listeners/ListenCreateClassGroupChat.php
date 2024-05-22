@@ -38,25 +38,25 @@ class ListenCreateClassGroupChat
     public function handle(CreateClassGroupChat $event)
     {
         $group = Group::where([
-            'class_id' => $event->assign_subject->class_id,
-            'section_id' => $event->assign_subject->section_id,
+            'age_group_id' => $event->assign_subject->age_group_id,
+            'mgender_id' => $event->assign_subject->mgender_id,
             'subject_id' => $event->assign_subject->subject_id,
-            'school_id' => $event->assign_subject->school_id,
-            'academic_id' => $event->assign_subject->academic_id
+            'church_id' => $event->assign_subject->church_id,
+            'church_year_id' => $event->assign_subject->church_year_id
         ])->first();
 
-        $section = SmSection::find($event->assign_subject->section_id);
-        $studentRecords = StudentRecord::with('studentDetail')->where('class_id', $event->assign_subject->class_id)->where('section_id', $event->assign_subject->section_id)->where('school_id', $event->assign_subject->school_id)->get();
+        $section = SmSection::find($event->assign_subject->mgender_id);
+        $studentRecords = StudentRecord::with('studentDetail')->where('age_group_id', $event->assign_subject->age_group_id)->where('mgender_id', $event->assign_subject->mgender_id)->where('church_id', $event->assign_subject->church_id)->get();
        
         if (!$group){
 
             $group = Group::create([
                'name' => $this->groupName($event->assign_subject),
-               'class_id' => $event->assign_subject->class_id,
-                'section_id' => $event->assign_subject->section_id,
+               'age_group_id' => $event->assign_subject->age_group_id,
+                'mgender_id' => $event->assign_subject->mgender_id,
                 'subject_id' => $event->assign_subject->subject_id,
-                'school_id' => $event->assign_subject->school_id,
-                'academic_id' => $event->assign_subject->academic_id,
+                'church_id' => $event->assign_subject->church_id,
+                'church_year_id' => $event->assign_subject->church_year_id,
                 'created_by' => $event->assign_subject->teacher_id,
             ]);
 
@@ -79,7 +79,7 @@ class ListenCreateClassGroupChat
                     InvitationType::create([
                         'invitation_id' => $invitation->id,
                         'type' => 'class-teacher',
-                        'section_id' => $section->id,
+                        'mgender_id' => $section->id,
                         'class_teacher_id' => $group->created_by,
                     ]);
                 }
@@ -92,11 +92,11 @@ class ListenCreateClassGroupChat
         ])->delete();
 
         $teachers = SmAssignSubject::where([
-            'class_id' => $event->assign_subject->class_id,
-            'section_id' => $event->assign_subject->section_id,
+            'age_group_id' => $event->assign_subject->age_group_id,
+            'mgender_id' => $event->assign_subject->mgender_id,
             'subject_id' => $event->assign_subject->subject_id,
-            'school_id' => $event->assign_subject->school_id,
-            'academic_id' => $event->assign_subject->academic_id
+            'church_id' => $event->assign_subject->church_id,
+            'church_year_id' => $event->assign_subject->church_year_id
         ])->get();
 
 
@@ -108,7 +108,7 @@ class ListenCreateClassGroupChat
 
         }
 
-        $admins = User::whereIn('role_id', [5])->where('school_id', $event->assign_subject->school_id)->get();
+        $admins = User::whereIn('role_id', [5])->where('church_id', $event->assign_subject->church_id)->get();
 
         foreach($admins as $admin){
             createGroupUser($group, $admin->id);
@@ -117,11 +117,11 @@ class ListenCreateClassGroupChat
     }
 
     public function groupName($data, $withTeacherId = true){
-        $class = SmClass::withOutGlobalScope(StatusAcademicSchoolScope::class)->find($data->class_id);
-        $section = SmSection::withOutGlobalScope(StatusAcademicSchoolScope::class)->find($data->section_id);
+        $class = SmClass::withOutGlobalScope(StatusAcademicSchoolScope::class)->find($data->age_group_id);
+        $section = SmSection::withOutGlobalScope(StatusAcademicSchoolScope::class)->find($data->mgender_id);
         $subject = SmSubject::withOutGlobalScope(StatusAcademicSchoolScope::class)->find($data->subject_id);
-        $academic_year = SmAcademicYear::find($data->academic_id);
+        $church_year = SmAcademicYear::find($data->church_year_id);
 
-        return @$class->class_name. '('.@$section->section_name. ')-'.@$subject->subject_name.'-'.@$academic_year->year;
+        return @$class->age_group_name. '('.@$section->mgender_name. ')-'.@$subject->subject_name.'-'.@$church_year->year;
     }
 }

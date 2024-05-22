@@ -56,7 +56,7 @@ final class ExcludeList
     /**
      * @var array<string,int>
      */
-    private const EXCLUDED_CLASS_NAMES = [
+    private const EXCLUDED_age_group_nameS = [
         // composer
         ClassLoader::class => 1,
 
@@ -210,7 +210,7 @@ final class ExcludeList
             return;
         }
 
-        foreach (self::EXCLUDED_CLASS_NAMES as $className => $parent) {
+        foreach (self::EXCLUDED_age_group_nameS as $className => $parent) {
             if (!class_exists($className)) {
                 continue;
             }

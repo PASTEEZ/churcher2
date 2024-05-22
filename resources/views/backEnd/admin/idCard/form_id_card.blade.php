@@ -339,16 +339,16 @@
 
         <div class="row mt-25 admissionNo">
             <div class="col-lg-4 d-flex">
-                <p class="text-uppercase fw-500 mb-10 text">@lang('student.admission_no')</p>
+                <p class="text-uppercase fw-500 mb-10 text">@lang('student.registration_no')</p>
             </div>
             <div class="col-lg-8">
                 <div class="d-flex radio-btn-flex ml-40">
                     <div class="mr-30">
-                        <input type="radio" name="admission_no" id="id_roll_yes" value="1" class="common-radio relationButton" onclick="idRoll('1')" {{isset($id_card)? ($id_card->admission_no == 1? 'checked': ''):'checked'}}>
+                        <input type="radio" name="registration_no" id="id_roll_yes" value="1" class="common-radio relationButton" onclick="idRoll('1')" {{isset($id_card)? ($id_card->registration_no == 1? 'checked': ''):'checked'}}>
                         <label for="id_roll_yes">@lang('admin.yes')</label>
                     </div>
                     <div class="mr-30">
-                        <input type="radio" name="admission_no" id="id_roll_no" value="0" class="common-radio relationButton" onclick="idRoll('0')" {{isset($id_card)? ($id_card->admission_no == 0? 'checked': ''):''}}>
+                        <input type="radio" name="registration_no" id="id_roll_no" value="0" class="common-radio relationButton" onclick="idRoll('0')" {{isset($id_card)? ($id_card->registration_no == 0? 'checked': ''):''}}>
                         <label for="id_roll_no">@lang('admin.none')</label>
                     </div>
                 </div>
@@ -362,12 +362,12 @@
             <div class="col-lg-8">
                 <div class="d-flex radio-btn-flex ml-40">
                     <div class="mr-30">
-                        <input type="radio" name="student_name" id="student_name_yes" value="1" class="common-radio relationButton" onclick="studentName('1')" {{isset($id_card)? ($id_card->student_name == 1? 'checked': ''):'checked'}}>
-                        <label for="student_name_yes">@lang('admin.yes')</label>
+                        <input type="radio" name="member_name" id="member_name_yes" value="1" class="common-radio relationButton" onclick="studentName('1')" {{isset($id_card)? ($id_card->member_name == 1? 'checked': ''):'checked'}}>
+                        <label for="member_name_yes">@lang('admin.yes')</label>
                     </div>
                     <div class="mr-30">
-                        <input type="radio" name="student_name" id="student_name_no" value="0" class="common-radio relationButton" onclick="studentName('0')" {{isset($id_card)? ($id_card->student_name == 0? 'checked': ''):''}}>
-                        <label for="student_name_no">@lang('admin.none')</label>
+                        <input type="radio" name="member_name" id="member_name_no" value="0" class="common-radio relationButton" onclick="studentName('0')" {{isset($id_card)? ($id_card->member_name == 0? 'checked': ''):''}}>
+                        <label for="member_name_no">@lang('admin.none')</label>
                     </div>
                 </div>
             </div>
@@ -434,11 +434,11 @@
             <div class="col-lg-8">
                 <div class="d-flex radio-btn-flex ml-40">
                     <div class="mr-30">
-                        <input type="radio" name="un_academic_id" id="un_academic_yes" value="1" class="common-radio relationButton" onclick="IDAcademic('1')" {{isset($id_card)? ($id_card->un_academic == 1? 'checked': ''):''}}>
+                        <input type="radio" name="un_church_year_id" id="un_academic_yes" value="1" class="common-radio relationButton" onclick="IDAcademic('1')" {{isset($id_card)? ($id_card->un_academic == 1? 'checked': ''):''}}>
                         <label for="un_academic_yes">@lang('admin.yes')</label>
                     </div>
                     <div class="mr-30">
-                        <input type="radio" name="un_academic_id" id="un_academic_no" value="0" class="common-radio relationButton" onclick="IDAcademic('0')" {{isset($id_card)? ($id_card->un_academic == 0? 'checked': ''):'checked'}}>
+                        <input type="radio" name="un_church_year_id" id="un_academic_no" value="0" class="common-radio relationButton" onclick="IDAcademic('0')" {{isset($id_card)? ($id_card->un_academic == 0? 'checked': ''):'checked'}}>
                         <label for="un_academic_no">@lang('admin.none')</label>
                     </div>
                 </div>

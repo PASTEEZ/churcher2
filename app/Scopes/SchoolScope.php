@@ -17,13 +17,13 @@ class SchoolScope implements Scope
                 if (moduleStatusCheck('Saas') == true && auth()->user()->is_administrator == "yes" && Session::get('isSchoolAdmin') == false && auth()->user()->role_id == 1) {
                     //
                 } else {
-                    $builder->where($table.'.school_id', app('school')->id);
+                    $builder->where($table.'.church_id', app('school')->id);
                 }
             } else {
                 if (moduleStatusCheck('Saas') == true && auth()->user()->is_administrator == "yes" && Session::get('isSchoolAdmin') == false && auth()->user()->role_id == 1) {
                    //
                 } else {
-                    $builder->where($table.'.school_id', auth()->user()->school_id);
+                    $builder->where($table.'.church_id', auth()->user()->church_id);
                 }
             }
         }

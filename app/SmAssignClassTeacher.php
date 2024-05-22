@@ -11,11 +11,11 @@ class SmAssignClassTeacher extends Model
     use HasFactory;
     public function class()
     {
-        return $this->belongsTo('App\SmClass', 'class_id', 'id');
+        return $this->belongsTo('App\SmClass', 'age_group_id', 'id');
     }
     public function section()
     {
-        return $this->belongsTo('App\SmSection', 'section_id', 'id');
+        return $this->belongsTo('App\SmSection', 'mgender_id', 'id');
     }
 
     public function classTeachers()
@@ -25,7 +25,7 @@ class SmAssignClassTeacher extends Model
 
     public function scopeStatus($query)
     {
-        return $query->where('active_status', 1)->where('school_id', Auth::user()->school_id);
+        return $query->where('active_status', 1)->where('church_id', Auth::user()->church_id);
     }
 
 }

@@ -121,7 +121,7 @@
                                 <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                     <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                     @foreach($classes as $class)
-                                    <option value="{{$class->id}}" {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{$class->class_name}}</option>
+                                    <option value="{{$class->id}}" {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{$class->age_group_name}}</option>
                                    
                                     @endforeach
                                 </select>
@@ -177,7 +177,7 @@
                 </div>
             </div>
             <div class="col-lg-8 pull-right">
-                <a href="{{route('mark_sheet_report_print', [$input['exam_id'], $input['class_id'], $input['section_id'], $input['student_id']])}}" class="primary-btn small fix-gr-bg pull-right" target="_blank"><i class="ti-printer"> </i> @lang('common.print')</a>
+                <a href="{{route('mark_sheet_report_print', [$input['exam_id'], $input['age_group_id'], $input['mgender_id'], $input['member_id']])}}" class="primary-btn small fix-gr-bg pull-right" target="_blank"><i class="ti-printer"> </i> @lang('common.print')</a>
 
 
             </div> 
@@ -196,7 +196,7 @@
                                                     <img class="logo-img" src="{{ generalSetting()->logo }}" alt="">
                                                     </div>
                                                     <div class="col-lg-6 ml-30">
-                                                        <h3 class="text-white"> {{isset(generalSetting()->school_name)?generalSetting()->school_name:'Infix School Management ERP'}} </h3> 
+                                                        <h3 class="text-white"> {{isset(generalSetting()->church_name)?generalSetting()->church_name:'Infix School Management ERP'}} </h3> 
                                                         <p class="text-white mb-0"> {{isset(generalSetting()->address)?generalSetting()->address:'Infix School Address'}} </p>
                                                         <p class="text-white mb-0">Email:  {{isset($email)?$email:'admin@demo.com'}} ,   Phone:  {{isset(generalSetting()->phone)?generalSetting()->phone:'admin@demo.com'}} </p> 
                                                     </div>
@@ -226,7 +226,7 @@
                                                                             <table class="studentInfoTable">
                                                                                 <tr>
                                                                                     <td class="font-weight-bold">
-                                                                                        @lang('student.student_name') :
+                                                                                        @lang('student.member_name') :
                                                                                     </td>
                                                                                     <td>
                                                                                         {{$student_detail->full_name}}
@@ -258,10 +258,10 @@
                                                                                 </tr>
                                                                                 <tr>
                                                                                     <td class="font-weight-bold">
-                                                                                        @lang('student.admission_no') :
+                                                                                        @lang('student.registration_no') :
                                                                                     </td>
                                                                                     <td>
-                                                                                        {{$student_detail->admission_no}}
+                                                                                        {{$student_detail->registration_no}}
                                                                                     </td>
                                                                                 </tr>
                                                                                 <tr>
@@ -292,7 +292,7 @@
                                                                                         @lang('lang.academic_class') :
                                                                                     </td>
                                                                                     <td>
-                                                                                        {{$class_name->class_name}}
+                                                                                        {{$age_group_name->age_group_name}}
                                                                                     </td>
                                                                                 </tr>
                                                                                 <tr>
@@ -300,7 +300,7 @@
                                                                                         @lang('lang.academic_section') :
                                                                                     </td>
                                                                                     <td>
-                                                                                        {{$section->section_name}}
+                                                                                        {{$section->mgender_name}}
                                                                                     </td>
                                                                                 </tr>
                                                                             </table>
@@ -313,7 +313,7 @@
                                                     </div>
                                                     {{-- col-lg-4 text-black --}}
                                                     <div class="col-lg-4 text-black"> 
-                                                        @php $marks_grade=DB::table('sm_marks_grades')->where('academic_id', getAcademicId())->get(); @endphp
+                                                        @php $marks_grade=DB::table('sm_marks_grades')->where('church_year_id', getAcademicId())->get(); @endphp
                                                             @if(@$marks_grade)
                                                             <table class="table  table-bordered table-striped text-black" id="grade_table">
                                                                 <thead>
@@ -380,7 +380,7 @@
                                                     
                                                     <td width='10%'>
                                                         
-                                                        @php $subject_mark=App\SmAssignSubject::getSubjectMark($data->subject_id, $class_id, $section_id, $exam_type_id);
+                                                        @php $subject_mark=App\SmAssignSubject::getSubjectMark($data->subject_id, $age_group_id, $mgender_id, $exam_type_id);
 
                                                          echo $subject_mark;
                                                          @endphp
@@ -388,14 +388,14 @@
                                                     </td>
                                                     <td width='10%'>
                                                         
-                                                        @php $highest_mark=App\SmAssignSubject::getHighestMark($data->subject_id, $class_id, $section_id, $exam_type_id);
+                                                        @php $highest_mark=App\SmAssignSubject::getHighestMark($data->subject_id, $age_group_id, $mgender_id, $exam_type_id);
 
                                                         echo $highest_mark;
                                                          @endphp
 
                                                     </td>
                                                     <td width='10%'>
-                                                         @php $tola_mark_by_subject=App\SmAssignSubject::getSumMark($student_detail->id, $data->subject_id, $class_id, $section_id, $exam_type_id);
+                                                         @php $tola_mark_by_subject=App\SmAssignSubject::getSumMark($student_detail->id, $data->subject_id, $age_group_id, $mgender_id, $exam_type_id);
 
                                                          echo $tola_mark_by_subject;
                                                          @endphp
@@ -444,7 +444,7 @@
                                                     
                                                     @if ($optional_subject_setup!='')
                                                         @if($subject_count==2)
-                                                        <td rowspan="{{count($subjects)}}" style="vertical-align: middle">{{  App\SmAssignSubject::get_student_result($student_detail->id, $data->subject_id, $class_id, $section_id, $exam_type_id,$optional_subject_id,$optional_subject_setup) }}</td>
+                                                        <td rowspan="{{count($subjects)}}" style="vertical-align: middle">{{  App\SmAssignSubject::get_student_result($student_detail->id, $data->subject_id, $age_group_id, $mgender_id, $exam_type_id,$optional_subject_id,$optional_subject_setup) }}</td>
                                                       
                                                         
                                                          @endif
@@ -452,11 +452,11 @@
                                                     
 
                                                     @if($subject_count==2)
-                                                    <td  rowspan="{{count($subjects)}}" style="vertical-align: middle">{{  App\SmAssignSubject::get_student_result_without_optional($student_detail->id, $data->subject_id, $class_id, $section_id, $exam_type_id,$optional_subject_id,$optional_subject_setup) }}</td>
+                                                    <td  rowspan="{{count($subjects)}}" style="vertical-align: middle">{{  App\SmAssignSubject::get_student_result_without_optional($student_detail->id, $data->subject_id, $age_group_id, $mgender_id, $exam_type_id,$optional_subject_id,$optional_subject_setup) }}</td>
                                                        
                                                         <td rowspan="{{count($subjects)}}" style="vertical-align: middle">
                                                             @php
-                                                                $gpa_result=App\SmAssignSubject::get_student_result_without_optional($student_detail->id, $data->subject_id, $class_id, $section_id, $exam_type_id,$optional_subject_id,$optional_subject_setup);
+                                                                $gpa_result=App\SmAssignSubject::get_student_result_without_optional($student_detail->id, $data->subject_id, $age_group_id, $mgender_id, $exam_type_id,$optional_subject_id,$optional_subject_setup);
                                                                 $result_grade=App\SmMarksGrade::where([['from', '<=', $gpa_result], ['up', '>=', $gpa_result]])->first();
                                                                 echo $result_grade->grade_name;
                                                             @endphp
@@ -475,9 +475,9 @@
                                                 <p class="result-date">
                                                     @php
                                                      $data = App\SmMarkStore::select('created_at')->where([
-                                                        ['student_id',$student_detail->id],
-                                                        ['class_id',$class_id],
-                                                        ['section_id',$section_id],
+                                                        ['member_id',$student_detail->id],
+                                                        ['age_group_id',$age_group_id],
+                                                        ['mgender_id',$mgender_id],
                                                         ['exam_term_id',$exam_type_id],
                                                     ])->first();
 

@@ -35,11 +35,11 @@ class ApiSmFeesGroupController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_fees_group_index(Request $request, $school_id)
+    public function saas_fees_group_index(Request $request, $church_id)
     {
 
         try {
-            $fees_groups = SmFeesGroup::withoutGlobalScope(StatusAcademicSchoolScope::class)->where('school_id', $school_id)->get();
+            $fees_groups = SmFeesGroup::withoutGlobalScope(StatusAcademicSchoolScope::class)->where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($fees_groups, null);
@@ -91,7 +91,7 @@ class ApiSmFeesGroupController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_fees_group_store(Request $request, $school_id)
+    public function saas_fees_group_store(Request $request, $church_id)
     {
         $input = $request->all();
         $validator = Validator::make($input, [
@@ -111,7 +111,7 @@ class ApiSmFeesGroupController extends Controller
             $visitor = new SmFeesGroup();
             $visitor->name = $request->name;
             $visitor->description = $request->description;
-            $visitor->school_id = $school_id;
+            $visitor->church_id = $church_id;
             $result = $visitor->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -151,12 +151,12 @@ class ApiSmFeesGroupController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_fees_group_edit(Request $request, $school_id, $id)
+    public function saas_fees_group_edit(Request $request, $church_id, $id)
     {
 
         try {
-            $fees_group = SmFeesGroup::where('school_id', $school_id)->find($id);
-            $fees_groups = SmFeesGroup::where('school_id', $school_id)->get();
+            $fees_group = SmFeesGroup::where('church_id', $church_id)->find($id);
+            $fees_groups = SmFeesGroup::where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -211,7 +211,7 @@ class ApiSmFeesGroupController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_fees_group_update(Request $request, $school_id)
+    public function saas_fees_group_update(Request $request, $church_id)
     {
         $input = $request->all();
         $validator = Validator::make($input, [
@@ -229,10 +229,10 @@ class ApiSmFeesGroupController extends Controller
         }
 
         try {
-            $visitor = SmFeesGroup::where('school_id', $request->school_id)->find($request->id);
+            $visitor = SmFeesGroup::where('church_id', $request->church_id)->find($request->id);
             $visitor->name = $request->name;
             $visitor->description = $request->description;
-            $visitor->school_id = $school_id;
+            $visitor->church_id = $church_id;
             $result = $visitor->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -279,11 +279,11 @@ class ApiSmFeesGroupController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_fees_group_delete(Request $request, $school_id)
+    public function saas_fees_group_delete(Request $request, $church_id)
     {
 
         try {
-            $fees_group = SmFeesGroup::where('school_id', $school_id)->where('id', $request->id)->delete();
+            $fees_group = SmFeesGroup::where('church_id', $church_id)->where('id', $request->id)->delete();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 if ($fees_group) {

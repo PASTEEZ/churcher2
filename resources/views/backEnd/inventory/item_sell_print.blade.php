@@ -33,7 +33,7 @@
                 <img height="60px" width="120px" src="{{url($setting->logo)}}" alt="{{url($setting->logo)}}"> 
             </td> 
             <td  style="width: 70%">  
-                <h3>{{$setting->school_name}}</h3>
+                <h3>{{$setting->church_name}}</h3>
                 <h4>{{$setting->address}}</h4>
             </td> 
         </tr> 

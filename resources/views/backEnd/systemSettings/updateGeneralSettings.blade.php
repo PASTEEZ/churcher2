@@ -42,13 +42,13 @@
                         <div class="row mb-40">
                             <div class="col-lg-4">
                                 <div class="input-effect">
-                                    <input class="primary-input form-control{{ $errors->has('school_name') ? ' is-invalid' : '' }}"
-                                    type="text" name="school_name" autocomplete="off" value="{{isset($editData)? @$editData->school_name : old('school_name')}}">
-                                    <label>@lang('common.school_name') <span>*</span></label>
+                                    <input class="primary-input form-control{{ $errors->has('church_name') ? ' is-invalid' : '' }}"
+                                    type="text" name="church_name" autocomplete="off" value="{{isset($editData)? @$editData->church_name : old('church_name')}}">
+                                    <label>@lang('common.church_name') <span>*</span></label>
                                     <span class="focus-border"></span>
-                                    @if ($errors->has('school_name'))
+                                    @if ($errors->has('church_name'))
                                     <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('school_name') }}</strong>
+                                        <strong>{{ $errors->first('church_name') }}</strong>
                                     </span>
                                     @endif
                                 </div>
@@ -70,7 +70,7 @@
                             <div class="col-lg-4">
                                 <div class="input-effect">
                                     <select class="niceSelect w-100 bb form-control{{ $errors->has('session_id') ? ' is-invalid' : '' }}" name="session_id" id="session_id">
-                                        <option data-display="@lang('common.select_academic_year') *" value="">@lang('common.select_academic_year')</option>
+                                        <option data-display="@lang('common.select_church_year') *" value="">@lang('common.select_church_year')</option>
                                         @foreach(academicYears() as $key=>$value)
                                         <option value="{{@$value->id}}"
                                         @if(isset($editData))
@@ -99,13 +99,13 @@
                         <div class="row mb-40">
                             <div class="col-lg-3">
                                 <div class="input-effect">
-                                    <input class="primary-input form-control{{ $errors->has('school_code') ? ' is-invalid' : '' }}"
-                                    type="text" name="school_code" autocomplete="off" value="{{isset($editData)? @$editData->school_code: old('school_code')}}">
-                                    <label>@lang('system_settings.school_code') <span>*</span></label>
+                                    <input class="primary-input form-control{{ $errors->has('church_code') ? ' is-invalid' : '' }}"
+                                    type="text" name="church_code" autocomplete="off" value="{{isset($editData)? @$editData->church_code: old('church_code')}}">
+                                    <label>@lang('system_settings.church_code') <span>*</span></label>
                                     <span class="focus-border"></span>
-                                    @if ($errors->has('school_code'))
+                                    @if ($errors->has('church_code'))
                                     <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('school_code') }}</strong>
+                                        <strong>{{ $errors->first('church_code') }}</strong>
                                     </span>
                                     @endif
                                 </div>

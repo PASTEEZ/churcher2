@@ -56,7 +56,7 @@
                                 <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="class_subject" name="class">
                                     <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                     @foreach($classes as $class)
-                                        <option value="{{@$class->id}}" {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{@$class->class_name}}</option>
+                                        <option value="{{@$class->id}}" {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{@$class->age_group_name}}</option>
                                     @endforeach
                                 </select>
                                 @if ($errors->has('class'))
@@ -121,8 +121,8 @@
 
 
                 <input type="hidden" name="exam_id" value="{{@$exam_id}}">
-                <input type="hidden" name="class_id" value="{{@$class_id}}">
-                <input type="hidden" name="section_id" value="{{@$section_id}}">
+                <input type="hidden" name="age_group_id" value="{{@$age_group_id}}">
+                <input type="hidden" name="mgender_id" value="{{@$mgender_id}}">
                 <input type="hidden" name="subject_id" value="{{@$subject_id}}">
 
                 <div class="row">
@@ -131,7 +131,7 @@
                             <table id="default_table_searching" class="display school-table" cellspacing="0" width="100%" >
                                 <thead>
                                 <tr>
-                                    <th rowspan="2" >@lang('student.admission_no').</th>
+                                    <th rowspan="2" >@lang('student.registration_no').</th>
                                     <th rowspan="2" >@lang('student.roll_no').</th>
                                     <th rowspan="2" >@lang('common.student')</th>
                                     <th rowspan="2" >@lang('common.class_Sec')</th>
@@ -148,20 +148,20 @@
                                 @php $colspan = 3; $counter = 0;  @endphp
                                 @foreach($students as $student)
                                     <tr>
-                                        <td>{{$student->studentDetail->admission_no}}
-                                            <input type="hidden" name="student_ids[]" value="{{@$student->id}}">
+                                        <td>{{$student->studentDetail->registration_no}}
+                                            <input type="hidden" name="member_ids[]" value="{{@$student->id}}">
                                             <input type="hidden" name="student_rolls[{{$student->id}}]" value="{{@$student->roll_no}}">
-                                            <input type="hidden" name="student_admissions[{{@$student->id}}]" value="{{@$student->admission_no}}">
+                                            <input type="hidden" name="student_admissions[{{@$student->id}}]" value="{{@$student->registration_no}}">
                                         </td>
                                         <td>{{@$student->roll_no}}</td>
                                         <td>{{@$student->studentDetail->full_name}}</td>
-                                        <td>{{$student->class->class_name.'('.$student->section->section_name .')' }}</td>
+                                        <td>{{$student->class->age_group_name.'('.$student->section->mgender_name .')' }}</td>
                                         @php $entry_form_count=0; @endphp
                                         @foreach($marks_entry_form as $part)
                                             <?php
 
-                                            $search_mark = App\SmMarkStore::get_mark_by_part($student->student->id, $exam_id, $class_id, $student->section_id, $subject_id, $part->id, $student->id);
-                                            $is_absent = App\SmMarkStore::get_mark_by_part($student->student->id, $exam_id, $class_id, $section_id, $subject_id, $part->id, $student->id);
+                                            $search_mark = App\SmMarkStore::get_mark_by_part($student->student->id, $exam_id, $age_group_id, $student->mgender_id, $subject_id, $part->id, $student->id);
+                                            $is_absent = App\SmMarkStore::get_mark_by_part($student->student->id, $exam_id, $age_group_id, $mgender_id, $subject_id, $part->id, $student->id);
 
                                             ?>
                                             <td>
@@ -172,7 +172,7 @@
                                         @endforeach
                                         <?php
 
-                                        $is_absent_check = App\SmMarksRegister::is_absent_check($part->exam_term_id, $part->class_id, $part->section_id, $part->subject_id,$student->student_id, $student->id);
+                                        $is_absent_check = App\SmMarksRegister::is_absent_check($part->exam_term_id, $part->age_group_id, $part->mgender_id, $part->subject_id,$student->member_id, $student->id);
                                         ?>
                                         <td>
                                             <div class="input-effect">

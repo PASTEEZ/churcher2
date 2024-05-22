@@ -50,7 +50,7 @@ class SmTopicController extends Controller
                     'un_session_id' => 'required',
                     'un_faculty_id' => 'sometimes|nullable',
                     'un_department_id' => 'required',
-                    'un_academic_id' => 'required',
+                    'un_church_year_id' => 'required',
                     'un_semester_id' => 'required',
                     'un_semester_label_id' => 'required',
                     'un_subject_id' => 'required',
@@ -69,24 +69,24 @@ class SmTopicController extends Controller
         }
         DB::beginTransaction();
         if (moduleStatusCheck('University')) {
-            $is_duplicate = SmLessonTopic::where('school_id', Auth::user()->school_id)
+            $is_duplicate = SmLessonTopic::where('church_id', Auth::user()->church_id)
                                         ->where('un_session_id', $request->un_session_id)
                                         ->when($request->un_faculty_id, function ($query) use ($request) {
                                             $query->where('un_faculty_id', $request->un_faculty_id);
                                         })->where('un_department_id', $request->un_department_id)
-                                        ->where('un_academic_id', $request->un_academic_id)
+                                        ->where('un_church_year_id', $request->un_church_year_id)
                                         ->where('un_semester_id', $request->un_department_id)
-                                        ->where('un_semester_label_id', $request->un_academic_id)
+                                        ->where('un_semester_label_id', $request->un_church_year_id)
                                         ->where('un_subject_id', $request->un_subject_id)
                                         ->where('lesson_id', $request->lesson)
                                         ->first();
         } else {
-            $is_duplicate = SmLessonTopic::where('school_id', Auth::user()->school_id)
-                                        ->where('class_id', $request->class)
+            $is_duplicate = SmLessonTopic::where('church_id', Auth::user()->church_id)
+                                        ->where('age_group_id', $request->class)
                                         ->where('lesson_id', $request->lesson)
-                                        ->where('section_id', $request->section)
+                                        ->where('mgender_id', $request->section)
                                         ->where('subject_id', $request->subject)
-                                        ->where('academic_id', getAcademicId())
+                                        ->where('church_year_id', getAcademicId())
                                         ->first();
         }
 
@@ -98,11 +98,11 @@ class SmTopicController extends Controller
                 $topicDetail->topic_id = $is_duplicate->id;
                 $topicDetail->topic_title = $topic_title;
                 $topicDetail->lesson_id = $request->lesson;
-                $topicDetail->school_id = Auth::user()->school_id;
+                $topicDetail->church_id = Auth::user()->church_id;
                 if(moduleStatusCheck('University')){
-                    $topicDetail->un_academic_id = getAcademicId();
+                    $topicDetail->un_church_year_id = getAcademicId();
                 }else{
-                    $topicDetail->academic_id = getAcademicId();
+                    $topicDetail->church_year_id = getAcademicId();
                 }
                 $topicDetail->save();
             }
@@ -112,17 +112,17 @@ class SmTopicController extends Controller
         } else {
             try {
                 $smTopic = new SmLessonTopic;
-                $smTopic->class_id = $request->class;
-                $smTopic->section_id = $request->section;
+                $smTopic->age_group_id = $request->class;
+                $smTopic->mgender_id = $request->section;
                 $smTopic->subject_id = $request->subject;
                 $smTopic->lesson_id = $request->lesson;
                 $smTopic->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
-                $smTopic->school_id = Auth::user()->school_id;
+                $smTopic->church_id = Auth::user()->church_id;
                 if (moduleStatusCheck('University')) {
                     $common = App::make(UnCommonRepositoryInterface::class);
                     $common->storeUniversityData($smTopic, $request);
                 }else{
-                    $smTopic->academic_id = getAcademicId();
+                    $smTopic->church_year_id = getAcademicId();
                 }
                 $smTopic->save();
                 $smTopic_id = $smTopic->id;
@@ -133,9 +133,9 @@ class SmTopicController extends Controller
                     $topicDetail->topic_id = $smTopic_id;
                     $topicDetail->topic_title = $topic_title;
                     $topicDetail->lesson_id = $request->lesson;
-                    $topicDetail->school_id = Auth::user()->school_id;
+                    $topicDetail->church_id = Auth::user()->church_id;
                     if(!moduleStatusCheck('University')){
-                        $topicDetail->academic_id = getAcademicId();
+                        $topicDetail->church_year_id = getAcademicId();
                     }
                     $topicDetail->save();
                 }
@@ -155,16 +155,16 @@ class SmTopicController extends Controller
 
         try {
             $data = $this->loadTopic();
-            $data['topic'] = SmLessonTopic::where('academic_id', getAcademicId())
-            ->where('id', $id)->where('school_id', Auth::user()->school_id)->first();
-            $data['lessons'] = SmLesson::where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-            $data['topicDetails'] = SmLessonTopicDetail::where('topic_id', $data['topic']->id)->where('academic_id', getAcademicId())
-            ->where('school_id', Auth::user()->school_id)->get();
+            $data['topic'] = SmLessonTopic::where('church_year_id', getAcademicId())
+            ->where('id', $id)->where('church_id', Auth::user()->church_id)->first();
+            $data['lessons'] = SmLesson::where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+            $data['topicDetails'] = SmLessonTopicDetail::where('topic_id', $data['topic']->id)->where('church_year_id', getAcademicId())
+            ->where('church_id', Auth::user()->church_id)->get();
             if (moduleStatusCheck('University')) {
 
                 $request = [
                     'semester_id' => $data['topic']->un_semester_id,
-                    'academic_id' => $data['topic']->un_academic_id,
+                    'church_year_id' => $data['topic']->un_church_year_id,
                     'session_id' => $data['topic']->un_session_id,
                     'department_id' => $data['topic']->un_department_id,
                     'faculty_id' => $data['topic']->un_faculty_id,
@@ -192,8 +192,8 @@ class SmTopicController extends Controller
                 $topicDetail = SmLessonTopicDetail::find($request->topic_detail_id[$i]);
                 $topic_title = $request->topic[$i];
                 $topicDetail->topic_title = $topic_title;
-                $topicDetail->school_id = Auth::user()->school_id;
-                $topicDetail->academic_id = getAcademicId();
+                $topicDetail->church_id = Auth::user()->church_id;
+                $topicDetail->church_year_id = getAcademicId();
                 $topicDetail->save();
             }
 
@@ -247,21 +247,21 @@ class SmTopicController extends Controller
         $teacher_info = SmStaff::where('user_id', Auth::user()->id)->first();
         if (Auth::user()->role_id == 4) {
             $subjects = SmAssignSubject::select('subject_id')->where('teacher_id', $teacher_info->id)->get();
-            $data['topics'] = SmLessonTopic::with('lesson', 'class', 'section', 'subject')->whereIn('subject_id', $subjects)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $data['topics'] = SmLessonTopic::with('lesson', 'class', 'section', 'subject')->whereIn('subject_id', $subjects)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
         } else {
-            $data['topics'] = SmLessonTopic::with('lesson', 'class', 'section', 'subject')->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $data['topics'] = SmLessonTopic::with('lesson', 'class', 'section', 'subject')->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
         }
 
         if (!teacherAccess()) {
-            $data['classes'] = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $data['classes'] = SmClass::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
         } else {
             $data['classes'] = SmAssignSubject::where('teacher_id', $teacher_info->id)
-                ->join('sm_classes', 'sm_classes.id', 'sm_assign_subjects.class_id')
+                ->join('sm_classes', 'sm_classes.id', 'sm_assign_subjects.age_group_id')
                 ->where('sm_assign_subjects.active_status', 1)
-                ->where('sm_assign_subjects.school_id', Auth::user()->school_id)
-                ->where('sm_assign_subjects.academic_id', getAcademicId())
-                ->select('sm_classes.id', 'class_name')
+                ->where('sm_assign_subjects.church_id', Auth::user()->church_id)
+                ->where('sm_assign_subjects.church_year_id', getAcademicId())
+                ->select('sm_classes.id', 'age_group_name')
                 ->get();
         }
         $data['subjects'] = SmSubject::get();

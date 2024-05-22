@@ -80,7 +80,7 @@
                                                      {{-- <img class="report-admit-img" src="{{asset('public/uploads/staff/std1.jpg')}}" alt=""> --}}
                                                 </div>
                                                 <div class="ml-30">
-                                                    <h3 class="text-white"> {{isset(generalSetting()->school_name)?generalSetting()->school_name:'Infix School Management ERP'}} </h3>
+                                                    <h3 class="text-white"> {{isset(generalSetting()->church_name)?generalSetting()->church_name:'Infix School Management ERP'}} </h3>
                                                 
                                                 <p class="text-white mb-0"> {{isset(generalSetting()->address)?generalSetting()->address:'Infix School Address'}} </p>
                                                 </div>
@@ -110,7 +110,7 @@
 
                                                     <div class="col-lg-6">
                                                         @php
-                                                            $mother=App\SmStudent::where('sm_students.id',$studentDetails->student_id)->join('sm_parents','sm_parents.id','=','sm_students.parent_id')->first();
+                                                            $mother=App\SmStudent::where('sm_students.id',$studentDetails->member_id)->join('sm_parents','sm_parents.id','=','sm_students.parent_id')->first();
                                                         @endphp
                                                         <strong>@lang('student.mother_name'):</strong> {{ $mother->mothers_name }}
                                                     </div>
@@ -127,13 +127,13 @@
                                                 <div class="row  mt-40 ">
                                                     <div class="offset-md-2 col-lg-4">
                                                         <strong>@lang('common.name'):</strong> {{ $studentDetails->full_name }}<br>
-                                                        <strong>@lang('common.class'):</strong> {{ $current_class->class_name }}<br>
-                                                        <strong>@lang('common.section') :</strong> {{ $current_section->section_name }}<br>
-                                                        <strong>@lang('student.admission_no'):</strong> {{ $studentDetails->admission_number }}<br>
+                                                        <strong>@lang('common.class'):</strong> {{ $current_class->age_group_name }}<br>
+                                                        <strong>@lang('common.section') :</strong> {{ $current_section->mgender_name }}<br>
+                                                        <strong>@lang('student.registration_no'):</strong> {{ $studentDetails->admission_number }}<br>
                                                     </div>
                                                     <div class="col-lg-4">
                                                         <strong>@lang('reports.transcript_none'):</strong> 23423423<br>
-                                                        <strong>@lang('common.academic_year'):</strong> {{ $current_session->year }}<br>
+                                                        <strong>@lang('common.church_year'):</strong> {{ $current_session->year }}<br>
                                                         <strong>@lang('student.roll_number'):</strong> 102<br>
                                                     </div>
 
@@ -143,25 +143,25 @@
                                                         
                                                         @php
                                                             
-                                                            $student_id = $studentDetails->student_id;
-                                                            $class_id = $studentDetails->previous_class_id;
-                                                            $section_id = $studentDetails->previous_section_id;
+                                                            $member_id = $studentDetails->member_id;
+                                                            $age_group_id = $studentDetails->previous_age_group_id;
+                                                            $mgender_id = $studentDetails->previous_mgender_id;
                                                             $year = $studentDetails->year;
 
-                                                            $current_class = App\SmStudent::where('sm_students.id', $student_id)->join('sm_classes', 'sm_classes.id', '=', 'sm_students.class_id')->first();
-                                                            $current_section = App\SmStudent::where('sm_students.id', $student_id)->join('sm_sections', 'sm_sections.id', '=', 'sm_students.section_id')->first();
-                                                            $current_session = App\SmStudent::where('sm_students.id', $student_id)->join('sm_academic_years', 'sm_academic_years.id', '=', 'sm_students.session_id')->first();
+                                                            $current_class = App\SmStudent::where('sm_students.id', $member_id)->join('sm_classes', 'sm_classes.id', '=', 'sm_students.age_group_id')->first();
+                                                            $current_section = App\SmStudent::where('sm_students.id', $member_id)->join('sm_sections', 'sm_sections.id', '=', 'sm_students.mgender_id')->first();
+                                                            $current_session = App\SmStudent::where('sm_students.id', $member_id)->join('sm_academic_years', 'sm_academic_years.id', '=', 'sm_students.session_id')->first();
                                                         
-                                                            $exams = App\SmExam::where('active_status', 1)->where('class_id', $class_id)->where('section_id', $section_id)->get();
+                                                            $exams = App\SmExam::where('active_status', 1)->where('age_group_id', $age_group_id)->where('mgender_id', $mgender_id)->get();
 
-                                                            $exam_types = App\SmExamType::where('active_status', 1)->where('academic_id', getAcademicId())->get();
-                                                            $classes = App\SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->get();
+                                                            $exam_types = App\SmExamType::where('active_status', 1)->where('church_year_id', getAcademicId())->get();
+                                                            $classes = App\SmClass::where('active_status', 1)->where('church_year_id', getAcademicId())->get();
 
                                                             
 
-                                                            $exam_setup = App\SmExamSetup::where([['class_id', $class_id], ['section_id', $section_id]])->get();
+                                                            $exam_setup = App\SmExamSetup::where([['age_group_id', $age_group_id], ['mgender_id', $mgender_id]])->get();
 
-                                                            $subjects = App\SmAssignSubject::where([['class_id', $class_id], ['section_id', $section_id]])->get();
+                                                            $subjects = App\SmAssignSubject::where([['age_group_id', $age_group_id], ['mgender_id', $mgender_id]])->get();
 
                                                             $assinged_exam_types = [];
                                                             foreach ($exams as $exam) {
@@ -172,7 +172,7 @@
 
                                                             foreach ($assinged_exam_types as $assinged_exam_type) {
                                                                 foreach ($subjects as $subject) {
-                                                                    $is_mark_available = App\SmResultStore::where([['class_id', $class_id], ['section_id', $section_id], ['student_id', $student_id], ['subject_id', $subject->subject_id], ['exam_type_id', $assinged_exam_type]])->first();
+                                                                    $is_mark_available = App\SmResultStore::where([['age_group_id', $age_group_id], ['mgender_id', $mgender_id], ['member_id', $member_id], ['subject_id', $subject->subject_id], ['exam_type_id', $assinged_exam_type]])->first();
 
                                                                     // return $is_mark_available;
                                                                     if ($is_mark_available == "") {
@@ -181,7 +181,7 @@
                                                                 }
                                                             }
 
-                                                            $is_result_available = App\SmResultStore::where([['class_id', $class_id], ['section_id', $section_id], ['student_id', $student_id]])->get();
+                                                            $is_result_available = App\SmResultStore::where([['age_group_id', $age_group_id], ['mgender_id', $mgender_id], ['member_id', $member_id]])->get();
                                                         
                                                             @endphp
 
@@ -203,9 +203,9 @@
                                                     <div class="col-lg-3">
                                                         <strong>@lang('common.class'):</strong> 
                                                         @php
-                                                            $class=App\SmClass::where('id',$is_mark_available->class_id)->first();
+                                                            $class=App\SmClass::where('id',$is_mark_available->age_group_id)->first();
                                                         @endphp
-                                                        {{ $class->class_name }}
+                                                        {{ $class->age_group_name }}
                                                     </div>
                                                     <div class="col-lg-3">
                                                         <strong>@lang('exam.exam_result'):</strong>
@@ -248,11 +248,11 @@
                                                             $TotalSum= 0;
                                                         foreach($assinged_exam_types as $assinged_exam_type){
 
-                                                            $mark_parts     =   App\SmAssignSubject::getNumberOfPart($data->subject_id, $class_id, $section_id, $assinged_exam_type);
+                                                            $mark_parts     =   App\SmAssignSubject::getNumberOfPart($data->subject_id, $age_group_id, $mgender_id, $assinged_exam_type);
 
-                                                            $result         =   App\SmResultStore::GetResultBySubjectId($class_id, $section_id, $data->subject_id,$assinged_exam_type ,$student_id);
+                                                            $result         =   App\SmResultStore::GetResultBySubjectId($age_group_id, $mgender_id, $data->subject_id,$assinged_exam_type ,$member_id);
                                                             if(!empty($result)){
-                                                                $final_results = App\SmResultStore::GetFinalResultBySubjectId($class_id, $section_id, $data->subject_id,$assinged_exam_type ,$student_id);
+                                                                $final_results = App\SmResultStore::GetFinalResultBySubjectId($age_group_id, $mgender_id, $data->subject_id,$assinged_exam_type ,$member_id);
                                                             }
                                                             if($result->count()>0){
                                                                 ?>
@@ -295,7 +295,7 @@
                                                                             echo 'F';
                                                                         }else{
                                                                             $totalSumSub = $totalSumSub / count($assinged_exam_types);
-                                                                            $mark_grade = App\SmMarksGrade::where([['percent_from', '<=', $totalSumSub], ['percent_upto', '>=', $totalSumSub]])->where('academic_id', getAcademicId())->first();
+                                                                            $mark_grade = App\SmMarksGrade::where([['percent_from', '<=', $totalSumSub], ['percent_upto', '>=', $totalSumSub]])->where('church_year_id', getAcademicId())->first();
                                                                             echo @$mark_grade->grade_name;
                                                                         }
                                                                     @endphp
@@ -305,7 +305,7 @@
                                                                         if($totalSubjectFail > 0){
                                                                             echo 'F';
                                                                         }else{
-                                                                            $mark_grade = App\SmMarksGrade::where([['percent_from', '<=', $totalSumSub], ['percent_upto', '>=', $totalSumSub]])->where('academic_id', getAcademicId())->first();
+                                                                            $mark_grade = App\SmMarksGrade::where([['percent_from', '<=', $totalSumSub], ['percent_upto', '>=', $totalSumSub]])->where('church_year_id', getAcademicId())->first();
                                                                             echo @$mark_grade->gpa;
                                                                         }
                                                                     @endphp
@@ -328,7 +328,7 @@
                                                                 }else{
                                                                     $total_exam_subject = count($subjects) + count($assinged_exam_types);
                                                                     $average_mark = $total_marks / $total_exam_subject;
-                                                                    $average_grade = App\SmMarksGrade::where([['percent_from', '<=', $totalSumSub], ['percent_upto', '>=', $totalSumSub]])->where('academic_id', getAcademicId())->first();
+                                                                    $average_grade = App\SmMarksGrade::where([['percent_from', '<=', $totalSumSub], ['percent_upto', '>=', $totalSumSub]])->where('church_year_id', getAcademicId())->first();
                                                                     echo @$average_grade->grade_name;
                                                                 }
                                                             @endphp
@@ -343,7 +343,7 @@
                                                                 }else{
                                                                     $total_exam_subject = count($subjects) + count($assinged_exam_types);
                                                                     $average_mark = $total_marks / $total_exam_subject;
-                                                                    $average_grade = App\SmMarksGrade::where([['percent_from', '<=', $totalSumSub], ['percent_upto', '>=', $totalSumSub]])->where('academic_id', getAcademicId())->first();
+                                                                    $average_grade = App\SmMarksGrade::where([['percent_from', '<=', $totalSumSub], ['percent_upto', '>=', $totalSumSub]])->where('church_year_id', getAcademicId())->first();
                                                                     echo @$average_grade->gpa;
                                                                 }
                                                             @endphp

@@ -45,7 +45,7 @@
                                 <thead>
                                     <tr>
                                         <th>@lang('common.sl')</th>
-                                        <th>@lang('student.admission_no')</th>
+                                        <th>@lang('student.registration_no')</th>
                                         <th>@lang('student.roll_no')</th>
                                         <th>@lang('common.name')</th>
                                         <th>@lang('fees::feesModule.due_date')</th>
@@ -64,7 +64,7 @@
                                             @if($paid_amount != 0)
                                                 <tr>
                                                     <td>{{$key+1}}</td>
-                                                    <td>{{@$fees_due->studentInfo->admission_no}}</td>
+                                                    <td>{{@$fees_due->studentInfo->registration_no}}</td>
                                                     <td>{{@$fees_due->recordDetail->roll_no}}</td>
                                                     <td>{{@$fees_due->studentInfo->full_name}}</td>
                                                     <td>{{dateConvert($fees_due->due_date)}}</td>

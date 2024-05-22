@@ -56,7 +56,7 @@
                             <select class="niceSelect w-100 bb form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                 <option data-display="@lang('student.select_class') *" value="">@lang('student.select_class') *</option>
                                 @foreach($classes as $class)
-                                <option value="{{$class->id}}" {{isset($class_id)? ($class->id == $class_id? 'selected':''): ''}}>{{$class->class_name}}</option>
+                                <option value="{{$class->id}}" {{isset($age_group_id)? ($class->id == $age_group_id? 'selected':''): ''}}>{{$class->age_group_name}}</option>
                                 @endforeach
                             </select>
                             @if ($errors->has('class'))
@@ -122,7 +122,7 @@
                                 <thead>
                                   
                                     <tr>
-                                        <th>@lang('student.admission_no')</th>
+                                        <th>@lang('student.registration_no')</th>
                                         <th>@lang('student.roll_no')</th>
                                         <th>@lang('student.name')</th>
                                         <th>@lang('common.class')</th>
@@ -140,23 +140,23 @@
                                 <tbody>
                                     @foreach($students as $student)
                                     <tr>
-                                        <td>{{$student->admission_no}}</td>
+                                        <td>{{$student->registration_no}}</td>
                                         <td>{{$student->roll_no}}</td>
                                         <td>{{$student->first_name.' '.$student->last_name}}</td>
                                         <td>
                                             @php
                                                 $class_sec=[];
                                                 foreach ($student->studentRecords as $classSec) {
-                                                    $class_sec[]=$classSec->class->class_name.'('. $classSec->section->section_name .'), ' ;
+                                                    $class_sec[]=$classSec->class->age_group_name.'('. $classSec->section->mgender_name .'), ' ;
                                                 }
                                                 if (request()->class) {
                                                     $sections = [];
-                                                    $class =  $student->recordClass ? $student->recordClass->class->class_name : '';
+                                                    $class =  $student->recordClass ? $student->recordClass->class->age_group_name : '';
                                                     if (request()->section) {
-                                                        $sections [] = $student->recordSection != "" ? $student->recordSection->section->section_name:"";
+                                                        $sections [] = $student->recordSection != "" ? $student->recordSection->section->mgender_name:"";
                                                     } else {
                                                         foreach ($student->recordClasses as $section) {
-                                                            $sections [] = $section->section->section_name;
+                                                            $sections [] = $section->section->mgender_name;
                                                         }
                                                     }
                                                     echo  $class .'('.implode(', ', $sections).'), ';
@@ -165,7 +165,7 @@
                                                 }
                                             @endphp
                                         </td>
-                                        {{-- <td>{{$student->class !=""?$student->class->class_name:""}}</td> --}}
+                                        {{-- <td>{{$student->class !=""?$student->class->age_group_name:""}}</td> --}}
                                         @if(generalSetting()->with_guardian)
                                         <td>{{$student->parents !=""?$student->parents->fathers_name:""}}</td>
                                         @endif

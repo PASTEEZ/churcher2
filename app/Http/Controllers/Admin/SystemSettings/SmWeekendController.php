@@ -21,8 +21,8 @@ class SmWeekendController extends Controller
     public function index(Request $request)
     {
         try{
-            // $weekends = SmWeekend::where('school_id', Auth::user()->school_id)->get();
-            $weekends = SmWeekend::where('school_id', Auth::user()->school_id)->get();
+            // $weekends = SmWeekend::where('church_id', Auth::user()->church_id)->get();
+            $weekends = SmWeekend::where('church_id', Auth::user()->church_id)->get();
             
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($weekends, null);
@@ -60,7 +60,7 @@ class SmWeekendController extends Controller
 
 
 
-        // $weekends_count = SmWeekend::where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->count();
+        // $weekends_count = SmWeekend::where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->count();
         //     if ($weekends_count==7) {
         //         Toastr::warning('You have already added 7 days, Now You can edit', 'Not Added');
         //         return redirect()->back();
@@ -94,7 +94,7 @@ class SmWeekendController extends Controller
         //     } else {
         //         $weekend->is_weekend = 0;
         //     }
-        //     $weekend->academic_id = getAcademicId();
+        //     $weekend->church_year_id = getAcademicId();
         //     $result = $weekend->save();
 
         //     if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -125,9 +125,9 @@ class SmWeekendController extends Controller
             if (checkAdmin()) {
                     $editData = SmWeekend::find($id);
                 }else{
-                    $editData = SmWeekend::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+                    $editData = SmWeekend::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
                 }
-            $weekends = SmWeekend::where('school_id', Auth::user()->school_id)->get();
+            $weekends = SmWeekend::where('church_id', Auth::user()->church_id)->get();
     
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -172,7 +172,7 @@ class SmWeekendController extends Controller
             if (checkAdmin()) {
                 $weekend = SmWeekend::find($request->id);
             }else{
-                $weekend = SmWeekend::where('id',$request->id)->where('school_id',Auth::user()->school_id)->first();
+                $weekend = SmWeekend::where('id',$request->id)->where('church_id',Auth::user()->church_id)->first();
             }
             $weekend->name = $request->name;
 

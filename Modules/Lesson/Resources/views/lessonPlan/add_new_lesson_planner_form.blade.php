@@ -31,8 +31,8 @@
             <input type="hidden" name="url" id="url" value="{{ URL::to('/') }}">
             <input type="hidden" name="day" id="day" value="{{ @$day }}">
             <input type="hidden" name="customize" id="customize" value="customize">
-            <input type="hidden" name="class_id" id="class_id" value="{{ @$class_id }}">
-            <input type="hidden" name="section_id" id="section_id" value="{{ @$section_id }}">
+            <input type="hidden" name="age_group_id" id="age_group_id" value="{{ @$age_group_id }}">
+            <input type="hidden" name="mgender_id" id="mgender_id" value="{{ @$mgender_id }}">
             <input type="hidden" name="subject_id" id="subject_id" value="{{ @$subject_id }}">
             <input type="hidden" name="lesson_date" id="lesson_date" value="{{ $lesson_date }}">
             <input type="hidden" name="routine_id" id="routine_id" value="{{ $routine_id }}">
@@ -43,7 +43,7 @@
             <input type="hidden" name="un_session_id" id="un_session_id" value="{{ @$routine->un_session_id }}">
             <input type="hidden" name="un_faculty_id" id="un_faculty_id" value="{{ @$routine->un_faculty_id }}">
             <input type="hidden" name="un_department_id" id="un_department_id" value="{{ @$routine->un_department_id }}">
-            <input type="hidden" name="un_academic_id" id="un_academic_id" value="{{ @$routine->un_academic_id }}">
+            <input type="hidden" name="un_church_year_id" id="un_church_year_id" value="{{ @$routine->un_church_year_id }}">
             <input type="hidden" name="un_semester_id" id="un_semester_id" value="{{ @$routine->un_semester_id }}">
             <input type="hidden" name="un_semester_label_id" id="un_semester_label_id" value="{{ @$routine->un_semester_label_id }}">
             <input type="hidden" name="un_subject_id" id="un_subject_id" value="{{ @$routine->un_subject_id }}">
@@ -177,8 +177,8 @@ $('#addRowTopic').on('click',function(){
             return;
         }
     var formData = {
-        class_id: $('#class_id').val(),
-        section_id: $('#section_id').val(),
+        age_group_id: $('#age_group_id').val(),
+        mgender_id: $('#mgender_id').val(),
         subject_id: $('#subject_id').val(),
         lesson_id: lesson_id,
     };
@@ -208,8 +208,8 @@ $('#lessonTopic').on('change',function(){
     var url = $("#url").val();
    
     var formData = {
-        class_id: $('#class_id').val(),
-        section_id: $('#section_id').val(),
+        age_group_id: $('#age_group_id').val(),
+        mgender_id: $('#mgender_id').val(),
         subject_id: $('#subject_id').val(),
         lesson_id: $(this).val(),
     };

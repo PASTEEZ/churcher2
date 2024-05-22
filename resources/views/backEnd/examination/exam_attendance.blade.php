@@ -96,7 +96,7 @@
                                         <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                             <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                             @foreach($classes as $class)
-                                            <option value="{{ @$class->id}}"  {{( old('class') == @$class->id ? "selected":"")}}>{{ @$class->class_name}}</option>
+                                            <option value="{{ @$class->id}}"  {{( old('class') == @$class->id ? "selected":"")}}>{{ @$class->age_group_name}}</option>
                                             @endforeach
                                         </select>
                                         @if ($errors->has('class'))
@@ -136,7 +136,7 @@
                                         <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="class_subject" name="class">
                                             <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                             @foreach($classes as $class)
-                                            <option value="{{$class->id}}" {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{$class->class_name}}</option>
+                                            <option value="{{$class->id}}" {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{$class->age_group_name}}</option>
                                             @endforeach
                                         </select>
                                         @if ($errors->has('class'))
@@ -204,8 +204,8 @@
                                 <table id="table_id_table" class="display school-table" cellspacing="0" width="100%">
                                     <thead>
                                         <tr>
-                                            <th width="20%">@lang('student.admission_no')</th>
-                                            <th width="20%">@lang('student.student_name')</th>
+                                            <th width="20%">@lang('student.registration_no')</th>
+                                            <th width="20%">@lang('student.member_name')</th>
                                             <th width="20%">@lang('student.roll_no')</th>
                                             <th width="20%">@lang('exam.attendance')</th>
                                         </tr>
@@ -214,7 +214,7 @@
                                     <tbody>
                                         @foreach($exam_attendance_childs as $student)
                                             <tr>
-                                                <td>{{@$student->studentInfo !=""?@$student->studentInfo->admission_no:""}}<input type="hidden" name="id[]" value="{{@$student->student_id}}"></td>
+                                                <td>{{@$student->studentInfo !=""?@$student->studentInfo->registration_no:""}}<input type="hidden" name="id[]" value="{{@$student->member_id}}"></td>
                                                 <td>{{@$student->studentInfo !=""?@$student->studentInfo->first_name.' '.@$student->studentInfo->last_name:""}}</td>
                                                 <td>{{@$student->studentInfo !=""?@$student->studentInfo->roll_no:""}}</td>
                                                 <td>
@@ -248,8 +248,8 @@
                                     <thead>
                                     
                                         <tr>
-                                            <th width="20%">@lang('student.admission_no')</th>
-                                            <th width="20%">@lang('student.student_name')</th>
+                                            <th width="20%">@lang('student.registration_no')</th>
+                                            <th width="20%">@lang('student.member_name')</th>
                                             <th width="20%">@lang('common.class_Sec')</th>
                                             <th width="20%">@lang('student.roll_no')</th>
                                             <th width="20%">@lang('exam.attendance')</th>
@@ -259,9 +259,9 @@
                                     <tbody>
                                         @foreach($exam_attendance_childs as $student)
                                         <tr>
-                                            <td>{{@$student->studentInfo !=""?@$student->studentInfo->admission_no:""}}<input type="hidden" name="id[]" value="{{@$student->student_id}}"></td>
+                                            <td>{{@$student->studentInfo !=""?@$student->studentInfo->registration_no:""}}<input type="hidden" name="id[]" value="{{@$student->member_id}}"></td>
                                             <td>{{@$student->studentInfo !=""?@$student->studentInfo->first_name.' '.@$student->studentInfo->last_name:""}}</td>
-                                            <td>{{@$student->studentRecord !=""?@$student->studentRecord->class->class_name.'('.@$student->studentRecord->section->section_name.')':""}}</td>
+                                            <td>{{@$student->studentRecord !=""?@$student->studentRecord->class->age_group_name.'('.@$student->studentRecord->section->mgender_name.')':""}}</td>
                                             <td>{{@$student->studentInfo !=""?@$student->studentInfo->roll_no:""}}</td>
                                             <td>
                                                 @if(@$student->attendance_type == 'P')

@@ -129,7 +129,7 @@
                                             <td>{{$fees_payment->studentInfo !=""?$fees_payment->studentInfo->full_name:""}}</td>
                                             <td>
                                                 @if($fees_payment->studentInfo!="" && $fees_payment->studentInfo->class!="")
-                                                {{$fees_payment->studentInfo->class->class_name}}
+                                                {{$fees_payment->studentInfo->class->age_group_name}}
                                                 @endif
                                             </td>
                                             <td>{{$fees_payment->feesType!=""?$fees_payment->feesType->name:""}}</td>

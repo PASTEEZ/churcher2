@@ -24,9 +24,9 @@ class SmRoomTypeRequest extends FormRequest
      */
     public function rules()
     {
-        $school_id=auth()->user()->school_id;
+        $church_id=auth()->user()->church_id;
         return [
-            'type' => ['required', 'max:200', Rule::unique('sm_room_types')->where('school_id', $school_id)->ignore($this->id) ],
+            'type' => ['required', 'max:200', Rule::unique('sm_room_types')->where('church_id', $church_id)->ignore($this->id) ],
         ];
     }
 }

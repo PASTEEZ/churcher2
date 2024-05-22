@@ -71,6 +71,27 @@
                 </div>
             </div>
         @endif
+
+        @if (is_show('email_address'))
+        <div class="single-info">
+            <div class="row">
+                <div class="col-lg-5 col-md-6">
+                    <div class="">
+                        @lang('common.aka')
+                    </div>
+                </div>
+
+                <div class="col-lg-7 col-md-7">
+                    <div class="">
+                     
+                        {{ @$student_detail->aka }} 
+                
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
         <div class="single-info">
             <div class="row">
                 <div class="col-lg-5 col-md-6">
@@ -122,6 +143,44 @@
                 </div>
             </div>
         @endif
+        <div class="single-info">
+            <div class="row">
+                
+                <div class="col-lg-5 col-md-6">
+                    <div class="">
+                        @lang('student.roll')
+                    </div>
+                </div>
+
+                <div class="col-lg-7 col-md-7">
+                    <div class="">
+                        @if ($student_detail->phone_work)
+                            <a href="tel:{{ @$student_detail->phone_work }}"> {{ @$student_detail->phone_work }}</a>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+ 
+        <div class="single-info">
+            <div class="row">
+
+                <div class="col-lg-5 col-md-6">
+                    <div class="">
+                        @lang('student.othercontact')
+                    </div>
+                </div>
+
+                <div class="col-lg-7 col-md-7">
+                    <div class="">
+                        @if ($student_detail->othercontact)
+                            <a href="tel:{{ @$student_detail->othercontact }}"> {{ @$student_detail->othercontact }}</a>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+ 
         @if (is_show('email_address'))
             <div class="single-info">
                 <div class="row">
@@ -141,40 +200,65 @@
                 </div>
             </div>
         @endif
-        {{-- changes for lead module --abunayem --}}
-        @if (moduleStatusCheck('Lead') == true)
-            <div class="single-info">
-                <div class="row">
-                    <div class="col-lg-5 col-md-6">
-                        <div class="">
-                            @lang('lead::lead.city')
-                        </div>
-                    </div>
 
-                    <div class="col-lg-7 col-md-7">
-                        <div class="">
-                            {{ @$student_detail->leadCity->city_name }}
-                        </div>
+        
+        <div class="single-info">
+            <div class="row">
+                <div class="col-lg-5 col-md-6">
+                    <div class="">
+                        @lang('common.nationality')
+                    </div>
+                </div>
+
+                <div class="col-lg-7 col-md-7">
+                    <div class="">
+                     
+                        {{ @$student_detail->nationality }} 
+                
                     </div>
                 </div>
             </div>
-
-            <div class="single-info">
-                <div class="row">
-                    <div class="col-lg-5 col-md-6">
-                        <div class="">
-                            @lang('lead::lead.source')
-                        </div>
-                    </div>
-
-                    <div class="col-lg-7 col-md-7">
-                        <div class="">
-                            {{ @$student_detail->source->source_name }}
-                        </div>
-                    </div>
+        </div>
+   
+    
+    <div class="single-info">
+        <div class="row">
+            <div class="col-lg-5 col-md-6">
+                <div class="">
+                    @lang('common.hometown')
                 </div>
             </div>
-        @endif
+
+            <div class="col-lg-7 col-md-7">
+                <div class="">
+                 
+                    {{ @$student_detail->caste }} 
+            
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+      {{-- end --}}
+      @if (is_show('current_address'))
+      <div class="single-info">
+          <div class="row">
+              <div class="col-lg-5 col-md-6">
+                  <div class="">
+                      @lang('student.area')
+                  </div>
+              </div>
+
+              <div class="col-lg-7 col-md-7">
+                  <div class="">
+                      {{ @$student_detail->landmark }}
+                  </div>
+              </div>
+          </div>
+      </div>
+  @endif
+      
         {{-- end --}}
         @if (is_show('current_address'))
             <div class="single-info">
@@ -211,249 +295,627 @@
             </div>
         @endif
 
-        <!-- Start Parent Part -->
-        <h4 class="stu-sub-head mt-40">@lang('student.Parent_Guardian_Details')</h4>
-        <div class="d-flex">
-            @if (is_show('fathers_photo'))
-                <div class="mr-20 mt-20">
-                    <img class="student-meta-img img-100"
-                         src="{{ file_exists(@$student_detail->parents->fathers_photo) ? asset($student_detail->parents->fathers_photo) : asset('public/uploads/staff/demo/father.png') }}"
-                         alt="">
 
+        <div class="row  mt-30">
+            <div class="col-lg-12">
+                <div class="main-title">
+                    <h4 class="stu-sub-head">@lang('student.interest_group_details')</h4>
                 </div>
-            @endif
-            <div class="w-100">
-                @if (is_show('fathers_name'))
-                    <div class="single-info">
-                        <div class="row">
-                            <div class="col-lg-4 col-md-6">
-                                <div class="">
-                                    @lang('student.father_name')
-                                </div>
-                            </div>
+            </div>
+           
+        </div>
 
-                            <div class="col-lg-8 col-md-7">
-                                <div class="">
-                                    {{ @$student_detail->parents->fathers_name }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-                @if (is_show('fathers_occupation'))
-                    <div class="single-info">
-                        <div class="row">
-                            <div class="col-lg-4 col-md-6">
-                                <div class="">
-                                    @lang('student.occupation')
-                                </div>
-                            </div>
+      {{-- end --}}
+      <div class="single-info">
+        <div class="row">
+            <div class="col-lg-5 col-md-6">
+                <div class="">
+                    @lang('student.document_01_title')
+                </div>
+            </div>
 
-                            <div class="col-lg-8 col-md-7">
-                                <div class="">
-                                    {{ @$student_detail->parents != '' ? @$student_detail->parents->fathers_occupation : '' }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-                @if (is_show('fathers_phone'))
-                    <div class="single-info">
-                        <div class="row">
-                            <div class="col-lg-4 col-md-6">
-                                <div class="">
-                                    @lang('student.phone_number')
-                                </div>
-                            </div>
+            <div class="col-lg-7 col-md-7">
+                <div class="">
+                    
+                    {{ @$student_detail->document_title_1 }}
+                </div>
+            </div>
+        </div>
+    </div>
 
-                            <div class="col-lg-8 col-md-7">
-                                <div class="">
-                                    {{ @$student_detail->parents != '' ? @$student_detail->parents->fathers_mobile : '' }}
-                                </div>
-                            </div>
-                        </div>
+
+    <div class="single-info">
+        <div class="row">
+            <div class="col-lg-5 col-md-6">
+                <div class="">
+                    @lang('student.document_02_title')
+                </div>
+            </div>
+
+            <div class="col-lg-7 col-md-7">
+                <div class="">
+                    {{ @$student_detail->document_title_2 }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+      <div class="single-info">
+          <div class="row">
+              <div class="col-lg-5 col-md-6">
+                  <div class="">
+                      @lang('student.document_03_title')
+                  </div>
+              </div>
+
+              <div class="col-lg-7 col-md-7">
+                  <div class="">
+                      {{ @$student_detail->document_title_3 }}
+                  </div>
+              </div>
+          </div>
+      </div>
+ 
+ 
+      <div class="single-info">
+          <div class="row">
+              <div class="col-lg-5 col-md-6">
+                  <div class="">
+                      @lang('student.document_04_title')
+                  </div>
+              </div>
+
+              <div class="col-lg-7 col-md-7">
+                  <div class="">
+                      {{ @$student_detail->document_title_4 }}
+                  </div>
+              </div>
+          </div>
+      </div>
+ 
+
+
+
+      
+        <!-- Start Other Information Part -->
+      <div class="row  mt-30">
+        <div class="col-lg-12">
+            <div class="main-title">
+                <h4 class="stu-sub-head">@lang('student.baptism_details')</h4>
+            </div>
+        </div>
+       
+    </div>
+      <div class="single-info">
+        <div class="row">
+            <div class="col-lg-5 col-md-6">
+                <div class="">
+                    @lang('student.baptism_status')
+                </div>
+            </div>
+
+            <div class="col-lg-7 col-md-7">
+                <div class="">
+                    {{ @$student_detail->baptism_status }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="single-info">
+        <div class="row">
+            <div class="col-lg-5 col-md-6">
+                <div class="">
+                    @lang('student.baptism_type')
+                </div>
+            </div>
+
+            <div class="col-lg-7 col-md-7">
+                <div class="">
+                    {{@$student_detail->type_of_baptism }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="single-info">
+        <div class="row">
+            <div class="col-lg-5 col-md-6">
+                <div class="">
+                    @lang('student.place_of_baptism')
+                </div>
+            </div>
+
+            <div class="col-lg-7 col-md-7">
+                <div class="">
+                    {{@$student_detail->place_of_baptism }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="single-info">
+        <div class="row">
+            <div class="col-lg-5 col-md-6">
+                <div class="">
+                    @lang('student.date_of_baptism')
+                </div>
+            </div>
+
+            <div class="col-lg-7 col-md-7">
+                <div class="">
+                    {{@$student_detail->date_of_baptism }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="single-info">
+        <div class="row">
+            <div class="col-lg-5 col-md-6">
+                <div class="">
+                    @lang('student.baptism_cert_no')
+                </div>
+            </div>
+
+            <div class="col-lg-7 col-md-7">
+                <div class="">
+                    {{ @$student_detail->baptism_cert_no}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+      <div class="single-info">
+          <div class="row">
+              <div class="col-lg-5 col-md-6">
+                  <div class="">
+                      @lang('student.baptism_off_minister')
+                  </div>
+              </div>
+
+              <div class="col-lg-7 col-md-7">
+                  <div class="">
+                      {{ @$student_detail->baptism_off_minister }}
+                  </div>
+              </div>
+          </div>
+      </div>
+ 
+ 
+      <div class="single-info">
+          <div class="row">
+              <div class="col-lg-5 col-md-6">
+                  <div class="">
+                      @lang('student.baptism_cert_no')
+                  </div>
+              </div>
+
+              <div class="col-lg-7 col-md-7">
+                  <div class="">
+                      {{ @$student_detail->baptism_cert_no }}
+                  </div>
+              </div>
+          </div>
+      </div>
+ 
+        <!-- Start Other Information Part -->
+
+
+
+
+
+      
+        <!-- Start confirmation Part -->
+        <div class="row  mt-30">
+            <div class="col-lg-12">
+                <div class="main-title">
+                    <h4 class="stu-sub-head">@lang('student.confirmation_details')</h4>
+                </div>
+            </div>
+           
+        </div>
+          <div class="single-info">
+            <div class="row">
+                <div class="col-lg-5 col-md-6">
+                    <div class="">
+                        @lang('student.confirmation_status')
                     </div>
-                @endif
+                </div>
+    
+                <div class="col-lg-7 col-md-7">
+                    <div class="">
+                        {{ @$student_detail->confirmation_status }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="single-info">
+            <div class="row">
+                <div class="col-lg-5 col-md-6">
+                    <div class="">
+                        @lang('student.date_of_confirmation')
+                    </div>
+                </div>
+    
+                <div class="col-lg-7 col-md-7">
+                    <div class="">
+                        {{@$student_detail->confirmation_date }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="single-info">
+            <div class="row">
+                <div class="col-lg-5 col-md-6">
+                    <div class="">
+                        @lang('student.place_of_baptism')
+                    </div>
+                </div>
+    
+                <div class="col-lg-7 col-md-7">
+                    <div class="">
+                        {{@$student_detail->ageconfirmed }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="single-info">
+            <div class="row">
+                <div class="col-lg-5 col-md-6">
+                    <div class="">
+                        @lang('student.date_of_baptism')
+                    </div>
+                </div>
+    
+                <div class="col-lg-7 col-md-7">
+                    <div class="">
+                        {{@$student_detail->place_of_confirmation }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <div class="single-info">
+            <div class="row">
+                <div class="col-lg-5 col-md-6">
+                    <div class="">
+                        @lang('student.confirmation_cert_no')
+                    </div>
+                </div>
+    
+                <div class="col-lg-7 col-md-7">
+                    <div class="">
+                        {{ @$student_detail->confirmation_cert_no}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+          <div class="single-info">
+              <div class="row">
+                  <div class="col-lg-5 col-md-6">
+                      <div class="">
+                          @lang('student.confirmation_off_minister')
+                      </div>
+                  </div>
+    
+                  <div class="col-lg-7 col-md-7">
+                      <div class="">
+                          {{ @$student_detail->bibleverseused }}
+                      </div>
+                  </div>
+              </div>
+          </div>
+     
+
+          
+     
+          <div class="single-info">
+              <div class="row">
+                  <div class="col-lg-5 col-md-6">
+                      <div class="">
+                          @lang('student.baptism_cert_no')
+                      </div>
+                  </div>
+    
+                  <div class="col-lg-7 col-md-7">
+                      <div class="">
+                          {{ @$student_detail->confirmation_off_minister }}
+                      </div>
+                  </div>
+              </div>
+          </div>
+     
+            <!-- Start Other Information Part -->
+
+
+
+<!-- Start confirmation Part -->
+<div class="row  mt-30">
+    <div class="col-lg-12">
+        <div class="main-title">
+            <h4 class="stu-sub-head">@lang('student.marriage_details')</h4>
+        </div>
+    </div>
+   
+</div>
+  <div class="single-info">
+    <div class="row">
+        <div class="col-lg-5 col-md-6">
+            <div class="">
+                @lang('student.marriage_status')
             </div>
         </div>
 
-        <div class="d-flex">
-            @if (is_show('mothers_photo'))
-                <div class="mr-20 mt-20">
-                    <img class="student-meta-img img-100"
-                         src="{{ file_exists(@$student_detail->parents->mothers_photo) ? asset($student_detail->parents->mothers_photo) : asset('public/uploads/staff/demo/mother.jpg') }}"
-                         alt="">
-                </div>
-            @endif
-            <div class="w-100">
-                <div class="single-info">
-                    <div class="row">
-                        <div class="col-lg-4 col-md-6">
-                            <div class="">
-                                @lang('student.mother_name')
-                            </div>
-                        </div>
-                        @if (is_show('mothers_name'))
-                            <div class="col-lg-8 col-md-7">
-                                <div class="">
-                                    {{ $student_detail->parents != '' ? @$student_detail->parents->mothers_name : '' }}
-                                </div>
-                            </div>
-                        @endif
-                    </div>
-                </div>
-
-                <div class="single-info">
-                    <div class="row">
-                        <div class="col-lg-4 col-md-6">
-                            <div class="">
-                                @lang('student.occupation')
-                            </div>
-                        </div>
-                        @if (is_show('mothers_occupation'))
-                            <div class="col-lg-8 col-md-7">
-                                <div class="">
-                                    {{ $student_detail->parents != '' ? @$student_detail->parents->mothers_occupation : '' }}
-                                </div>
-                            </div>
-                        @endif
-                    </div>
-                </div>
-                @if (is_show('mothers_phone'))
-                    <div class="single-info">
-                        <div class="row">
-                            <div class="col-lg-4 col-md-6">
-                                <div class="">
-                                    @lang('student.phone_number')
-                                </div>
-                            </div>
-
-                            <div class="col-lg-8 col-md-7">
-                                <div class="">
-                                    {{ $student_detail->parents != '' ? @$student_detail->parents->mothers_mobile : '' }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endif
+        <div class="col-lg-7 col-md-7">
+            <div class="">
+                {{ @$student_detail->marriage_status }}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="single-info">
+    <div class="row">
+        <div class="col-lg-5 col-md-6">
+            <div class="">
+                @lang('student.date_of_marriage')
             </div>
         </div>
 
-        <div class="d-flex">
-            @if (is_show('guardians_photo'))
-                <div class="mr-20 mt-20">
-                    <img class="student-meta-img img-100"
-                         src="{{ file_exists(@$student_detail->parents->guardians_photo) ? asset($student_detail->parents->guardians_photo) : asset('public/uploads/staff/demo/guardian.jpg') }}"
-                         alt="">
-
-                </div>
-            @endif
-            <div class="w-100">
-                @if (is_show('guardians_name'))
-                    <div class="single-info">
-                        <div class="row">
-                            <div class="col-lg-4 col-md-6">
-                                <div class="">
-                                    @lang('student.guardian_name')
-                                </div>
-                            </div>
-
-                            <div class="col-lg-8 col-md-7">
-                                <div class="">
-                                    {{ $student_detail->parents != '' ? @$student_detail->parents->guardians_name : '' }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-
-                @if (is_show('guardians_email'))
-                    <div class="single-info">
-                        <div class="row">
-                            <div class="col-lg-4 col-md-6">
-                                <div class="">
-                                    @lang('student.email_address')
-                                </div>
-                            </div>
-
-                            <div class="col-lg-8 col-md-7">
-                                <div class="">
-                                    {{ $student_detail->parents != '' ? @$student_detail->parents->guardians_email : '' }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-                @if (is_show('guardians_phone'))
-                    <div class="single-info">
-                        <div class="row">
-                            <div class="col-lg-4 col-md-6">
-                                <div class="">
-                                    @lang('student.phone_number')
-                                </div>
-                            </div>
-
-                            <div class="col-lg-8 col-md-7">
-                                <div class="">
-                                    {{ $student_detail->parents != '' ? @$student_detail->parents->guardians_mobile : '' }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-
-                <div class="single-info">
-                    <div class="row">
-                        <div class="col-lg-4 col-md-6">
-                            <div class="">
-                                @lang('student.relation_with_guardian')
-                            </div>
-                        </div>
-
-                        <div class="col-lg-8 col-md-7">
-                            <div class="">
-                                {{ $student_detail->parents != '' ? @$student_detail->parents->guardians_relation : '' }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                @if (is_show('guardians_occupation'))
-                    <div class="single-info">
-                        <div class="row">
-                            <div class="col-lg-4 col-md-6">
-                                <div class="">
-                                    @lang('student.occupation')
-                                </div>
-                            </div>
-
-                            <div class="col-lg-8 col-md-7">
-                                <div class="">
-                                    {{ $student_detail->parents != '' ? @$student_detail->parents->guardians_occupation : '' }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-                @if (is_show('guardians_address'))
-                    <div class="single-info">
-                        <div class="row">
-                            <div class="col-lg-4 col-md-6">
-                                <div class="">
-                                    @lang('student.guardian_address')
-                                </div>
-                            </div>
-
-                            <div class="col-lg-8 col-md-7">
-                                <div class="">
-                                    {{ $student_detail->parents != '' ? @$student_detail->parents->guardians_address : '' }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endif
+        <div class="col-lg-7 col-md-7">
+            <div class="">
+                {{@$student_detail->date_of_marriage }}
             </div>
         </div>
-        <!-- End Parent Part -->
+    </div>
+</div>
+<div class="single-info">
+    <div class="row">
+        <div class="col-lg-5 col-md-6">
+            <div class="">
+                @lang('student.marriage_type')
+            </div>
+        </div>
+
+        <div class="col-lg-7 col-md-7">
+            <div class="">
+                {{@$student_detail->marriage_type }}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="single-info">
+    <div class="row">
+        <div class="col-lg-5 col-md-6">
+            <div class="">
+                @lang('student.place_of_marriage')
+            </div>
+        </div>
+
+        <div class="col-lg-7 col-md-7">
+            <div class="">
+                {{@$student_detail->place_of_marriage }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="single-info">
+    <div class="row">
+        <div class="col-lg-5 col-md-6">
+            <div class="">
+                @lang('student.marriage_cert_no')
+            </div>
+        </div>
+
+        <div class="col-lg-7 col-md-7">
+            <div class="">
+                {{ @$student_detail->marriage_cert_no}}
+            </div>
+        </div>
+    </div>
+</div>
+
+  <div class="single-info">
+      <div class="row">
+          <div class="col-lg-5 col-md-6">
+              <div class="">
+                  @lang('student.marriage_off_minister')
+              </div>
+          </div>
+
+          <div class="col-lg-7 col-md-7">
+              <div class="">
+                  {{ @$student_detail->marriage_off_minister }}
+              </div>
+          </div>
+      </div>
+  </div>
+
+
+   
+    <!-- Start Other Information Part -->
+
+
+
+<!-- Start confirmation Part -->
+<div class="row  mt-30">
+    <div class="col-lg-12">
+        <div class="main-title">
+            <h4 class="stu-sub-head">@lang('student.family_details')</h4>
+        </div>
+    </div>
+   
+</div>
+  <div class="single-info">
+    <div class="row">
+        <div class="col-lg-5 col-md-6">
+            <div class="">
+                @lang('student.spouse_name')
+            </div>
+        </div>
+
+        <div class="col-lg-7 col-md-7">
+            <div class="">
+                {{ @$student_detail->spouse_name }}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="single-info">
+    <div class="row">
+        <div class="col-lg-5 col-md-6">
+            <div class="">
+                @lang('student.spouse_date_of_birth')
+            </div>
+        </div>
+
+        <div class="col-lg-7 col-md-7">
+            <div class="">
+                {{@$student_detail->spouse_date_of_birth }}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="single-info">
+    <div class="row">
+        <div class="col-lg-5 col-md-6">
+            <div class="">
+                @lang('student.spouse_chucrh')
+            </div>
+        </div>
+
+        <div class="col-lg-7 col-md-7">
+            <div class="">
+                {{@$student_detail->spouse_chucrh }}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="single-info">
+    <div class="row">
+        <div class="col-lg-5 col-md-6">
+            <div class="">
+                @lang('student.child_name1')
+            </div>
+        </div>
+
+        <div class="col-lg-7 col-md-7">
+            <div class="">
+                {{@$student_detail->child_name1 }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="single-info">
+    <div class="row">
+        <div class="col-lg-5 col-md-6">
+            <div class="">
+                @lang('student.child_name2')
+            </div>
+        </div>
+
+        <div class="col-lg-7 col-md-7">
+            <div class="">
+                {{ @$student_detail->child_name2}}
+            </div>
+        </div>
+    </div>
+</div>
+ 
+
+
+   
+    <!-- Start Other Information Part -->
+
+
+
+
+
+
+    
+
+<!-- Start confirmation Part -->
+<div class="row  mt-30">
+    <div class="col-lg-12">
+        <div class="main-title">
+            <h4 class="stu-sub-head">@lang('student.school_details')</h4>
+        </div>
+    </div>
+   
+</div>
+  <div class="single-info">
+    <div class="row">
+        <div class="col-lg-5 col-md-6">
+            <div class="">
+                @lang('student.school_admission_date')
+            </div>
+        </div>
+
+        <div class="col-lg-7 col-md-7">
+            <div class="">
+                {{ @$student_detail->school_admission_date }}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="single-info">
+    <div class="row">
+        <div class="col-lg-5 col-md-6">
+            <div class="">
+                @lang('student.school_completion_date')
+            </div>
+        </div>
+
+        <div class="col-lg-7 col-md-7">
+            <div class="">
+                {{@$student_detail->school_completion_date }}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="single-info">
+    <div class="row">
+        <div class="col-lg-5 col-md-6">
+            <div class="">
+                @lang('student.school_telephone')
+            </div>
+        </div>
+
+        <div class="col-lg-7 col-md-7">
+            <div class="">
+                {{@$student_detail->school_telephone }}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="single-info">
+    <div class="row">
+        <div class="col-lg-5 col-md-6">
+            <div class="">
+                @lang('student.school_location')
+            </div>
+        </div>
+
+        <div class="col-lg-7 col-md-7">
+            <div class="">
+                {{@$student_detail->school_location }}
+            </div>
+        </div>
+    </div>
+</div> 
+ 
+
+
+   
+    <!-- Start Other Information Part -->
+
+
+
+
+
+
+
 
     
         <!-- Start Other Information Part -->
@@ -628,11 +1090,123 @@
                 </div>
             </div>
         @endif
-        <!-- End Other Information Part -->
-        @if (is_show('custom_field'))
-            {{-- Custom field start --}}
-            @include('backEnd.customField._coutom_field_show')
-            {{-- Custom field end --}}
-        @endif
+
+
+
+        <!-- Start Parent Part -->
+        <h4 class="stu-sub-head mt-40">@lang('student.Parent_Guardian_Details')</h4>
+         
+
+         
+
+        <div class="d-flex">
+            @if (is_show('guardians_photo'))
+                <div class="mr-20 mt-20">
+                    <img class="student-meta-img img-100"
+                         src="{{ file_exists(@$student_detail->guardians_photo) ? asset($student_detail->guardians_photo) : asset('public/uploads/staff/demo/guardian.jpg') }}"
+                         alt="">
+
+                </div>
+            @endif
+            <div class="w-100">
+                @if (is_show('guardians_name'))
+                    <div class="single-info">
+                        <div class="row">
+                            <div class="col-lg-4 col-md-6">
+                                <div class="">
+                                    @lang('student.guardian_name')
+                                </div>
+                            </div>
+
+                            <div class="col-lg-8 col-md-7">
+                                <div class="">
+                                    {{ $student_detail->parents != '' ? @$student_detail->guardians_name : '' }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+ 
+                @if (is_show('guardians_phone'))
+                    <div class="single-info">
+                        <div class="row">
+                            <div class="col-lg-4 col-md-6">
+                                <div class="">
+                                    @lang('student.phone_number')
+                                </div>
+                            </div>
+
+                            <div class="col-lg-8 col-md-7">
+                                <div class="">
+                                    {{ $student_detail->parents != '' ? @$student_detail->guardians_phone : '' }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
+                <div class="single-info">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6">
+                            <div class="">
+                                @lang('student.relation_with_guardian')
+                            </div>
+                        </div>
+
+                        <div class="col-lg-8 col-md-7">
+                            <div class="">
+                                {{ $student_detail->parents != '' ? @$student_detail->guardians_relation : '' }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @if (is_show('guardians_occupation'))
+                    <div class="single-info">
+                        <div class="row">
+                            <div class="col-lg-4 col-md-6">
+                                <div class="">
+                                    @lang('student.occupation')
+                                </div>
+                            </div>
+
+                            <div class="col-lg-8 col-md-7">
+                                <div class="">
+                                    {{ $student_detail->parents != '' ? @$student_detail->guardians_occupation : '' }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+                @if (is_show('guardians_address'))
+                    <div class="single-info">
+                        <div class="row">
+                            <div class="col-lg-4 col-md-6">
+                                <div class="">
+                                    @lang('student.guardian_address')
+                                </div>
+                            </div>
+
+                            <div class="col-lg-8 col-md-7">
+                                <div class="">
+                                    {{ $student_detail->parents != '' ? @$student_detail->guardians_address : '' }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+            </div>
+        </div>
+        <!-- End Parent Part -->
+
+
+
+
+
+        
+    
     </div>
+
+
+
+    
 </div>

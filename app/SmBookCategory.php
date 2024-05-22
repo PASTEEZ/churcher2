@@ -17,7 +17,7 @@ class SmBookCategory extends Model
     }
     
     public function scopeStatus($query){
-        return $query->where('school_id',auth()->user()->school_id);
+        return $query->where('church_id',auth()->user()->church_id);
     }
    
 }

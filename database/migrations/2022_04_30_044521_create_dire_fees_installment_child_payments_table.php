@@ -32,16 +32,16 @@ class CreateDireFeesInstallmentChildPaymentsTable extends Migration
             $table->integer('fees_type_id')->nullable()->unsigned();
             $table->foreign('fees_type_id')->references('id')->on('sm_fees_types')->onDelete('cascade');
 
-            $table->integer('student_id')->nullable()->unsigned();
-            $table->foreign('student_id')->references('id')->on('sm_students')->onDelete('cascade');
+            $table->integer('member_id')->nullable()->unsigned();
+            $table->foreign('member_id')->references('id')->on('sm_students')->onDelete('cascade');
 
             $table->integer('record_id')->nullable()->unsigned();
 
             $table->integer('created_by')->nullable()->unsigned();
             $table->integer('updated_by')->nullable()->default(1)->unsigned();
             
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
             $table->timestamps();
         });
     }

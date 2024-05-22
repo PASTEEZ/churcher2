@@ -116,7 +116,7 @@ class CreateEduUpdateVersion630Table extends Migration
                 $moduleInfo->lang_name = "";
                 $moduleInfo->icon_class = '';
                 $moduleInfo->active_status = 1;
-                $moduleInfo->school_id =  1 ;
+                $moduleInfo->church_id =  1 ;
                 $moduleInfo->save();
 
             }
@@ -236,7 +236,7 @@ class CreateEduUpdateVersion630Table extends Migration
             $utility->lang_name = "utilities";
             $utility->icon_class = '';
             $utility->active_status = 1;
-            $utility->school_id = 1;
+            $utility->church_id = 1;
             $utility->save();
         }
 
@@ -251,7 +251,7 @@ class CreateEduUpdateVersion630Table extends Migration
             $report->lang_name = "report";
             $report->icon_class = '';
             $report->active_status = 1;
-            $report->school_id = 1;
+            $report->church_id = 1;
             $report->save();
         }
 
@@ -266,7 +266,7 @@ class CreateEduUpdateVersion630Table extends Migration
             $previous_rec->lang_name = "previous-record";
             $previous_rec->icon_class = '';
             $previous_rec->active_status = 1;
-            $previous_rec->school_id = 1;
+            $previous_rec->church_id = 1;
             $previous_rec->save();
         }
 
@@ -283,7 +283,7 @@ class CreateEduUpdateVersion630Table extends Migration
             $absent_time->lang_name = "time_setup";
             $absent_time->icon_class = '';
             $absent_time->active_status = 1;
-            $absent_time->school_id = 1;
+            $absent_time->church_id = 1;
             $absent_time->save();
         }
 
@@ -297,7 +297,7 @@ class CreateEduUpdateVersion630Table extends Migration
             $about_menu->lang_name = "about_&_update";
             $about_menu->icon_class = '';
             $about_menu->active_status = 1;
-            $about_menu->school_id = 1;
+            $about_menu->church_id = 1;
             $about_menu->save();
         }
 
@@ -316,7 +316,7 @@ class CreateEduUpdateVersion630Table extends Migration
         $module_info->lang_name = "fees_forward";
         $module_info->icon_class = '';
         $module_info->active_status = 1;
-        $module_info->school_id = 1;
+        $module_info->church_id = 1;
         $module_info->save();
 
 
@@ -464,7 +464,7 @@ class CreateEduUpdateVersion630Table extends Migration
             $new->lang_name = "online_exam";
             $new->icon_class = 'flaticon-book-1';
             $new->active_status = 1;
-            $new->school_id = 1;
+            $new->church_id = 1;
             $new->save();
         }
 
@@ -588,7 +588,7 @@ class CreateEduUpdateVersion630Table extends Migration
         $module_infos = [
 
             [920, 36, 0, '1', 0,'Bulk Print','','bulk_print','flaticon-analysis', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22'],
-            [921, 36, 920, '2', 0,'Student Id Card','student-id-card-bulk-print','student_id_card','', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22'],
+            [921, 36, 920, '2', 0,'Student Id Card','student-id-card-bulk-print','member_id_card','', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22'],
             [922, 36, 920, '2', 0,'Student Certificate','certificate-bulk-print','student_certificate','', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22'],
             [923, 36, 920, '2', 0,'Staff Id Card','staff-id-card-bulk-print','staff_id_card','', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22'],
             [924, 36, 920, '2', 0,'PayrollBulk Print','payroll-bulk-print','payroll_bulk_print','', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22'],
@@ -624,7 +624,7 @@ class CreateEduUpdateVersion630Table extends Migration
                 $module_info->active_status=$info[9];
                 $module_info->created_by=$info[10];
                 $module_info->updated_by=$info[11];
-                $module_info->school_id=$info[12];
+                $module_info->church_id=$info[12];
                 $module_info->created_at=$info[13];
                 $module_info->updated_at=$info[14];
                 $module_info->save();
@@ -661,14 +661,14 @@ class CreateEduUpdateVersion630Table extends Migration
         }
 
         $idCardExistField = "background_img";
-        if(Schema::hasColumn('sm_student_id_cards', $idCardExistField)){
+        if(Schema::hasColumn('sm_member_id_cards', $idCardExistField)){
             SmStudentIdCard::truncate();
         }
         // new id card table refresh
         $idCardStringFields = ["background_img","profile_image","page_layout_style","user_photo_style","user_photo_width","user_photo_height","phone_number"];
         foreach ($idCardStringFields as $key => $idCardStringField) {
-            if (!Schema::hasColumn('sm_student_id_cards', $idCardStringField)) {
-                Schema::table('sm_student_id_cards', function ($table) use ($idCardStringField) {
+            if (!Schema::hasColumn('sm_member_id_cards', $idCardStringField)) {
+                Schema::table('sm_member_id_cards', function ($table) use ($idCardStringField) {
                     $table->string($idCardStringField)->nullable();
                 });
             }
@@ -676,16 +676,16 @@ class CreateEduUpdateVersion630Table extends Migration
 
         $idCardIntegerFields = ["pl_width","pl_height","t_space","b_space","r_space","l_space"];
         foreach ($idCardIntegerFields as $key => $idCardIntegerField) {
-            if (!Schema::hasColumn('sm_student_id_cards', $idCardIntegerField)) {
-                Schema::table('sm_student_id_cards', function ($table) use ($idCardIntegerField) {
+            if (!Schema::hasColumn('sm_member_id_cards', $idCardIntegerField)) {
+                Schema::table('sm_member_id_cards', function ($table) use ($idCardIntegerField) {
                     $table->integer($idCardIntegerField)->nullable();
                 });
             }
         }
 
         $roleTextField = 'role_id';
-        if (!Schema::hasColumn('sm_student_id_cards', $roleTextField)) {
-            Schema::table('sm_student_id_cards', function ($table) use ($roleTextField) {
+        if (!Schema::hasColumn('sm_member_id_cards', $roleTextField)) {
+            Schema::table('sm_member_id_cards', function ($table) use ($roleTextField) {
                 $table->text('role_id')->nullable();
             });
         }

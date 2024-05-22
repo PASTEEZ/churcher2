@@ -30,7 +30,7 @@
                 </div>
                 {{ Form::open(['class' => 'form-horizontal', 'files' => true, 'route' => 'online_exam_marks_store', 'method' => 'POST', 'enctype' => 'multipart/form-data']) }}
                 <input type="hidden" name="online_exam_id" value="{{@$take_online_exam->online_exam_id}}">
-                <input type="hidden" name="student_id" value="{{@$take_online_exam->student_id}}">
+                <input type="hidden" name="member_id" value="{{@$take_online_exam->member_id}}">
                 <div class="row  white-box">
                     <div class="col-lg-12">
                         <div class="container-fluid exam-bg ">

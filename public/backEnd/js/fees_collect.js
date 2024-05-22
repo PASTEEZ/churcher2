@@ -97,7 +97,7 @@
             var discount_amount = $("input[name='discount_amount'").val();
             var discount_type = $("select[name='FessDiscountType']").val();
             var fees_term = $("select[name='fees_term']").val();
-            var student_id = $("select[name='studentFind']").val();
+            var member_id = $("select[name='studentFind']").val();
             var type = $("select[name='type']").val();
             if (discount_type != null && discount_type != 0 ) {
             var formData = {
@@ -106,7 +106,7 @@
                 discount_type:discount_type,
                 type : type,
                 fees_term : fees_term,
-                student_id : student_id,
+                member_id : member_id,
             };
             $.ajax({
                 type: "GET",
@@ -159,7 +159,7 @@
             var fine_amount = $("input[name='fine_amount'").val();
             var fine_type = $("select[name='FessFineType']").val();
             var fees_term = $("select[name='fees_term']").val();
-            var student_id = $("select[name='studentFind']").val();
+            var member_id = $("select[name='studentFind']").val();
             var type = $("select[name='fine_type']").val();
             if (fine_type != null && fine_type != 0 ) {
             var formData = {
@@ -169,7 +169,7 @@
                 fine_type:fine_type,
                 type : type,
                 fees_term : fees_term,
-                student_id : student_id,
+                member_id : member_id,
             };
             $.ajax({
                 type: "GET",

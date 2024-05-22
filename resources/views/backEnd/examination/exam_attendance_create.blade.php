@@ -93,7 +93,7 @@
                                     <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="class_subject" name="class">
                                         <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                         @foreach($classes as $class)
-                                        <option value="{{$class->id}}" {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{$class->class_name}}</option>
+                                        <option value="{{$class->id}}" {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{$class->age_group_name}}</option>
                                         @endforeach
                                     </select>
                                     @if ($errors->has('class'))
@@ -150,10 +150,10 @@
                 <input type="hidden" name="un_session_id"  value="{{ @$un_session->id}}">
                 <input type="hidden" name="un_faculty_id"  value="{{ @$un_faculty->id}}">
                 <input type="hidden" name="un_department_id"  value="{{ @$un_department->id}}">
-                <input type="hidden" name="un_academic_id"  value="{{ @$un_academic->id}}">
+                <input type="hidden" name="un_church_year_id"  value="{{ @$un_academic->id}}">
                 <input type="hidden" name="un_semester_id"  value="{{ @$un_semester->id}}">
                 <input type="hidden" name="un_semester_label_id"  value="{{ @$un_semester_label->id}}">
-                <input type="hidden" name="un_section_id"  value="{{ @$un_section->id}}">
+                <input type="hidden" name="un_mgender_id"  value="{{ @$un_section->id}}">
                 <div class="row mt-40">
                     <div class="col-lg-12">
                         <div class="row">
@@ -173,8 +173,8 @@
                                     <table class="display school-table school-table-style shadow-none p-0" cellspacing="0" width="100%">
                                         <thead>
                                             <tr>
-                                                <th width="25%">@lang('student.admission_no')</th>
-                                                <th width="25%">@lang('student.student_name')</th>
+                                                <th width="25%">@lang('student.registration_no')</th>
+                                                <th width="25%">@lang('student.member_name')</th>
                                                 <th width="25%">@lang('student.roll_number')</th>
                                                 <th width="25%">@lang('exam.attendance')</th>
                                             </tr>
@@ -183,14 +183,14 @@
                                             @if(count($exam_attendance_childs) == 0)
                                                 @foreach($students as $record)
                                                     <tr>
-                                                        <td>{{@$record->studentDetail->admission_no}}</td>
+                                                        <td>{{@$record->studentDetail->registration_no}}</td>
                                                         <td>{{@$record->studentDetail->full_name}}</td>
                                                         <td>{{@$record->roll_no}}</td>
                                                         <td>
                                                             <div class="d-flex radio-btn-flex">
                                                                 <div class="mr-20">
                                                                     <input type="hidden" name="attendance[{{@$record->id}}]" value="{{@$record->id}}">
-                                                                    <input type="hidden" name="attendance[{{@$record->id}}][student]" value="{{@$record->student_id}}">
+                                                                    <input type="hidden" name="attendance[{{@$record->id}}][student]" value="{{@$record->member_id}}">
                                                                     <input type="radio" name="attendance[{{@$record->id}}][attendance_type]" id="attendanceP{{@$record->id}}" value="P" class="common-radio attd" checked>
                                                                     <label for="attendanceP{{$record->id}}">@lang('student.present')</label>
                                                                 </div>
@@ -205,12 +205,12 @@
                                             @else
                                                 @foreach($exam_attendance_childs as $student)
                                                     <tr>
-                                                        <td>{{ @$student->studentInfo !=""? @$student->studentInfo->admission_no:""}}</td>
+                                                        <td>{{ @$student->studentInfo !=""? @$student->studentInfo->registration_no:""}}</td>
                                                         <td>{{@$student->studentInfo !="" ? @$student->studentInfo->full_name:""}}</td>
                                                         <td>{{@$student->studentRecord !="" ? @$student->studentRecord->roll_no:""}}</td>
                                                         <td>
                                                             <input type="hidden" name="attendance[{{@$student->student_record_id}}]" value="{{@$student->student_record_id}}">
-                                                            <input type="hidden" name="attendance[{{@$student->student_record_id}}][student]" value="{{@$student->student_id}}">
+                                                            <input type="hidden" name="attendance[{{@$student->student_record_id}}][student]" value="{{@$student->member_id}}">
                                                             <div class="d-flex radio-btn-flex">
                                                                 <div class="mr-20">
                                                                     <input type="radio" name="attendance[{{@$student->student_record_id}}][attendance_type]" id="attendanceP{{@$student->student_record_id}}" value="P" class="common-radio" {{@$student->attendance_type == 'P'? 'checked': ''}}>
@@ -243,15 +243,15 @@
                         <div class="row">
                             <div class="col-lg-12 no-gutters">
                                 <div class="main-title">
-                                    <h3 class="mb-30">@lang('exam.exam_attendance') | <small>@lang('common.class'): {{$search_info['class_name']}}, @lang('common.section'): {{$search_info['section_name']}},  @lang('common.subject'): {{$search_info['subject_name']}}</small></h3>
+                                    <h3 class="mb-30">@lang('exam.exam_attendance') | <small>@lang('common.class'): {{$search_info['age_group_name']}}, @lang('common.section'): {{$search_info['mgender_name']}},  @lang('common.subject'): {{$search_info['subject_name']}}</small></h3>
                                 </div>
                             </div>
                         </div>
 
                         <input class="examId" type="hidden" name="exam_id" value="{{ @$exam_id}}">
                         <input class="subjectId" type="hidden" name="subject_id" value="{{ @$subject_id}}">
-                        <input class="classId" type="hidden" name="class_id" value="{{ @$class_id}}">
-                        <input class="sectionId" type="hidden" name="section_id" value="{{ @$section_id}}">
+                        <input class="classId" type="hidden" name="age_group_id" value="{{ @$age_group_id}}">
+                        <input class="sectionId" type="hidden" name="mgender_id" value="{{ @$mgender_id}}">
 
                         <div class="row">
                             <div class="col-lg-12">
@@ -260,8 +260,8 @@
                                         <thead>
 
                                             <tr>
-                                                <th width="25%">@lang('student.admission_no')</th>
-                                                <th width="25%">@lang('student.student_name')</th>
+                                                <th width="25%">@lang('student.registration_no')</th>
+                                                <th width="25%">@lang('student.member_name')</th>
                                                 <th width="25%">@lang('common.class_Sec')</th>
                                                 <th width="25%">@lang('student.roll_number')</th>
                                                 <th width="25%">@lang('exam.attendance')</th>
@@ -274,17 +274,17 @@
 
                                                 @foreach($students as $record)
                                                 <tr>
-                                                    <td>{{@$record->studentDetail->admission_no}}</td>
+                                                    <td>{{@$record->studentDetail->registration_no}}</td>
                                                     <td>{{@$record->studentDetail->full_name}}</td>
-                                                    <td>{{@$record->class->class_name}} ({{@$record->section->section_name}})</td>
+                                                    <td>{{@$record->class->age_group_name}} ({{@$record->section->mgender_name}})</td>
                                                     <td>{{@$record->roll_no}}</td>
                                                     <td>
                                                         <div class="d-flex radio-btn-flex">
                                                             <div class="mr-20">
                                                                 <input type="hidden" name="attendance[{{@$record->id}}]" value="{{@$record->id}}">
-                                                                <input type="hidden" name="attendance[{{@$record->id}}][student]" value="{{@$record->student_id}}">
-                                                                <input type="hidden" name="attendance[{{@$record->id}}][class]" value="{{@$record->class_id}}">
-                                                                <input type="hidden" name="attendance[{{@$record->id}}][section]" value="{{@$record->section_id}}">
+                                                                <input type="hidden" name="attendance[{{@$record->id}}][student]" value="{{@$record->member_id}}">
+                                                                <input type="hidden" name="attendance[{{@$record->id}}][class]" value="{{@$record->age_group_id}}">
+                                                                <input type="hidden" name="attendance[{{@$record->id}}][section]" value="{{@$record->mgender_id}}">
                                                                 <input type="radio" name="attendance[{{@$record->id}}][attendance_type]" id="attendanceP{{@$record->id}}" value="P" class="common-radio attd" checked>
                                                                 <label for="attendanceP{{$record->id}}">@lang('student.present')</label>
                                                             </div>
@@ -301,17 +301,17 @@
                                                 @foreach($exam_attendance_childs as $student)
                                                 <tr>
                                                     <td>
-                                                        {{ @$student->studentInfo !=""? @$student->studentInfo->admission_no:""}}
+                                                        {{ @$student->studentInfo !=""? @$student->studentInfo->registration_no:""}}
 
                                                     </td>
                                                     <td>{{@$student->studentInfo !="" ? @$student->studentInfo->full_name:""}}</td>
-                                                    <td>{{@$student->studentRecord->class->class_name}} ({{@$student->studentRecord->section->section_name}})</td>
+                                                    <td>{{@$student->studentRecord->class->age_group_name}} ({{@$student->studentRecord->section->mgender_name}})</td>
                                                     <td>{{@$student->studentRecord !="" ? @$student->studentRecord->roll_no:""}}</td>
                                                     <td>
                                                         <input type="hidden" name="attendance[{{@$student->student_record_id}}]" value="{{@$student->student_record_id}}">
-                                                        <input type="hidden" name="attendance[{{@$student->student_record_id}}][student]" value="{{@$student->student_id}}">
-                                                        <input type="hidden" name="attendance[{{@$student->student_record_id}}][class]" value="{{@$student->class_id}}">
-                                                        <input type="hidden" name="attendance[{{@$student->student_record_id}}][section]" value="{{@$student->section_id}}">
+                                                        <input type="hidden" name="attendance[{{@$student->student_record_id}}][student]" value="{{@$student->member_id}}">
+                                                        <input type="hidden" name="attendance[{{@$student->student_record_id}}][class]" value="{{@$student->age_group_id}}">
+                                                        <input type="hidden" name="attendance[{{@$student->student_record_id}}][section]" value="{{@$student->mgender_id}}">
                                                         <div class="d-flex radio-btn-flex">
                                                             <div class="mr-20">
                                                                 <input type="radio" name="attendance[{{@$student->student_record_id}}][attendance_type]" id="attendanceP{{@$student->student_record_id}}" value="P" class="common-radio" {{@$student->attendance_type == 'P'? 'checked': ''}}>

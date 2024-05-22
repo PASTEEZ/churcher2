@@ -30,8 +30,8 @@
                                     <table id="" class="table table-condensed table-hover custome-radio-class" cellspacing="0" width="100%">
                                         <thead>
                                             <tr>
-                                                <th>@lang('student.admission_no')</th>
-                                                <th>@lang('student.student_name')</th>
+                                                <th>@lang('student.registration_no')</th>
+                                                <th>@lang('student.member_name')</th>
                                                 <th>@lang('homework.marks')</th>
                                                 <th>@lang('homework.comments')</th>
                                                 <th>@lang('homework.home_work_status')</th>
@@ -59,7 +59,7 @@
 
                                                 @if($submitted_student != "")
                                                     <tr>
-                                                        <td>{{$submitted_student->studentInfo ?$submitted_student->studentInfo->admission_no:null}}</td>
+                                                        <td>{{$submitted_student->studentInfo ?$submitted_student->studentInfo->registration_no:null}}</td>
                                                         <td>{{$submitted_student->studentInfo ?$submitted_student->studentInfo->full_name:''}}</td>
                                                         <td>
                                                             <div class="input-effect">
@@ -83,7 +83,7 @@
                                                                 @endif
                                                                 @endif 
                                                             </div>
-                                                            <input type="hidden" name="student_id[]" value="{{$submitted_student->studentInfo?$submitted_student->studentInfo->id:''}}">
+                                                            <input type="hidden" name="member_id[]" value="{{$submitted_student->studentInfo?$submitted_student->studentInfo->id:''}}">
                                                             <input type="hidden" name="homework_id" value="{{$homework_id}}">
                                                             
                                                         </td>
@@ -129,7 +129,7 @@
                                                 @else
 
                                                     <tr>
-                                                        <td>{{$value->admission_no}}</td>
+                                                        <td>{{$value->registration_no}}</td>
                                                         <td>{{$value->full_name}}</td>
                                                         <td>
                                                             <div class="input-effect">
@@ -142,7 +142,7 @@
                                                                 </span>
                                                                 @endif
                                                             </div>
-                                                            <input type="hidden" name="student_id[]" value="{{$value->id}}">
+                                                            <input type="hidden" name="member_id[]" value="{{$value->id}}">
                                                             <input type="hidden" name="homework_id" value="{{$homework_id}}">
                                                             
                                                         </td>
@@ -384,7 +384,7 @@
                                @if(moduleStatusCheck('University'))
                                  {{@$homeworkDetails->semesterlabel->name}} ({{ @$homeworkDetails->unAcademic->name}})
                                @else
-                                {{@$homeworkDetails->classes->class_name}}
+                                {{@$homeworkDetails->classes->age_group_name}}
                                @endif
                            </div>
                        </div>
@@ -406,7 +406,7 @@
                             @if(moduleStatusCheck('University'))
                                  {{@$homeworkDetails->unDepartment->name}}
                                @else
-                               {{@$homeworkDetails->sections->section_name}}
+                               {{@$homeworkDetails->sections->mgender_name}}
                                @endif
                             
                         </div>

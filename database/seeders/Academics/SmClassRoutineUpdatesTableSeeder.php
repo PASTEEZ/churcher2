@@ -14,22 +14,22 @@ class SmClassRoutineUpdatesTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run($school_id, $academic_id, $count=1)
+    public function run($church_id, $church_year_id, $count=1)
     {
         $school_academic = [
-            'school_id' => $school_id,
-            'academic_id' => $academic_id,
+            'church_id' => $church_id,
+            'church_year_id' => $church_year_id,
         ];
-        $classSectionSubjects=SmAssignSubject::where('school_id',$school_id)
-        ->where('academic_id',$academic_id)
+        $classSectionSubjects=SmAssignSubject::where('church_id',$church_id)
+        ->where('church_year_id',$church_year_id)
         ->get();
-        $weekends = SmWeekend::where('school_id', $school_id)->get();
+        $weekends = SmWeekend::where('church_id', $church_id)->get();
         foreach ($weekends as $day){
             foreach($classSectionSubjects as  $classSectionSubject){
                 SmClassRoutineUpdate::factory()->times($count)->create(array_merge([
                     'day' => $day->id,
-                    'class_id' => $classSectionSubject->class_id,
-                    'section_id' => $classSectionSubject->section_id,
+                    'age_group_id' => $classSectionSubject->age_group_id,
+                    'mgender_id' => $classSectionSubject->mgender_id,
                     'subject_id' => $classSectionSubject->subject_id,
                 ], $school_academic));
             }

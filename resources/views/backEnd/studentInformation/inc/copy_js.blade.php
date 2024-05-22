@@ -3,7 +3,7 @@
         <div class="panel panel-info">
             <div class="panel-body panelheight">
 
-                <input type="hidden" value="42" name="student_id">
+                <input type="hidden" value="42" name="member_id">
                 <input type="hidden" value="2" name="nxt_row" class="nxt_row">
                 <div class="row">
                     <div class="text-center">
@@ -22,7 +22,7 @@
                         <div class="col-sm-5 col-lg-5 col-md-4">
                             <div class="form-group">
                                 <label for="email">Class</label>
-                                <select name="class_id_1" class="form-control class_id">
+                                <select name="age_group_id_1" class="form-control age_group_id">
                                     <option value="">Select</option>
                                     <option value="1" selected="selected">Class 1</option>
                                     <option value="2">Class 2</option>
@@ -34,7 +34,7 @@
                         <div class="col-sm-5 col-lg-5 col-md-4">
                             <label for="email">Section</label>
                             <div class="form-group">
-                                <select name="section_id_1" class="form-control section_id">
+                                <select name="mgender_id_1" class="form-control mgender_id">
                                     <option value="">Select</option>
                                     <option value='1' selected='selected'>A</option>
                                     <option value='2'>B</option>
@@ -111,26 +111,26 @@
         $(this).closest("div.row").remove();
     });
 
-    var class_id = '1';
-    var section_id = '1';
-    getSectionByClass(class_id, section_id);
-    $(document).on('change', '#class_id', function(e) {
-        $('#section_id').html("");
-        var class_id = $(this).val();
-        getSectionByClass(class_id, 0);
+    var age_group_id = '1';
+    var mgender_id = '1';
+    getSectionByClass(age_group_id, mgender_id);
+    $(document).on('change', '#age_group_id', function(e) {
+        $('#mgender_id').html("");
+        var age_group_id = $(this).val();
+        getSectionByClass(age_group_id, 0);
     });
 
-    $(document).on('change', '.class_id', function(e) {
-        var class_id = $(this).val();
+    $(document).on('change', '.age_group_id', function(e) {
+        var age_group_id = $(this).val();
 
-        var target_dropdown = $(this).closest("div.row").find('select.section_id');
+        var target_dropdown = $(this).closest("div.row").find('select.mgender_id');
         target_dropdown.html("");
         var div_data = '<option value="">Select</option>';
         $.ajax({
             type: "GET",
             url: baseurl + "sections/getByClass",
             data: {
-                'class_id': class_id
+                'age_group_id': age_group_id
             },
             dataType: "json",
             beforeSend: function() {
@@ -139,10 +139,10 @@
             success: function(data) {
                 $.each(data, function(i, obj) {
                     var sel = "";
-                    if (section_id == obj.section_id) {
+                    if (mgender_id == obj.mgender_id) {
                         sel = "selected";
                     }
-                    div_data += "<option value=" + obj.section_id + ">" + obj.section +
+                    div_data += "<option value=" + obj.mgender_id + ">" + obj.section +
                         "</option>";
                 });
                 target_dropdown.append(div_data);
@@ -153,33 +153,33 @@
         });
     });
 
-    function getSectionByClass(class_id, section_id) {
-        if (class_id != 0 && class_id !== "") {
-            $('#section_id').html("");
+    function getSectionByClass(age_group_id, mgender_id) {
+        if (age_group_id != 0 && age_group_id !== "") {
+            $('#mgender_id').html("");
             var div_data = '<option value="">Select</option>';
             $.ajax({
                 type: "GET",
                 url: baseurl + "sections/getByClass",
                 data: {
-                    'class_id': class_id
+                    'age_group_id': age_group_id
                 },
                 dataType: "json",
                 beforeSend: function() {
-                    $('#section_id').addClass('dropdownloading');
+                    $('#mgender_id').addClass('dropdownloading');
                 },
                 success: function(data) {
                     $.each(data, function(i, obj) {
                         var sel = "";
-                        if (section_id == obj.section_id) {
+                        if (mgender_id == obj.mgender_id) {
                             sel = "selected";
                         }
-                        div_data += "<option value=" + obj.section_id + " " + sel + ">" + obj
+                        div_data += "<option value=" + obj.mgender_id + " " + sel + ">" + obj
                             .section + "</option>";
                     });
-                    $('#section_id').append(div_data);
+                    $('#mgender_id').append(div_data);
                 },
                 complete: function() {
-                    $('#section_id').removeClass('dropdownloading');
+                    $('#mgender_id').removeClass('dropdownloading');
                 }
             });
         }
@@ -188,8 +188,8 @@
     $(document).on('click', '.addrow', function() {
         var container = $(this).closest(".panel-body").find('.append_row');
         var nxt_row = $(this).closest(".panel-body").find('.nxt_row').val();
-        var new_class_dropdown = $('#class_dropdown').html().replace("class_id", "class_id_" + nxt_row);
-        var new_section_dropdown = $('#section_dropdown').html().replace("section_id", "section_id_" + nxt_row);
+        var new_class_dropdown = $('#class_dropdown').html().replace("age_group_id", "age_group_id_" + nxt_row);
+        var new_section_dropdown = $('#section_dropdown').html().replace("mgender_id", "mgender_id_" + nxt_row);
         var $newDiv = $('<div>').addClass('row').append(
             $('<input>', {
                 type: 'hidden',

@@ -59,8 +59,8 @@ class SubjectWiseAttendanceController extends Controller
                 ->withInput();
 
         }
-            $subject_all = SmAssignSubject::where('class_id', '=', $request->class)
-            ->where('section_id', $request->section)
+            $subject_all = SmAssignSubject::where('age_group_id', '=', $request->class)
+            ->where('mgender_id', $request->section)
             ->distinct('subject_id')
             ->get();
 
@@ -94,9 +94,9 @@ class SubjectWiseAttendanceController extends Controller
         }
         try {
             $date = $request->attendance_date;
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
-            $students = SmStudent::where('class_id', $request->class)->where('section_id', $request->section)->where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $students = SmStudent::where('age_group_id', $request->class)->where('mgender_id', $request->section)->where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             if ($students->isEmpty()) {
                 return ApiBaseMethod::sendError('No Result Found',null);
@@ -106,7 +106,7 @@ class SubjectWiseAttendanceController extends Controller
             $new_students = [];
             $attendance_type = "";
             foreach ($students as $student) {
-                $attendance = SmSubjectAttendance::where('student_id', $student->id)->where('subject_id', $request->subject)->where('attendance_date', date('Y-m-d', strtotime($request->attendance_date)))->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->first();
+                $attendance = SmSubjectAttendance::where('member_id', $student->id)->where('subject_id', $request->subject)->where('attendance_date', date('Y-m-d', strtotime($request->attendance_date)))->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->first();
 
                 if ($attendance != "") {
                     $already_assigned_students[] = $attendance;
@@ -116,12 +116,12 @@ class SubjectWiseAttendanceController extends Controller
                 }
             }
 
-            $class_id = $request->class;
+            $age_group_id = $request->class;
             $class_info = SmClass::find($request->class);
             $section_info = SmSection::find($request->section);
 
-            $search_info['class_name'] = $class_info->class_name;
-            $search_info['section_name'] = $section_info->section_name;
+            $search_info['age_group_name'] = $class_info->age_group_name;
+            $search_info['mgender_name'] = $section_info->mgender_name;
             $search_info['date'] = $request->attendance_date;
 
 
@@ -129,7 +129,7 @@ class SubjectWiseAttendanceController extends Controller
                 $data = [];
                 $data['classes'] = $classes->toArray();
                 $data['date'] = $date;
-                $data['class_id'] = $class_id;
+                $data['age_group_id'] = $age_group_id;
                 $data['already_assigned_students'] = $already_assigned_students;
                 $data['new_students'] = $new_students;
                 $data['attendance_type'] = $attendance_type;
@@ -163,10 +163,10 @@ class SubjectWiseAttendanceController extends Controller
         // return $request;
         try {
             foreach ($request->id as $student) {
-                $attendance = SmSubjectAttendance::where('student_id', $student)
+                $attendance = SmSubjectAttendance::where('member_id', $student)
                 ->where('subject_id', $request->subject)
                 ->where('attendance_date', date('Y-m-d', strtotime($request->date)))
-                ->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())
+                ->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())
                 ->first();
 
                 if ($attendance != "") {
@@ -175,7 +175,7 @@ class SubjectWiseAttendanceController extends Controller
 
 
                 $attendance = new SmSubjectAttendance();
-                $attendance->student_id = $student;
+                $attendance->member_id = $student;
                 $attendance->subject_id = $request->subject;
                 if (isset($request->mark_holiday)) {
                     $attendance->attendance_type = "H";
@@ -210,9 +210,9 @@ class SubjectWiseAttendanceController extends Controller
             }
  
         }
-        $student_ids = SmStudent::where('class_id', $request->class)->where('section_id', $request->section)->select('id')->get();
-        $students = SmStudent::with('class','section')->where('class_id', $request->class)->where('section_id', $request->section)->get();
-        $studentAttendance=SmSubjectAttendance::whereIn('student_id', $student_ids)->where('subject_id', $request->subject)->where('attendance_date', date('Y-m-d', strtotime($request->date)))->orderby('student_id','ASC')->get();
+        $member_ids = SmStudent::where('age_group_id', $request->class)->where('mgender_id', $request->section)->select('id')->get();
+        $students = SmStudent::with('class','section')->where('age_group_id', $request->class)->where('mgender_id', $request->section)->get();
+        $studentAttendance=SmSubjectAttendance::whereIn('member_id', $member_ids)->where('subject_id', $request->subject)->where('attendance_date', date('Y-m-d', strtotime($request->date)))->orderby('member_id','ASC')->get();
 
                 $student_attendance=[];
                 $no_attendance=[];
@@ -221,12 +221,12 @@ class SubjectWiseAttendanceController extends Controller
 			            foreach($students as $student){
 
 			                $d['id']=$student->id;
-			                $d['student_id']=$student->id;
+			                $d['member_id']=$student->id;
 			                $d['student_photo']=@$student->student_photo;
 			                $d['full_name']=$student->full_name;
 			                $d['roll_no']=  $student->roll_no;
-			                $d['class_name']=$student->class->class_name;
-			                $d['section_name']=  $student->section->section_name;    
+			                $d['age_group_name']=$student->class->age_group_name;
+			                $d['mgender_name']=  $student->section->mgender_name;    
 			                $d['attendance_type']=null;
 			                $d['user_id']=$student->user_id;
 			    
@@ -236,12 +236,12 @@ class SubjectWiseAttendanceController extends Controller
 			        foreach ($studentAttendance as $attendance){
 
 			            $d['id']=$attendance->id;
-			            $d['student_id']=$attendance->student_id;
+			            $d['member_id']=$attendance->member_id;
 			            $d['student_photo']=$attendance->student->student_photo;
 			            $d['full_name']=$attendance->student->full_name;
 			            $d['roll_no']=  $attendance->student->roll_no;
-			            $d['class_name']=$attendance->student->class->class_name;
-			            $d['section_name']=  $attendance->student->section->section_name;    
+			            $d['age_group_name']=$attendance->student->class->age_group_name;
+			            $d['mgender_name']=  $attendance->student->section->mgender_name;    
 			            $d['attendance_type']=$attendance->attendance_type;
 			            $d['user_id']=$attendance->student->user_id;
 			            
@@ -279,20 +279,20 @@ class SubjectWiseAttendanceController extends Controller
                 ->withErrors($validator)
                 ->withInput();
         }
-        $students = SmStudent::where('class_id', $request->class)->where('section_id', $request->section)->select('id')->get();
-        $attendance = SmSubjectAttendance::where('student_id', $request->id)->where('subject_id', $request->subject)->where('attendance_date', date('Y-m-d', strtotime($request->date)))->first();
+        $students = SmStudent::where('age_group_id', $request->class)->where('mgender_id', $request->section)->select('id')->get();
+        $attendance = SmSubjectAttendance::where('member_id', $request->id)->where('subject_id', $request->subject)->where('attendance_date', date('Y-m-d', strtotime($request->date)))->first();
         if (empty($attendance)) {
             foreach ($students as $student) {
-                $attendance = SmSubjectAttendance::where('student_id', $student->id)->where('subject_id', $request->subject)->where('attendance_date', date('Y-m-d', strtotime($request->date)))->first();
+                $attendance = SmSubjectAttendance::where('member_id', $student->id)->where('subject_id', $request->subject)->where('attendance_date', date('Y-m-d', strtotime($request->date)))->first();
                 if ($attendance != "") {
                     $attendance->delete();
                 } else {
                     $attendance = new SmSubjectAttendance();
-                    $attendance->student_id = $student->id;
+                    $attendance->member_id = $student->id;
                     $attendance->subject_id = $request->subject;
                     $attendance->attendance_type = "P";
                     $attendance->attendance_date = date('Y-m-d', strtotime($request->date));
-                    $attendance->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+                    $attendance->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
                     $attendance->save();
                 }
             }
@@ -324,36 +324,36 @@ class SubjectWiseAttendanceController extends Controller
         }
         try {
             
-            $students = SmStudent::where('class_id', $request->class)->where('section_id', $request->section)->select('id')->get();
-        $attendance = SmSubjectAttendance::where('student_id', $request->id)->where('subject_id', $request->subject)->where('attendance_date', date('Y-m-d', strtotime($request->date)))->first();
+            $students = SmStudent::where('age_group_id', $request->class)->where('mgender_id', $request->section)->select('id')->get();
+        $attendance = SmSubjectAttendance::where('member_id', $request->id)->where('subject_id', $request->subject)->where('attendance_date', date('Y-m-d', strtotime($request->date)))->first();
        
         if (empty($attendance)) {
             foreach ($students as $student) {
-                $attendance = SmSubjectAttendance::where('student_id', $student->id)->where('attendance_date', date('Y-m-d', strtotime($request->date)))->first();
+                $attendance = SmSubjectAttendance::where('member_id', $student->id)->where('attendance_date', date('Y-m-d', strtotime($request->date)))->first();
                 if ($attendance != "") {
                     $attendance->delete();
                 }
                 
                 $attendance = new SmSubjectAttendance();
-                $attendance->student_id = $student->id;
+                $attendance->member_id = $student->id;
                 $attendance->subject_id = $request->subject;
                 $attendance->attendance_type =$request->attendance;
                 $attendance->attendance_date = date('Y-m-d', strtotime($request->date));
-                $attendance->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+                $attendance->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
                 $attendance->save();
                 
             }
         }
-        $attendance = SmSubjectAttendance::where('student_id', $request->id)->where('subject_id', $request->subject)->where('attendance_date', date('Y-m-d', strtotime($request->date)))->first();
+        $attendance = SmSubjectAttendance::where('member_id', $request->id)->where('subject_id', $request->subject)->where('attendance_date', date('Y-m-d', strtotime($request->date)))->first();
         if ($attendance != "") {
             $attendance->delete();
         }
         $attendance = new SmSubjectAttendance();
-        $attendance->student_id = $request->id;
+        $attendance->member_id = $request->id;
         $attendance->subject_id = $request->subject;
         $attendance->attendance_type = $request->attendance;
         $attendance->attendance_date = date('Y-m-d', strtotime($request->date));
-        $attendance->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+        $attendance->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
         $attendance->save();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse(null, 'Student attendance been submitted successfully');

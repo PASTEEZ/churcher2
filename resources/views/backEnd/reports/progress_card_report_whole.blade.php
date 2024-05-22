@@ -61,7 +61,7 @@
                                 <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                     <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                     @foreach($classes as $class)
-                                    <option value="{{$class->id}}" {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{$class->class_name}}</option>
+                                    <option value="{{$class->id}}" {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{$class->age_group_name}}</option>
                                     @endforeach
                                 </select>
                                 @if ($errors->has('class'))
@@ -118,9 +118,9 @@
                         <div class="print_button pull-right">
                             {{ Form::open(['class' => 'form-horizontal', 'files' => true, 'route' => 'progress-card/print', 'method' => 'POST', 'enctype' => 'multipart/form-data', 'id' => 'search_student', 'target' => '_blank']) }}
 
-                            <input type="hidden" name="class_id" value="{{$class_id}}">
-                            <input type="hidden" name="section_id" value="{{$section_id}}">
-                            <input type="hidden" name="student_id" value="{{$student_id}}">
+                            <input type="hidden" name="age_group_id" value="{{$age_group_id}}">
+                            <input type="hidden" name="mgender_id" value="{{$mgender_id}}">
+                            <input type="hidden" name="member_id" value="{{$member_id}}">
                             
                             
                             <button type="submit" class="primary-btn small fix-gr-bg"><i class="ti-printer"> </i> @lang('common.print')
@@ -143,7 +143,7 @@
                                                     <img class="logo-img" src="{{ generalSetting()->logo }}" alt="">
                                                 </div>
                                                 <div class="ml-30">
-                                                    <h3 class="text-white"> {{isset(generalSetting()->school_name)?generalSetting()->school_name:'Infix School Management ERP'}} </h3>
+                                                    <h3 class="text-white"> {{isset(generalSetting()->church_name)?generalSetting()->church_name:'Infix School Management ERP'}} </h3>
                                                 <p class="text-white mb-0"> {{isset(generalSetting()->address)?generalSetting()->address:'Infix School Address'}} </p>
                                                 </div>
                                             </div>
@@ -159,7 +159,7 @@
                                                 <div class="row">
                                                     <div class="col-lg-3">
                                                         <p class="mb-0">
-                                                            @lang('common.academic_year') : <span class="primary-color fw-500">{{generalSetting()->session_year}}</span>
+                                                            @lang('common.church_year') : <span class="primary-color fw-500">{{generalSetting()->session_year}}</span>
                                                         </p>
                                                         <p class="mb-0">
                                                                 @lang('student.roll') : <span class="primary-color fw-500">{{$studentDetails->roll_no}}</span>
@@ -173,13 +173,13 @@
 
                                                     <div class="col-lg-3">
                                                         <p class="mb-0">
-                                                            @lang('common.class') : <span class="primary-color fw-500">{{ $studentDetails->class_name }}</span>
+                                                            @lang('common.class') : <span class="primary-color fw-500">{{ $studentDetails->age_group_name }}</span>
                                                         </p>
                                                         <p class="mb-0">
-                                                                @lang('student.admission_no') : <span class="primary-color fw-500">{{$studentDetails->admission_no}}</span>
+                                                                @lang('student.registration_no') : <span class="primary-color fw-500">{{$studentDetails->registration_no}}</span>
                                                             </p>
                                                         {{-- <p class="mb-0">
-                                                            @lang('common.section') : <span class="primary-color fw-500">{{ $studentDetails->section_name }}</span>
+                                                            @lang('common.section') : <span class="primary-color fw-500">{{ $studentDetails->mgender_name }}</span>
                                                         </p> --}}
 
                                                         
@@ -187,7 +187,7 @@
 
                                                     <div class="col-lg-3">
                                                             <p class="mb-0">
-                                                                    @lang('common.section') : <span class="primary-color fw-500">{{ $studentDetails->section_name }}</span>
+                                                                    @lang('common.section') : <span class="primary-color fw-500">{{ $studentDetails->mgender_name }}</span>
                                                                 </p>
                                                    
                                                         {{-- <p class="mb-0">
@@ -236,11 +236,11 @@
                                                             $TotalSum= 0;
                                                         foreach($assinged_exam_types as $assinged_exam_type){
 
-                                                            $mark_parts     =   App\SmAssignSubject::getNumberOfPart($data->subject_id, $class_id, $section_id, $assinged_exam_type);
+                                                            $mark_parts     =   App\SmAssignSubject::getNumberOfPart($data->subject_id, $age_group_id, $mgender_id, $assinged_exam_type);
 
-                                                            $result         =   App\SmResultStore::GetResultBySubjectId($class_id, $section_id, $data->subject_id,$assinged_exam_type ,$student_id);
+                                                            $result         =   App\SmResultStore::GetResultBySubjectId($age_group_id, $mgender_id, $data->subject_id,$assinged_exam_type ,$member_id);
                                                             if(!empty($result)){
-                                                                $final_results = App\SmResultStore::GetFinalResultBySubjectId($class_id, $section_id, $data->subject_id,$assinged_exam_type ,$student_id);
+                                                                $final_results = App\SmResultStore::GetFinalResultBySubjectId($age_group_id, $mgender_id, $data->subject_id,$assinged_exam_type ,$member_id);
 
                                                             }
 
@@ -293,7 +293,7 @@
                                                                         }else{
                                                                             $totalSumSub = $totalSumSub / count($assinged_exam_types);
 
-                                                                            $mark_grade = App\SmMarksGrade::where([['percent_from', '<=', $totalSumSub], ['percent_upto', '>=', $totalSumSub]])->where('academic_id', getAcademicId())->first();
+                                                                            $mark_grade = App\SmMarksGrade::where([['percent_from', '<=', $totalSumSub], ['percent_upto', '>=', $totalSumSub]])->where('church_year_id', getAcademicId())->first();
 
 
                                                                             echo @$mark_grade->grade_name;
@@ -307,7 +307,7 @@
                                                                             echo 'F';
                                                                         }else{
 
-                                                                            $mark_grade = App\SmMarksGrade::where([['percent_from', '<=', $totalSumSub], ['percent_upto', '>=', $totalSumSub]])->where('academic_id', getAcademicId())->first();
+                                                                            $mark_grade = App\SmMarksGrade::where([['percent_from', '<=', $totalSumSub], ['percent_upto', '>=', $totalSumSub]])->where('church_year_id', getAcademicId())->first();
 
 
                                                                             echo @$mark_grade->gpa;
@@ -335,7 +335,7 @@
                                                                     $total_exam_subject = count($subjects) + count($assinged_exam_types);
                                                                     $average_mark = $total_marks / $total_exam_subject;
 
-                                                                    $average_grade = App\SmMarksGrade::where([['percent_from', '<=', $totalSumSub], ['percent_upto', '>=', $totalSumSub]])->where('academic_id', getAcademicId())->first();
+                                                                    $average_grade = App\SmMarksGrade::where([['percent_from', '<=', $totalSumSub], ['percent_upto', '>=', $totalSumSub]])->where('church_year_id', getAcademicId())->first();
 
 
                                                                     echo @$average_grade->grade_name;
@@ -354,7 +354,7 @@
                                                                     $total_exam_subject = count($subjects) + count($assinged_exam_types);
                                                                     $average_mark = $total_marks / $total_exam_subject;
 
-                                                                    $average_grade = App\SmMarksGrade::where([['percent_from', '<=', $totalSumSub], ['percent_upto', '>=', $totalSumSub]])->where('academic_id', getAcademicId())->first();
+                                                                    $average_grade = App\SmMarksGrade::where([['percent_from', '<=', $totalSumSub], ['percent_upto', '>=', $totalSumSub]])->where('church_year_id', getAcademicId())->first();
                                                                     echo @$average_grade->gpa;
                                                                 }
                                                             @endphp

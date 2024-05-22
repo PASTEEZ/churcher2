@@ -45,11 +45,11 @@
                 vertical-align: middle;
             }
 
-            .student_name, .subject-list {
+            .member_name, .subject-list {
                 line-height: 12px;
             }
 
-            .student_name b {
+            .member_name b {
                 min-width: 20%;
             }
 
@@ -231,14 +231,14 @@
                                     </div>
 
                                     <div class="col-lg-3 mt-30" id="select_un_student_div">
-                                        {{ Form::select('student_id',[""=>__('common.select_student').'*'], null , ['class' => 'niceSelect w-100 bb form-control'. ($errors->has('student_id') ? ' is-invalid' : ''), 'id'=>'select_un_student']) }}
+                                        {{ Form::select('member_id',[""=>__('common.select_student').'*'], null , ['class' => 'niceSelect w-100 bb form-control'. ($errors->has('member_id') ? ' is-invalid' : ''), 'id'=>'select_un_student']) }}
                                         <span class="focus-border"></span>
                                         <div class="pull-right loader loader_style" id="select_un_student_loader">
                                             <img class="loader_img_style" src="{{asset('public/backEnd/img/demo_wait.gif')}}" alt="loader">
                                         </div>
-                                        @if ($errors->has('student_id'))
+                                        @if ($errors->has('member_id'))
                                             <span class="invalid-feedback custom-error-message" role="alert">
-                                                {{ @$errors->first('student_id') }}
+                                                {{ @$errors->first('member_id') }}
                                             </span>
                                         @endif
                                     </div>
@@ -262,7 +262,7 @@
                                 <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                     <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class')*</option>
                                     @foreach($classes as $class)
-                                        <option value="{{$class->id}}" {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{$class->class_name}}</option>
+                                        <option value="{{$class->id}}" {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{$class->age_group_name}}</option>
                                     @endforeach
                                 </select>
                                 @if ($errors->has('class'))
@@ -330,10 +330,10 @@
                                 <div class="print_button pull-right">
                                     {{ Form::open(['class' => 'form-horizontal', 'files' => true, 'route' => 'tabulation-sheet/print', 'method' => 'POST', 'enctype' => 'multipart/form-data', 'id' => 'search_student', 'target' => '_blank']) }}
                                     <input type="hidden" name="exam_term_id" value="{{$exam_term_id}}">
-                                    <input type="hidden" name="class_id" value="{{$class_id}}">
-                                    <input type="hidden" name="section_id" value="{{$section_id}}">
-                                    @if(!empty($student_id))
-                                        <input type="hidden" name="student_id" value="{{$student_id}}">
+                                    <input type="hidden" name="age_group_id" value="{{$age_group_id}}">
+                                    <input type="hidden" name="mgender_id" value="{{$mgender_id}}">
+                                    @if(!empty($member_id))
+                                        <input type="hidden" name="member_id" value="{{$member_id}}">
                                     @endif
                                     <button type="submit" class="primary-btn small fix-gr-bg"><i class="ti-printer"> </i> @lang('common.print')</button>
                                 {{ Form::close() }}
@@ -346,10 +346,10 @@
                                     <div class="card-header">
                                         <div class="row align-items-center">
                                             <div class="col-lg-4">
-                                                <img class="logo-img" src="{{ generalSetting()->logo }}" alt="{{ generalSetting()->school_name }}">
+                                                <img class="logo-img" src="{{ generalSetting()->logo }}" alt="{{ generalSetting()->church_name }}">
                                             </div>
                                             <div class=" col-lg-8 text-left text-lg-right mt-30-md">
-                                                <h3 class="text-white"> {{isset(generalSetting()->school_name)?generalSetting()->school_name:'Infix School Management ERP'}} </h3>
+                                                <h3 class="text-white"> {{isset(generalSetting()->church_name)?generalSetting()->church_name:'Infix School Management ERP'}} </h3>
                                                 <p class="text-white mb-0"> {{isset(generalSetting()->address)?generalSetting()->address:'Infix School Adress'}} </p>
                                                 <p class="text-white mb-0"> @lang('common.email'): {{isset(generalSetting()->email)?generalSetting()->email:'admin@demo.com'}} , @lang('common.phone'): {{isset(generalSetting()->phone)?generalSetting()->phone:'+8801841412141'}}</p>
                                             </div>
@@ -371,15 +371,15 @@
                                                     <ul class="student_info">
                                                         <li>
                                                             <p> @lang('common.name')</p>  
-                                                            <p class="bold_text">: {{$tabulation_details['student_name']}}</p>
+                                                            <p class="bold_text">: {{$tabulation_details['member_name']}}</p>
                                                         </li>
                                                         <li>
                                                             <p>@lang('common.class')</p>
-                                                            <p class="bold_text">: {{$tabulation_details['student_class']}}</p>
+                                                            <p class="bold_text">: {{$tabulation_details['member_group']}}</p>
                                                         </li>
                                                         <li>
                                                             <p>@lang('common.section')</p>
-                                                            <p class="bold_text">: {{$tabulation_details['student_section']}}</p>
+                                                            <p class="bold_text">: {{$tabulation_details['member_gender']}}</p>
                                                         </li>
                                                     </ul>
                                                 </div>
@@ -390,8 +390,8 @@
                                                             <p class="bold_text">: {{$tabulation_details['student_roll']}}</p>
                                                         </li>
                                                         <li>
-                                                            <p>@lang('student.admission_no')</p>
-                                                            <p class="bold_text">: {{$tabulation_details['student_admission_no']}}</p>
+                                                            <p>@lang('student.registration_no')</p>
+                                                            <p class="bold_text">: {{$tabulation_details['member_registration_no']}}</p>
                                                         </li>
                                                         <li>
                                                             <p>@lang('exam.exam')</p> 
@@ -412,7 +412,7 @@
                                                                 @php
                                                                     $subject_ID    = $subject->subject_id;
                                                                     $subject_Name   = $subject->subject->subject_name;
-                                                                    $mark_parts      = App\SmAssignSubject::getNumberOfPart($subject_ID, $class_id, $section_id, $exam_term_id);
+                                                                    $mark_parts      = App\SmAssignSubject::getNumberOfPart($subject_ID, $age_group_id, $mgender_id, $exam_term_id);
                                                                 @endphp
                                                                 <th colspan="{{count($mark_parts)+1}}" class="subject-list large_spanTh">{{$subject_Name}}</th>
                                                             @endforeach
@@ -436,7 +436,7 @@
                                                                 @php
                                                                     $subject_ID     = $subject->subject_id;
                                                                     $subject_Name   = $subject->subject->subject_name;
-                                                                    $mark_parts     = App\SmAssignSubject::getNumberOfPart($subject_ID, $class_id, $section_id, $exam_term_id);
+                                                                    $mark_parts     = App\SmAssignSubject::getNumberOfPart($subject_ID, $age_group_id, $mgender_id, $exam_term_id);
                                                                 @endphp
                                                             @foreach($mark_parts as $sigle_part)
                                                                 <th class="large_padding">{{$sigle_part->exam_title}} ({{$sigle_part->exam_mark}})</th>
@@ -465,7 +465,7 @@
                                                                 $Optional_subject_count=0;  
                                                                 $optional_subject_gpa=0;  
                                                                 $opt_sub_gpa=0;
-                                                                $optional_subject=App\SmOptionalSubjectAssign::where('student_id','=',$student->id)
+                                                                $optional_subject=App\SmOptionalSubjectAssign::where('member_id','=',$student->id)
                                                                                 ->where('session_id','=',$student->session_id)
                                                                                 ->first();
                                                             @endphp
@@ -474,11 +474,11 @@
                                                                     @php
                                                                         $subject_ID     = $subject->subject_id;
                                                                         $subject_Name   = $subject->subject->subject_name;
-                                                                        $mark_parts     = App\SmAssignSubject::getMarksOfPart($student->id, $subject_ID, $class_id, $section_id, $exam_term_id);
+                                                                        $mark_parts     = App\SmAssignSubject::getMarksOfPart($student->id, $subject_ID, $age_group_id, $mgender_id, $exam_term_id);
                                                                         $subject_count= 0;
                                                                         $optional_subject_marks=DB::table('sm_optional_subject_assigns')
                                                                             ->join('sm_mark_stores','sm_mark_stores.subject_id','=','sm_optional_subject_assigns.subject_id')
-                                                                            ->where('sm_optional_subject_assigns.student_id','=',$student->id)
+                                                                            ->where('sm_optional_subject_assigns.member_id','=',$student->id)
                                                                             ->first();
                                                                     @endphp
                                                                 @foreach($mark_parts as $sigle_part)
@@ -486,13 +486,13 @@
                                                                 @endforeach
                                                                 <td class="total">
                                                                     @php
-                                                                        $tola_mark_by_subject = App\SmAssignSubject::getSumMark($student->id, $subject_ID, $class_id, $section_id, $exam_term_id);
+                                                                        $tola_mark_by_subject = App\SmAssignSubject::getSumMark($student->id, $subject_ID, $age_group_id, $mgender_id, $exam_term_id);
                                                                         $marks_by_students  = $marks_by_students + $tola_mark_by_subject;
                                                                     @endphp
                                                                     {{$tola_mark_by_subject}}
                                                                 </td>
                                                                     @php
-                                                                        $value=subjectFullMark($exam_term_id, $subject_ID, $class_id, $section_id);
+                                                                        $value=subjectFullMark($exam_term_id, $subject_ID, $age_group_id, $mgender_id);
                                                                         $persentage=subjectPercentageMark($tola_mark_by_subject,$value);
                                                                         $mark_grade = markGpa($persentage);
 
@@ -665,7 +665,7 @@
                                                                             @endif
                                                                         </td>
                                                                         <td>
-                                                                            {{getStudentMeritPosition($class_id, $section_id, $exam_term_id, $tabulation_details['record_id'])}}
+                                                                            {{getStudentMeritPosition($age_group_id, $mgender_id, $exam_term_id, $tabulation_details['record_id'])}}
                                                                         </td>
                                                                     @endif
                                                                 @endif
@@ -734,8 +734,8 @@
                                     {{ Form::open(['class' => 'form-horizontal', 'files' => true, 'route' => 'tabulation-sheet/print', 'method' => 'POST', 'enctype' => 'multipart/form-data', 'id' => 'search_student', 'target' => '_blank']) }}
                                     <input type="hidden" name="allSection" value="allSection">
                                     <input type="hidden" name="exam_term_id" value="{{$exam_term_id}}">
-                                    <input type="hidden" name="class_id" value="{{$class_id}}">
-                                    <input type="hidden" name="section_id" value="{{$section_id}}">
+                                    <input type="hidden" name="age_group_id" value="{{$age_group_id}}">
+                                    <input type="hidden" name="mgender_id" value="{{$mgender_id}}">
                                     
                                     <button type="submit" class="primary-btn small fix-gr-bg"><i class="ti-printer"> </i> @lang('common.print')
                                     </button>
@@ -749,14 +749,14 @@
                                     <div class="card-header">
                                         <div class="row align-items-center">
                                             <div class="col-lg-4">
-                                                <img class="logo-img" src="{{ generalSetting()->logo }}" alt="{{ generalSetting()->school_name }}">
+                                                <img class="logo-img" src="{{ generalSetting()->logo }}" alt="{{ generalSetting()->church_name }}">
                                             </div>
                                             <div class="col-lg-4">
                                                 <h3 class="text-white">@lang('common.class') : {{$tabulation_details['class']}}</h3>
                                                 <p class="text-white mb-0">@lang('common.section') : {{$tabulation_details['section']}}</p>
                                             </div>
                                             <div class=" col-lg-4 text-left text-lg-right mt-30-md">
-                                                <h3 class="text-white"> {{isset(generalSetting()->school_name)?generalSetting()->school_name:'Infix School Management ERP'}} </h3>
+                                                <h3 class="text-white"> {{isset(generalSetting()->church_name)?generalSetting()->church_name:'Infix School Management ERP'}} </h3>
                                                 <p class="text-white mb-0"> {{isset(generalSetting()->address)?generalSetting()->address:'Infix School Adress'}} </p>
                                                 <p class="text-white mb-0">
                                                     @lang('common.email'): {{isset(generalSetting()->email)?generalSetting()->email:'admin@demo.com'}} ,
@@ -795,7 +795,7 @@
                                                                             @php
                                                                                 $subject_ID    = $subject->subject_id;
                                                                                 $subject_Name   = $subject->subject->subject_name;
-                                                                                $mark_parts      = App\SmAssignSubject::getNumberOfPart($subject_ID, $class_id, $section_id, $exam_term_id);
+                                                                                $mark_parts      = App\SmAssignSubject::getNumberOfPart($subject_ID, $age_group_id, $mgender_id, $exam_term_id);
                                                                             @endphp
                                                                         <th class="large_spanTh" colspan="{{count($mark_parts)+1}}">{{$subject_Name}}</th>
                                                                         @endforeach
@@ -818,7 +818,7 @@
                                                                             @php
                                                                                 $subject_ID     = $subject->subject_id;
                                                                                 $subject_Name   = $subject->subject->subject_name;
-                                                                                $mark_parts     = App\SmAssignSubject::getNumberOfPart($subject_ID, $class_id, $section_id, $exam_term_id);
+                                                                                $mark_parts     = App\SmAssignSubject::getNumberOfPart($subject_ID, $age_group_id, $mgender_id, $exam_term_id);
                                                                             @endphp
                                                                             @foreach($mark_parts as $sigle_part)
                                                                                 <th class="large_padding">{{$sigle_part->exam_title}} ({{$sigle_part->exam_mark}})</th>
@@ -842,12 +842,12 @@
                                                                         $Optional_subject_count=0;  
                                                                         $optional_subject_gpa=0;  
                                                                         $opt_sub_gpa=0;
-                                                                        $optional_subject=App\SmOptionalSubjectAssign::where('student_id','=',$student->id)
+                                                                        $optional_subject=App\SmOptionalSubjectAssign::where('member_id','=',$student->id)
                                                                                         ->where('session_id','=',$student->session_id)
                                                                                         ->first();
-                                                                        $studentRecord = App\Models\StudentRecord::where('class_id', $class_id)
-                                                                                        ->where('section_id', $section_id)
-                                                                                        ->where('student_id',$student->id)
+                                                                        $studentRecord = App\Models\StudentRecord::where('age_group_id', $age_group_id)
+                                                                                        ->where('mgender_id', $mgender_id)
+                                                                                        ->where('member_id',$student->id)
                                                                                         ->first();
                                                                     @endphp
                                                                     <tr>
@@ -857,11 +857,11 @@
                                                                                 @php
                                                                                     $subject_ID     = $subject->subject_id;
                                                                                     $subject_Name   = $subject->subject->subject_name;
-                                                                                    $mark_parts     = App\SmAssignSubject::getMarksOfPart($student->id, $subject_ID, $class_id, $section_id, $exam_term_id);
+                                                                                    $mark_parts     = App\SmAssignSubject::getMarksOfPart($student->id, $subject_ID, $age_group_id, $mgender_id, $exam_term_id);
                                                                                     $subject_count= 0;
                                                                                     $optional_subject_marks=DB::table('sm_optional_subject_assigns')
                                                                                         ->join('sm_mark_stores','sm_mark_stores.subject_id','=','sm_optional_subject_assigns.subject_id')
-                                                                                        ->where('sm_optional_subject_assigns.student_id','=',$student->id)
+                                                                                        ->where('sm_optional_subject_assigns.member_id','=',$student->id)
                                                                                         ->first();
                                                                                 @endphp
                                                                             @foreach($mark_parts as $sigle_part)
@@ -869,13 +869,13 @@
                                                                             @endforeach
                                                                         <td>
                                                                             @php
-                                                                                $tola_mark_by_subject = App\SmAssignSubject::getSumMark($student->id, $subject_ID, $class_id, $section_id, $exam_term_id);
+                                                                                $tola_mark_by_subject = App\SmAssignSubject::getSumMark($student->id, $subject_ID, $age_group_id, $mgender_id, $exam_term_id);
                                                                                 $marks_by_students  = $marks_by_students + $tola_mark_by_subject;
                                                                             @endphp
                                                                             {{$tola_mark_by_subject}}
                                                                         </td>
                                                                         @php
-                                                                            $value=subjectFullMark($exam_term_id, $subject_ID, $class_id, $section_id);
+                                                                            $value=subjectFullMark($exam_term_id, $subject_ID, $age_group_id, $mgender_id);
                                                                             $persentage=subjectPercentageMark($tola_mark_by_subject,$value);
                                                                             
                                                                             $mark_grade = markGpa($persentage);
@@ -994,7 +994,7 @@
                                                                                 @if(isset($this_student_failed) && $this_student_failed==1)
 
                                                                                 @else
-                                                                                    {{getStudentMeritPosition($class_id, $section_id, $exam_term_id, $studentRecord->id)}}
+                                                                                    {{getStudentMeritPosition($age_group_id, $mgender_id, $exam_term_id, $studentRecord->id)}}
                                                                                 @endif
                                                                             </td>
                                                                         @endif
@@ -1062,7 +1062,7 @@
                     var url = $("#url").val();
                     var i = 0;
                     let semester_id = $(this).val();
-                    let academic_id = $('#select_academic').val();  
+                    let church_year_id = $('#select_academic').val();  
                     let session_id = $('#select_session').val();
                     let faculty_id = $('#select_faculty').val();
                     let department_id = $('#select_dept').val();
@@ -1101,7 +1101,7 @@
 
                         return ;
                     }
-                    if (academic_id =='') {
+                    if (church_year_id =='') {
                         setTimeout(function() {
                             toastr.error(
                             "Academic Not Found",
@@ -1122,7 +1122,7 @@
 
                     var formData = {
                         semester_id : semester_id,
-                        academic_id : academic_id,
+                        church_year_id : church_year_id,
                         session_id : session_id,
                         faculty_id : faculty_id,
                         department_id : department_id,

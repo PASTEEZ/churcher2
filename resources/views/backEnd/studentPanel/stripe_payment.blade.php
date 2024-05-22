@@ -12,7 +12,7 @@
         <div class="row">
             <div class="col-lg-12">
                 <input type="hidden" name="assign_id" value="{{$assign_id}}">
-                <input type="hidden" name="student_id" value="{{$student_id}}">
+                <input type="hidden" name="member_id" value="{{$member_id}}">
                 <input type="hidden" name="fees_type" value="{{$fees_type}}">
                 <input type="hidden" name="amount" value="{{$amount}}">
                 <input type="hidden" name="record_id" value="{{$record_id}}">

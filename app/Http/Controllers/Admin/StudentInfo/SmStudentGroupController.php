@@ -20,7 +20,7 @@ class SmStudentGroupController extends Controller
     {
 
         try {
-            $student_groups = SmStudentGroup::withCount('students')->where('school_id', Auth::user()->school_id)->get();
+            $student_groups = SmStudentGroup::withCount('students')->where('church_id', Auth::user()->church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($student_groups, null);
@@ -37,9 +37,9 @@ class SmStudentGroupController extends Controller
         try {
             $student_group = new SmStudentGroup();
             $student_group->group = $request->group;
-            $student_group->school_id = Auth::user()->school_id;
+            $student_group->church_id = Auth::user()->church_id;
             $student_group->created_by = auth()->user()->id;
-            $student_group->academic_id = getAcademicId();
+            $student_group->church_year_id = getAcademicId();
             $result = $student_group->save();
 
             Toastr::success('Operation successful', 'Success');
@@ -54,7 +54,7 @@ class SmStudentGroupController extends Controller
     {
         try {
             $student_group = SmStudentGroup::find($id);
-            $student_groups = SmStudentGroup::withCount('students')->where('school_id', Auth::user()->school_id)->get();
+            $student_groups = SmStudentGroup::withCount('students')->where('church_id', Auth::user()->church_id)->get();
             return view('backEnd.studentInformation.student_group', compact('student_groups', 'student_group'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');

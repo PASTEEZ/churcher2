@@ -228,7 +228,7 @@ $setting_info=generalSetting();
                                          <img src=" {{asset('/')}}{{generalSetting()->logo }}" alt="">
                                     </div>
                                     <div class="company_info">
-                                        {{isset(generalSetting()->school_name)?generalSetting()->school_name:'Infix School Management ERP'}} 
+                                        {{isset(generalSetting()->church_name)?generalSetting()->church_name:'Infix School Management ERP'}} 
                                         <h5 >   {{isset(generalSetting()->address)?generalSetting()->address:'Infix School Address'}} </h5>
                                     </div>
                                 </div>

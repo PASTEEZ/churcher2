@@ -31,21 +31,21 @@ class SmClassesTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run($school_id = 1, $academic_id = 1, $count = 10)
+    public function run($church_id = 1, $church_year_id = 1, $count = 10)
     {
-        $sections = SmSection::where('school_id', $school_id)->where('academic_id', $academic_id)->get();
-        $subjects = SmSubject::where('school_id', $school_id)->where('academic_id', $academic_id)->get();
+        $sections = SmSection::where('church_id', $church_id)->where('church_year_id', $church_year_id)->get();
+        $subjects = SmSubject::where('church_id', $church_id)->where('church_year_id', $church_year_id)->get();
 
         SmClass::factory()->times($count)->create([
-            'school_id' => $school_id,
-            'academic_id' => $academic_id
+            'church_id' => $church_id,
+            'church_year_id' => $church_year_id
         ])->each(function ($class) use ($sections) {
             $class_sections = [];
             foreach ($sections as $section) {
                 $class_sections[] = [
-                    'section_id' => $section->id,
-                    'school_id' => $class->school_id,
-                    'academic_id' => $class->academic_id,
+                    'mgender_id' => $section->id,
+                    'church_id' => $class->church_id,
+                    'church_year_id' => $class->church_year_id,
                 ];
                 $i = 0;
                 SmStudent::factory()->times(5)->create()->each(function ($student) use ($class, $section) {
@@ -54,14 +54,14 @@ class SmClassesTableSeeder extends Seeder
                         'role_id' => 2,
                         'email' => $student->email,
                         'username' => $student->email,
-                        'school_id' => $class->school_id,
+                        'church_id' => $class->church_id,
                     ])->each(function ($user) use ($student) {
                         $student->user_id = $user->id;
                         $student->save();
                     });
 
                     SmParent::factory()->times(1)->create([
-                        'school_id' => $class->school_id,
+                        'church_id' => $class->church_id,
                         'guardians_email' => 'guardian_' . $student->id . '@infixedu.com',
                     ])->each(function ($parent) use ($student) {
                         $student->parent_id = $parent->id;
@@ -70,7 +70,7 @@ class SmClassesTableSeeder extends Seeder
                             'role_id' => 3,
                             'email' => $parent->guardians_email,
                             'username' => $parent->guardians_email,
-                            'school_id' => $parent->school_id,
+                            'church_id' => $parent->church_id,
                         ])->each(function ($user) use ($parent) {
                             $parent->user_id = $user->id;
                             $parent->save();
@@ -78,14 +78,14 @@ class SmClassesTableSeeder extends Seeder
                     });
 
                     StudentRecord::create([
-                        'class_id' => $class->id,
-                        'section_id' => $section->id,
-                        'school_id' => $class->school_id,
-                        'academic_id' => $class->academic_id,
+                        'age_group_id' => $class->id,
+                        'mgender_id' => $section->id,
+                        'church_id' => $class->church_id,
+                        'church_year_id' => $class->church_year_id,
                         'roll_no' => $student->id,
-                        'session_id' => $class->academic_id,
+                        'session_id' => $class->church_year_id,
                         'is_default' => 1,
-                        'student_id' => $student->id,
+                        'member_id' => $student->id,
                     ]);
                 });
             }
@@ -93,17 +93,17 @@ class SmClassesTableSeeder extends Seeder
             $assign_class_teachers = [];
             foreach ($class_sections as $class_section) {
                 $assign_class_teachers[] = [
-                    'class_id' => $class_section->class_id,
-                    'section_id' => $class_section->section_id,
-                    'academic_id' => $class_section->academic_id,
-                    'school_id' => $class_section->school_id,
+                    'age_group_id' => $class_section->age_group_id,
+                    'mgender_id' => $class_section->mgender_id,
+                    'church_year_id' => $class_section->church_year_id,
+                    'church_id' => $class_section->church_id,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ];
 
                 SmStaff::factory()->times(1)->create([
                     'email' => 'staff_'.$class_section->id.'@infixedu.com',
-                    'school_id' => $class_section->school_id,
+                    'church_id' => $class_section->church_id,
                 ])->each(function($staff){
 
                 });
@@ -111,13 +111,13 @@ class SmClassesTableSeeder extends Seeder
 
             SmAdmissionQuery::factory()->times(10)->create([
                 'class' => $class->id,
-                'school_id' => $class->school_id,
-                'academic_id' => $class->academic_id,
+                'church_id' => $class->church_id,
+                'church_year_id' => $class->church_year_id,
             ])->each(function ($admission_query) {
                 SmAdmissionQueryFollowup::factory()->times(random_int(5, 10))->create([
                     'admission_query_id' => $admission_query->id,
-                    'school_id' => $admission_query->school_id,
-                    'academic_id' => $admission_query->academic_id,
+                    'church_id' => $admission_query->church_id,
+                    'church_year_id' => $admission_query->church_year_id,
                 ]);
             });
         });

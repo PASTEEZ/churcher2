@@ -53,7 +53,7 @@ return[
     'next'=> 'Next',
     'child'=> 'Child',
     'running'=> 'Running',
-    'select_academic_year'=> 'Select Financial Year',
+    'select_church_year'=> 'Select Financial Year',
     'PDF'=> 'PDF',
     'biometrics'=> 'Biometrics',
     'export'=> 'Export',

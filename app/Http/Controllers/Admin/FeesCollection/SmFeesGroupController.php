@@ -51,8 +51,8 @@ class SmFeesGroupController extends Controller
             $fees_group = new SmFeesGroup();
             $fees_group->name = $request->name;
             $fees_group->description = $request->description;
-            $fees_group->school_id = Auth::user()->school_id;
-            $fees_group->academic_id = getAcademicId();
+            $fees_group->church_id = Auth::user()->church_id;
+            $fees_group->church_year_id = getAcademicId();
             $result = $fees_group->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -76,7 +76,7 @@ class SmFeesGroupController extends Controller
         try{
          
             $fees_group = SmFeesGroup::find($id);
-            $fees_groups = SmFeesGroup::where('school_id',Auth::user()->school_id)->where('academic_id', getAcademicId())->get();
+            $fees_groups = SmFeesGroup::where('church_id',Auth::user()->church_id)->where('church_year_id', getAcademicId())->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -107,7 +107,7 @@ class SmFeesGroupController extends Controller
             $fees_group = SmFeesGroup::find($request->id);
             $fees_group->name = $request->name;
             $fees_group->description = $request->description;
-            $fees_group->academic_id = getAcademicId();
+            $fees_group->church_year_id = getAcademicId();
             $result = $fees_group->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {

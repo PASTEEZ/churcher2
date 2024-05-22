@@ -27,7 +27,7 @@ class SmHolidayController extends Controller
     {
 
         try{
-            $holidays = SmHoliday::where('academic_id', getAcademicId())->where('school_id',Auth::user()->school_id)->orderby('id','DESC')->get();
+            $holidays = SmHoliday::where('church_year_id', getAcademicId())->where('church_id',Auth::user()->church_id)->orderby('id','DESC')->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($holidays, null);
@@ -101,8 +101,8 @@ class SmHolidayController extends Controller
             $holidays->to_date = date('Y-m-d', strtotime($request->to_date));
             $holidays->created_by = $user_id;
             $holidays->upload_image_file = $fileName;
-            $holidays->school_id = Auth::user()->school_id;
-            $holidays->academic_id = getAcademicId();
+            $holidays->church_id = Auth::user()->church_id;
+            $holidays->church_year_id = getAcademicId();
             $results = $holidays->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -134,9 +134,9 @@ class SmHolidayController extends Controller
              if (checkAdmin()) {
                 $editData = SmHoliday::find($id);
             }else{
-                $editData = SmHoliday::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+                $editData = SmHoliday::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
             }
-            $holidays = SmHoliday::where('academic_id', getAcademicId())->where('school_id',Auth::user()->school_id)->get();
+            $holidays = SmHoliday::where('church_year_id', getAcademicId())->where('church_id',Auth::user()->church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -204,7 +204,7 @@ class SmHolidayController extends Controller
                  if (checkAdmin()) {
                     $eventFile = SmHoliday::find($id);
                 }else{
-                    $eventFile = SmHoliday::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+                    $eventFile = SmHoliday::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
                 }
                 if ($eventFile->upload_image_file != "") {
                     unlink($eventFile->upload_image_file);
@@ -230,7 +230,7 @@ class SmHolidayController extends Controller
                if (checkAdmin()) {
                     $holidays = SmHoliday::find($id);
                 }else{
-                    $holidays = SmHoliday::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+                    $holidays = SmHoliday::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
                 }
             $holidays->holiday_title = $request->holiday_title;
             $holidays->details = $request->details;
@@ -280,7 +280,7 @@ class SmHolidayController extends Controller
             if (checkAdmin()) {
                     $holidays = SmHoliday::find($id);
                 }else{
-                    $holidays = SmHoliday::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+                    $holidays = SmHoliday::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
                 }
             if ($holidays->upload_image_file != "") {
                 unlink($holidays->upload_image_file);

@@ -2,8 +2,8 @@
 'method' => 'POST', 'enctype' => 'multipart/form-data', 'name' => 'myForm', 'onsubmit' => "return validateAddNewroutine()"]) }}
 
     <input type="hidden" name="day" value="{{ $day_id }}">
-    <input type="hidden" name="class_id" value="{{ $class_id }}">
-    <input type="hidden" name="section_id" value="{{ $section_id }}">
+    <input type="hidden" name="age_group_id" value="{{ $age_group_id }}">
+    <input type="hidden" name="mgender_id" value="{{ $mgender_id }}">
         <div class="white-box">
             <div class="">
                 <table class="table" id="classRoutineTable">

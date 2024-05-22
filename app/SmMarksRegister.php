@@ -16,7 +16,7 @@ class SmMarksRegister extends Model
     public static function marksRegisterChild($student, $exam, $class, $section){
     	
         try {
-            $marks_register_id = SmMarksRegister::where('student_id', $student)->where('exam_id', $exam)->where('class_id', $class)->where('section_id', $section)->first();
+            $marks_register_id = SmMarksRegister::where('member_id', $student)->where('exam_id', $exam)->where('age_group_id', $class)->where('mgender_id', $section)->first();
                 if($marks_register_id != ""){
                     return SmMarksRegisterChild::where('marks_register_id', $marks_register_id->id)->get();
                 }
@@ -28,13 +28,13 @@ class SmMarksRegister extends Model
     }
 
     public function studentInfo(){
-        return $this->belongsTo('App\SmStudent', 'student_id', 'id');
+        return $this->belongsTo('App\SmStudent', 'member_id', 'id');
     }
 
     public static function subjectDetails($exam, $class, $section, $subject){
     	
         try {
-            $exam_schedule = SmExamSchedule::where('exam_id', $exam)->where('class_id', $class)->where('section_id', $section)->first();
+            $exam_schedule = SmExamSchedule::where('exam_id', $exam)->where('age_group_id', $class)->where('mgender_id', $section)->first();
             return SmExamScheduleSubject::where('exam_schedule_id', $exam_schedule->id)->where('subject_id', $subject)->first();
         } catch (\Exception $e) {
             $data=[];
@@ -42,12 +42,12 @@ class SmMarksRegister extends Model
         }
     }
 
-    public static function highestMark($exam_id, $subject_id, $section_id, $class_id){
+    public static function highestMark($exam_id, $subject_id, $mgender_id, $age_group_id){
         
         try {
             $highest_mark = DB::table('sm_result_stores')
-                                    ->where('section_id', $section_id)
-                                    ->where('class_id', $class_id)
+                                    ->where('mgender_id', $mgender_id)
+                                    ->where('age_group_id', $age_group_id)
                                     ->where('exam_type_id', $exam_id)
                                     ->where('subject_id', $subject_id)
                                     ->max('total_marks');
@@ -60,27 +60,27 @@ class SmMarksRegister extends Model
     }
 
 
-    public static function is_absent_check($exam_id, $class_id, $section_id, $subject_id, $student_id, $record_id)
+    public static function is_absent_check($exam_id, $age_group_id, $mgender_id, $subject_id, $member_id, $record_id)
     {
-            $exam_attendance = SmExamAttendance::where('exam_id', $exam_id)->where('class_id', $class_id)->where('section_id', $section_id)->where('subject_id', $subject_id)->first();
+            $exam_attendance = SmExamAttendance::where('exam_id', $exam_id)->where('age_group_id', $age_group_id)->where('mgender_id', $mgender_id)->where('subject_id', $subject_id)->first();
             if ($exam_attendance) {
-                return SmExamAttendanceChild::where('exam_attendance_id', $exam_attendance->id)->where('student_id', $student_id)->where('student_record_id', $record_id)->first();
+                return SmExamAttendanceChild::where('exam_attendance_id', $exam_attendance->id)->where('member_id', $member_id)->where('student_record_id', $record_id)->first();
             }
             return null;
     }
 
-    public static function un_is_absent_check($exam_id, $request, $subject_id, $student_id, $record_id)
+    public static function un_is_absent_check($exam_id, $request, $subject_id, $member_id, $record_id)
     {
         $SmExamAttendance = SmExamAttendance::query();
         $exam_attendance = universityFilter($SmExamAttendance, $request)
                             ->where('exam_id', $exam_id)
                             ->where('un_subject_id', $subject_id)
-                            ->orWhereNull('un_section_id')
+                            ->orWhereNull('un_mgender_id')
                             ->first();
        
             if ($exam_attendance) {
                 return SmExamAttendanceChild::where('exam_attendance_id', $exam_attendance->id)
-                    ->where('student_id', $student_id)
+                    ->where('member_id', $member_id)
                     ->where('student_record_id', $record_id)
                     ->first();
             }

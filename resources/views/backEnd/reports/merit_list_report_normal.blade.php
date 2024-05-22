@@ -163,14 +163,14 @@
                                     </div>
 
                                     <div class="col-lg-3 mt-30" id="select_un_student_div">
-                                        {{ Form::select('student_id',[""=>__('common.select_student').'*'], null , ['class' => 'niceSelect w-100 bb form-control'. ($errors->has('student_id') ? ' is-invalid' : ''), 'id'=>'select_un_student']) }}
+                                        {{ Form::select('member_id',[""=>__('common.select_student').'*'], null , ['class' => 'niceSelect w-100 bb form-control'. ($errors->has('member_id') ? ' is-invalid' : ''), 'id'=>'select_un_student']) }}
                                         <span class="focus-border"></span>
                                         <div class="pull-right loader loader_style" id="select_un_student_loader">
                                             <img class="loader_img_style" src="{{asset('public/backEnd/img/demo_wait.gif')}}" alt="loader">
                                         </div>
-                                        @if ($errors->has('student_id'))
+                                        @if ($errors->has('member_id'))
                                             <span class="invalid-feedback custom-error-message" role="alert">
-                                                {{ @$errors->first('student_id') }}
+                                                {{ @$errors->first('member_id') }}
                                             </span>
                                         @endif
                                     </div>
@@ -194,7 +194,7 @@
                                 <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                     <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                     @foreach($classes as $class)
-                                        <option value="{{$class->id}}" {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{$class->class_name}}</option>
+                                        <option value="{{$class->id}}" {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{$class->age_group_name}}</option>
                                     @endforeach
                                 </select>
                                 @if ($errors->has('class'))
@@ -253,10 +253,10 @@
                                                 <div class="card-header">
                                                     <div class="d-flex">
                                                         <div class="col-lg-2">
-                                                            <img class="logo-img" src="{{ generalSetting()->logo }}" alt="{{generalSetting()->school_name}}">
+                                                            <img class="logo-img" src="{{ generalSetting()->logo }}" alt="{{generalSetting()->church_name}}">
                                                         </div>
                                                         <div class="col-lg-8 text-center">
-                                                            <h3 class="text-white" style="font-size: 30px;margin-bottom: 0px;"> {{isset(generalSetting()->school_name)?generalSetting()->school_name:'Infix School Management ERP'}} </h3>
+                                                            <h3 class="text-white" style="font-size: 30px;margin-bottom: 0px;"> {{isset(generalSetting()->church_name)?generalSetting()->church_name:'Infix School Management ERP'}} </h3>
                                                             <p class="text-white mb-0" style="font-size: 16px;"> {{isset(generalSetting()->address)?generalSetting()->address:'Infix School Address'}} </p>
                                                             <p class="text-white mb-0" style="font-size: 16px;">@lang('common.email'):  {{isset(generalSetting()->email)? generalSetting()->email:'admin@demo.com'}} ,   @lang('common.phone'):  {{isset(generalSetting()->phone)?generalSetting()->phone:'admin@demo.com'}} </p>
                                                         </div>
@@ -271,16 +271,16 @@
                                                                     <div class="col-md-6">
                                                                         <h3>@lang('reports.order_of_merit_list')</h3>
                                                                         <p class="mb-0 font-14 line_grid">
-                                                                            @lang('common.academic_year')  <span class="primary-color fw-500 "> : {{ @$class->academic->year }}</span>
+                                                                            @lang('common.church_year')  <span class="primary-color fw-500 "> : {{ @$class->academic->year }}</span>
                                                                         </p>
                                                                         <p class="mb-0 font-14 line_grid">
                                                                             @lang('exam.exam') <span class="primary-color fw-500">: {{$exam_name}}</span>
                                                                         </p>
                                                                         <p class="mb-0 font-14 line_grid">
-                                                                            @lang('common.class') <span class="primary-color fw-500">: {{$class_name}}</span>
+                                                                            @lang('common.class') <span class="primary-color fw-500">: {{$age_group_name}}</span>
                                                                         </p>
                                                                         <p class="mb-0 font-14 line_grid">
-                                                                            @lang('common.section') <span class="primary-color fw-500">: {{$section->section_name}}</span>
+                                                                            @lang('common.section') <span class="primary-color fw-500">: {{$section->mgender_name}}</span>
                                                                         </p>
                                                                     </div>
                                                                     <div class="col-md-6">
@@ -304,7 +304,7 @@
                                                             <thead>
                                                             <tr>
                                                                 <th>@lang('common.name')</th>
-                                                                <th>@lang('student.admission_no')</th>
+                                                                <th>@lang('student.registration_no')</th>
                                                                 <th>@lang('student.roll_no')</th>
                                                                 <th>@lang('reports.position')</th>
                                                                 {{-- <th>@lang('common.total_mark')</th> --}}
@@ -328,8 +328,8 @@
                                                                     $markslist = explode(',',$row->marks_string);
                                                                 @endphp
                                                                 <tr>
-                                                                    <td>{{$row->student_name}}</td>
-                                                                    <td>{{$row->admission_no}}</td>
+                                                                    <td>{{$row->member_name}}</td>
+                                                                    <td>{{$row->registration_no}}</td>
                                                                     <td>{{$row->studentinfo->roll_no}}</td>
                                                                     <td>{{@getStudentMeritPosition($InputClassId, $InputSectionId, $InputExamId, $row->studentinfo->studentRecord->id)}}</td>
                                                                     <td>{{$row->total_marks}}</td>

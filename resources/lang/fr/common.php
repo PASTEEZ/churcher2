@@ -1,8 +1,8 @@
 <?php
 return [
-"school_name" => "Nom de l'école",
+"church_name" => "Nom de l'école",
 
-"school_code" => "Code scolaire",
+"church_code" => "Code scolaire",
 
 "dashboard" => "Tableau de bord",
 
@@ -90,7 +90,7 @@ return [
 
 "view_note" => "Afficher la note",
 
-"class_name" => "Nom de classe",
+"age_group_name" => "Nom de classe",
 
 "student_list" => "Liste des étudiants",
 
@@ -106,7 +106,7 @@ return [
 
 "email_address" => "Adresse électronique",
 
-"academic_year" => "Année universitaire",
+"church_year" => "Année universitaire",
 
 "class_sec" => "Classe (section)",
 
@@ -130,7 +130,7 @@ return [
 
 "select_lesson" => "Sélectionner la leçon",
 
-"select_academic_year" => "Sélectionner une année universitaire",
+"select_church_year" => "Sélectionner une année universitaire",
 
 "select_student" => "Sélectionner l'étudiant",
 
@@ -266,7 +266,7 @@ return [
 
 "class_details" => "Détails de la classe",
 
-"class_id" => "ID classe",
+"age_group_id" => "ID classe",
 
 "date_of_meeting" => "Date de la réunion",
 
@@ -758,7 +758,7 @@ return [
 
 "back" => "Précédent",
 
-"student_name" => "Nom de l'étudiant",
+"member_name" => "Nom de l'étudiant",
 
 "break" => "Pause",
 

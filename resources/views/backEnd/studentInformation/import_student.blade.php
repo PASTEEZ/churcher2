@@ -110,8 +110,8 @@
                             @else
                             <div class="col-lg-3">
                                 <div class="input-effect sm2_mb_20 md_mb_20">
-                                    <select class="niceSelect w-100 bb form-control{{ $errors->has('session') ? ' is-invalid' : '' }}" name="session" id="academic_year">
-                                        <option data-display="@lang('common.academic_year') *" value="">@lang('common.academic_year') *</option>
+                                    <select class="niceSelect w-100 bb form-control{{ $errors->has('session') ? ' is-invalid' : '' }}" name="session" id="church_year">
+                                        <option data-display="@lang('common.church_year') *" value="">@lang('common.church_year') *</option>
                                         @foreach($sessions as $session)
                                         <option value="{{$session->id}}" {{old('session') == $session->id? 'selected': ''}}>{{$session->year}}[{{$session->title}}]</option>
                                         @endforeach

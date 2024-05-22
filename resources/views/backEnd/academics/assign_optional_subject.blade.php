@@ -37,7 +37,7 @@
                                     <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                         <option data-display="@lang('common.select_class')*" value="">@lang('common.select_class') *</option>
                                         @foreach($classes as $class)
-                                           <option value="{{$class->id}}"  {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{@$class->class_name}}</option>
+                                           <option value="{{$class->id}}"  {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{@$class->age_group_name}}</option>
                                         @endforeach
                                     </select>
                                     @if ($errors->has('class'))
@@ -51,9 +51,9 @@
                                 <div class="col-lg-4 mt-30-md" id="select_section_div">
                                     <select class="w-100 bb niceSelect form-control{{ @$errors->has('section') ? ' is-invalid' : '' }} " id="select_section"  name="section">
                                         <option data-display="@lang('common.select_section') *" value="">@lang('common.select_section') *</option>
-                                        @isset($class_id)
+                                        @isset($age_group_id)
                                             @foreach($class->classSection as $section)
-                                                <option value="{{$section->section_id}}"  {{isset($section_id)? ($section_id == $section->section_id? 'selected':''):''}}>{{@$section->sectionName ?$section->sectionName->section_name:''}}</option>
+                                                <option value="{{$section->mgender_id}}"  {{isset($mgender_id)? ($mgender_id == $section->mgender_id? 'selected':''):''}}>{{@$section->sectionName ?$section->sectionName->mgender_name:''}}</option>
                                             @endforeach  
                                         @endisset
                                        
@@ -71,7 +71,7 @@
                                 <div class="col-lg-4 mt-30-md" id="select_subject_div">
                                     <select class="w-100 bb niceSelect form-control{{ @$errors->has('subject') ? ' is-invalid' : '' }} select_subject" id="select_subject" name="subject">
                                         <option data-display="@lang('common.select_subject') *" value="">@lang('common.select_subject') *</option>
-                                        @isset($class_id)
+                                        @isset($age_group_id)
                                             @foreach($assignSubjects as $subject)
                                                 <option value="{{$subject->subject_id}}"  {{isset($subject_id)? ($subject_id == $subject->subject_id? 'selected':''):''}}>{{@$subject->subject ?$subject->subject->subject_name:''}}</option>
                                             @endforeach  
@@ -128,8 +128,8 @@
                                 <div class="col-lg-12">
                                     <div class="assign-subject" id="assign-subject">
                                         <input type="hidden" name="url" id="url" value="{{URL::to('/')}}">
-                                        <input type="hidden" name="class_id" id="class_id" value="{{@$class_id}}">
-                                        <input type="hidden" name="section_id" id="class_id" value="{{@$section_id}}">
+                                        <input type="hidden" name="age_group_id" id="age_group_id" value="{{@$age_group_id}}">
+                                        <input type="hidden" name="mgender_id" id="age_group_id" value="{{@$mgender_id}}">
                                         <input type="hidden" name="subject_id" id="" value="{{@$subject_id}}">
                                         <input type="hidden" name="update" value="1"> 
                                         <div class="table-responsive">
@@ -138,7 +138,7 @@
                                             <thead>
                                                 <tr>
                                                     <th><span class="all_check btn btn-sm fix-gr-bg" id="all_check" tyle="width: 143.715px; height: 143.715px; top: -48.611px; left: -26.5173px;" > Select All </span> </th> 
-                                                    <th class="nowrap p-2" >@lang('student.admission_no').</th>
+                                                    <th class="nowrap p-2" >@lang('student.registration_no').</th>
                                                     <th class="nowrap p-2">@lang('student.name')</th>
                                                     <th class="nowrap p-2">@lang('academics.optional_subject')</th>   
                                                 </tr>
@@ -153,12 +153,12 @@
                                                     <td>  
                                                         <div class="col-lg-12"> 
                                                             <div class="input-effect">
-                                                                <input type="checkbox" id="optional_subject_{{@$count}}" class="common-checkbox optional_subject fix-gr-bg small" name="student_id[]" {{ (@$subjects->subject_name == @$subject_info->subject_name? 'checked': '' ) }} value="{{@$student->id}}">
+                                                                <input type="checkbox" id="optional_subject_{{@$count}}" class="common-checkbox optional_subject fix-gr-bg small" name="member_id[]" {{ (@$subjects->subject_name == @$subject_info->subject_name? 'checked': '' ) }} value="{{@$student->id}}">
                                                                 <label for="optional_subject_{{@$count}}">{{@$count++}}</label>
                                                             </div> 
                                                         </div> 
                                                     </td> 
-                                                    <td>{{@$student->studentDetail->admission_no}}</td>
+                                                    <td>{{@$student->studentDetail->registration_no}}</td>
                                                     <td class="nowrap">{{@$student->studentDetail->full_name}}</td> 
                                                     <td>
                                                         <span class="" style="border-bottom: 2px dashed #ddd !important;">{{@$subject_info->subject_name}}</span>

@@ -22,11 +22,11 @@ class ListenStudentPromotionGroupDisable
 
     public function handle(StudentPromotionGroupDisable $event)
     {
-        $subjects = SmAssignSubject::where('section_id', $event->sectionId)->where('class_id', $event->classId)->get();
+        $subjects = SmAssignSubject::where('mgender_id', $event->sectionId)->where('age_group_id', $event->classId)->get();
         foreach ($subjects as $index => $subject){
             $teacher = SmStaff::find($subject->teacher_id)->staff_user;
 
-            $groupName = $this->groupName($subject->school_id, $subject->class_id, $subject->section_id, $subject->subject_id, $teacher->id);
+            $groupName = $this->groupName($subject->church_id, $subject->age_group_id, $subject->mgender_id, $subject->subject_id, $teacher->id);
             $group = Group::where('name','like','%'.$groupName.'%')->first();
             if ($group){
                 $group->read_only = 1;
@@ -43,6 +43,6 @@ class ListenStudentPromotionGroupDisable
 
         $code = $schoolId.$classId.$sectionId.$subjectId.$teacherId;
 
-        return $class->class_name. '('.$section->section_name. ')-'.$subject->subject_name.'-'.$code;
+        return $class->age_group_name. '('.$section->mgender_name. ')-'.$subject->subject_name.'-'.$code;
     }
 }

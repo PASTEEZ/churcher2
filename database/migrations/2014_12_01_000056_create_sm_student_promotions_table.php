@@ -18,17 +18,17 @@ class CreateSmStudentPromotionsTable extends Migration
             $table->string('result_status', 10)->nullable();
             $table->timestamps();
 
-            $table->integer('previous_class_id')->nullable()->unsigned();
-            $table->foreign('previous_class_id')->references('id')->on('sm_classes')->onDelete('cascade');
+            $table->integer('previous_age_group_id')->nullable()->unsigned();
+            $table->foreign('previous_age_group_id')->references('id')->on('sm_classes')->onDelete('cascade');
 
-            $table->integer('current_class_id')->nullable()->unsigned();
-            $table->foreign('current_class_id')->references('id')->on('sm_classes')->onDelete('cascade');
+            $table->integer('current_age_group_id')->nullable()->unsigned();
+            $table->foreign('current_age_group_id')->references('id')->on('sm_classes')->onDelete('cascade');
 
-            $table->integer('previous_section_id')->nullable()->unsigned();
-            $table->foreign('previous_section_id')->references('id')->on('sm_sections')->onDelete('cascade');
+            $table->integer('previous_mgender_id')->nullable()->unsigned();
+            $table->foreign('previous_mgender_id')->references('id')->on('sm_sections')->onDelete('cascade');
 
-            $table->integer('current_section_id')->nullable()->unsigned();
-            $table->foreign('current_section_id')->references('id')->on('sm_sections')->onDelete('cascade');
+            $table->integer('current_mgender_id')->nullable()->unsigned();
+            $table->foreign('current_mgender_id')->references('id')->on('sm_sections')->onDelete('cascade');
 
             $table->integer('previous_session_id')->nullable()->unsigned();
             $table->foreign('previous_session_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
@@ -36,8 +36,8 @@ class CreateSmStudentPromotionsTable extends Migration
             $table->integer('current_session_id')->nullable()->unsigned();
             $table->foreign('current_session_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
 
-            $table->integer('student_id')->nullable()->unsigned();
-            $table->foreign('student_id')->references('id')->on('sm_students')->onDelete('cascade');
+            $table->integer('member_id')->nullable()->unsigned();
+            $table->foreign('member_id')->references('id')->on('sm_students')->onDelete('cascade');
 
             $table->integer('admission_number')->nullable();
             $table->longText('student_info')->nullable();
@@ -50,15 +50,15 @@ class CreateSmStudentPromotionsTable extends Migration
 
             $table->integer('updated_by')->nullable()->default(1)->unsigned();
 
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
             
-            $table->integer('academic_id')->nullable()->default(1)->unsigned();
-            $table->foreign('academic_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
+            $table->integer('church_year_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_year_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
         });
 
         //  Schema::table('sm_student_promotions', function($table) {
-        //     $table->foreign('student_id')->references('id')->on('sm_students');
+        //     $table->foreign('member_id')->references('id')->on('sm_students');
 
         // });
     }

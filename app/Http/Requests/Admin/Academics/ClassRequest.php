@@ -26,14 +26,14 @@ class ClassRequest extends FormRequest
     {
         if(generalSetting()->result_type == 'mark'){
             return [
-                'name' => ['required', 'max:200' , Rule::unique('sm_classes', 'class_name')->where('academic_id', getAcademicId())->where('school_id', auth()->user()->school_id)->ignore($this->id)],
+                'name' => ['required', 'max:200' , Rule::unique('sm_classes', 'age_group_name')->where('church_year_id', getAcademicId())->where('church_id', auth()->user()->church_id)->ignore($this->id)],
                 'section' => "required",
                 'pass_mark' => "required",
             ];
         }
         else{
             return [
-                'name' => ['required', 'max:200' , Rule::unique('sm_classes', 'class_name')->where('academic_id', getAcademicId())->where('school_id', auth()->user()->school_id)->ignore($this->id)],
+                'name' => ['required', 'max:200' , Rule::unique('sm_classes', 'age_group_name')->where('church_year_id', getAcademicId())->where('church_id', auth()->user()->church_id)->ignore($this->id)],
                 'section' => "required",
             ];
         }

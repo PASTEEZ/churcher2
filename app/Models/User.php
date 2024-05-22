@@ -52,7 +52,7 @@ class User extends Authenticatable
         parent::boot();
 
         static::addGlobalScope('saas', function (Builder $builder) {
-            $builder->where('school_id', '=', auth()->user()->school_id);
+            $builder->where('church_id', '=', auth()->user()->church_id);
         });
 
         static::created(function (User $model) {
@@ -97,7 +97,7 @@ class User extends Authenticatable
 
     public function school()
     {
-        return $this->belongsTo('App\SmSchool', 'school_id', 'id');
+        return $this->belongsTo('App\SmSchool', 'church_id', 'id');
     }
 
     public function roles()

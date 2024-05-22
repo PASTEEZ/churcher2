@@ -28,7 +28,7 @@ class ApiSmLeaveDefineController extends Controller
         try{
             $leave_types = SmLeaveType::where('active_status', 1)->get();
             $roles = InfixRole::where('active_status', '=', '1')->where(function ($q) {
-                $q->where('school_id', 1)->orWhere('type', 'System');
+                $q->where('church_id', 1)->orWhere('type', 'System');
             })->where('id', '!=', 1)/* ->where('id', '!=', 2) */->where('id', '!=', 3)->where('id', '!=', 10)->get();
             $leave_defines = SmLeaveDefine::where('active_status', 1)->get();
     
@@ -124,7 +124,7 @@ class ApiSmLeaveDefineController extends Controller
         try{
             $leave_types = SmLeaveType::where('active_status', 1)->get();
             $roles = InfixRole::where('active_status', 1)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
             $leave_defines = SmLeaveDefine::where('active_status', 1)->get();
             $leave_define = SmLeaveDefine::find($id);

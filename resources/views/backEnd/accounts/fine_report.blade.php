@@ -40,7 +40,7 @@
                                 <select class="niceSelect w-100 bb form-control{{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                     <option data-display="@lang('common.select_class')" value="">@lang('common.select_class')</option>
                                     @foreach($classes as $class)
-                                    <option value="{{$class->id}}">{{$class->class_name}}</option>
+                                    <option value="{{$class->id}}">{{$class->age_group_name}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -105,7 +105,7 @@
                                         <td>{{$fees_payment->studentInfo !=""?$fees_payment->studentInfo->full_name:""}}</td>
                                         <td>
                                         @if($fees_payment->studentInfo!="" && $fees_payment->studentInfo->class!="")
-                                            {{$fees_payment->studentInfo->class->class_name}}
+                                            {{$fees_payment->studentInfo->class->age_group_name}}
                                             @endif
                                         </td>
                                         <td>{{$fees_payment->feesType!=""?$fees_payment->feesType->name:""}}</td>

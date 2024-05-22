@@ -172,7 +172,7 @@ function getSchoolModule($school = null){
     }
 
     return Cache::rememberForever('school_modules' . $school->id,  function () use ($school) {
-        return \App\Models\SchoolModule::where('school_id', $school->id)->first();
+        return \App\Models\SchoolModule::where('church_id', $school->id)->first();
     });
 }
 
@@ -186,17 +186,17 @@ function activePackage($school = null)
 
         $last_record = SmSubscriptionPayment::with('package')->orderBy('id', 'desc')->where(function ($q) {
             $q->where('approve_status', 'approved')->orWhere('payment_type', 'trial');
-        })->where('school_id', $school->id)->first();
+        })->where('church_id', $school->id)->first();
 
 
         if (!$last_record) {
             return false;
         }
         $now_time = date('Y-m-d');
-        $purchase_packages =  SmSubscriptionPayment::with('package')->where('school_id', $school->id)->get();
+        $purchase_packages =  SmSubscriptionPayment::with('package')->where('church_id', $school->id)->get();
 
         $last_active = SmSubscriptionPayment::with('package')->orderBy('id', 'desc')->where('approve_status', 'approved')
-            ->where('start_date', '<=', $now_time)->where('end_date', '>=', $now_time)->where('school_id', $school->id)->first();
+            ->where('start_date', '<=', $now_time)->where('end_date', '>=', $now_time)->where('church_id', $school->id)->first();
 
         if (!$purchase_packages->count()) {
             return false;

@@ -28,8 +28,8 @@ class SmEmailSmsLog extends Model
         $emailSmsData->send_through = $request->send_through;
         $emailSmsData->send_date = date('Y-m-d');
         $emailSmsData->send_to = $selectTabb;
-        $emailSmsData->school_id =Auth::user()->school_id;
-        $emailSmsData->academic_id =getAcademicId();
+        $emailSmsData->church_id =Auth::user()->church_id;
+        $emailSmsData->church_year_id =getAcademicId();
         $success = $emailSmsData->save();
     }
 
@@ -45,7 +45,7 @@ class SmEmailSmsLog extends Model
         $emailSmsData->send_through = $request->send_through;
         $emailSmsData->send_date = date('Y-m-d');
         $emailSmsData->send_to = $request->selectTab;
-        $emailSmsData->school_id =Auth::user()->school_id;
+        $emailSmsData->church_id =Auth::user()->church_id;
         $success = $emailSmsData->save();
     }
 
@@ -61,7 +61,7 @@ class SmEmailSmsLog extends Model
 
     public function academicYearDetails()
     {
-        return $this->belongsTo('Modules\University\Entities\UnAcademicYear', 'un_academic_id', 'id')->withDefault();
+        return $this->belongsTo('Modules\University\Entities\UnAcademicYear', 'un_church_year_id', 'id')->withDefault();
     }
 
     public function departmentDetails()

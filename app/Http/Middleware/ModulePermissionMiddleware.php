@@ -27,7 +27,7 @@ class ModulePermissionMiddleware
 
         $user = Auth::user();
 
-        if ($user->school_id == 1 || isModuleForSchool($module)) {
+        if ($user->church_id == 1 || isModuleForSchool($module)) {
             return $next($request);
         }
         Toastr::error('Module Not Active', 'Failed');

@@ -30,15 +30,15 @@
       @else 
       <div class="row mt-25">
           <div class="col-lg-12">
-              <select class="w-100 bb niceSelect form-control {{ $errors->has('class_id') ? ' is-invalid' : '' }}" id="classSelectStudentHomeWork" name="class_id">
+              <select class="w-100 bb niceSelect form-control {{ $errors->has('age_group_id') ? ' is-invalid' : '' }}" id="classSelectStudentHomeWork" name="age_group_id">
                   <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                   @foreach($classes as $class)
-                  <option value="{{@$class->id}}">{{@$class->class_name}}</option>
+                  <option value="{{@$class->id}}">{{@$class->age_group_name}}</option>
                   @endforeach
               </select>
-              @if ($errors->has('class_id'))
+              @if ($errors->has('age_group_id'))
                   <span class="invalid-feedback invalid-select" role="alert">
-                      <strong>{{ $errors->first('class_id') }}</strong>
+                      <strong>{{ $errors->first('age_group_id') }}</strong>
                   </span>
               @endif
           </div>
@@ -67,16 +67,16 @@
       <div class="row mt-25">
           <div class="col-lg-12 " id="selectSectionsDiv" style="margin-top: -25px;">
               <label for="checkbox" class="mb-2 mt-20">@lang('common.section') *</label>
-                  <select multiple id="selectSectionss" name="section_ids[]" style="width:300px">
+                  <select multiple id="selectSectionss" name="mgender_ids[]" style="width:300px">
                     
                   </select>
                   <div class="">
                   <input type="checkbox" id="checkbox_section" class="common-checkbox homework-section">
                   <label for="checkbox_section" class="mt-3">@lang('homework.select_all')</label>
                   </div>
-                  @if ($errors->has('section_id'))
+                  @if ($errors->has('mgender_id'))
                       <span class="invalid-feedback invalid-select" role="alert" style="display:block">
-                          <strong style="top:-25px">{{ $errors->first('section_id') }}</strong>
+                          <strong style="top:-25px">{{ $errors->first('mgender_id') }}</strong>
                       </span>
                   @endif
           </div>

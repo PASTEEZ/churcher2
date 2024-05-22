@@ -48,7 +48,7 @@ class SmAdmissionQuery extends Model
     }
     public function unAcademic()
     {
-        return $this->belongsTo('Modules\University\Entities\UnAcademicYear', 'un_academic_id', 'id')->withDefault();
+        return $this->belongsTo('Modules\University\Entities\UnAcademicYear', 'un_church_year_id', 'id')->withDefault();
     }
     public function unSemester()
     {

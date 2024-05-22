@@ -76,8 +76,8 @@
         </div>
     </div>
 </section>
-<input type="text" hidden value="{{ @$class->class_name }}" id="cls">
-<input type="text" hidden value="{{ @$section->section_name }}" id="sec">
+<input type="text" hidden value="{{ @$class->age_group_name }}" id="cls">
+<input type="text" hidden value="{{ @$section->mgender_name }}" id="sec">
 <section class="admin-visitor-area up_st_admin_visitor">
     <div class="container-fluid p-0">
         <div class="row">
@@ -142,7 +142,7 @@
                                 <select class="w-100 niceSelect bb form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                     <option data-display="@lang('student.select_class') *" value="">@lang('student.select_class') *</option>
                                     @foreach($classes as $class)
-                                    <option value="{{$class->id}}"  {{ isset($class_id)? ($class_id == $class->id? 'selected':''): (old("class") == $class->id ? "selected":"")}}>{{$class->class_name}}</option>
+                                    <option value="{{$class->id}}"  {{ isset($age_group_id)? ($age_group_id == $class->id? 'selected':''): (old("class") == $class->id ? "selected":"")}}>{{$class->age_group_name}}</option>
                                     @endforeach
                                 </select>
                                 @if ($errors->has('class'))
@@ -247,7 +247,7 @@
                 @if(moduleStatusCheck('University'))
                 <a href="{{route('un-student-attendance-print', [$un_semester_label_id, $month, $year])}}" class="primary-btn small fix-gr-bg pull-right" target="_blank"><i class="ti-printer"> </i>@lang('common.print')</a>
                 @else
-                <a href="{{route('student-attendance-print', [$class_id, $section_id, $month, $year])}}" class="primary-btn small fix-gr-bg pull-right" target="_blank"><i class="ti-printer"> </i>@lang('common.print')</a>
+                <a href="{{route('student-attendance-print', [$age_group_id, $mgender_id, $month, $year])}}" class="primary-btn small fix-gr-bg pull-right" target="_blank"><i class="ti-printer"> </i>@lang('common.print')</a>
                 @endif
             </div>
         </div>
@@ -266,7 +266,7 @@
                             <thead>
                                 <tr>
                                     <th width="6%">@lang('student.name')</th>
-                                    <th width="6%">@lang('student.admission_no')</th>
+                                    <th width="6%">@lang('student.registration_no')</th>
                                     <th width="3%">P</th>
                                     <th width="3%">L</th>
                                     <th width="3%">A</th>                                    
@@ -313,7 +313,7 @@
                                         @foreach($values as $value)
                                             @php $student++; @endphp
                                             @if($student == 1)
-                                                {{$value->studentInfo->admission_no}}
+                                                {{$value->studentInfo->registration_no}}
                                             @endif
                                         @endforeach
                                     </td>

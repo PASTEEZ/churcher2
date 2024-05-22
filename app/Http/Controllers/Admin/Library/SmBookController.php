@@ -89,11 +89,11 @@ class SmBookController extends Controller
             $books->details = $request->details;
             $books->post_date = date('Y-m-d');
             $books->created_by = auth::user()->id;
-            $books->school_id = Auth::user()->school_id;
+            $books->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $books->un_academic_id = getAcademicId();
+                $books->un_church_year_id = getAcademicId();
             }else{
-                $books->academic_id = getAcademicId();
+                $books->church_year_id = getAcademicId();
             }
             $books->save();
 
@@ -208,7 +208,7 @@ class SmBookController extends Controller
     {
 
         try {
-            $activeMembers = SmLibraryMember::with('roles','studentDetails','staffDetails','parentsDetails','memberTypes')->where('school_id', Auth::user()->school_id)->where('active_status', '=', 1)->get();
+            $activeMembers = SmLibraryMember::with('roles','studentDetails','staffDetails','parentsDetails','memberTypes')->where('church_id', Auth::user()->church_id)->where('active_status', '=', 1)->get();
            
             return view('backEnd.library.memberLists', compact('activeMembers'));
         } catch (\Exception $e) {
@@ -237,8 +237,8 @@ class SmBookController extends Controller
                                     ->first();
             }
             
-            $books = SmBook::where('school_id', Auth::user()->school_id)->get();
-            $totalIssuedBooks = SmBookIssue::where('school_id', Auth::user()->school_id)->where('member_id', '=', $student_staff_id)->get();
+            $books = SmBook::where('church_id', Auth::user()->church_id)->get();
+            $totalIssuedBooks = SmBookIssue::where('church_id', Auth::user()->church_id)->where('member_id', '=', $student_staff_id)->get();
 
             return view('backEnd.library.issueBooks', compact('memberDetails', 'books', 'getMemberDetails', 'totalIssuedBooks'));
         } catch (\Exception $e) {
@@ -287,12 +287,12 @@ class SmBookController extends Controller
             $bookIssue->given_date = date('Y-m-d');
             $bookIssue->due_date = date('Y-m-d', strtotime($request->due_date));
             $bookIssue->issue_status = 'I';
-            $bookIssue->school_id = Auth::user()->school_id;
+            $bookIssue->church_id = Auth::user()->church_id;
 
             if(moduleStatusCheck('University')){
-                $bookIssue->un_academic_id = getAcademicId();
+                $bookIssue->un_church_year_id = getAcademicId();
             }else{
-                $bookIssue->academic_id = getAcademicId();
+                $bookIssue->church_year_id = getAcademicId();
             }
 
             $bookIssue->created_by = auth()->user()->id;
@@ -309,9 +309,9 @@ class SmBookController extends Controller
                 $compact['slug'] = 'student';
                 $compact['user_email'] = $bookIssue->member->studentDetails->email;
                 $compact['due_date'] = date('Y-m-d', strtotime($request->due_date));
-                $compact['student_name'] = $bookIssue->member->studentDetails->full_name;
-                $compact['class_name'] = $bookIssue->member->studentDetails->defaultClass->class->class_name;
-                $compact['section_name'] = $bookIssue->member->studentDetails->defaultClass->section->section_name;
+                $compact['member_name'] = $bookIssue->member->studentDetails->full_name;
+                $compact['age_group_name'] = $bookIssue->member->studentDetails->defaultClass->class->age_group_name;
+                $compact['mgender_name'] = $bookIssue->member->studentDetails->defaultClass->section->mgender_name;
                 $compact['roll_no'] = $bookIssue->member->studentDetails->roll_no;
                 $compact['issue_date'] = date('Y-m-d');
                 $compact['book_title'] = $bookIssue->books->book_title;
@@ -374,9 +374,9 @@ class SmBookController extends Controller
                 $compact['slug'] = 'student';
                 $compact['user_email'] = $return->member->studentDetails->email;
                 $compact['due_date'] = $return->due_date;
-                $compact['student_name'] = $return->member->studentDetails->full_name;
-                $compact['class_name'] = $return->member->studentDetails->defaultClass->class->class_name;
-                $compact['section_name'] = $return->member->studentDetails->defaultClass->section->section_name;
+                $compact['member_name'] = $return->member->studentDetails->full_name;
+                $compact['age_group_name'] = $return->member->studentDetails->defaultClass->class->age_group_name;
+                $compact['mgender_name'] = $return->member->studentDetails->defaultClass->section->mgender_name;
                 $compact['roll_no'] = $return->member->studentDetails->roll_no;
                 $compact['issue_date'] = $return->given_date;
                 $compact['book_title'] = $return->books->book_title;
@@ -413,7 +413,7 @@ class SmBookController extends Controller
                 ->join('sm_library_members', 'sm_book_issues.member_id', '=', 'sm_library_members.student_staff_id')
                 ->join('library_subjects', 'library_subjects.id', '=', 'sm_books.book_subject_id')
                 ->join('users', 'users.id', '=', 'sm_library_members.student_staff_id')
-                ->where('sm_books.school_id', Auth::user()->school_id)
+                ->where('sm_books.church_id', Auth::user()->church_id)
                 ->get();
 
             return view('backEnd.library.allIssuedBook', compact('books', 'subjects', 'issueBooks'));
@@ -477,7 +477,7 @@ class SmBookController extends Controller
         try {
             $books = DB::table('sm_books')
                 ->join('library_subjects', 'sm_books.subject', '=', 'library_subjects.id')
-                ->where('sm_books.school_id', Auth::user()->school_id)
+                ->where('sm_books.church_id', Auth::user()->church_id)
                 ->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
 
@@ -495,7 +495,7 @@ class SmBookController extends Controller
     {
         try {
             $subjects = LibrarySubject::leftjoin('sm_book_categories', 'sm_book_categories.id', '=', 'library_subjects.sb_category_id')
-                ->where('library_subjects.school_id', Auth::user()->school_id)
+                ->where('library_subjects.church_id', Auth::user()->church_id)
                 ->select('library_subjects.*', 'sm_book_categories.category_name')
                 ->orderby('library_subjects.id', 'DESC')
                 ->get();
@@ -520,11 +520,11 @@ class SmBookController extends Controller
             $subject->subject_type = $request->subject_type;
             $subject->sb_category_id = $request->category;
             $subject->subject_code = $request->subject_code;
-            $subject->school_id = Auth::user()->school_id;
+            $subject->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $subject->un_academic_id = getAcademicId();
+                $subject->un_church_year_id = getAcademicId();
             }else{
-                $subject->academic_id = getAcademicId();
+                $subject->church_year_id = getAcademicId();
             }
             $subject->save();
 
@@ -544,7 +544,7 @@ class SmBookController extends Controller
                 $subject = LibrarySubject::where('id', $id)->first();
             }
             $subjects = LibrarySubject::leftjoin('sm_book_categories', 'sm_book_categories.id', '=', 'library_subjects.sb_category_id')
-                ->where('library_subjects.school_id', Auth::user()->school_id)
+                ->where('library_subjects.church_id', Auth::user()->church_id)
                 ->select('library_subjects.*', 'sm_book_categories.category_name')
                 ->get();
 
@@ -588,7 +588,7 @@ class SmBookController extends Controller
                     if (checkAdmin()) {
                         $delete_query = LibrarySubject::destroy($request->id);
                     } else {
-                        $delete_query = LibrarySubject::where('id', $request->id)->where('school_id', Auth::user()->school_id)->delete();
+                        $delete_query = LibrarySubject::where('id', $request->id)->where('church_id', Auth::user()->church_id)->delete();
                     }
                     if ($delete_query) {
                         Toastr::success('Operation successful', 'Success');

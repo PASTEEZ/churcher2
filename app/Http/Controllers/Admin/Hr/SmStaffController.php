@@ -62,7 +62,7 @@ class SmStaffController extends Controller
             if (Auth::user()->role_id != 1) {
                 $all_staffs->whereNotIn('role_id', [1, 5]);
             }
-            $all_staffs = $all_staffs->with('departments', 'designations', 'roles')->where('school_id', Auth::user()->school_id)->get();
+            $all_staffs = $all_staffs->with('departments', 'designations', 'roles')->where('church_id', Auth::user()->church_id)->get();
 
             $roles = InfixRole::query();
             if (Auth::user()->role_id != 1) {
@@ -72,7 +72,7 @@ class SmStaffController extends Controller
             $roles = $roles->where('is_saas', 0)
                 ->where('active_status', '=', '1')
                 ->where(function ($q) {
-                    $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                    $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
                 })
                 ->orderBy('name', 'asc')
                 ->get();
@@ -96,7 +96,7 @@ class SmStaffController extends Controller
                 ->join('sm_human_departments', 'sm_staffs.department_id', '=', 'sm_human_departments.id')
                 ->join('sm_designations', 'sm_staffs.designation_id', '=', 'sm_designations.id')
                 ->join('sm_base_setups', 'sm_staffs.gender_id', '=', 'sm_base_setups.id')
-                ->where('sm_staffs.school_id', Auth::user()->school_id)
+                ->where('sm_staffs.church_id', Auth::user()->church_id)
                 ->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -119,9 +119,9 @@ class SmStaffController extends Controller
     public function addStaff()
     {
 
-        if (isSubscriptionEnabled() && auth()->user()->school_id != 1) {
+        if (isSubscriptionEnabled() && auth()->user()->church_id != 1) {
 
-            $active_staff = SmStaff::withOutGlobalScope(ActiveStatusSchoolScope::class)->where('role_id', '!=', 1)->where('school_id', Auth::user()->school_id)->where('active_status', 1)->where('is_saas', 0)->count();
+            $active_staff = SmStaff::withOutGlobalScope(ActiveStatusSchoolScope::class)->where('role_id', '!=', 1)->where('church_id', Auth::user()->church_id)->where('active_status', 1)->where('is_saas', 0)->count();
 
             if (\Modules\Saas\Entities\SmPackagePlan::staff_limit() <= $active_staff) {
 
@@ -132,12 +132,12 @@ class SmStaffController extends Controller
         }
         try {
             $max_staff_no = SmStaff::withOutGlobalScope(ActiveStatusSchoolScope::class)->where('is_saas', 0)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->max('staff_no');
 
             $roles = InfixRole::where('is_saas', 0)->where('active_status', '=', 1)
                 ->where(function ($q) {
-                    $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                    $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
                 })
                 ->whereNotIn('id', [1, 2, 3])
                 ->orderBy('name', 'asc')
@@ -153,16 +153,16 @@ class SmStaffController extends Controller
 
             $marital_ststus = SmBaseSetup::where('base_group_id', '=', '4')
                 ->orderBy('base_setup_name', 'asc')
-                ->where('school_id', auth()->user()->school_id)
+                ->where('church_id', auth()->user()->church_id)
                 ->get(['id', 'base_setup_name']);
 
             $genders = SmBaseSetup::where('base_group_id', '=', '1')
                 ->orderBy('base_setup_name', 'asc')
-                ->where('school_id', auth()->user()->school_id)
+                ->where('church_id', auth()->user()->church_id)
                 ->get(['id', 'base_setup_name']);
 
             $custom_fields = SmCustomField::where('form_name', 'staff_registration')->get();
-            $is_required = SmStaffRegistrationField::where('school_id', auth()->user()->school_id)->where('is_required', 1)->pluck('field_name')->toArray();
+            $is_required = SmStaffRegistrationField::where('church_id', auth()->user()->church_id)->where('is_required', 1)->pluck('field_name')->toArray();
 
             session()->forget('staff_photo');
 
@@ -236,7 +236,7 @@ class SmStaffController extends Controller
                 $user->email = $request->email;
                 $user->full_name = $request->first_name . ' ' . $request->last_name;
                 $user->password = Hash::make(123456);
-                $user->school_id = Auth::user()->school_id;
+                $user->church_id = Auth::user()->church_id;
                 $user->save();
 
                 if($request->role_id == 5){
@@ -267,7 +267,7 @@ class SmStaffController extends Controller
                 $staff->fathers_name = $request->fathers_name;
                 $staff->mothers_name = $request->mothers_name;
                 $staff->email = $request->email;
-                $staff->school_id = Auth::user()->school_id;
+                $staff->church_id = Auth::user()->church_id;
                 $staff->staff_photo = session()->get('staff_photo') ?? fileUpload($request->staff_photo, $designation);
                 $staff->gender_id = $request->gender_id;
                 $staff->marital_status = $request->marital_status;
@@ -353,45 +353,45 @@ class SmStaffController extends Controller
             abort_if(!userPermission(163), 404);
         }
         try {
-            $editData = SmStaff::withOutGlobalScopes()->where('school_id', auth()->user()->school_id)->find($id);
+            $editData = SmStaff::withOutGlobalScopes()->where('church_id', auth()->user()->church_id)->find($id);
             // $has_permission = [];
             if (auth()->user()->staff->id == $id && auth()->user()->role_id !=1) {
-                $has_permission = SmStaffRegistrationField::where('school_id', auth()->user()->school_id)
+                $has_permission = SmStaffRegistrationField::where('church_id', auth()->user()->church_id)
                 ->where('staff_edit', 1)->pluck('field_name')->toArray();
             } else {
-                $has_permission = SmStaffRegistrationField::where('school_id', auth()->user()->school_id)
+                $has_permission = SmStaffRegistrationField::where('church_id', auth()->user()->church_id)
                 ->pluck('field_name')->toArray();
             }
-            $max_staff_no = SmStaff::withOutGlobalScopes()->where('is_saas', 0)->where('school_id', Auth::user()->school_id)->max('staff_no');
+            $max_staff_no = SmStaff::withOutGlobalScopes()->where('is_saas', 0)->where('church_id', Auth::user()->church_id)->max('staff_no');
 
             $roles = InfixRole::where('active_status', '=', 1)
                 ->where(function ($q) {
-                    $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                    $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
                 })
                 ->whereNotIn('id', [1, 2, 3])
                 ->orderBy('id', 'desc')
                 ->get();
 
             $departments = SmHumanDepartment::where('active_status', '=', '1')
-            ->where('school_id', Auth::user()->school_id)->get();
+            ->where('church_id', Auth::user()->church_id)->get();
             $designations = SmDesignation::where('active_status', '=', '1')
-            ->where('school_id', Auth::user()->school_id)->get();
+            ->where('church_id', Auth::user()->church_id)->get();
             $marital_ststus = SmBaseSetup::where('active_status', '=', '1')
             ->where('base_group_id', '=', '4')
-            ->where('school_id', auth()->user()->school_id)
+            ->where('church_id', auth()->user()->church_id)
             ->get();
             $genders = SmBaseSetup::where('active_status', '=', '1')
             ->where('base_group_id', '=', '1')
-            ->where('school_id', auth()->user()->school_id)
+            ->where('church_id', auth()->user()->church_id)
             ->get();
 
             // Custom Field Start
             $custom_fields = SmCustomField::where('form_name', 'staff_registration')
-            ->where('school_id', Auth::user()->school_id)->get();
+            ->where('church_id', Auth::user()->church_id)->get();
             $custom_filed_values = json_decode($editData->custom_field);
             $student = $editData;
             // Custom Field End
-            $is_required = SmStaffRegistrationField::where('school_id', auth()->user()->school_id)->where('is_required', 1)->pluck('field_name')->toArray();
+            $is_required = SmStaffRegistrationField::where('church_id', auth()->user()->church_id)->where('is_required', 1)->pluck('field_name')->toArray();
             return view('backEnd.humanResource.editStaff', compact('editData', 'roles', 'departments', 'designations', 'marital_ststus', 'max_staff_no', 'genders', 'custom_fields', 'custom_filed_values', 'student', 'is_required', 'has_permission'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -419,7 +419,7 @@ class SmStaffController extends Controller
             if (!empty($request->field_name)) {
                 $request_string = $request->field_name;
                 $request_id = $request->id;
-                $data = SmStaff::withOutGlobalScopes()->where('school_id', auth()->user()->school_id)->find($request_id);
+                $data = SmStaff::withOutGlobalScopes()->where('church_id', auth()->user()->church_id)->find($request_id);
                 $data->$request_string = $request->$request_string;
                 if ($request_string == "first_name") {
                     $full_name = $request->$request_string . ' ' . $data->last_name;
@@ -476,9 +476,9 @@ class SmStaffController extends Controller
         try {
             // $data = SmStaff::findOrFail($id);
             if (checkAdmin()) {
-                $data = SmStaff::withOutGlobalScopes()->where('school_id', auth()->user()->school_id)->find($id);
+                $data = SmStaff::withOutGlobalScopes()->where('church_id', auth()->user()->church_id)->find($id);
             } else {
-                $data = SmStaff::withOutGlobalScopes()->where('id', $id)->where('school_id', Auth::user()->school_id)->first();
+                $data = SmStaff::withOutGlobalScopes()->where('id', $id)->where('church_id', Auth::user()->church_id)->first();
             }
             if ($r->hasFile('logo_pic')) {
                 $file = $r->file('logo_pic');
@@ -535,7 +535,7 @@ class SmStaffController extends Controller
         try {
             $designation = 'public/uploads/resume/';
 
-            $staff = SmStaff::withOutGlobalScopes()->where('school_id', auth()->user()->school_id)->find($request->staff_id);
+            $staff = SmStaff::withOutGlobalScopes()->where('church_id', auth()->user()->church_id)->find($request->staff_id);
             if ($request->filled('basic_salary')) {
                 $basic_salary = !empty($request->basic_salary) ? $request->basic_salary : 0;
             }
@@ -723,7 +723,7 @@ class SmStaffController extends Controller
                 ->where('id', '!=', 2)
                 ->where('id', '!=', 3)
                 ->where(function ($q) {
-                    $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                    $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
                 })->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -743,7 +743,7 @@ class SmStaffController extends Controller
             if (checkAdmin()) {
                 $staffDetails = SmStaff::withOutGlobalScope(ActiveStatusSchoolScope::class)->find($id);
             } else {
-                $staffDetails = SmStaff::withOutGlobalScope(ActiveStatusSchoolScope::class)->where('id', $id)->where('school_id', Auth::user()->school_id)->first();
+                $staffDetails = SmStaff::withOutGlobalScope(ActiveStatusSchoolScope::class)->where('id', $id)->where('church_id', Auth::user()->church_id)->first();
             }
             if (Auth::user()->role_id != 1 && Auth::user()->staff->id != $id) {
                 Toastr::error('You are not authorized to view this page', 'Failed');
@@ -751,10 +751,10 @@ class SmStaffController extends Controller
             }
 
             if (!empty($staffDetails)) {
-                $staffPayrollDetails = SmHrPayrollGenerate::where('staff_id', $id)->where('payroll_status', '!=', 'NG')->where('school_id', Auth::user()->school_id)->get();
-                $staffLeaveDetails = SmLeaveRequest::where('staff_id', $staffDetails->user_id)->where('school_id', Auth::user()->school_id)->get();
-                $staffDocumentsDetails = SmStudentDocument::where('student_staff_id', $id)->where('type', '=', 'stf')->where('school_id', Auth::user()->school_id)->get();
-                $timelines = SmStudentTimeline::where('staff_student_id', $id)->where('type', '=', 'stf')->where('school_id', Auth::user()->school_id)->get();
+                $staffPayrollDetails = SmHrPayrollGenerate::where('staff_id', $id)->where('payroll_status', '!=', 'NG')->where('church_id', Auth::user()->church_id)->get();
+                $staffLeaveDetails = SmLeaveRequest::where('staff_id', $staffDetails->user_id)->where('church_id', Auth::user()->church_id)->get();
+                $staffDocumentsDetails = SmStudentDocument::where('student_staff_id', $id)->where('type', '=', 'stf')->where('church_id', Auth::user()->church_id)->get();
+                $timelines = SmStudentTimeline::where('staff_member_id', $id)->where('type', '=', 'stf')->where('church_id', Auth::user()->church_id)->get();
 
                 $custom_field_data = $staffDetails->custom_field;
 
@@ -798,15 +798,15 @@ class SmStaffController extends Controller
                 $staff->where('role_id', '!=', 1);
             }
 
-            $all_staffs = $staff->where('school_id', Auth::user()->school_id)->get();
+            $all_staffs = $staff->where('church_id', Auth::user()->church_id)->get();
 
             if (Auth::user()->role_id != 1) {
                 $roles = InfixRole::where('is_saas', 0)->where('active_status', '=', '1')->where('id', '!=', 1)->where('id', '!=', 2)->where('id', '!=', 3)->where('id', '!=', 5)->where(function ($q) {
-                    $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                    $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
                 })->get();
             } else {
                 $roles = InfixRole::where('is_saas', 0)->where('active_status', '=', '1')->where('id', '!=', 2)->where('id', '!=', 3)->where(function ($q) {
-                    $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                    $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
                 })->get();
             }
 
@@ -863,8 +863,8 @@ class SmStaffController extends Controller
                 $document->type = 'stf';
                 $document->file = $document_photo;
                 $document->created_by = Auth()->user()->id;
-                $document->school_id = Auth::user()->school_id;
-                $document->academic_id = getAcademicId();
+                $document->church_id = Auth::user()->church_id;
+                $document->church_year_id = getAcademicId();
                 $results = $document->save();
             }
 
@@ -953,7 +953,7 @@ class SmStaffController extends Controller
                 }
 
                 $timeline = new SmStudentTimeline();
-                $timeline->staff_student_id = $request->staff_student_id;
+                $timeline->staff_member_id = $request->staff_member_id;
                 $timeline->title = $request->title;
                 $timeline->type = 'stf';
                 $timeline->date = date('Y-m-d', strtotime($request->date));
@@ -962,8 +962,8 @@ class SmStaffController extends Controller
                     $timeline->visible_to_student = $request->visible_to_student;
                 }
                 $timeline->file = $document_photo;
-                $timeline->school_id = Auth::user()->school_id;
-                $timeline->academic_id = getAcademicId();
+                $timeline->church_id = Auth::user()->church_id;
+                $timeline->church_year_id = getAcademicId();
                 $timeline->save();
             }
             Toastr::success('Document uploaded successfully', 'Success');
@@ -1025,7 +1025,7 @@ class SmStaffController extends Controller
                 if (checkAdmin()) {
                     $staffs = SmStaff::withOutGlobalScope(ActiveStatusSchoolScope::class)->find($id);
                 } else {
-                    $staffs = SmStaff::withOutGlobalScope(ActiveStatusSchoolScope::class)->where('id', $id)->where('school_id', Auth::user()->school_id)->first();
+                    $staffs = SmStaff::withOutGlobalScope(ActiveStatusSchoolScope::class)->where('id', $id)->where('church_id', Auth::user()->church_id)->first();
                 }
                 $user_id = $staffs->user_id;
                 $result = $staffs->delete();
@@ -1049,8 +1049,8 @@ class SmStaffController extends Controller
             $status = $request->status == 'on' ? 1 : 0;
             $canUpdate = true;
             // for saas subscriptions               
-            if ($status == 1 && isSubscriptionEnabled() && auth()->user()->school_id != 1) {
-                $active_staff = SmStaff::withOutGlobalScope(ActiveStatusSchoolScope::class)->where('role_id', '!=', 1)->where('school_id', Auth::user()->school_id)->where('active_status', 1)->where('is_saas', 0)->count();
+            if ($status == 1 && isSubscriptionEnabled() && auth()->user()->church_id != 1) {
+                $active_staff = SmStaff::withOutGlobalScope(ActiveStatusSchoolScope::class)->where('role_id', '!=', 1)->where('church_id', Auth::user()->church_id)->where('active_status', 1)->where('is_saas', 0)->count();
                 if (\Modules\Saas\Entities\SmPackagePlan::staff_limit() <= $active_staff) {
                     $canUpdate = false;                  
                     return response()->json(['message' => 'Your staff limit has been crossed.', 'status'=>false]);
@@ -1060,7 +1060,7 @@ class SmStaffController extends Controller
 
                 $staff = SmStaff::withOutGlobalScope(ActiveStatusSchoolScope::class)
                 ->when(checkAdmin(), function($q) {
-                    $q->where('school_id', Auth::user()->school_id);
+                    $q->where('church_id', Auth::user()->church_id);
                 })->where('id', $request->id)->first();
                    
                 $staff->active_status = $status;
@@ -1110,7 +1110,7 @@ class SmStaffController extends Controller
     public function settings()
     {
         try {
-            $staff_settings = SmStaffRegistrationField::where('school_id', auth()->user()->school_id)->get()->filter(function ($field){
+            $staff_settings = SmStaffRegistrationField::where('church_id', auth()->user()->church_id)->get()->filter(function ($field){
                 return $field->field_name != 'custom_fields' || isMenuAllowToShow('custom_field');
             });
             return view('backEnd.humanResource.staff_settings', compact('staff_settings'));
@@ -1121,11 +1121,11 @@ class SmStaffController extends Controller
     }
     public function statusUpdate(Request $request)
     {
-        $field = SmStaffRegistrationField::where('school_id', auth()->user()->school_id)
+        $field = SmStaffRegistrationField::where('church_id', auth()->user()->church_id)
                     ->where('id', $request->filed_id)->firstOrFail();
 
         if ($request->filed_value =='phone_number') {
-            $emailField = SmStaffRegistrationField::where('school_id', auth()->user()->school_id)
+            $emailField = SmStaffRegistrationField::where('church_id', auth()->user()->church_id)
                         ->where('field_name', 'email_address')->firstOrFail();
 
             if ($emailField->is_required==0 && $request->field_status==0) {
@@ -1133,7 +1133,7 @@ class SmStaffController extends Controller
             }
             $emailField->save();
         } elseif ($request->filed_value =='email_address') {
-            $phoneNumberField = SmStaffRegistrationField::where('school_id', auth()->user()->school_id)->where('field_name', 'phone_number')
+            $phoneNumberField = SmStaffRegistrationField::where('church_id', auth()->user()->church_id)->where('field_name', 'phone_number')
             ->firstOrFail();
 
             if ($phoneNumberField->is_required==0 && $request->field_status==0) {
@@ -1161,7 +1161,7 @@ class SmStaffController extends Controller
 
         $field = $request->filed_value;
         $status = $request->field_status;
-        $gs = SmGeneralSettings::where('school_id',Auth::user()->school_id)->first();
+        $gs = SmGeneralSettings::where('church_id',Auth::user()->church_id)->first();
         if($gs){
             if($field == "email"){
                 $gs->teacher_email_view = $status;
@@ -1177,14 +1177,14 @@ class SmStaffController extends Controller
     }
 
     private function assignChatGroup($user){
-        $groups = \Modules\Chat\Entities\Group::where('school_id', auth()->user()->school_id)->get();
+        $groups = \Modules\Chat\Entities\Group::where('church_id', auth()->user()->church_id)->get();
         foreach($groups as $group){
             createGroupUser($group, $user->id);
         }
     }
 
     private function removeChatGroup($user){
-        $groups = \Modules\Chat\Entities\Group::where('school_id', auth()->user()->school_id)->get();
+        $groups = \Modules\Chat\Entities\Group::where('church_id', auth()->user()->church_id)->get();
         foreach($groups as $group){
             removeGroupUser($group, $user->id);
         }

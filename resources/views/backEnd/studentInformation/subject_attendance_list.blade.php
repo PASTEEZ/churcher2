@@ -60,7 +60,7 @@
                             <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                 <option data-display="@lang('common.select_class')*" value="">@lang('common.select_class') *</option>
                                 @foreach($classes as $class)
-                                <option value="{{$class->id}}"  {{isset($input['class'])? ($input['class'] == $class->id? 'selected':''):''}}>{{$class->class_name}}</option>
+                                <option value="{{$class->id}}"  {{isset($input['class'])? ($input['class'] == $class->id? 'selected':''):''}}>{{$class->age_group_name}}</option>
                                 @endforeach
                             </select>
                             @if ($errors->has('class'))
@@ -74,7 +74,7 @@
                                 <option data-display="@lang('common.select_section') *" value="">@lang('common.select_section') *</option>
                                 @isset($sections)
                                 @foreach($sections as $section)
-                                    <option value="{{$section->section_id}}"  {{isset($input['section'])? ($input['section'] == $section->section_id? 'selected':''):''}}>{{$section->sectionName->section_name}}</option>
+                                    <option value="{{$section->mgender_id}}"  {{isset($input['section'])? ($input['section'] == $section->mgender_id? 'selected':''):''}}>{{$section->sectionName->mgender_name}}</option>
                                 @endforeach
                                 @endisset
                             </select>
@@ -168,10 +168,10 @@
                             </div>
                         @else  
                             <div class="col-lg-3">
-                                <strong> @lang('common.class'): </strong> {{$search_info['class_name']}}
+                                <strong> @lang('common.class'): </strong> {{$search_info['age_group_name']}}
                             </div>
                             <div class="col-lg-3">
-                                <strong> @lang('common.section'): </strong> {{$search_info['section_name']}}
+                                <strong> @lang('common.section'): </strong> {{$search_info['mgender_name']}}
                             </div>
                             <div class="col-lg-3">
                                 <strong> @lang('common.subject'): </strong> {{$search_info['subject_name']}}
@@ -198,14 +198,14 @@
                                 <form action="{{route('student-subject-holiday-store')}}" method="POST">
                                     @csrf
                                     <input type="hidden" name="purpose" value="mark">
-                                    <input type="hidden" name="class_id" value="{{$input['class']}}">
-                                    <input type="hidden" name="section_id" value="{{$input['section']}}">
+                                    <input type="hidden" name="age_group_id" value="{{$input['class']}}">
+                                    <input type="hidden" name="mgender_id" value="{{$input['section']}}">
                                     <input type="hidden" name="subject_id" value="{{$input['subject']}}">
                                     @if(moduleStatusCheck('University'))
                                         <input type="hidden" name="un_session_id" value="{{isset($unSession) ? $unSession->id:''}}">
                                         <input type="hidden" name="un_faculty_id" value="{{isset($unFaculty) ? $unFaculty->id:''}}">
                                         <input type="hidden" name="un_department_id" value="{{isset($unDepartment) ? $unDepartment->id:''}}">
-                                        <input type="hidden" name="un_academic_id" value="{{isset($unAcademic) ? $unAcademic->id:''}}">
+                                        <input type="hidden" name="un_church_year_id" value="{{isset($unAcademic) ? $unAcademic->id:''}}">
                                         <input type="hidden" name="un_semester_id" value="{{isset($unSemester) ? $unSemester->id:''}}">
                                         <input type="hidden" name="un_semester_label_id" value="{{isset($unSemesterLabel) ? $unSemesterLabel->id:''}}">
                                         <input type="hidden" name="un_subject_id" value="{{isset($unSubject) ? $unSubject->id :''}}">
@@ -219,14 +219,14 @@
                                 <form action="{{route('student-subject-holiday-store')}}" method="POST">
                                     @csrf
                                         <input type="hidden" name="purpose" value="unmark">
-                                        <input type="hidden" name="class_id" value="{{$input['class']}}">
-                                        <input type="hidden" name="section_id" value="{{$input['section']}}">
+                                        <input type="hidden" name="age_group_id" value="{{$input['class']}}">
+                                        <input type="hidden" name="mgender_id" value="{{$input['section']}}">
                                         <input type="hidden" name="subject_id" value="{{$input['subject']}}">
                                     @if(moduleStatusCheck('University'))
                                         <input type="hidden" name="un_session_id" value="{{isset($unSession) ? $unSession->id:''}}">
                                         <input type="hidden" name="un_faculty_id" value="{{isset($unFaculty) ? $unFaculty->id:''}}">
                                         <input type="hidden" name="un_department_id" value="{{isset($unDepartment) ? $unDepartment->id:''}}">
-                                        <input type="hidden" name="un_academic_id" value="{{isset($unAcademic) ? $unAcademic->id:''}}">
+                                        <input type="hidden" name="un_church_year_id" value="{{isset($unAcademic) ? $unAcademic->id:''}}">
                                         <input type="hidden" name="un_semester_id" value="{{isset($unSemester) ? $unSemester->id:''}}">
                                         <input type="hidden" name="un_semester_label_id" value="{{isset($unSemesterLabel) ? $unSemesterLabel->id:''}}">
                                         <input type="hidden" name="un_subject_id" value="{{isset($unSubject) ? $unSubject->id :''}}">
@@ -255,8 +255,8 @@
                                 <thead>
                                     <tr>
                                         <th>@lang('common.sl')</th>
-                                        <th>@lang('student.admission_no')</th>
-                                        <th>@lang('student.student_name')</th>
+                                        <th>@lang('student.registration_no')</th>
+                                        <th>@lang('student.member_name')</th>
                                         <th>@lang('student.roll_number')</th>
                                         <th>@lang('student.attendance')</th>
                                         <th>@lang('common.note')</th>
@@ -270,17 +270,17 @@
                                     {{-- student means student record data--}}
                                         <tr>
                                             <td>{{$count++}} </td>
-                                            <td>{{$student->studentDetail->admission_no}}
+                                            <td>{{$student->studentDetail->registration_no}}
                                                 <input type="hidden" name="attendance[{{$student->id}}]" value="{{$student->id}}">
-                                                <input type="hidden" name="attendance[{{$student->id}}][student]" value="{{$student->student_id}}">
-                                                <input type="hidden" name="attendance[{{$student->id}}][class]" value="{{$student->class_id}}">
-                                                <input type="hidden" name="attendance[{{$student->id}}][section]" value="{{$student->section_id}}">
+                                                <input type="hidden" name="attendance[{{$student->id}}][student]" value="{{$student->member_id}}">
+                                                <input type="hidden" name="attendance[{{$student->id}}][class]" value="{{$student->age_group_id}}">
+                                                <input type="hidden" name="attendance[{{$student->id}}][section]" value="{{$student->mgender_id}}">
 
                                                 @if(moduleStatusCheck('University'))
                                                     <input type="hidden" name="attendance[{{$student->id}}][un_session_id]" value="{{$student->un_session_id}}">
                                                     <input type="hidden" name="attendance[{{$student->id}}][un_faculty_id]" value="{{$student->un_faculty_id}}">
                                                     <input type="hidden" name="attendance[{{$student->id}}][un_department_id]" value="{{$student->un_department_id}}">
-                                                    <input type="hidden" name="attendance[{{$student->id}}][un_academic_id]" value="{{$student->un_academic_id}}">
+                                                    <input type="hidden" name="attendance[{{$student->id}}][un_church_year_id]" value="{{$student->un_church_year_id}}">
                                                     <input type="hidden" name="attendance[{{$student->id}}][un_semester_id]" value="{{$student->un_semester_id}}">
                                                     <input type="hidden" name="attendance[{{$student->id}}][un_semester_label_id]" value="{{$student->un_semester_label_id}}">
                                                 @endif

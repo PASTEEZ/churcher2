@@ -9,7 +9,7 @@ use App\Scopes\StatusAcademicSchoolScope;
 class SmFeesType extends Model
 {
     use HasFactory;
-    protected $fillable = ['name', 'fees_group_id', 'un_semester_label_id', 'school_id','un_subject_id','un_academic_id'];
+    protected $fillable = ['name', 'fees_group_id', 'un_semester_label_id', 'church_id','un_subject_id','un_church_year_id'];
     protected static function boot()
     {
         parent::boot();

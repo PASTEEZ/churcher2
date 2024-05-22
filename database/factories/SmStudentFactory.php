@@ -25,7 +25,7 @@ class SmStudentFactory extends Factory
     {
         $i=$this->i++;
         return [   
-                'admission_no'            => $this->faker->numberBetween($min = 10000, $max = 90000),
+                'registration_no'            => $this->faker->numberBetween($min = 10000, $max = 90000),
                 'roll_no'                 => $this->faker->numberBetween($min = 10000, $max = 90000),          
                 'student_category_id'     => 1,  
                 'session_id'              => 1,

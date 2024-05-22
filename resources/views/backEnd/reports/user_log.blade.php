@@ -63,7 +63,7 @@ $(document).ready(function() {
                  "ajax": $.fn.dataTable.pipeline( {
                        url: "{{url('user-log-ajax')}}",
                        data: { 
-                            academic_year: $('#academic_id').val(), 
+                            church_year: $('#church_year_id').val(), 
                             class: $('#class').val(), 
                             section: $('#section').val(), 
                             roll_no: $('#roll').val(), 

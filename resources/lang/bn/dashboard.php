@@ -112,7 +112,7 @@ return [
     "actions" => "অ্যাকশন",
     "waiting" => "অপেক্ষা করা হচ্ছে",
     "topic" => "বিষয়",
-    "select_academic_year" => "একাডেমিক বছর নির্বাচন করুন",
+    "select_church_year" => "একাডেমিক বছর নির্বাচন করুন",
     "calendar" => "ক্যালেন্ডার",
     "teachers" => "শিক্ষকরা",
     "parents" => "প্যারেন্টস",

@@ -28,16 +28,16 @@ class StudentAttendanceImport implements ToModel, WithStartRow, WithHeadingRow
     public function model(array $row)
     {
 
-        $student = SmStudent::select('id')->where('admission_no', $row['admission_no'])->where('school_id', Auth::user()->school_id)->first();
+        $student = SmStudent::select('id')->where('registration_no', $row['registration_no'])->where('church_id', Auth::user()->church_id)->first();
         if ($student != "") {
             return new StudentAttendanceBulk([
             "attendance_date" => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['attendance_date'])->format('Y-m-d'),
             "attendance_type" => $row['attendance_type'],
             "note" => $row['note'],
-            "student_id" => $student->id,
-            "class_id" => $this->class,
-            "section_id" => $this->section,
-            "school_id" => Auth::user()->school_id,
+            "member_id" => $student->id,
+            "age_group_id" => $this->class,
+            "mgender_id" => $this->section,
+            "church_id" => Auth::user()->church_id,
         ]);
         }
         

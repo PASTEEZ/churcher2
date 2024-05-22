@@ -3,8 +3,8 @@
 @lang('fees.balance_fees_report')
 @endsection
 @section('mainContent')
-<input type="text" hidden value="{{ @$clas->class_name }}" id="cls">
-<input type="text" hidden value="{{ @$clas->section_name->sectionName->section_name }}" id="sec">
+<input type="text" hidden value="{{ @$clas->age_group_name }}" id="cls">
+<input type="text" hidden value="{{ @$clas->mgender_name->sectionName->mgender_name }}" id="sec">
 <section class="sms-breadcrumb mb-40 white-box">
     <div class="container-fluid">
         <div class="row justify-content-between">
@@ -39,7 +39,7 @@
                                     <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                         <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                         @foreach($classes as $class)
-                                        <option value="{{$class->id}}" {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{$class->class_name}}</option>
+                                        <option value="{{$class->id}}" {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{$class->age_group_name}}</option>
                                         @endforeach
                                     </select>
                                     @if ($errors->has('class'))
@@ -51,10 +51,10 @@
                                 <div class="col-lg-6 mt-30-md col-md-6" id="select_section_div">
                                     <select class="w-100 bb niceSelect form-control{{ $errors->has('section') ? ' is-invalid' : '' }}" id="select_section" name="section">
                                         <option data-display="@lang('common.select_section')*" value="">@lang('common.select_section') *</option>
-                                        @if(isset($class_id))
+                                        @if(isset($age_group_id))
                                         @foreach ($class->classSection as $section)
                                         <option value="{{ $section->sectionName->id }}" {{ old('section')==$section->sectionName->id ? 'selected' : '' }} >
-                                            {{ $section->sectionName->section_name }}</option>
+                                            {{ $section->sectionName->mgender_name }}</option>
                                         @endforeach
                                     @endif
                                     </select>
@@ -108,7 +108,7 @@
                                 <thead>
                                     <tr>
                                         <th>@lang('common.name')</th>
-                                        <th>@lang('student.admission_no')</th>
+                                        <th>@lang('student.registration_no')</th>
                                         <th>@lang('student.roll_no')</th>
                                         <th>@lang('student.father_name')</th>
                                         <th>@lang('accounts.amount')</th>
@@ -127,7 +127,7 @@
                                     @endphp
                                     <tr>
                                         <td>{{$student->full_name}}</td>
-                                        <td>{{$student->admission_no}}</td>
+                                        <td>{{$student->registration_no}}</td>
                                         <td>{{$student->roll_no}}</td>
                                         <td>{{$student->parents!=""?$student->parents->fathers_name:""}}</td>
                                         <td>
@@ -205,7 +205,7 @@
                                 <thead>
                                     <tr>
                                         <th>@lang('common.name')</th>
-                                        <th>@lang('student.admission_no')</th>
+                                        <th>@lang('student.registration_no')</th>
                                         <th>@lang('student.roll_no')</th>
                                         <th>@lang('student.father_name')</th>
                                         <th>@lang('accounts.amount')</th>
@@ -220,7 +220,7 @@
                                     
                                     <tr>
                                         <td>{{@$record->student->full_name}}</td>
-                                        <td>{{@$record->student->admission_no}}</td>
+                                        <td>{{@$record->student->registration_no}}</td>
                                         <td>{{@$record->student->roll_no}}</td>
                                         <td>{{@$record->student->parents!=""?$record->student->parents->fathers_name:""}}</td>
                                         <td>{{@$record->feesInstallments->sum('amount')}}</td>

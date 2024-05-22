@@ -56,8 +56,8 @@ class SmExamFormatSettingsController extends Controller
             $add_content->file = fileUpload($request->file, $destination);
             $add_content->start_date = $request->start_date ? date('Y-m-d', strtotime($request->start_date)): null;
             $add_content->end_date = $request->end_date ? date('Y-m-d', strtotime($request->end_date)) : null;
-            $add_content->school_id = Auth::user()->school_id;
-            $add_content->academic_id = getAcademicId();
+            $add_content->church_id = Auth::user()->church_id;
+            $add_content->church_year_id = getAcademicId();
             $add_content->save();
 
             Toastr::success('Operation successful', 'Success');
@@ -103,8 +103,8 @@ class SmExamFormatSettingsController extends Controller
             $update_add_content->publish_date = date('Y-m-d', strtotime($request->publish_date));
             $update_add_content->start_date = $request->start_date ? date('Y-m-d', strtotime($request->start_date)) : null;
             $update_add_content->end_date = $request->end_date ? date('Y-m-d', strtotime($request->end_date)) : null;
-            $update_add_content->school_id = Auth::user()->school_id;
-            $update_add_content->academic_id = getAcademicId();
+            $update_add_content->church_id = Auth::user()->church_id;
+            $update_add_content->church_year_id = getAcademicId();
             $update_add_content->file = fileUpdate($update_add_content->file, $request->file, $destination);
             $result = $update_add_content->save();
 
@@ -136,13 +136,13 @@ class SmExamFormatSettingsController extends Controller
     {
         try {
             $exams = SmExamType::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             $classes = SmClass::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             return view('backEnd..examination.examPositionReport', compact('exams', 'classes'));
@@ -163,23 +163,23 @@ class SmExamFormatSettingsController extends Controller
             $students = StudentRecord::with(['studentDetail' => function($q){
                 return $q->where('active_status', 1);
             }])
-                ->where('class_id', $class)
-                ->where('section_id', $section)
+                ->where('age_group_id', $class)
+                ->where('mgender_id', $section)
                 ->orderBy('id', 'asc')
                 ->get();
 
             $fail_grade = SmMarksGrade::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->min('gpa');
 
             $max_gpa = SmMarksGrade::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->max('gpa');
 
-            $totalSubject = SmMarkStore::where('class_id', $class)
-                ->where('section_id', $section)
+            $totalSubject = SmMarkStore::where('age_group_id', $class)
+                ->where('mgender_id', $section)
                 ->groupBy('subject_id')
                 ->get()
                 ->unique();
@@ -207,8 +207,8 @@ class SmExamFormatSettingsController extends Controller
             if ($studenInfos) {
                 $students = StudentRecord::whereIn('id', $studenInfos)->get();
 
-                ExamMeritPosition::where('class_id', $class)
-                    ->where('section_id', $section)
+                ExamMeritPosition::where('age_group_id', $class)
+                    ->where('mgender_id', $section)
                     ->where('exam_term_id', $exam)
                     ->delete();
 
@@ -234,21 +234,21 @@ class SmExamFormatSettingsController extends Controller
 
 
                     $data = new ExamMeritPosition();
-                    $data->class_id = $class;
-                    $data->section_id = $section;
+                    $data->age_group_id = $class;
+                    $data->mgender_id = $section;
                     $data->exam_term_id = $exam;
                     $data->total_mark = $totalMark;
                     $data->gpa = number_format($gpaData, 2);
                     $data->grade = gpaResult($gpaData)->grade_name;
-                    $data->admission_no = $student->studentDetail->roll_no;
+                    $data->registration_no = $student->studentDetail->roll_no;
                     $data->record_id = $student->id;
-                    $data->school_id = auth()->user()->school_id;
-                    $data->academic_id = getAcademicId();
+                    $data->church_id = auth()->user()->church_id;
+                    $data->church_year_id = getAcademicId();
                     $data->save();
                 }
 
-                $allStudentMarks = ExamMeritPosition::where('class_id', $class)
-                    ->where('section_id', $section)
+                $allStudentMarks = ExamMeritPosition::where('age_group_id', $class)
+                    ->where('mgender_id', $section)
                     ->where('exam_term_id', $exam)
                     ->orderBy('gpa', 'desc')
                     ->get()
@@ -288,13 +288,13 @@ class SmExamFormatSettingsController extends Controller
     {
         try {
             $exams = SmExamType::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             $classes = SmClass::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             return view('backEnd..examination.allExamPositionReport', compact('exams', 'classes'));
@@ -313,23 +313,23 @@ class SmExamFormatSettingsController extends Controller
             $students = StudentRecord::with(['studentDetail' => function($q){
                 return $q->where('active_status', 1);
             }])
-                ->where('class_id', $class)
-                ->where('section_id', $section)
+                ->where('age_group_id', $class)
+                ->where('mgender_id', $section)
                 ->orderBy('id', 'asc')
                 ->get();
 
             $fail_grade = SmMarksGrade::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->min('gpa');
 
             $max_gpa = SmMarksGrade::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->max('gpa');
 
-            $totalSubject = SmMarkStore::where('class_id', $class)
-                ->where('section_id', $section)
+            $totalSubject = SmMarkStore::where('age_group_id', $class)
+                ->where('mgender_id', $section)
                 ->groupBy('exam_term_id')
                 ->get()
                 ->unique()->count();
@@ -339,7 +339,7 @@ class SmExamFormatSettingsController extends Controller
 
             foreach ($students as $student) {
                 $studentMarks = SmMarkStore::where('student_record_id', $student->id)
-                    ->where('academic_id', getAcademicId())
+                    ->where('church_year_id', getAcademicId())
                     ->get()
                     ->groupBy('subject_id');
 
@@ -364,13 +364,13 @@ class SmExamFormatSettingsController extends Controller
             if ($studenInfos) {
                 $students = StudentRecord::whereIn('id', $studenInfos)->get();
 
-                AllExamWisePosition::where('class_id', $class)
-                    ->where('section_id', $section)
+                AllExamWisePosition::where('age_group_id', $class)
+                    ->where('mgender_id', $section)
                     ->delete();
 
                 foreach ($students as $student) {
                     $allMarks = SmMarkStore::where('student_record_id', $student->id)
-                        ->where('academic_id', getAcademicId())
+                        ->where('church_year_id', getAcademicId())
                         ->get()
                         ->groupBy('subject_id');
 
@@ -393,21 +393,21 @@ class SmExamFormatSettingsController extends Controller
                     }
 
                     $data = new AllExamWisePosition();
-                    $data->class_id = $class;
-                    $data->section_id = $section;
+                    $data->age_group_id = $class;
+                    $data->mgender_id = $section;
                     $data->total_mark = $totalMark;
                     $data->gpa = number_format($gpaData, 2);
                     $data->grade = gpaResult($gpaData)->grade_name;
-                    $data->admission_no = $student->studentDetail->roll_no;
+                    $data->registration_no = $student->studentDetail->roll_no;
                     $data->roll_no = $student->studentDetail->roll_no;
                     $data->record_id = $student->id;
-                    $data->school_id = auth()->user()->school_id;
-                    $data->academic_id = getAcademicId();
+                    $data->church_id = auth()->user()->church_id;
+                    $data->church_year_id = getAcademicId();
                     $data->save();
                 }
 
-                $allStudentMarks = AllExamWisePosition::where('class_id', $class)
-                    ->where('section_id', $section)
+                $allStudentMarks = AllExamWisePosition::where('age_group_id', $class)
+                    ->where('mgender_id', $section)
                     ->orderBy('gpa', 'desc')
                     ->get()
                     ->sort(function ($a, $b) {

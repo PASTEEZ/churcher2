@@ -24,11 +24,11 @@ class SmFeesDiscountRequest extends FormRequest
      */
     public function rules()
     {
-        $school_id=auth()->user()->school_id;
+        $church_id=auth()->user()->church_id;
         if(moduleStatusCheck('University')){
             return [
-                'name' => ['required', 'max:200' ,Rule::unique('sm_fees_discounts')->where('school_id', $school_id)->ignore($this->id) ],
-                'code' =>  ['required' ,Rule::unique('sm_fees_discounts')->where('school_id', $school_id)->ignore($this->id) ],
+                'name' => ['required', 'max:200' ,Rule::unique('sm_fees_discounts')->where('church_id', $church_id)->ignore($this->id) ],
+                'code' =>  ['required' ,Rule::unique('sm_fees_discounts')->where('church_id', $church_id)->ignore($this->id) ],
                 'amount' => "required|integer|min:0",
                 'description' => 'nullable|max:200',
             ];
@@ -36,16 +36,16 @@ class SmFeesDiscountRequest extends FormRequest
         
         elseif(directFees()){
             return [
-                'name' => ['required', 'max:200' ,Rule::unique('sm_fees_discounts')->where('school_id', $school_id)->ignore($this->id) ],
-                'code' =>  ['required' ,Rule::unique('sm_fees_discounts')->where('school_id', $school_id)->ignore($this->id) ],
+                'name' => ['required', 'max:200' ,Rule::unique('sm_fees_discounts')->where('church_id', $church_id)->ignore($this->id) ],
+                'code' =>  ['required' ,Rule::unique('sm_fees_discounts')->where('church_id', $church_id)->ignore($this->id) ],
                 'amount' => "required|integer|min:0",
                 'description' => 'nullable|max:200',
             ];
         }
         else{
             return [
-                'name' => ['required', 'max:200' ,Rule::unique('sm_fees_discounts')->where('school_id', $school_id)->ignore($this->id) ],
-                'code' => ['required' ,Rule::unique('sm_fees_discounts')->where('school_id', $school_id)->ignore($this->id) ],
+                'name' => ['required', 'max:200' ,Rule::unique('sm_fees_discounts')->where('church_id', $church_id)->ignore($this->id) ],
+                'code' => ['required' ,Rule::unique('sm_fees_discounts')->where('church_id', $church_id)->ignore($this->id) ],
                 'amount' => "required|integer|min:0",
                 'type' =>"required",
                 'description' => 'nullable|max:200',

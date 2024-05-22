@@ -4,7 +4,7 @@ $setting = generalSetting();
 <!DOCTYPE html>
 <html>
 <head>
-    <title>@lang('student.student_id_card')</title>
+    <title>@lang('student.member_id_card')</title>
     <link rel="stylesheet" href="{{asset('public/backEnd/')}}/vendors/css/bootstrap.css" />
     <link rel="stylesheet" href="{{asset('public/backEnd/')}}/css/style.css" />
     <style media="print">
@@ -38,7 +38,7 @@ $setting = generalSetting();
 					<div class="student-meta-box">
 						<div class="position-relative">
 							<img class="w-100 img-fluid" src="{{asset('public/backEnd/img/student/id-card-bg.png')}}">
-							<h3 class="" style="position:absolute; left: 20px; top: 45px; color: #fff">@lang('common.view_student_id_card')</h3>
+							<h3 class="" style="position:absolute; left: 20px; top: 45px; color: #fff">@lang('common.view_member_id_card')</h3>
 						</div>
 						<!-- <div class="text-center p-3">
 							<img class="img-fluid" src="{{asset('public/backEnd/img/student/student-id-bg.png')}}">
@@ -48,12 +48,12 @@ $setting = generalSetting();
 							<div class="text-center mb-4">
 								<img class="img-180" src="{{asset('public/backEnd/img/student/id-card-img.jpg')}}" alt="">
 							</div>
-							@if(@$id_card->student_name == 1)
+							@if(@$id_card->member_name == 1)
                             <div class="single-meta">
                                 <div class="d-flex align-items-center">
                                     <div style="float: left">
                                         <div class="value text-left">
-                                            @lang('student.student_name')
+                                            @lang('student.member_name')
                                         </div>
                                     </div>
                                     <div style="clear:both"></div>
@@ -67,18 +67,18 @@ $setting = generalSetting();
                             </div>
                             @endif
 
-                            @if(@$id_card->admission_no == 1)
+                            @if(@$id_card->registration_no == 1)
                             <div class="single-meta">
                                 <div class="d-flex align-items-center">
                                     <div style="float: left">
                                         <div class="value text-left">
-                                            @lang('student.admission_no')
+                                            @lang('student.registration_no')
                                         </div>
                                     </div>
                                     <div style="clear:both"></div>
                                     <div style="float: right">
                                         <div class="name text-left">
-                                            {{@$student->admission_no}}
+                                            {{@$student->registration_no}}
                                         </div>
                                     </div>
                                     <div style="clear:both"></div>
@@ -96,7 +96,7 @@ $setting = generalSetting();
                                     <div style="clear:both"></div>
                                     <div style="float: right">
                                         <div class="name">
-                                            {{@$student->class!=""?@$student->class->class_name:""}} ({{@$student->section!=""?@$student->section->section_name:""}})
+                                            {{@$student->class!=""?@$student->class->age_group_name:""}} ({{@$student->section!=""?@$student->section->mgender_name:""}})
                                         </div>
                                     </div>
                                     <div style="clear:both"></div>

@@ -16,7 +16,7 @@ Route::get('login', 'Auth\LoginController@loginFormTwo')->name('login');
 
 Route::post('login', 'Auth\LoginController@login');
 
-Route::get('/academic_years', 'HomeController@academicUpdate');
+Route::get('/church_years', 'HomeController@academicUpdate');
 Route::get('/class_updates', 'HomeController@classUpdate');
 Route::get('/section_updates', 'HomeController@sectionUpdate');
 Route::get('/class_section_updates', 'HomeController@sectionClassUpdate');
@@ -51,7 +51,7 @@ Route::get('view/notice/{id}', 'HomeController@viewNotice')->where('id', '[0-9]+
 Route::get('change-password', 'HomeController@updatePassowrd')->name('updatePassowrd');
 Route::post('admin-change-password', 'HomeController@updatePassowrdStore')->name('updatePassowrdStore'); //InfixPro Version
 
-Route::get('download-uploaded-content/{id}/{student_id}', 'Student\SmStudentPanelController@downloadHomeWorkContent')->name('downloadHomeWorkContent');
+Route::get('download-uploaded-content/{id}/{member_id}', 'Student\SmStudentPanelController@downloadHomeWorkContent')->name('downloadHomeWorkContent');
 
 Route::post('/pay-with-paystack', 'Student\SmFeesController@redirectToGateway')->name('pay-with-paystack');
 
@@ -228,7 +228,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('change-academic-year', 'Admin\SystemSettings\SmSystemSettingController@sessionChange');
 });
 
-Route::get('/academic_years', 'HomeController@academicUpdate');
+Route::get('/church_years', 'HomeController@academicUpdate');
 Route::get('/class_updates', 'HomeController@classUpdate');
 Route::get('/section_updates', 'HomeController@sectionUpdate');
 Route::get('/class_section_updates', 'HomeController@sectionClassUpdate');
@@ -289,7 +289,7 @@ Route::group(['middleware' => ['XSS']], function () {
     Route::get('/dashboard', 'HomeController@dashboard')->name('dashboard');
     Route::get('ajax-get-login-access', 'SmAuthController@getLoginAccess');
 
-    Route::get('class-routine/print/{class_id}/{section_id}', 'Admin\Academics\SmClassRoutineNewController@classRoutinePrint')->name('classRoutinePrint');
+    Route::get('class-routine/print/{age_group_id}/{mgender_id}', 'Admin\Academics\SmClassRoutineNewController@classRoutinePrint')->name('classRoutinePrint');
 
 });
 Route::get('paypal-return-status', 'SmCollectFeesByPaymentGateway@getPaymentStatus');

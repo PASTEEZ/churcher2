@@ -35,8 +35,8 @@
                                 @else
                                     <a class="nav-link @if ($key == 0) active @endif "
                                         href="#tab{{ $key }}" role="tab"
-                                        data-toggle="tab">{{ $record->class->class_name }}
-                                        ({{ $record->section->section_name }})
+                                        data-toggle="tab">{{ $record->class->age_group_name }}
+                                        ({{ $record->section->mgender_name }})
                                     </a>
                                 @endif
                             </li>

@@ -17,12 +17,12 @@ class LessonPlanner extends Model
     }
     public function class()
     {
-        return $this->belongsTo('App\SmClass', 'class_id')->withDefault();
+        return $this->belongsTo('App\SmClass', 'age_group_id')->withDefault();
     }
 
     public function sectionName()
     {
-        return $this->belongsTo('App\SmSection', 'section_id')->withDefault();
+        return $this->belongsTo('App\SmSection', 'mgender_id')->withDefault();
     }
     public function subject()
     {
@@ -48,11 +48,11 @@ class LessonPlanner extends Model
     public function scopeLessonPlanner($query, $teacher, $class, $section, $subject)
     {
         return $query->where('teacher_id', $teacher)
-            ->where('class_id', $class)
-            ->where('section_id', $section)
+            ->where('age_group_id', $class)
+            ->where('mgender_id', $section)
             ->where('subject_id', $subject)
-            ->where('academic_id', getAcademicId())
-            ->where('school_id', Auth::user()->school_id)
+            ->where('church_year_id', getAcademicId())
+            ->where('church_id', Auth::user()->church_id)
             ->where('active_status', 1);
     }
     public function unSession()
@@ -70,7 +70,7 @@ class LessonPlanner extends Model
     }
     public function unAcademic()
     {
-        return $this->belongsTo('Modules\University\Entities\UnAcademicYear', 'un_academic_id', 'id')->withDefault();
+        return $this->belongsTo('Modules\University\Entities\UnAcademicYear', 'un_church_year_id', 'id')->withDefault();
     }
     public function unSemester()
     {

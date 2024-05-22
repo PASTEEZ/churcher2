@@ -36,16 +36,16 @@
             <td style="text-aligh:left"> 
                 <h3 style="font-size:20px !important; margin-bottom : 0;margin-top: 0px;" class="text-white mb-0"> @lang('academics.class_routine') </h3>
                 <span style="font-size:11px !important;margin-right:10px;" align="left"
-                class="text-white">@lang('common.class_Sec'): {{ @$class->class_name.'('.$section->section_name.')' }} </span>
+                class="text-white">@lang('common.class_Sec'): {{ @$class->age_group_name.'('.$section->mgender_name.')' }} </span>
              <span style="font-size:11px !important;" align="left"
-                class="text-white">@lang('common.academic_year'): {{ @$academic_year->title}}
-                 ({{ @$academic_year->year}}) </span>
+                class="text-white">@lang('common.church_year'): {{ @$church_year->title}}
+                 ({{ @$church_year->year}}) </span>
             </td>
                
             <td style="text-aligh:center">
                
                     <h3 style="font-size:20px !important; margin-bottom : 0;margin-top: 0px;"
-                    class="text-white mb-0"> {{isset(generalSetting()->school_name)?generalSetting()->school_name:'Infix School Management ERP'}} </h3>
+                    class="text-white mb-0"> {{isset(generalSetting()->church_name)?generalSetting()->church_name:'Infix School Management ERP'}} </h3>
                     <span style="font-size:11px !important;margin:0px"
                     class="text-white "> {{isset(generalSetting()->address)?generalSetting()->address:'Infix School Address'}} </span>
                     

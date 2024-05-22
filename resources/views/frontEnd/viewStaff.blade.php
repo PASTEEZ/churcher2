@@ -851,7 +851,7 @@
                              'method' => 'POST', 'enctype' => 'multipart/form-data', 'name' => 'document_upload']) }}
                              <div class="row">
                                 <div class="col-lg-12">
-                                    <input type="hidden" name="staff_student_id" value="{{$staffDetails->id}}">
+                                    <input type="hidden" name="staff_member_id" value="{{$staffDetails->id}}">
                                     <div class="row mt-25">
                                         <div class="col-lg-12">
                                             <div class="input-effect">

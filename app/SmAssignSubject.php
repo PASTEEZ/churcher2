@@ -32,13 +32,13 @@ class SmAssignSubject extends Model
     }
     public function resultBySubject()
     {
-        return $this->hasMany(SmResultStore::class, 'subject_id', 'subject_id')->where('section_id', $this->section_id)
-            ->where('class_id', $this->class_id);
+        return $this->hasMany(SmResultStore::class, 'subject_id', 'subject_id')->where('mgender_id', $this->mgender_id)
+            ->where('age_group_id', $this->age_group_id);
     }
 
     public function class()
     {
-        return $this->belongsTo('App\SmClass', 'class_id', 'id');
+        return $this->belongsTo('App\SmClass', 'age_group_id', 'id');
     }
 
     public function teacher()
@@ -48,19 +48,19 @@ class SmAssignSubject extends Model
 
     public function section()
     {
-        return $this->belongsTo('App\SmSection', 'section_id', 'id');
+        return $this->belongsTo('App\SmSection', 'mgender_id', 'id');
     }
 
     public function examSetups()
     {
-        return $this->hasMany(SmExamSetup::class, 'class_id', 'class_id')->where('class_id', $this->class_id)
-            ->where('section_id', $this->section_id);
+        return $this->hasMany(SmExamSetup::class, 'age_group_id', 'age_group_id')->where('age_group_id', $this->age_group_id)
+            ->where('mgender_id', $this->mgender_id);
     }
 
     public function markBySubject()
     {
-        return $this->hasMany(SmMarkStore::class, 'subject_id', 'subject_id')->where('section_id', $this->section_id)
-            ->where('class_id', $this->class_id);
+        return $this->hasMany(SmMarkStore::class, 'subject_id', 'subject_id')->where('mgender_id', $this->mgender_id)
+            ->where('age_group_id', $this->age_group_id);
     }
     public function exam()
     {
@@ -70,16 +70,16 @@ class SmAssignSubject extends Model
     public function examSchedule()
     {
         return $this->hasMany(SmExamSchedule::class,'subject_id','subject_id')
-            ->where('class_id', $this->class_id)->where('section_id', $this->section_id);
+            ->where('age_group_id', $this->age_group_id)->where('mgender_id', $this->mgender_id);
     }
 
-    public static function getNumberOfPart($subject_id, $class_id=null, $section_id, $exam_term_id)
+    public static function getNumberOfPart($subject_id, $age_group_id=null, $mgender_id, $exam_term_id)
     {
         try {
             $results = SmExamSetup::where([
-                ['class_id', $class_id],
+                ['age_group_id', $age_group_id],
                 ['subject_id', $subject_id],
-                ['section_id', $section_id],
+                ['mgender_id', $mgender_id],
                 ['exam_term_id', $exam_term_id],
             ])->get();
             return $results;
@@ -105,13 +105,13 @@ class SmAssignSubject extends Model
         }
     }
 
-    public static function getNumberOfPartStudent($subject_id, $class_id, $section_id, $exam_term_id)
+    public static function getNumberOfPartStudent($subject_id, $age_group_id, $mgender_id, $exam_term_id)
     {
         try {
             $results = SmExamSetup::where([
-                ['class_id', $class_id],
+                ['age_group_id', $age_group_id],
                 ['subject_id', $subject_id],
-                ['section_id', $section_id],
+                ['mgender_id', $mgender_id],
                 ['exam_term_id', $exam_term_id]
             ])->get();
             return $results;
@@ -121,14 +121,14 @@ class SmAssignSubject extends Model
         }
     }
 
-    public static function getMarksOfPart($student_id, $subject_id, $class_id, $section_id, $exam_term_id)
+    public static function getMarksOfPart($member_id, $subject_id, $age_group_id, $mgender_id, $exam_term_id)
     {
         try {
             $results = SmMarkStore::where([
-                ['student_id', $student_id],
-                ['class_id', $class_id],
+                ['member_id', $member_id],
+                ['age_group_id', $age_group_id],
                 ['subject_id', $subject_id],
-                ['section_id', $section_id],
+                ['mgender_id', $mgender_id],
                 ['exam_term_id', $exam_term_id],
             ])->get();
             return $results;
@@ -138,13 +138,13 @@ class SmAssignSubject extends Model
         }
     }
 
-    public static function un_getMarksOfPart($student_id, $subject_id, $request, $exam_term_id)
+    public static function un_getMarksOfPart($member_id, $subject_id, $request, $exam_term_id)
     {
         try {
             $SmMarkStore = SmMarkStore::query();
             $results = universityFilter($SmMarkStore, $request)
                     ->where([
-                        ['student_id', $student_id],
+                        ['member_id', $member_id],
                         ['un_subject_id', $subject_id],
                         ['exam_term_id', $exam_term_id],
                     ])->get();
@@ -155,14 +155,14 @@ class SmAssignSubject extends Model
         }
     }
 
-    public static function getSumMark($student_id, $subject_id, $class_id, $section_id, $exam_term_id)
+    public static function getSumMark($member_id, $subject_id, $age_group_id, $mgender_id, $exam_term_id)
     {
         try {
             $results = SmMarkStore::where([
-                ['student_id', $student_id],
-                ['class_id', $class_id],
+                ['member_id', $member_id],
+                ['age_group_id', $age_group_id],
                 ['subject_id', $subject_id],
-                ['section_id', $section_id],
+                ['mgender_id', $mgender_id],
                 ['exam_term_id', $exam_term_id],
             ])->sum('total_marks');
             return $results;
@@ -172,13 +172,13 @@ class SmAssignSubject extends Model
         }
     }
 
-    public static function un_getSumMark($student_id, $subject_id, $request, $exam_term_id)
+    public static function un_getSumMark($member_id, $subject_id, $request, $exam_term_id)
     {
         try {
             $SmMarkStore = SmMarkStore::query();
             $results = universityFilter($SmMarkStore, $request)
                     ->where([
-                        ['student_id', $student_id],
+                        ['member_id', $member_id],
                         ['un_subject_id', $subject_id],
                         ['exam_term_id', $exam_term_id],
                     ])->sum('total_marks');
@@ -189,33 +189,33 @@ class SmAssignSubject extends Model
         }
     }
 
-    public static function getHighestMark($subject_id, $class_id, $section_id, $exam_term_id)
+    public static function getHighestMark($subject_id, $age_group_id, $mgender_id, $exam_term_id)
     {
         try {
             $results = DB::table('sm_mark_stores')
-                ->select('student_id', DB::raw('SUM(total_marks) as total_amount'))
+                ->select('member_id', DB::raw('SUM(total_marks) as total_amount'))
                 ->where([
-                    ['class_id', $class_id],
+                    ['age_group_id', $age_group_id],
                     ['subject_id', $subject_id],
-                    ['section_id', $section_id],
+                    ['mgender_id', $mgender_id],
                     ['exam_term_id', $exam_term_id]
                 ])
-                ->groupBy('student_id')
+                ->groupBy('member_id')
                 ->get();
             $totalMark = [];
             foreach ($results as $result) {
                 $totalMark[] = $result->total_amount;
             }
             return max($totalMark);
-            $results = SmMarkStore::groupBy('student_id')
-                ->selectRaw('sum(total_marks) as sum, student_id')
+            $results = SmMarkStore::groupBy('member_id')
+                ->selectRaw('sum(total_marks) as sum, member_id')
                 ->where([
-                    ['class_id', $class_id],
+                    ['age_group_id', $age_group_id],
                     ['subject_id', $subject_id],
-                    ['section_id', $section_id],
+                    ['mgender_id', $mgender_id],
                     ['exam_term_id', $exam_term_id],
                 ])
-                ->select('sum', 'student_id');
+                ->select('sum', 'member_id');
             return $results;
         } catch (\Exception $e) {
             $data = [];
@@ -223,13 +223,13 @@ class SmAssignSubject extends Model
         }
     }
 
-    public static function getSubjectMark($subject_id, $class_id, $section_id, $exam_term_id)
+    public static function getSubjectMark($subject_id, $age_group_id, $mgender_id, $exam_term_id)
     {
         try {
             $results = SmExamSetup::where([
-                ['class_id', $class_id],
+                ['age_group_id', $age_group_id],
                 ['subject_id', $subject_id],
-                ['section_id', $section_id],
+                ['mgender_id', $mgender_id],
                 ['exam_term_id', $exam_term_id],
             ])->sum('exam_mark');
             return $results;
@@ -240,18 +240,18 @@ class SmAssignSubject extends Model
     }
 
 
-    public static function get_student_result($student_id, $subject_id, $class_id, $section_id, $exam_term_id, $optional_subject_id, $optional_subject_setup)
+    public static function get_student_result($member_id, $subject_id, $age_group_id, $mgender_id, $exam_term_id, $optional_subject_id, $optional_subject_setup)
     {
         try {
             $this_student_failed = 0;
             $total_gpa_point = 0;
-            $student_info = SmStudent::where('id', '=', $student_id)->first();
-            $optional_subject = SmOptionalSubjectAssign::where('student_id', '=', $student_info->id)->where('session_id', '=', $student_info->session_id)->first();
-            $subjects = SmAssignSubject::where([['class_id', $class_id], ['section_id', $section_id]])->get();
-            $assign_subjects = SmAssignSubject::where([['class_id', $class_id], ['section_id', $section_id]])->get();
+            $student_info = SmStudent::where('id', '=', $member_id)->first();
+            $optional_subject = SmOptionalSubjectAssign::where('member_id', '=', $student_info->id)->where('session_id', '=', $student_info->session_id)->first();
+            $subjects = SmAssignSubject::where([['age_group_id', $age_group_id], ['mgender_id', $mgender_id]])->get();
+            $assign_subjects = SmAssignSubject::where([['age_group_id', $age_group_id], ['mgender_id', $mgender_id]])->get();
             foreach ($subjects as $row) {
                 $subject_id = $row->subject_id;
-                $total_mark = SmAssignSubject::getSumMark($student_id, $subject_id, $class_id, $section_id, $exam_term_id);
+                $total_mark = SmAssignSubject::getSumMark($member_id, $subject_id, $age_group_id, $mgender_id, $exam_term_id);
                 $mark_grade = SmMarksGrade::where([['percent_from', '<=', $total_mark], ['percent_upto', '>=', $total_mark]])->first();
                 $optional_subject_id = '';
                 if (!empty($optional_subject)) {
@@ -308,19 +308,19 @@ class SmAssignSubject extends Model
         }
     }
 
-    public static function get_student_result_without_optional($student_id, $subject_id, $class_id, $section_id, $exam_term_id, $optional_subject_id, $optional_subject_setup)
+    public static function get_student_result_without_optional($member_id, $subject_id, $age_group_id, $mgender_id, $exam_term_id, $optional_subject_id, $optional_subject_setup)
     {
         try {
             $this_student_failed = 0;
             $total_gpa_point = 0;
-            $student_info = SmStudent::where('id', '=', $student_id)->first();
-            $optional_subject = SmOptionalSubjectAssign::where('student_id', '=', $student_info->id)->where('session_id', '=', $student_info->session_id)->first();
+            $student_info = SmStudent::where('id', '=', $member_id)->first();
+            $optional_subject = SmOptionalSubjectAssign::where('member_id', '=', $student_info->id)->where('session_id', '=', $student_info->session_id)->first();
 
-            $subjects = SmAssignSubject::where([['class_id', $class_id], ['section_id', $section_id]])->get();
-            $assign_subjects = SmAssignSubject::where([['class_id', $class_id], ['section_id', $section_id]])->get();
+            $subjects = SmAssignSubject::where([['age_group_id', $age_group_id], ['mgender_id', $mgender_id]])->get();
+            $assign_subjects = SmAssignSubject::where([['age_group_id', $age_group_id], ['mgender_id', $mgender_id]])->get();
             foreach ($subjects as $row) {
                 $subject_id = $row->subject_id;
-                $total_mark = SmAssignSubject::getSumMark($student_id, $subject_id, $class_id, $section_id, $exam_term_id);
+                $total_mark = SmAssignSubject::getSumMark($member_id, $subject_id, $age_group_id, $mgender_id, $exam_term_id);
                 $mark_grade = SmMarksGrade::where([['percent_from', '<=', $total_mark], ['percent_upto', '>=', $total_mark]])->first();
                 $optional_subject_id = '';
                 if (!empty($optional_subject)) {
@@ -362,24 +362,24 @@ class SmAssignSubject extends Model
         }
     }
 
-    public static function subjectPosition($subject_id, $class_id, $custom_result)
+    public static function subjectPosition($subject_id, $age_group_id, $custom_result)
     {
 
-        $students = SmStudent::where('class_id', $class_id)->get();
+        $students = SmStudent::where('age_group_id', $age_group_id)->get();
 
         $subject_mark_array = [];
         foreach ($students as $student) {
             $subject_marks = 0;
 
-            $first_exam_mark = SmMarkStore::where('student_id', $student->id)->where('class_id', $class_id)->where('subject_id', $subject_id)->where('exam_term_id', $custom_result->exam_term_id1)->sum('total_marks');
+            $first_exam_mark = SmMarkStore::where('member_id', $student->id)->where('age_group_id', $age_group_id)->where('subject_id', $subject_id)->where('exam_term_id', $custom_result->exam_term_id1)->sum('total_marks');
 
             $subject_marks = $subject_marks + $first_exam_mark / 100 * $custom_result->percentage1;
 
-            $second_exam_mark = SmMarkStore::where('student_id', $student->id)->where('class_id', $class_id)->where('subject_id', $subject_id)->where('exam_term_id', $custom_result->exam_term_id2)->sum('total_marks');
+            $second_exam_mark = SmMarkStore::where('member_id', $student->id)->where('age_group_id', $age_group_id)->where('subject_id', $subject_id)->where('exam_term_id', $custom_result->exam_term_id2)->sum('total_marks');
 
             $subject_marks = $subject_marks + $second_exam_mark / 100 * $custom_result->percentage2;
 
-            $third_exam_mark = SmMarkStore::where('student_id', $student->id)->where('class_id', $class_id)->where('subject_id', $subject_id)->where('exam_term_id', $custom_result->exam_term_id3)->sum('total_marks');
+            $third_exam_mark = SmMarkStore::where('member_id', $student->id)->where('age_group_id', $age_group_id)->where('subject_id', $subject_id)->where('exam_term_id', $custom_result->exam_term_id3)->sum('total_marks');
 
             $subject_marks = $subject_marks + $third_exam_mark / 100 * $custom_result->percentage3;
 
@@ -402,6 +402,6 @@ class SmAssignSubject extends Model
 
     public function scopeStatus($query)
     {
-        return $query->where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', auth()->user()->school_id);
+        return $query->where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', auth()->user()->church_id);
     }
 }

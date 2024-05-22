@@ -27,7 +27,7 @@ class ApiSmPhoneCallLogController extends Controller
     {
         
         try{
-            $phone_call_logs = SmPhoneCallLog::where('academic_id', getAcademicId())->get();
+            $phone_call_logs = SmPhoneCallLog::where('church_year_id', getAcademicId())->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($phone_call_logs, null);
@@ -116,7 +116,7 @@ class ApiSmPhoneCallLogController extends Controller
     {
        
         try{
-            $phone_call_logs = SmPhoneCallLog::where('academic_id', getAcademicId())->get();
+            $phone_call_logs = SmPhoneCallLog::where('church_year_id', getAcademicId())->get();
             $phone_call_log = SmPhoneCallLog::find($id);
     
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {

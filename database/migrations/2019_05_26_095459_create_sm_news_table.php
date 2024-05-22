@@ -32,9 +32,9 @@ class CreateSmNewsTable extends Migration
 
             $table->integer('updated_by')->nullable()->default(1)->unsigned();
 
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
             
-            $table->integer('academic_id')->nullable()->default(1)->unsigned();
+            $table->integer('church_year_id')->nullable()->default(1)->unsigned();
         });
 
         $faker = Faker::create();

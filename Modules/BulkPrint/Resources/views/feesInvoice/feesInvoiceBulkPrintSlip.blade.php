@@ -117,7 +117,7 @@
                 font-weight: 500;
                 border-top: 1px dashed #ddd;
             }
-            .school_name{
+            .church_name{
                 font-size: 14px;
                 font-weight: 600;
             }
@@ -243,29 +243,29 @@
                                             <th colspan="2">
                                                 <div style="float:left; width:30%">
                                                     @if (file_exists($setting->logo))
-                                                        <img src="{{url($setting->logo)}}" style="width:100px; height:auto" alt="{{$setting->school_name}}">
+                                                        <img src="{{url($setting->logo)}}" style="width:100px; height:auto" alt="{{$setting->church_name}}">
                                                     @endif
                                                 </div>
                                                 <div style="float:right; width:70%; text-aligh:left">
-                                                    <h4 class="school_name">{{$setting->school_name}}</h4>
+                                                    <h4 class="church_name">{{$setting->church_name}}</h4>
                                                     <p>{{$setting->address}}</p>
                                                 </div>
                                                 <h4 class="fees_book_title" style="display:inline-block"></h4>
                                                 <ul>
                                                     <li>
-                                                        <p>@lang('student.admission_no'): {{@$invoice->studentInfo->admission_no}}</p>
+                                                        <p>@lang('student.registration_no'): {{@$invoice->studentInfo->registration_no}}</p>
                                                         <p>@lang('common.date'): {{date('d/m/Y')}}</p>
                                                     </li>
                                                     <li>
-                                                        <p>@lang('student.student_name'): {{@$invoice->studentInfo->full_name}}</p>
+                                                        <p>@lang('student.member_name'): {{@$invoice->studentInfo->full_name}}</p>
                                                         <p>@lang('bulkprint::bulk.invoice_no') : {{@$invoice->invoice_id}}</p>
                                                     </li>
                                                     <li>
-                                                        <p>@lang('common.class'): {{@$invoice->recordDetail->class->class_name}}</p>
+                                                        <p>@lang('common.class'): {{@$invoice->recordDetail->class->age_group_name}}</p>
                                                         <p>@lang('student.roll'):{{@$invoice->recordDetail->roll_no}}</p>
                                                     </li>
                                                     <li>
-                                                        <p>@lang('common.section'): {{@$invoice->recordDetail->section->section_name}}</p>
+                                                        <p>@lang('common.section'): {{@$invoice->recordDetail->section->mgender_name}}</p>
                                                     </li>
                                                 </ul>
                                             </th>
@@ -279,29 +279,29 @@
                                             <th colspan="2">
                                                 <div style="float:left; width:30%">
                                                     @if (file_exists($setting->logo))
-                                                        <img src="{{url($setting->logo)}}" style="width:100px; height:auto" alt="{{$setting->school_name}}">
+                                                        <img src="{{url($setting->logo)}}" style="width:100px; height:auto" alt="{{$setting->church_name}}">
                                                     @endif
                                                 </div>
                                                 <div style="float:right; width:70%; text-aligh:left">
-                                                    <h4 class="school_name">{{$setting->school_name}}</h4>
+                                                    <h4 class="church_name">{{$setting->church_name}}</h4>
                                                     <p>{{$setting->address}}</p>
                                                 </div>
                                                 <h4 class="fees_book_title" style="display:inline-block"></h4>
                                                 <ul>
                                                     <li>
-                                                        <p>@lang('student.admission_no'): {{@$invoice->studentInfo->admission_no}}</p>
+                                                        <p>@lang('student.registration_no'): {{@$invoice->studentInfo->registration_no}}</p>
                                                         <p>@lang('common.date'): {{date('d/m/Y')}}</p>
                                                     </li>
                                                     <li>
-                                                        <p>@lang('student.student_name'): {{@$invoice->studentInfo->full_name}}</p>
+                                                        <p>@lang('student.member_name'): {{@$invoice->studentInfo->full_name}}</p>
                                                         <p>@lang('bulkprint::bulk.invoice_no') : {{@$invoice->invoice_id}}</p>
                                                     </li>
                                                     <li>
-                                                        <p>@lang('common.class'): {{@$invoice->recordDetail->class->class_name}}</p>
+                                                        <p>@lang('common.class'): {{@$invoice->recordDetail->class->age_group_name}}</p>
                                                         <p>@lang('student.roll'):{{@$invoice->recordDetail->roll_no}}</p>
                                                     </li>
                                                     <li>
-                                                        <p>@lang('common.section'): {{@$invoice->recordDetail->section->section_name}}</p>
+                                                        <p>@lang('common.section'): {{@$invoice->recordDetail->section->mgender_name}}</p>
                                                     </li>
                                                 </ul>
                                             </th>
@@ -314,29 +314,29 @@
                                             <th colspan="2">
                                                 <div style="float:left; width:30%">
                                                     @if (file_exists($setting->logo))
-                                                        <img src="{{url($setting->logo)}}" style="width:100px; height:auto" alt="{{$setting->school_name}}">
+                                                        <img src="{{url($setting->logo)}}" style="width:100px; height:auto" alt="{{$setting->church_name}}">
                                                     @endif
                                                 </div>
                                                 <div style="float:right; width:70%; text-aligh:left">
-                                                    <h4 class="school_name">{{$setting->school_name}}</h4>
+                                                    <h4 class="church_name">{{$setting->church_name}}</h4>
                                                     <p>{{$setting->address}}</p>
                                                 </div>
                                                 <h4 class="fees_book_title" style="display:inline-block"></h4>
                                                 <ul>
                                                     <li>
-                                                        <p>@lang('student.admission_no'): {{@$invoice->studentDetail->admission_no}}</p>
+                                                        <p>@lang('student.registration_no'): {{@$invoice->studentDetail->registration_no}}</p>
                                                         <p> @lang('common.date'): {{date('d/m/Y')}}</p>
                                                     </li>
                                                     <li>
-                                                        <p>@lang('student.student_name'): {{@$invoice->studentDetail->full_name}}</p>
+                                                        <p>@lang('student.member_name'): {{@$invoice->studentDetail->full_name}}</p>
                                                         <p>@lang('bulkprint::bulk..invoice_no') : {{@$invoice->invoice_id}}</p>
                                                     </li>
                                                     <li>
-                                                        <p>@lang('common.class'): {{@$invoice->recordDetail->class->class_name}}</p>
+                                                        <p>@lang('common.class'): {{@$invoice->recordDetail->class->age_group_name}}</p>
                                                         <p>@lang('student.roll'):{{@$invoice->recordDetail->roll_no}}</p>
                                                     </li>
                                                     <li>
-                                                        <p>@lang('common.section'): {{@$invoice->recordDetail->section->section_name}}</p>
+                                                        <p>@lang('common.section'): {{@$invoice->recordDetail->section->mgender_name}}</p>
                                                     </li>
                                                 </ul>
                                             </th>

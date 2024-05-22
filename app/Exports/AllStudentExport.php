@@ -34,11 +34,11 @@ class AllStudentExport implements FromCollection,WithHeadings
     public function collection()
     {
         $all_student_data = [];
-        $student_infos = SmStudent::where('school_id', Auth::user()->school_id)
+        $student_infos = SmStudent::where('church_id', Auth::user()->church_id)
                   
                   
                     ->with('studentRecords')
-                    ->select('admission_no', 'first_name', 'last_name', 'id')
+                    ->select('registration_no', 'first_name', 'last_name', 'id')
                     ->get();
         
         foreach ($student_infos as $student_info) {
@@ -47,12 +47,12 @@ class AllStudentExport implements FromCollection,WithHeadings
                 if (moduleStatusCheck('University')) {
                      $data[] = $record->unFaculty->name.'('. $record->unDepartment->name .'),' ;
                 } else {
-                     $data[] = $record->class->class_name." (". $record->section->section_name . ")";
+                     $data[] = $record->class->age_group_name." (". $record->section->mgender_name . ")";
                 }
             }
             $classSection = implode(', ', $data);
             $all_student_data[] = [
-                $student_info->admission_no,
+                $student_info->registration_no,
                 $student_info->full_name,
                 $classSection,
                 

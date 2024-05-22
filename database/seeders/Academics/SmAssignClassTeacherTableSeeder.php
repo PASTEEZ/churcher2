@@ -14,17 +14,17 @@ class SmAssignClassTeacherTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run($school_id = 1, $academic_id = null, $count = 5)
+    public function run($church_id = 1, $church_year_id = null, $count = 5)
     {
-        $teacher_id = SmStaff::where('role_id', 4)->where('school_id', $school_id)->first()->id;
-        $SmAssignClassTeachers = SmAssignClassTeacher::where('school_id', $school_id)->where('academic_id', $academic_id)->get();
+        $teacher_id = SmStaff::where('role_id', 4)->where('church_id', $church_id)->first()->id;
+        $SmAssignClassTeachers = SmAssignClassTeacher::where('church_id', $church_id)->where('church_year_id', $church_year_id)->get();
         foreach($SmAssignClassTeachers as $classTeacher) {
             $store = new SmClassTeacher();
             $store->assign_class_teacher_id = $classTeacher->id;
             $store->teacher_id = $teacher_id;
             $store->created_at = date('Y-m-d h:i:s');
-            $store->school_id = $school_id;
-            $store->academic_id = $academic_id;
+            $store->church_id = $church_id;
+            $store->church_year_id = $church_year_id;
             $store->save();
         }
     }

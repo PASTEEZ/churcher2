@@ -57,7 +57,7 @@
                                                 </div>
                                                 <div class="col-lg-6 col-md-6">
                                                     <div class="name">
-                                                        {{@$online_exam->class!=""?@$online_exam->class->class_name:""}}
+                                                        {{@$online_exam->class!=""?@$online_exam->class->age_group_name:""}}
                                                     </div>
                                                 </div>
                                             </div>
@@ -71,7 +71,7 @@
                                                 </div>
                                                 <div class="col-lg-6 col-md-6">
                                                     <div class="name">
-                                                        {{@$online_exam->section !=""?@$online_exam->section->section_name:""}}
+                                                        {{@$online_exam->section !=""?@$online_exam->section->mgender_name:""}}
                                                     </div>
                                                 </div>
                                             </div>

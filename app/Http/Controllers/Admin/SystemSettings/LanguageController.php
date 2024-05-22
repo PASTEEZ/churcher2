@@ -20,7 +20,7 @@ class LanguageController extends Controller
 
     public function index()
     {
-        $languages=Language::where('school_id',Auth::user()->school_id)->get();
+        $languages=Language::where('church_id',Auth::user()->church_id)->get();
         return view('backEnd.systemSettings.language',compact('languages'));
     }
 
@@ -38,7 +38,7 @@ class LanguageController extends Controller
             $s->code = $request->code;
             $s->native = $request->native;
             $s->rtl = $request->rtl;
-            $s->school_id = Auth::user()->school_id;
+            $s->church_id = Auth::user()->church_id;
             $s->save();
 
             Toastr::success('Operation successful', 'Success');
@@ -55,7 +55,7 @@ class LanguageController extends Controller
     {
 
         try {
-            $languages=Language::where('school_id',Auth::user()->school_id)->get();
+            $languages=Language::where('church_id',Auth::user()->church_id)->get();
             $editData = $languages->where('id',$id)->first();
             return view('backEnd.systemSettings.language',compact('languages','editData'));
 
@@ -82,7 +82,7 @@ class LanguageController extends Controller
             $s->code = $request->code;
             $s->native = $request->native;
             $s->rtl = $request->rtl;
-            $s->school_id = Auth::user()->school_id;
+            $s->church_id = Auth::user()->church_id;
             $s->update();
 
             Toastr::success('Operation successful', 'Success');

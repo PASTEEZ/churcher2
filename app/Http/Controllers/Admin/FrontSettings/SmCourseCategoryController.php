@@ -20,7 +20,7 @@ class SmCourseCategoryController extends Controller
     public function index()
     {
         try{
-            $course_categories = SmCourseCategory::where('school_id', app('school')->id)->get();
+            $course_categories = SmCourseCategory::where('church_id', app('school')->id)->get();
             return view('backEnd.course.course_category',compact('course_categories'));
         }catch(\Exception $e){
             Toastr::error('Operation Failed', 'Failed');
@@ -39,7 +39,7 @@ class SmCourseCategoryController extends Controller
             SmCourseCategory::create([
                 'category_name' => $request->category_name,
                 'category_image' => $image,
-                'school_id' => app('school')->id,
+                'church_id' => app('school')->id,
             ]);
 
             Toastr::success('Operation Successfull', 'Success');
@@ -54,10 +54,10 @@ class SmCourseCategoryController extends Controller
     {
         try{
             $editData = SmCourseCategory::where('id',$id)
-                                ->where('school_id', app('school')->id)
+                                ->where('church_id', app('school')->id)
                                 ->first();
 
-            $course_categories = SmCourseCategory::where('school_id', app('school')->id)->get();
+            $course_categories = SmCourseCategory::where('church_id', app('school')->id)->get();
 
             return view('backEnd.course.course_category',compact('editData','course_categories'));
         }catch(\Exception $e){
@@ -75,7 +75,7 @@ class SmCourseCategoryController extends Controller
 
             $data = SmCourseCategory::find($request->id);
             $data->category_name = $request->category_name;
-            $data->school_id = app('school')->id;
+            $data->church_id = app('school')->id;
           
             $data->category_image = fileUpdate($data->category_image,$request->category_image,$destination);
           
@@ -114,7 +114,7 @@ class SmCourseCategoryController extends Controller
         try {
             $category_id = SmCourseCategory:: find($id);
             $courseCtaegories = SmCourse::where('category_id',$category_id->id)
-                        ->where('school_id', app('school')->id)
+                        ->where('church_id', app('school')->id)
                         ->get();
             return view('frontEnd.home.course_category', compact('category_id','courseCtaegories'));
         } catch (\Exception $e) {

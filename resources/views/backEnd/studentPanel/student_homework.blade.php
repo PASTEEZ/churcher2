@@ -27,9 +27,9 @@
                     <li class="nav-item">
                         <a class="nav-link @if($key== 0) active @endif " href="#tab{{$key}}" role="tab" data-toggle="tab">
                            @if(moduleStatusCheck('University')) 
-                                {{$record->semesterLabel->name}} ({{$record->unSection->section_name}}) - {{@$record->unAcademic->name}}
+                                {{$record->semesterLabel->name}} ({{$record->unSection->mgender_name}}) - {{@$record->unAcademic->name}}
                            @else
-                                {{$record->class->class_name}} ({{$record->section->section_name}}) 
+                                {{$record->class->age_group_name}} ({{$record->section->mgender_name}}) 
                             @endif
                         </a>
                     </li>
@@ -108,7 +108,7 @@
                                                                     @if(moduleStatusCheck('University'))
                                                                     <a class="dropdown-item modalLink" title="Homework View" data-modal-size="modal-lg" href="{{route('student.un_student_homework_view', [$value->un_semester_label_id, $value->id])}}">@lang('common.view')</a>
                                                                     @else 
-                                                                    <a class="dropdown-item modalLink" title="Homework View" data-modal-size="modal-lg" href="{{route('student_homework_view', [@$value->class_id, @$value->section_id, @$value->id])}}">@lang('common.view')</a>
+                                                                    <a class="dropdown-item modalLink" title="Homework View" data-modal-size="modal-lg" href="{{route('student_homework_view', [@$value->age_group_id, @$value->mgender_id, @$value->id])}}">@lang('common.view')</a>
                                                                     @endif
                                                                         @if(!@$student_result->marks)
                                                                             <a class="dropdown-item modalLink" title="Add Homework content" data-modal-size="modal-lg" href="{{route('add-homework-content', [@$value->id])}}">
@@ -116,7 +116,7 @@
                                                                             </a>
                                                                         @endif
                                                                         @if($uploadedContent != "")
-                                                                        @if(@$student_result->marks && ($student_detail->id==@$student_result->student_id))
+                                                                        @if(@$student_result->marks && ($student_detail->id==@$student_result->member_id))
                                                                         
                                                                         @else
                                                                             <a class="dropdown-item modalLink" title="Delete Homework content" data-modal-size="modal-md" href="{{route('deleteview-homework-content', [@$value->id])}}">@lang('homework.delete_uploaded_content')</a>

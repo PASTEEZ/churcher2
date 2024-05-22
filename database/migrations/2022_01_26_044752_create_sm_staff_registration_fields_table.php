@@ -30,11 +30,11 @@ class CreateSmStaffRegistrationFieldsTable extends Migration
             $table->integer('created_by')->nullable()->default(1)->unsigned();
             $table->integer('updated_by')->nullable()->default(1)->unsigned();
 
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
 
-            $table->integer('academic_id')->nullable()->unsigned();
-            $table->foreign('academic_id')->references('id')->on('sm_academic_years')->onDelete('set null');
+            $table->integer('church_year_id')->nullable()->unsigned();
+            $table->foreign('church_year_id')->references('id')->on('sm_academic_years')->onDelete('set null');
 
             $table->timestamps();
         });
@@ -82,13 +82,13 @@ class CreateSmStaffRegistrationFieldsTable extends Migration
             $all_schools = SmSchool::get();
             foreach ($all_schools as $school) {
                 foreach ($request_fields as $key=>$value) {
-                    $exit = SmStaffRegistrationField::where('school_id', $school->id)->where('field_name', $value)->first();
+                    $exit = SmStaffRegistrationField::where('church_id', $school->id)->where('field_name', $value)->first();
                     if (!$exit) {
                         $field=new SmStaffRegistrationField;
                         $field->position=$key+1;
                         $field->field_name=$value;
                         $field->label_name=$value;
-                        $field->school_id = $school->id;
+                        $field->church_id = $school->id;
                         $field->save();
                     }
                 }
@@ -113,15 +113,15 @@ class CreateSmStaffRegistrationFieldsTable extends Migration
                 
             ]; 
 
-                SmStaffRegistrationField::where('school_id', $school->id)->whereIn('field_name', $required_fields)->update(['is_required'=>1]); 
+                SmStaffRegistrationField::where('church_id', $school->id)->whereIn('field_name', $required_fields)->update(['is_required'=>1]); 
                 
-                SmStaffRegistrationField::where('school_id', $school->id)->whereIn('field_name', $staff_edit)->update(['staff_edit'=>1]);  
+                SmStaffRegistrationField::where('church_id', $school->id)->whereIn('field_name', $staff_edit)->update(['staff_edit'=>1]);  
 
             }
         
 
 
-        $sql = ("INSERT INTO `infix_module_infos` (`id`, `module_id`, `parent_id`, `type`, `is_saas`, `name`, `route`, `lang_name`, `icon_class`, `active_status`, `created_by`, `updated_by`, `school_id`, `created_at`, `updated_at`) VALUES (952, 7, 160, '2', 0,'Settings','settings','settings','', 1, 1, 1, 1, '2022-01-26 02:21:21', '2022-01-26 04:24:22')
+        $sql = ("INSERT INTO `infix_module_infos` (`id`, `module_id`, `parent_id`, `type`, `is_saas`, `name`, `route`, `lang_name`, `icon_class`, `active_status`, `created_by`, `updated_by`, `church_id`, `created_at`, `updated_at`) VALUES (952, 7, 160, '2', 0,'Settings','settings','settings','', 1, 1, 1, 1, '2022-01-26 02:21:21', '2022-01-26 04:24:22')
          ");
         \Illuminate\Support\Facades\DB::insert($sql);
     }

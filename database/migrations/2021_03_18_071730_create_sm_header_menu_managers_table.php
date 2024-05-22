@@ -25,8 +25,8 @@ class CreateSmHeaderMenuManagersTable extends Migration
             $table->boolean('show')->default(0);
             $table->boolean('is_newtab')->default(0);
 
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');  
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');  
             
             $table->timestamps();
         });

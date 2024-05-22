@@ -295,11 +295,11 @@
                                                 <span class="text-primary">
                                                     @if(moduleStatusCheck('University'))
                                                     [name] [date_of_birth] [present_address] [guardian] [created_at]
-                                                    [admission_no] [roll_no] [faculty] [session] [department] [academic] [semester] [semester_label]  [gender] [admission_date]
+                                                    [registration_no] [roll_no] [faculty] [session] [department] [academic] [semester] [semester_label]  [gender] [admission_date]
                                                     [category] [cast] [father_name] [mother_name] [religion] [email] [phone]
                                                     @else
                                                     [name] [date_of_birth] [present_address] [guardian] [created_at]
-                                                    [admission_no] [roll_no] [class] [section] [gender] [admission_date]
+                                                    [registration_no] [roll_no] [class] [section] [gender] [admission_date]
                                                     [category] [cast] [father_name] [mother_name] [religion] [email] [phone],
                                                     @endif
 
@@ -336,7 +336,7 @@
                                             <h4>
                                                 <strong>@lang('communicate.variables') :</strong>
                                                 <span class="text-primary">
-                                                    [student_name] [course_name] [course_complete_date],
+                                                    [member_name] [course_name] [course_complete_date],
                                                 </br>
                                                     @lang('admin.use') [profile_image] @lang('admin.variable_for_showing_static_profile_image')
                                                 </span>

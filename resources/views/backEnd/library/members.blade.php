@@ -90,14 +90,14 @@
                                                 ])
                                             
                                             <div class="mt-30 mb-40" id="select_un_student_div">
-                                                {{ Form::select('student_id',[""=>__('common.select_student').'*'], null , ['class' => 'niceSelect w-100 bb form-control'. ($errors->has('student_id') ? ' is-invalid' : ''), 'id'=>'select_un_student']) }}
+                                                {{ Form::select('member_id',[""=>__('common.select_student').'*'], null , ['class' => 'niceSelect w-100 bb form-control'. ($errors->has('member_id') ? ' is-invalid' : ''), 'id'=>'select_un_student']) }}
                                                 <span class="focus-border"></span>
                                                 <div class="pull-right loader loader_style" id="select_un_student_loader">
                                                     <img class="loader_img_style" src="{{asset('public/backEnd/img/demo_wait.gif')}}" alt="loader">
                                                 </div>
-                                                @if ($errors->has('student_id'))
+                                                @if ($errors->has('member_id'))
                                                     <span class="invalid-feedback custom-error-message" role="alert">
-                                                        {{ @$errors->first('student_id') }}
+                                                        {{ @$errors->first('member_id') }}
                                                     </span>
                                                 @endif
                                             </div>
@@ -107,7 +107,7 @@
                                                     <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="class_library_member" name="class">
                                                         <option data-display="@lang('common.select_class')" value="">@lang('common.select_class')*</option>
                                                         @foreach($classes as $class)
-                                                        <option value="{{$class->id}}"  {{( old("class") == $class->id ? "selected":"")}}>{{$class->class_name}}</option>
+                                                        <option value="{{$class->id}}"  {{( old("class") == $class->id ? "selected":"")}}>{{$class->age_group_name}}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>
@@ -297,7 +297,7 @@
                     var url = $("#url").val();
                     var i = 0;
                     let semester_id = $(this).val();
-                    let academic_id = $('#select_academic').val();  
+                    let church_year_id = $('#select_academic').val();  
                     let session_id = $('#select_session').val();
                     let faculty_id = $('#select_faculty').val();
                     let department_id = $('#select_dept').val();
@@ -336,7 +336,7 @@
 
                         return ;
                     }
-                    if (academic_id =='') {
+                    if (church_year_id =='') {
                         setTimeout(function() {
                             toastr.error(
                             "Academic Not Found",
@@ -357,7 +357,7 @@
 
                     var formData = {
                         semester_id : semester_id,
-                        academic_id : academic_id,
+                        church_year_id : church_year_id,
                         session_id : session_id,
                         faculty_id : faculty_id,
                         department_id : department_id,

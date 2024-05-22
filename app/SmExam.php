@@ -20,17 +20,17 @@ class SmExam extends Model
 
     public function class()
     {
-        return $this->belongsTo('App\SmClass', 'class_id', 'id');
+        return $this->belongsTo('App\SmClass', 'age_group_id', 'id');
     }
 
     public function getClassName()
     {
-        return $this->belongsTo('App\SmClass', 'class_id', 'id');
+        return $this->belongsTo('App\SmClass', 'age_group_id', 'id');
     }
 
     public function GetSectionName()
     {
-        return $this->belongsTo('App\SmSection', 'section_id', 'id');
+        return $this->belongsTo('App\SmSection', 'mgender_id', 'id');
     }
     public function GetSubjectName()
     {
@@ -49,7 +49,7 @@ class SmExam extends Model
     }
     public function section()
     {
-        return $this->belongsTo('App\SmSection', 'section_id', 'id');
+        return $this->belongsTo('App\SmSection', 'mgender_id', 'id');
     }
 
     public function GetExamSetup()
@@ -64,7 +64,7 @@ class SmExam extends Model
     public function markRegistered()
     {
         return $this->hasOne(SmMarkStore::class, 'exam_term_id', 'exam_type_id')
-        ->where('class_id', $this->class_id)->where('section_id', $this->section_id);
+        ->where('age_group_id', $this->age_group_id)->where('mgender_id', $this->mgender_id);
     }
     public function marks()
     {
@@ -77,13 +77,13 @@ class SmExam extends Model
     }
 
 
-    public static function getMarkDistributions($ex_id, $class_id, $section_id, $subject_id)
+    public static function getMarkDistributions($ex_id, $age_group_id, $mgender_id, $subject_id)
     {
         try {
             $data = SmExamSetup::where([
                 ['exam_term_id', $ex_id],
-                ['class_id', $class_id],
-                ['section_id', $section_id],
+                ['age_group_id', $age_group_id],
+                ['mgender_id', $mgender_id],
                 ['subject_id', $subject_id],
             ])->get();
 
@@ -94,13 +94,13 @@ class SmExam extends Model
         }
     }
 
-    public static function getMarkREgistered($ex_id, $class_id, $section_id, $subject_id)
+    public static function getMarkREgistered($ex_id, $age_group_id, $mgender_id, $subject_id)
     {
         try {
             $data = SmMarkStore::where([
                 ['exam_term_id', $ex_id],
-                ['class_id', $class_id],
-                ['section_id', $section_id],
+                ['age_group_id', $age_group_id],
+                ['mgender_id', $mgender_id],
                 ['subject_id', $subject_id],
             ])->first();
 
@@ -114,8 +114,8 @@ class SmExam extends Model
     public function markStore()
     {
         return $this->hasOne(SmMarkStore::class, 'exam_term_id', 'exam_type_id')
-            ->where('class_id', $this->class_id)->where('section_id', $this->section_id)->where('subject_id', $this->subject_id)
-            ->where('school_id', Auth::user()->school_id);
+            ->where('age_group_id', $this->age_group_id)->where('mgender_id', $this->mgender_id)->where('subject_id', $this->subject_id)
+            ->where('church_id', Auth::user()->church_id);
     }
 
     public function sessionDetails()
@@ -130,7 +130,7 @@ class SmExam extends Model
 
     public function academicYearDetails()
     {
-        return $this->belongsTo('Modules\University\Entities\UnAcademicYear', 'un_academic_id', 'id')->withDefault();
+        return $this->belongsTo('Modules\University\Entities\UnAcademicYear', 'un_church_year_id', 'id')->withDefault();
     }
 
     public function departmentDetails()

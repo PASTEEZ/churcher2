@@ -130,12 +130,12 @@
                                     <div class="row">
                                         <div class="col-lg-6 col-md-6">
                                             <div class="value text-left">
-                                                @lang('student.admission_no')
+                                                @lang('student.registration_no')
                                             </div>
                                         </div>
                                         <div class="col-lg-6 col-md-6">
                                             <div class="name">
-                                                {{$student_detail->admission_no}}
+                                                {{$student_detail->registration_no}}
                                             </div>
                                         </div>
                                     </div>
@@ -179,7 +179,7 @@
                         {{ Form::open(['class' => 'form-horizontal', 'files' => true, 'route' => 'parent_attendance_search', 'method' => 'POST', 'enctype' => 'multipart/form-data', 'id' => 'search_student']) }}
                             <div class="row">
                                 <input type="hidden" name="url" id="url" value="{{URL::to('/')}}">
-                                <input type="hidden" name="student_id" id="student_id" value="{{$student_detail->id}}">
+                                <input type="hidden" name="member_id" id="member_id" value="{{$student_detail->id}}">
                                 
                                 
                                 <div class="col-lg-6 mt-30-md">
@@ -207,8 +207,8 @@
                                 <div class="col-lg-6">
                                     <select class="niceSelect w-100 bb form-control {{$errors->has('year') ? 'is-invalid' : ''}}" name="year" id="year">
                                         <option data-display="Select Year *" value="">@lang('student.select_year') *</option>
-                                        @foreach (academicYears() as $academic_year)
-                                            <option value="{{$academic_year->year}}">{{$academic_year->year}}[{{$academic_year->title}}]</option>
+                                        @foreach (academicYears() as $church_year)
+                                            <option value="{{$church_year->year}}">{{$church_year->year}}[{{$church_year->title}}]</option>
 
                                         @endforeach
                                         
@@ -243,7 +243,7 @@
                 <ul class="nav nav-tabs tabs_scroll_nav" role="tablist">
                     @foreach($records as $key => $record)
                         <li class="nav-item">
-                            <a class="nav-link @if($key== 0) active @endif " href="#tab{{$key}}" role="tab" data-toggle="tab">{{$record->class->class_name}} ({{$record->section->section_name}}) </a>
+                            <a class="nav-link @if($key== 0) active @endif " href="#tab{{$key}}" role="tab" data-toggle="tab">{{$record->class->age_group_name}} ({{$record->section->mgender_name}}) </a>
                         </li>
                     @endforeach
                 </ul>
@@ -253,7 +253,7 @@
                     <div role="tabpanel" class="tab-pane fade  @if($key== 0) active show @endif" id="tab{{$key}}">
                         <div class="row mt-40">
                              <div class="col-lg-12 mb-40">
-                                 <a href="{{route('my_child_attendance_print', [$record->student_id,$record->id,$month, $year])}}" class="primary-btn small fix-gr-bg pull-right" target="_blank"><i class="ti-printer"> </i> @lang('common.print')</a>
+                                 <a href="{{route('my_child_attendance_print', [$record->member_id,$record->id,$month, $year])}}" class="primary-btn small fix-gr-bg pull-right" target="_blank"><i class="ti-printer"> </i> @lang('common.print')</a>
                              </div>
                              <div class="col-lg-12">
                                  <div id="table_id_student_wrapper" class="dataTables_wrapper no-footer">

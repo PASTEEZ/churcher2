@@ -114,7 +114,7 @@ $(document).ready(function() {
                             $("#sectionSelectStudent").append(
                                 $("<option>", {
                                     value: section.id,
-                                    text: section.section_name,
+                                    text: section.mgender_name,
                                 })
                             );
 
@@ -122,7 +122,7 @@ $(document).ready(function() {
                                 "<li data-value='" +
                                 section.id +
                                 "' class='option'>" +
-                                section.section_name +
+                                section.mgender_name +
                                 "</li>"
                             );
                         });
@@ -303,7 +303,7 @@ $(document).ready(function() {
                             $("#select_sibling_section").append(
                                 $("<option>", {
                                     value: section.id,
-                                    text: section.section_name,
+                                    text: section.mgender_name,
                                 })
                             );
 
@@ -311,7 +311,7 @@ $(document).ready(function() {
                                 "<li data-value='" +
                                 section.id +
                                 "' class='option'>" +
-                                section.section_name +
+                                section.mgender_name +
                                 "</li>"
                             );
                         });
@@ -344,8 +344,8 @@ $(document).ready(function() {
 
         var formData = {
             id: id,
-            section_id: $(this).val(),
-            class_id: $("#select_sibling_class").val(),
+            mgender_id: $(this).val(),
+            age_group_id: $("#select_sibling_class").val(),
         };
         // get section for student
         $.ajax({
@@ -775,10 +775,10 @@ $(document).on("click", "#yesRemoveSibling", function(event) {
                         $.each(item, function (i, section) {
                             $('#select_section_student_promote').append($('<option>', {
                                 value: section.id,
-                                text: section.section_name
+                                text: section.mgender_name
                             }));
 
-                            $("#select_section_student_promote_div ul").append("<li data-value='" + section.id + "' class='option'>" + section.section_name + "</li>");
+                            $("#select_section_student_promote_div ul").append("<li data-value='" + section.id + "' class='option'>" + section.mgender_name + "</li>");
                         });
                     } else {
                         $('#select_section_student_promote_div .current').html('SELECT CURRENT SECTION*');
@@ -822,10 +822,10 @@ $(document).ready(function () {
                         $.each(item, function (i, section) {
                             $('#promote_section').append($('<option>', {
                                 value: section.id,
-                                text: section.section_name
+                                text: section.mgender_name
                             }));
 
-                            $("#promote_section_div ul").append("<li data-value='" + section.id + "' class='option'>" + section.section_name + "</li>");
+                            $("#promote_section_div ul").append("<li data-value='" + section.id + "' class='option'>" + section.mgender_name + "</li>");
                         });
                     } else {
                         $('#promote_section_div .current').html('SELECT PROMOTE SECTION *');
@@ -966,10 +966,10 @@ $(document).ready(function() {
                         $.each(item, function (i, section) {
                             $('#select_section_member').append($('<option>', {
                                 value: section.id,
-                                text: section.section_name
+                                text: section.mgender_name
                             }));
 
-                            $("#select_section__member_div ul").append("<li data-value='" + section.id + "' class='option'>" + section.section_name + "</li>");
+                            $("#select_section__member_div ul").append("<li data-value='" + section.id + "' class='option'>" + section.mgender_name + "</li>");
                         });
                     } else {
                         $('#select_section__member_div .current').html('SELECT SECTION *');
@@ -1276,8 +1276,8 @@ function changeSubject() {
     var url = $("#url").val();
 
     var formData = {
-        class_id: $("#class_id").val(),
-        section_id: $("#section_id").val(),
+        age_group_id: $("#age_group_id").val(),
+        mgender_id: $("#mgender_id").val(),
         subject: $("#subject").val(),
         class_time_id: $("#class_time_id").val(),
         day: $("#day").val(),
@@ -1471,8 +1471,8 @@ function examRoutineCheck() {
     var url = $("#url").val();
 
     var formData = {
-        class_id: $("#class_id").val(),
-        section_id: $("#section_id").val(),
+        age_group_id: $("#age_group_id").val(),
+        mgender_id: $("#mgender_id").val(),
         exam_period_id: $("#exam_period_id").val(),
         exam_term_id: $("#exam_term_id").val(),
         date: $("#startDate").val(),
@@ -2292,7 +2292,7 @@ $(document).ready(function() {
 //  print student fees report
 $(document).on("click", ".fees-groups-print", function(event) {
     var url = $("#url").val();
-    var student_id = $("#student_id").val();
+    var member_id = $("#member_id").val();
     var sList = "";
     $("input[type=checkbox]").each(function() {
         if (this.checked) {
@@ -2304,7 +2304,7 @@ $(document).on("click", ".fees-groups-print", function(event) {
     if (sList != "") {
         $("#fees-groups-print-button").attr(
             "href",
-            url + "/fees-groups-print/" + sList + "/" + student_id
+            url + "/fees-groups-print/" + sList + "/" + member_id
         );
         $("#fees-groups-print-button").attr("target", "_blank");
     } else {
@@ -3636,7 +3636,7 @@ $(document).ready(function() {
                             $("#select_class").append(
                                 $("<option>", {
                                     value: classA.id,
-                                    text: classA.class_name,
+                                    text: classA.age_group_name,
                                 })
                             );
 
@@ -3644,7 +3644,7 @@ $(document).ready(function() {
                                 "<li data-value='" +
                                 classA.id +
                                 "' class='option'>" +
-                                classA.class_name +
+                                classA.age_group_name +
                                 "</li>"
                             );
                         });
@@ -3687,7 +3687,7 @@ $(document).ready(function() {
                         $("#select_class").append(
                             $("<option>", {
                                 value: classA.id,
-                                text: classA.class_name,
+                                text: classA.age_group_name,
                             })
                         );
 
@@ -3695,7 +3695,7 @@ $(document).ready(function() {
                             "<li data-value='" +
                             classA.id +
                             "' class='option'>" +
-                            classA.class_name +
+                            classA.age_group_name +
                             "</li>"
                         );
                     });
@@ -3743,7 +3743,7 @@ $(document).ready(function() {
         $("#exam_class").on("change", function() {
             var formData = {
                 id: $(this).val(),
-                school_id: $("#school_id").val(),
+                church_id: $("#church_id").val(),
             };
 
             var url = $("#url").val();
@@ -3811,8 +3811,8 @@ function selectSubject(a) {
     if ($("#subjects_" + a).is(":checked")) {
         var formData = {
             id: a,
-            class_id: $("#exam_class").val(),
-            school_id: $("#school_id").val(),
+            age_group_id: $("#exam_class").val(),
+            church_id: $("#church_id").val(),
             exam_types: $("input[name='exams_types[]']:checked")
                 .map(function() {
                     return $(this).val();

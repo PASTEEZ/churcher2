@@ -46,7 +46,7 @@ $ttl_rtl = $setting->ttl_rtl;
                 <div class="col-lg-12">
                     <h2>Introduction</h2>
                     <p>
-                        Welcome to the The <strong>{{@$setting->school_name}}</strong> website located at <strong>{{url('/')}}</strong> (the “Website”).
+                        Welcome to the The <strong>{{@$setting->church_name}}</strong> website located at <strong>{{url('/')}}</strong> (the “Website”).
                         The School provides this Website to you subject to the following Terms of Use and Privacy Policy (together, the “Terms”).
                         When you use this Website, you agree to abide by these Terms. If you do not agree to abide by these Terms, you may not use this Website. Please read the Terms carefully.
                         The School reserves the right to make changes to this Website and to modify the Terms at any time at its sole discretion.

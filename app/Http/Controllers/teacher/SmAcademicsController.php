@@ -44,14 +44,14 @@ class SmAcademicsController extends Controller
 			// }
 			$user = Auth::user();
 
-			$class_times = SmClassTime::where('academic_id', getAcademicId())
-						->where('school_id', Auth::user()->school_id)
+			$class_times = SmClassTime::where('church_year_id', getAcademicId())
+						->where('church_id', Auth::user()->church_id)
 						->where('type', 'class')
 						->orderBy('start_time', 'asc')
                         ->get();
 
 			$teacher_id = $user->staff->id;
-			$sm_weekends = SmWeekend::where('school_id', Auth::user()->school_id)->orderBy('order', 'ASC')->where('active_status', 1)->get();
+			$sm_weekends = SmWeekend::where('church_id', Auth::user()->church_id)->orderBy('order', 'ASC')->where('active_status', 1)->get();
 			$teachers = SmStaff::select('id', 'full_name')->where('active_status', 1)->get();
 			return view('backEnd.teacherPanel.view_class_routine', compact('class_times', 'teacher_id', 'sm_weekends', 'teachers'));
 		} catch (\Exception $e) {
@@ -63,43 +63,43 @@ class SmAcademicsController extends Controller
 	public function searchStudent(Request $request)
 	{
 		try {
-			$class_id = $request->class;
-			$section_id = $request->section;
+			$age_group_id = $request->class;
+			$mgender_id = $request->section;
 			$name = $request->name;
 			$roll_no = $request->roll_no;
 			$students = '';
 			$msg = '';
 			if (!empty($request->class) && !empty($request->section)) {
 				$students = DB::table('sm_students')
-					->select('student_photo', 'full_name', 'roll_no', 'class_name', 'section_name', 'user_id')
-					->join('sm_sections', 'sm_sections.id', '=', 'sm_students.section_id')
-					->join('sm_classes', 'sm_classes.id', '=', 'sm_students.class_id')
-					->where('sm_students.class_id', $request->class)
-					->where('sm_students.section_id', $request->section)
+					->select('student_photo', 'full_name', 'roll_no', 'age_group_name', 'mgender_name', 'user_id')
+					->join('sm_sections', 'sm_sections.id', '=', 'sm_students.mgender_id')
+					->join('sm_classes', 'sm_classes.id', '=', 'sm_students.age_group_id')
+					->where('sm_students.age_group_id', $request->class)
+					->where('sm_students.mgender_id', $request->section)
 					->get();
 				$msg = "Student Found";
 			} elseif (!empty($request->class)) {
 				$students = DB::table('sm_students')
-					->select('student_photo', 'full_name', 'roll_no', 'class_name', 'section_name', 'user_id')
-					->join('sm_sections', 'sm_sections.id', '=', 'sm_students.section_id')
-					->join('sm_classes', 'sm_classes.id', '=', 'sm_students.class_id')
-					->where('sm_students.class_id', $class_id)
-					// ->where('section_id',$section_id)
+					->select('student_photo', 'full_name', 'roll_no', 'age_group_name', 'mgender_name', 'user_id')
+					->join('sm_sections', 'sm_sections.id', '=', 'sm_students.mgender_id')
+					->join('sm_classes', 'sm_classes.id', '=', 'sm_students.age_group_id')
+					->where('sm_students.age_group_id', $age_group_id)
+					// ->where('mgender_id',$mgender_id)
 					->get();
 				$msg = "Student Found";
 			} elseif ($request->name != "") {
 				$students = DB::table('sm_students')
-					->select('student_photo', 'full_name', 'roll_no', 'class_name', 'section_name', 'user_id')
-					->join('sm_sections', 'sm_sections.id', '=', 'sm_students.section_id')
-					->join('sm_classes', 'sm_classes.id', '=', 'sm_students.class_id')
+					->select('student_photo', 'full_name', 'roll_no', 'age_group_name', 'mgender_name', 'user_id')
+					->join('sm_sections', 'sm_sections.id', '=', 'sm_students.mgender_id')
+					->join('sm_classes', 'sm_classes.id', '=', 'sm_students.age_group_id')
 					->where('full_name', 'like', '%' . $request->name . '%')
 					->first();
 				$msg = "Student Found";
 			} elseif ($request->roll_no != "") {
 				$students = DB::table('sm_students')
-					->select('student_photo', 'full_name', 'roll_no', 'class_name', 'section_name', 'user_id')
-					->join('sm_sections', 'sm_sections.id', '=', 'sm_students.section_id')
-					->join('sm_classes', 'sm_classes.id', '=', 'sm_students.class_id')
+					->select('student_photo', 'full_name', 'roll_no', 'age_group_name', 'mgender_name', 'user_id')
+					->join('sm_sections', 'sm_sections.id', '=', 'sm_students.mgender_id')
+					->join('sm_classes', 'sm_classes.id', '=', 'sm_students.age_group_id')
 					->where('roll_no', 'like', '%' . $request->roll_no . '%')
 					->first();
 				$msg = "Student Found";
@@ -127,17 +127,17 @@ class SmAcademicsController extends Controller
 				->first();
 			$teacher_id = $teacher->id;
 
-			$sm_weekends = SmWeekend::where('school_id', Auth::user()->school_id)->orderBy('order', 'ASC')->where('active_status', 1)->get();
+			$sm_weekends = SmWeekend::where('church_id', Auth::user()->church_id)->orderBy('order', 'ASC')->where('active_status', 1)->get();
 			$class_times = SmClassTime::where('type', 'class')->get();
 
 			if (ApiBaseMethod::checkUrl($request->fullUrl())) {
 				$data = [];
-				$weekenD = SmWeekend::where('school_id', Auth::user()->school_id)->get();
+				$weekenD = SmWeekend::where('church_id', Auth::user()->church_id)->get();
 				foreach ($weekenD as $row) {
 					$data[$row->name] = DB::table('sm_class_routine_updates')
-						->select('class_id', 'class_name', 'section_id', 'section_name', 'sm_class_times.period', 'sm_class_times.start_time', 'sm_class_times.end_time', 'sm_subjects.subject_name', 'sm_class_rooms.room_no')
-						->join('sm_classes', 'sm_classes.id', '=', 'sm_class_routine_updates.class_id')
-						->join('sm_sections', 'sm_sections.id', '=', 'sm_class_routine_updates.section_id')
+						->select('age_group_id', 'age_group_name', 'mgender_id', 'mgender_name', 'sm_class_times.period', 'sm_class_times.start_time', 'sm_class_times.end_time', 'sm_subjects.subject_name', 'sm_class_rooms.room_no')
+						->join('sm_classes', 'sm_classes.id', '=', 'sm_class_routine_updates.age_group_id')
+						->join('sm_sections', 'sm_sections.id', '=', 'sm_class_routine_updates.mgender_id')
 						->join('sm_class_times', 'sm_class_times.id', '=', 'sm_class_routine_updates.class_period_id')
 						->join('sm_subjects', 'sm_subjects.id', '=', 'sm_class_routine_updates.subject_id')
 						->join('sm_class_rooms', 'sm_class_rooms.id', '=', 'sm_class_routine_updates.room_id')
@@ -162,25 +162,25 @@ class SmAcademicsController extends Controller
 				->first();
 			$teacher_id = $teacher->id;
 
-			$sm_weekends = SmWeekend::where('school_id', Auth::user()->school_id)->orderBy('order', 'ASC')->where('active_status', 1)->get();
+			$sm_weekends = SmWeekend::where('church_id', Auth::user()->church_id)->orderBy('order', 'ASC')->where('active_status', 1)->get();
 			$class_times = SmClassTime::where('type', 'class')->get();
 
 			if (ApiBaseMethod::checkUrl($request->fullUrl())) {
 				$data = [];
-				$weekenD = SmWeekend::where('school_id', Auth::user()->school_id)->get();
+				$weekenD = SmWeekend::where('church_id', Auth::user()->church_id)->get();
 				foreach ($weekenD as $row) {
 					$data[$row->name] = DB::table('sm_class_routine_updates')
 						->select('sm_class_times.period', 'sm_class_times.start_time', 'sm_class_times.end_time', 'sm_subjects.subject_name', 'sm_class_rooms.room_no')
-						->join('sm_classes', 'sm_classes.id', '=', 'sm_class_routine_updates.class_id')
-						->join('sm_sections', 'sm_sections.id', '=', 'sm_class_routine_updates.section_id')
+						->join('sm_classes', 'sm_classes.id', '=', 'sm_class_routine_updates.age_group_id')
+						->join('sm_sections', 'sm_sections.id', '=', 'sm_class_routine_updates.mgender_id')
 						->join('sm_class_times', 'sm_class_times.id', '=', 'sm_class_routine_updates.class_period_id')
 						->join('sm_subjects', 'sm_subjects.id', '=', 'sm_class_routine_updates.subject_id')
 						->join('sm_class_rooms', 'sm_class_rooms.id', '=', 'sm_class_routine_updates.room_id')
 
 						->where([
 							['sm_class_routine_updates.teacher_id', $teacher_id],
-							['sm_class_routine_updates.class_id', $class],
-							['sm_class_routine_updates.section_id', $section],
+							['sm_class_routine_updates.age_group_id', $class],
+							['sm_class_routine_updates.mgender_id', $section],
 							['sm_class_routine_updates.day', $row->id],
 						])->get();
 				}
@@ -203,19 +203,19 @@ class SmAcademicsController extends Controller
 			if (ApiBaseMethod::checkUrl($request->fullUrl())) {
 				$data = [];
 				$teacher_classes = DB::table('sm_assign_subjects')
-					->join('sm_classes', 'sm_classes.id', '=', 'sm_assign_subjects.class_id')
-					->distinct('class_id')
+					->join('sm_classes', 'sm_classes.id', '=', 'sm_assign_subjects.age_group_id')
+					->distinct('age_group_id')
 
 					->where('teacher_id', $teacher_id)
 					->get();
 				foreach ($teacher_classes as $class) {
-					$data[$class->class_name] = DB::table('sm_assign_subjects')
+					$data[$class->age_group_name] = DB::table('sm_assign_subjects')
 						->join('sm_subjects', 'sm_subjects.id', '=', 'sm_assign_subjects.subject_id')
-						->join('sm_sections', 'sm_sections.id', '=', 'sm_assign_subjects.section_id')
-						->select('section_name', 'subject_name')
-						->distinct('section_id')
+						->join('sm_sections', 'sm_sections.id', '=', 'sm_assign_subjects.mgender_id')
+						->select('mgender_name', 'subject_name')
+						->distinct('mgender_id')
 						->where([
-							['sm_assign_subjects.class_id', $class->id],
+							['sm_assign_subjects.age_group_id', $class->id],
 						])->get();
 				}
 
@@ -281,17 +281,17 @@ class SmAcademicsController extends Controller
 			}
 
 			$homeworks = new SmHomework;
-			$homeworks->class_id = $request->class;
-			$homeworks->section_id = $request->section;
+			$homeworks->age_group_id = $request->class;
+			$homeworks->mgender_id = $request->section;
 			$homeworks->subject_id = $request->subject;
 			$homeworks->marks = $request->marks;
 			$homeworks->created_by = $request->teacher_id;
 			$homeworks->homework_date = $request->assign_date;
 			$homeworks->submission_date = $request->submission_date;
-			$homeworks->school_id = Auth::user()->school_id;
+			$homeworks->church_id = Auth::user()->church_id;
 			//$homeworks->marks = $request->marks;
 			$homeworks->description = $request->description;
-			$homeworks->academic_id = getAcademicId();
+			$homeworks->church_year_id = getAcademicId();
 			if ($fileName != "") {
 				$homeworks->file = $fileName;
 			}
@@ -317,10 +317,10 @@ class SmAcademicsController extends Controller
 			$teacher_id = $teacher->id;
 
 			$homeworkLists = SmHomework::where('sm_homeworks.created_by', '=', $teacher_id)
-				->join('sm_classes', 'sm_homeworks.class_id', '=', 'sm_classes.id')
-				->join('sm_sections', 'sm_homeworks.section_id', '=', 'sm_sections.id')
+				->join('sm_classes', 'sm_homeworks.age_group_id', '=', 'sm_classes.id')
+				->join('sm_sections', 'sm_homeworks.mgender_id', '=', 'sm_sections.id')
 				->join('sm_subjects', 'sm_homeworks.subject_id', '=', 'sm_subjects.id')
-				->select('homework_date', 'submission_date', 'evaluation_date', 'file', 'sm_homeworks.marks', 'description', 'subject_name', 'class_name', 'section_name')
+				->select('homework_date', 'submission_date', 'evaluation_date', 'file', 'sm_homeworks.marks', 'description', 'subject_name', 'age_group_name', 'mgender_name')
 				->get();
 
 
@@ -416,7 +416,7 @@ class SmAcademicsController extends Controller
 			$previousMonthDetails['date'] = $previous_date;
 			$previousMonthDetails['day'] = $days2;
 			$previousMonthDetails['week_name'] = date('D', strtotime($previous_date));
-			$attendances = SmStaffAttendence::where('student_id', $teacher->id)
+			$attendances = SmStaffAttendence::where('member_id', $teacher->id)
 				->where('attendance_date', 'like', '%' . $request->year . '-' . $month . '%')
 				->select('attendance_type', 'attendance_date')
 				->get();
@@ -484,8 +484,8 @@ class SmAcademicsController extends Controller
 			$apply_leave->leave_to = $request->input('leave_to');
 			$apply_leave->approve_status = 'P';
 			$apply_leave->reason = $request->input('reason');
-			$apply_leave->school_id = Auth::user()->school_id;
-			$apply_leave->academic_id = getAcademicId();
+			$apply_leave->church_id = Auth::user()->church_id;
+			$apply_leave->church_year_id = getAcademicId();
 			if ($fileName != "") {
 				$apply_leave->file = $fileName;
 			}
@@ -537,7 +537,7 @@ class SmAcademicsController extends Controller
 				->where('sm_leave_defines.active_status', 1)
 				->select('sm_leave_types.id', 'type', 'total_days')
 				->distinct('sm_leave_defines.type_id')
-				->where('sm_leave_defines.school_id',Auth::user()->school_id)
+				->where('sm_leave_defines.church_id',Auth::user()->church_id)
 				->get();
 
 			//return $leave_type;
@@ -617,8 +617,8 @@ class SmAcademicsController extends Controller
 			$uploadContents->description = $request->input('description');
 			$uploadContents->upload_file = $fileName;
 			$uploadContents->created_by = $request->input('created_by');
-			$uploadContents->school_id = Auth::user()->school_id;
-			$uploadContents->academic_id = getAcademicId();
+			$uploadContents->church_id = Auth::user()->church_id;
+			$uploadContents->church_year_id = getAcademicId();
 			$results = $uploadContents->save();
 
 			if ($request->input('content_type') == 'as') {
@@ -633,7 +633,7 @@ class SmAcademicsController extends Controller
 			// foreach ($request->input('available_for') as $value) {
 			if ($request->input('available_for') == 'admin') {
 				$roles = InfixRole::where('id', '!=', 1)->where('id', '!=', 2)->where('id', '!=', 3)->where('id', '!=', 9)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
 
 				foreach ($roles as $role) {
@@ -644,8 +644,8 @@ class SmAcademicsController extends Controller
 						$notification->role_id = $role->id;
 						$notification->date = date('Y-m-d');
 						$notification->message = $purpose . ' updated';
-						$notification->school_id = Auth::user()->school_id;
-						$notification->academic_id = getAcademicId();
+						$notification->church_id = Auth::user()->church_id;
+						$notification->church_year_id = getAcademicId();
 						$notification->save();
 					}
 				}
@@ -659,20 +659,20 @@ class SmAcademicsController extends Controller
 						$notification->role_id = 2;
 						$notification->date = date('Y-m-d');
 						$notification->message = $purpose . ' updated';
-						$notification->school_id = Auth::user()->school_id;
-						$notification->academic_id = getAcademicId();
+						$notification->church_id = Auth::user()->church_id;
+						$notification->church_year_id = getAcademicId();
 						$notification->save();
 					}
 				} else {
-					$students = SmStudent::select('id')->where('class_id', $request->input('class'))->where('section_id', $request->input('section'))->get();
+					$students = SmStudent::select('id')->where('age_group_id', $request->input('class'))->where('mgender_id', $request->input('section'))->get();
 					foreach ($students as $student) {
 						$notification = new SmNotification;
 						$notification->user_id = $student->user_id;
 						$notification->role_id = 2;
 						$notification->date = date('Y-m-d');
 						$notification->message = $purpose . ' updated';
-						$notification->school_id = Auth::user()->school_id;
-						$notification->academic_id = getAcademicId();
+						$notification->church_id = Auth::user()->church_id;
+						$notification->church_year_id = getAcademicId();
 						$notification->save();
 					}
 				}

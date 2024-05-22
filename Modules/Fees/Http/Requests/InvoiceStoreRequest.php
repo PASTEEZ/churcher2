@@ -19,14 +19,14 @@ class InvoiceStoreRequest extends FormRequest
 
         if (moduleStatusCheck('University')) {
             $rules += [
-                'student_id' => 'required',
+                'member_id' => 'required',
                 'un_session_id' => 'required',
                 'un_faculty_id' => 'nullable',
                 'un_department_id' => 'required',
-                'un_academic_id' => 'required',
+                'un_church_year_id' => 'required',
                 'un_semester_id' => 'required',
                 'un_semester_label_id' => 'required',
-                'un_section_id' => 'required',
+                'un_mgender_id' => 'required',
             ];
         } else {
             $rules +=[
@@ -46,11 +46,11 @@ class InvoiceStoreRequest extends FormRequest
                 'un_session_id' => "session",
                 'un_faculty_id' => "faculty",
                 'un_department_id' => "department",
-                'un_academic_id' => "academic",
+                'un_church_year_id' => "academic",
                 'un_semester_id' => "semester",
                 'un_semester_label_id' => "semester label",
-                'un_section_id' => "section",
-                'student_id' => "student",
+                'un_mgender_id' => "section",
+                'member_id' => "student",
             ];
         }else{
             $rules = [];

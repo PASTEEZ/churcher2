@@ -17,7 +17,7 @@ class CreateInvitationTypesTable extends Migration
             $table->id();
             $table->unsignedBigInteger('invitation_id');
             $table->enum('type',['one-to-one','group','class-teacher'])->default('one-to-one');
-            $table->unsignedBigInteger('section_id')->nullable();
+            $table->unsignedBigInteger('mgender_id')->nullable();
             $table->unsignedBigInteger('class_teacher_id')->nullable();
             $table->timestamps();
         });

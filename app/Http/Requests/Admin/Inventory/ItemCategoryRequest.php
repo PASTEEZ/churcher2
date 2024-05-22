@@ -24,9 +24,9 @@ class ItemCategoryRequest extends FormRequest
      */
     public function rules()
     {
-        $school_id=auth()->user()->school_id;
+        $church_id=auth()->user()->church_id;
         return [
-            'category_name'=>['required', Rule::unique('sm_item_categories')->where('school_id', $school_id)->ignore($this->id) ],
+            'category_name'=>['required', Rule::unique('sm_item_categories')->where('church_id', $church_id)->ignore($this->id) ],
         ];
     }
 }

@@ -2,7 +2,7 @@
 @php
     $is_registration_permission = false;
     if(moduleStatusCheck('ParentRegistration')){
-        $reg_setting = Modules\ParentRegistration\Entities\SmRegistrationSetting::where('school_id', $school->id)->first();
+        $reg_setting = Modules\ParentRegistration\Entities\SmRegistrationSetting::where('church_id', $school->id)->first();
         $is_registration_position = $reg_setting ?  $reg_setting->position : null;
         $is_registration_permission = $reg_setting ?  ($reg_setting->registration_permission == 1) : false;
 

@@ -13,9 +13,9 @@ class SmStudentCategoriesTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run($school_id, $count = 6){
+    public function run($church_id, $count = 6){
         SmStudentCategory::factory()->times($count)->create([
-            'school_id' => $school_id,
+            'church_id' => $church_id,
         ]);
     }
 }

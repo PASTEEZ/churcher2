@@ -31,8 +31,8 @@
                 <input type="hidden" name="url" id="url" value="{{URL::to('/')}}">
                 <input type="hidden" name="day" id="day" value="{{@$day}}">
                 <input type="hidden" name="class_time_id" id="class_time_id" value="{{@$class_time_id}}">
-                <input type="hidden" name="class_id" id="class_id" value="{{@$class_id}}">
-                <input type="hidden" name="section_id" id="section_id" value="{{@$section_id}}">
+                <input type="hidden" name="age_group_id" id="age_group_id" value="{{@$age_group_id}}">
+                <input type="hidden" name="mgender_id" id="mgender_id" value="{{@$mgender_id}}">
                 <input type="hidden" name="update_teacher_id" id="update_teacher_id" value="{{isset($teacher_detail)? $teacher_detail->id:''}}">
                 @if(isset($assigned_id))
                     <input type="hidden" name="assigned_id" id="assigned_id" value="{{@$assigned_id}}">
@@ -103,8 +103,8 @@
     function changeSubject() {
         var url = $('#url').val();
         var formData = {
-            class_id: $('#class_id').val(),
-            section_id: $('#section_id').val(),
+            age_group_id: $('#age_group_id').val(),
+            mgender_id: $('#mgender_id').val(),
             subject: $('#subject').val(),
             class_time_id: $('#class_time_id').val(),
             day: $('#day').val(),
@@ -142,8 +142,8 @@
         var url = $('#url').val();
         var i = 0;
         var formData = {
-            class_id: $('#class_id').val(),
-            section_id: $('#section_id').val(),
+            age_group_id: $('#age_group_id').val(),
+            mgender_id: $('#mgender_id').val(),
             subject: $('#subject').val(),
             class_time_id: $('#class_time_id').val(),
             day: $('#day').val(),

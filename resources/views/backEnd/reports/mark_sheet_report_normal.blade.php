@@ -150,7 +150,7 @@
                                 <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                     <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                     @foreach($classes as $class)
-                                    <option value="{{$class->id}}" {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{$class->class_name}}</option>
+                                    <option value="{{$class->id}}" {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{$class->age_group_name}}</option>
                                    
                                     @endforeach
                                 </select>
@@ -327,7 +327,7 @@
         display: flex;
         flex-basis: 50%;
     }
-    .school_name{
+    .church_name{
         text-align: center;
     }
     .numbered_table_row{
@@ -449,7 +449,7 @@
                 </div>
             </div>
             <div class="col-lg-8 pull-right">
-                <a href="{{route('mark_sheet_report_print', [$input['exam_id'], $input['class_id'], $input['section_id'], $input['student_id']])}}" class="primary-btn small fix-gr-bg pull-right" target="_blank"><i class="ti-printer"> </i> @lang('common.print')</a>
+                <a href="{{route('mark_sheet_report_print', [$input['exam_id'], $input['age_group_id'], $input['mgender_id'], $input['member_id']])}}" class="primary-btn small fix-gr-bg pull-right" target="_blank"><i class="ti-printer"> </i> @lang('common.print')</a>
             </div> 
         </div>
         <div class="row">
@@ -462,10 +462,10 @@
                                     <div class="card-header">
                                             <div class="d-flex d-flex align-items-center">
                                                     <div class="col-lg-2">
-                                                        <img class="logo-img" src="{{ generalSetting()->logo }}" alt="{{generalSetting()->school_name}}">
+                                                        <img class="logo-img" src="{{ generalSetting()->logo }}" alt="{{generalSetting()->church_name}}">
                                                     </div>
                                                     <div class="col-lg-6 ml-30">
-                                                        <h3 class="text-white"> {{isset(generalSetting()->school_name)?generalSetting()->school_name:'Infix School Management ERP'}} </h3>
+                                                        <h3 class="text-white"> {{isset(generalSetting()->church_name)?generalSetting()->church_name:'Infix School Management ERP'}} </h3>
                                                         <p class="text-white mb-0"> {{isset(generalSetting()->address)?generalSetting()->address:'Infix School Address'}} </p>
                                                         <p class="text-white mb-0">
                                                             @lang('common.email'): <span class="text-lowercase">{{isset(generalSetting()->email)?generalSetting()->email:'admin@demo.com'}}</span>,
@@ -507,7 +507,7 @@
                                                                                 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                                                                             </p> &nbsp; 
                                                                             <p class="bold_text">   
-                                                                            : {{$student_detail->class->class_name}}
+                                                                            : {{$student_detail->class->age_group_name}}
                                                                             </p>
                                                                         </li>
                                                                         <li>
@@ -516,15 +516,15 @@
                                                                                 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                                                                             </p> &nbsp; 
                                                                             <p class="bold_text"> 
-                                                                            : {{$student_detail->section->section_name}}
+                                                                            : {{$student_detail->section->mgender_name}}
                                                                             </p>
                                                                         </li>
                                                                         <li>
                                                                             <p>
-                                                                                @lang('student.admission_no') &nbsp;  &nbsp; 
+                                                                                @lang('student.registration_no') &nbsp;  &nbsp; 
                                                                             </p> &nbsp; 
                                                                             <p class="bold_text">
-                                                                            : {{$student_detail->studentDetail->admission_no}}
+                                                                            : {{$student_detail->studentDetail->registration_no}}
                                                                             </p>
                                                                         </li>
                                                                     </ul>
@@ -644,11 +644,11 @@
                                                         </td>
                                                         <td>
                                                             <p>
-                                                                {{@subjectFullMark($exam_details->id, $data->subject->id , $class_id, $section_id)}}
+                                                                {{@subjectFullMark($exam_details->id, $data->subject->id , $age_group_id, $mgender_id)}}
                                                             </p>
                                                         </td>
                                                         <td>
-                                                            <p>{{@subjectHighestMark($exam_type_id, $data->subject->id, $class_id, $section_id)}}</p>
+                                                            <p>{{@subjectHighestMark($exam_type_id, $data->subject->id, $age_group_id, $mgender_id)}}</p>
                                                         </td>
                                                         <td>
                                                             <p>
@@ -662,7 +662,7 @@
                                                             <p>
                                                                 {{@$data->total_gpa_grade}}
                                                                 @php
-                                                                    $result = markGpa(@subjectPercentageMark(@$data->total_marks , @subjectFullMark($exam_details->id, $data->subject->id, $class_id, $section_id)));
+                                                                    $result = markGpa(@subjectPercentageMark(@$data->total_marks , @subjectFullMark($exam_details->id, $data->subject->id, $age_group_id, $mgender_id)));
                                                                     $main_subject_total_gpa += $result->gpa;
                                                                 @endphp
                                                             </p>
@@ -753,7 +753,7 @@
                                                             <td colspan="2" style="text-align: center !important;">
                                                                 @lang('exam.position')
                                                             </td>
-                                                            <td colspan="2" style="text-align: center !important;">{{getStudentMeritPosition($class_id, $section_id, $exam_type_id, $student_detail->id)}}</td>
+                                                            <td colspan="2" style="text-align: center !important;">{{getStudentMeritPosition($age_group_id, $mgender_id, $exam_type_id, $student_detail->id)}}</td>
 
                                                         </tr>
                                                     </tbody>

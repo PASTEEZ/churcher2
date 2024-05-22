@@ -55,13 +55,13 @@ class SmCollectFeesByPaymentGateway extends Controller
 
     }
 
-    public function collectFeesByGateway($amount, $student_id, $type)
+    public function collectFeesByGateway($amount, $member_id, $type)
     {
         try {
             $amount = $amount;
             $fees_type_id = $type;
-            $student_id = $student_id;
-            $discounts = SmFeesAssignDiscount::where('student_id', $student_id)->get();
+            $member_id = $member_id;
+            $discounts = SmFeesAssignDiscount::where('member_id', $member_id)->get();
 
             $applied_discount = [];
             foreach ($discounts as $fees_discount) {
@@ -70,7 +70,7 @@ class SmCollectFeesByPaymentGateway extends Controller
                     $applied_discount[] = $fees_payment->fees_discount_id;
                 }
             }
-            return view('backEnd.feesCollection.collectFeesByGateway', compact('amount', 'discounts', 'fees_type_id', 'student_id', 'applied_discount'));
+            return view('backEnd.feesCollection.collectFeesByGateway', compact('amount', 'discounts', 'fees_type_id', 'member_id', 'applied_discount'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -134,7 +134,7 @@ class SmCollectFeesByPaymentGateway extends Controller
 
             $user = Auth::user();
             $fees_payment = new SmFeesPayment();
-            $fees_payment->student_id = $request->student_id;
+            $fees_payment->member_id = $request->member_id;
             
             $fees_payment->amount = $request->real_amount;
             $fees_payment->assign_id = $request->assign_id;
@@ -142,19 +142,19 @@ class SmCollectFeesByPaymentGateway extends Controller
             $fees_payment->payment_mode = 'Paypal';
             $fees_payment->created_by = $user->id;
             $fees_payment->record_id = $request->record_id;
-            $fees_payment->school_id = Auth::user()->school_id;
+            $fees_payment->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $fees_payment->un_academic_id = getAcademicId();
+                $fees_payment->un_church_year_id = getAcademicId();
                 $fees_payment->un_fees_installment_id  = $request->installment_id;
                 $fees_payment->un_semester_label_id = $request->un_semester_label_id;
             }
             elseif(directFees()){
                 $fees_payment->direct_fees_installment_assign_id = $installment->id;
-                $fees_payment->academic_id = getAcademicId();
+                $fees_payment->church_year_id = getAcademicId();
             }
             else{
             $fees_payment->fees_type_id = $request->fees_type_id;
-            $fees_payment->academic_id = getAcademicId();
+            $fees_payment->church_year_id = getAcademicId();
             }
            
             $fees_payment->active_status = 0;
@@ -189,7 +189,7 @@ class SmCollectFeesByPaymentGateway extends Controller
         if (auth()->check()) {
             $role_id = auth()->user()->role_id;
             if ($role_id == 3 && $fees_payment) {
-                $url = route('parent_fees', $fees_payment->student_id);
+                $url = route('parent_fees', $fees_payment->member_id);
             } else if ($role_id == 2) {
                 $url = route('student_fees'); 
             } else {
@@ -246,18 +246,18 @@ class SmCollectFeesByPaymentGateway extends Controller
     }
 
 
-    public function collectFeesStripe($amount, $student_id, $type)
+    public function collectFeesStripe($amount, $member_id, $type)
     {
         try {
             $amount = $amount;
             $fees_type_id = $type;
-            $student_id = $student_id;
-            $discounts = SmFeesAssignDiscount::where('student_id', $student_id)->get();
+            $member_id = $member_id;
+            $discounts = SmFeesAssignDiscount::where('member_id', $member_id)->get();
             $stripe_publisher_key = SmPaymentGatewaySetting::where('gateway_name', '=', 'Stripe')->first()->stripe_publisher_key;
 
             $applied_discount = SmFeesPayment::select('fees_discount_id')->whereIn('fees_discount_id', $discounts->pluck('id')->toArray())->pluck('fees_discount_id')->toArray();
 
-            return view('backEnd.feesCollection.collectFeesStripeView', compact('amount', 'discounts', 'fees_type_id', 'student_id', 'applied_discount', 'stripe_publisher_key'));
+            return view('backEnd.feesCollection.collectFeesStripeView', compact('amount', 'discounts', 'fees_type_id', 'member_id', 'applied_discount', 'stripe_publisher_key'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -284,13 +284,13 @@ class SmCollectFeesByPaymentGateway extends Controller
             if ($charge) {
                 $user = Auth::user();
                 $fees_payment = new SmFeesPayment();
-                $fees_payment->student_id = $request->student_id;
+                $fees_payment->member_id = $request->member_id;
                 $fees_payment->fees_type_id = $request->fees_type_id;
                 $fees_payment->amount = $request->real_amount;
                 $fees_payment->payment_date = date('Y-m-d');
                 $fees_payment->payment_mode = 'Stripe';
                 $fees_payment->created_by = $user->id;
-                $fees_payment->school_id = Auth::user()->school_id;
+                $fees_payment->church_id = Auth::user()->church_id;
                 $fees_payment->save();
 
                 Toastr::success('Operation successful', 'Success');

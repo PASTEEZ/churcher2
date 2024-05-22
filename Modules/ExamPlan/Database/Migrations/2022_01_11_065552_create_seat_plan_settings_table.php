@@ -16,16 +16,16 @@ class CreateSeatPlanSettingsTable extends Migration
     {
         Schema::create('seat_plan_settings', function (Blueprint $table) {
             $table->id();
-            $table->boolean('school_name')->nullable();
+            $table->boolean('church_name')->nullable();
             $table->boolean('student_photo')->nullable();
-            $table->boolean('student_name')->nullable();
-            $table->boolean('admission_no')->nullable();
+            $table->boolean('member_name')->nullable();
+            $table->boolean('registration_no')->nullable();
             $table->boolean('class_section')->nullable();
             $table->boolean('exam_name')->nullable();
             $table->boolean('roll_no')->nullable();
-            $table->boolean('academic_year')->nullable();
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->integer('academic_id')->nullable()->default(1)->unsigned();
+            $table->boolean('church_year')->nullable();
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->integer('church_year_id')->nullable()->default(1)->unsigned();
             $table->timestamps();
         });
 
@@ -33,13 +33,13 @@ class CreateSeatPlanSettingsTable extends Migration
         if(!$setting){
             $setting = new SeatPlanSetting();
             $setting->student_photo = 1; 
-            $setting->student_name = 1;
-            $setting->admission_no = 1;
+            $setting->member_name = 1;
+            $setting->registration_no = 1;
             $setting->class_section = 1;
             $setting->exam_name = 1;
-            $setting->academic_year = 1;
+            $setting->church_year = 1;
             $setting->roll_no = 1;
-            $setting->school_name = 1;
+            $setting->church_name = 1;
             $setting->save();
         }
        

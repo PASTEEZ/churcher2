@@ -16,21 +16,21 @@ class StatusAcademicSchoolScope implements Scope
     {
         $table = $model->getTable();
         $columns = Schema::getColumnListing($table);
-        $academicId = moduleStatusCheck('University') && in_array('un_academic_id', $columns) 
-        ? '.un_academic_id' : '.academic_id';
+        $academicId = moduleStatusCheck('University') && in_array('un_church_year_id', $columns) 
+        ? '.un_church_year_id' : '.church_year_id';
         if (Auth::check()) {
             $academic = getAcademicId();
             if (app()->bound('school')) {
                 if (moduleStatusCheck('Saas') == true && Auth::user()->is_administrator == "yes" && Session::get('isSchoolAdmin') == false && Auth::user()->role_id == 1) {
                     $builder->where($table . '.active_status', 1)->where($table . $academicId, getAcademicId());
                 } else {
-                    $builder->where($table . '.active_status', 1)->where($table . $academicId, getAcademicId())->where($table . '.school_id', Auth::user()->school_id);
+                    $builder->where($table . '.active_status', 1)->where($table . $academicId, getAcademicId())->where($table . '.church_id', Auth::user()->church_id);
                 }
             } else {
                 if (moduleStatusCheck('Saas') == true && Auth::user()->is_administrator == "yes" && Session::get('isSchoolAdmin') == false && Auth::user()->role_id == 1) {
                     $builder->where($table . '.active_status', 1)->where($table . $academicId, getAcademicId());
                 } else {
-                    $builder->where($table . '.active_status', 1)->where($table . $academicId, getAcademicId())->where($table . '.school_id', Auth::user()->school_id);
+                    $builder->where($table . '.active_status', 1)->where($table . $academicId, getAcademicId())->where($table . '.church_id', Auth::user()->church_id);
                 }
             }
         } else {

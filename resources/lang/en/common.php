@@ -1,7 +1,7 @@
 <?php 
 return [
-    'school_name'=>'Church Name',
-    'school_code'=>'Church Code',
+    'church_name'=>'Church Name',
+    'church_code'=>'Church Code',
     'dashboard' => 'Dashboard',
     'people'    =>'People',
     'copy'      =>'Copy',
@@ -90,7 +90,7 @@ return [
     'system_activated_date'=>'System Activated Date',
     'check_update'=>'Check Update',
     'view_note'=>'View Note',
-    'class_name'=>'Generational Group Name',
+    'age_group_name'=>'Generational Group Name',
     'roll_number'=>'Number',
     'student_list'=>'Member List',
     'delete_item'=>'Delete Item',
@@ -106,7 +106,7 @@ return [
     'communicant' => 'Communicant',
     
     'email_address'    => 'Email Address',
-    'academic_year' => 'Year',
+    'church_year' => 'Year',
     'class_Sec' => 'Gen. Group',
     'class_sec' => 'Gen. Group',
     'class_section' => 'Gen. Group',
@@ -126,7 +126,7 @@ return [
     'select_type' => 'Select Type',
     'select_room' => 'Select Room',
     'select_lesson' => 'Select Lesson',
-    'select_academic_year' => 'Select Year',
+    'select_church_year' => 'Select Year',
     'select_student'=>'Select Member',
     
     'select_exam_type' => 'Select Exam Type',
@@ -152,7 +152,7 @@ return [
     'mobile_no'=>'Mobile No',
     'add_timeline'=>'Add Timeline',
     'add_information'=>'Add Information',
-    'student_name'   => 'Member Name',
+    'member_name'   => 'Member Name',
     'father_name'   => 'Father Name',
     'student_photo'   => 'Member Photo',
     'save_information'=>'Save Information',
@@ -220,7 +220,7 @@ return [
    'virtual_class_reports'=>'Virtual Group Reports',
    'not_yet_start'=>'Not Yet Start',
    'class_details'=>'Membership Type Details',
-   'class_id'=>'Membership Type Id',
+   'age_group_id'=>'Membership Type Id',
    'date_of_meeting'=>'Date Of Meeting',
     'start_join_before'=>'Start/join before',
     'virtual_class_list'=>'Virtual Generational Group List',
@@ -439,7 +439,9 @@ return [
 
 
     'nationality'=>'Nationality',
+    'hometown'=>'Home Town',
     'update_yeargroup'=>'Update Year Groups',
     'marriage_status'=>'Marital Status',
+    'aka'=>'AKA',
    
 ];

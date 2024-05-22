@@ -47,7 +47,7 @@
                             <thead>
                                 <tr>
                                     <tr>
-                                        <th>@lang('student.admission_no')</th>
+                                        <th>@lang('student.registration_no')</th>
                                         <th>@lang('student.roll_no')</th>
                                         <th>@lang('common.name')</th>
                                         <th>@lang('common.title')</th>
@@ -60,7 +60,7 @@
                             <tbody>
                                 @foreach($watchLogs as $log)
                                 <tr>
-                                    <td>{{@$log->admission_no}}</td>
+                                    <td>{{@$log->registration_no}}</td>
                                     <td>{{@$log->roll_no}}</td>
                                     <td>{{@$log->full_name}}</td>
                                     <td>{{@$log->content_title}}</td>
@@ -81,7 +81,7 @@
                                     <thead>
                                         <tr>
                                             <tr>
-                                                <th>@lang('student.admission_no')</th>
+                                                <th>@lang('student.registration_no')</th>
                                                 <th>@lang('student.roll_no')</th>
                                                 <th>@lang('common.name')</th>
                                                 <th>@lang('common.class')</th>
@@ -94,7 +94,7 @@
                                     <tbody>
                                         @foreach($unseen_lists as $log)
                                         <tr>
-                                            <td>{{@$log['admission_no']}}</td>
+                                            <td>{{@$log['registration_no']}}</td>
                                             <td>{{@$log['roll_no']}}</td>
                                             <td>{{@$log['full_name']}}</td>
                                             <td>{{@$log['class']}}</td>

@@ -64,68 +64,68 @@ class SmAccountsController extends Controller
                     $add_incomes = SmAddIncome::where('date', '>=', $date_from)
                         ->where('date', '<=', $date_to)
                         ->where('active_status', 1)
-                        ->where('school_id', Auth::user()->school_id)
+                        ->where('church_id', Auth::user()->church_id)
                         ->get();
 
                     $fees_payments = SmFeesPayment::where('updated_at', '>=', $date_time_from)
                         ->where('updated_at', '<=', $date_time_to)
                         ->where('active_status', 1)
-                        ->where('school_id', Auth::user()->school_id)
+                        ->where('church_id', Auth::user()->church_id)
                         ->sum('amount');
 
                     $item_sells = SmItemSell::where('updated_at', '>=', $date_time_from)
                         ->where('updated_at', '<=', $date_time_to)
                         ->where('active_status', 1)
-                        ->where('school_id', Auth::user()->school_id)
+                        ->where('church_id', Auth::user()->church_id)
                         ->sum('total_paid');
                 } elseif ($request->filtering_income == "sell") {
                     $dormitory = 0;
                     $transport = 0;
                     $add_incomes = [];
                     $fees_payments = '';
-                    $item_sells = SmItemSell::where('updated_at', '>=', $date_time_from)->where('updated_at', '<=', $date_time_to)->where('active_status', 1)->where('school_id', Auth::user()->school_id)->sum('total_paid');
+                    $item_sells = SmItemSell::where('updated_at', '>=', $date_time_from)->where('updated_at', '<=', $date_time_to)->where('active_status', 1)->where('church_id', Auth::user()->church_id)->sum('total_paid');
                 } elseif ($request->filtering_income == "fees") {
                     $dormitory = 0;
                     $add_incomes = [];
                     $transport = 0;
                     $item_sells = '';
-                    $fees_payments = SmFeesPayment::where('updated_at', '>=', $date_time_from)->where('updated_at', '<=', $date_time_to)->where('active_status', 1)->where('school_id', Auth::user()->school_id)->sum('amount');
+                    $fees_payments = SmFeesPayment::where('updated_at', '>=', $date_time_from)->where('updated_at', '<=', $date_time_to)->where('active_status', 1)->where('church_id', Auth::user()->church_id)->sum('amount');
                 } elseif ($request->filtering_income == "dormitory") {
                     $add_incomes = [];
                     $fees_payments = '';
                     $item_sells = '';
                     $transport = 0;
-                    $fees_masters = SmFeesMaster::select('fees_type_id')->Where('fees_group_id', 2)->where('school_id', Auth::user()->school_id)->get();
+                    $fees_masters = SmFeesMaster::select('fees_type_id')->Where('fees_group_id', 2)->where('church_id', Auth::user()->church_id)->get();
                     $dormitory = 0;
                     foreach ($fees_masters as $fees_master) {
-                        $dormitory = $dormitory + SmFeesPayment::where('fees_type_id', $fees_master->fees_type_id)->where('updated_at', '>=', $date_time_from)->where('updated_at', '<=', $date_time_to)->where('active_status', 1)->where('school_id', Auth::user()->school_id)->sum('amount');
+                        $dormitory = $dormitory + SmFeesPayment::where('fees_type_id', $fees_master->fees_type_id)->where('updated_at', '>=', $date_time_from)->where('updated_at', '<=', $date_time_to)->where('active_status', 1)->where('church_id', Auth::user()->church_id)->sum('amount');
                     }
                 } else {
                     $add_incomes = [];
                     $fees_payments = '';
                     $item_sells = '';
                     $dormitory = 0;
-                    $fees_masters = SmFeesMaster::select('fees_type_id')->Where('fees_group_id', 1)->where('school_id', Auth::user()->school_id)->get();
+                    $fees_masters = SmFeesMaster::select('fees_type_id')->Where('fees_group_id', 1)->where('church_id', Auth::user()->church_id)->get();
                     $transport = 0;
                     foreach ($fees_masters as $fees_master) {
-                        $transport = $transport + SmFeesPayment::where('fees_type_id', $fees_master->fees_type_id)->where('updated_at', '>=', $date_time_from)->where('updated_at', '<=', $date_time_to)->where('active_status', 1)->where('school_id', Auth::user()->school_id)->sum('amount');
+                        $transport = $transport + SmFeesPayment::where('fees_type_id', $fees_master->fees_type_id)->where('updated_at', '>=', $date_time_from)->where('updated_at', '<=', $date_time_to)->where('active_status', 1)->where('church_id', Auth::user()->church_id)->sum('amount');
                     }
                 }
 
                 return view('backEnd.accounts.search_income', compact('add_incomes', 'fees_payments', 'item_sells', 'dormitory', 'transport', 'type_id', 'from_date', 'to_date'));
             } else {
                 if ($request->filtering_expense == "all") {
-                    $add_expenses = SmAddExpense::where('date', '>=', $date_from)->where('date', '<=', $date_to)->where('active_status', 1)->where('school_id', Auth::user()->school_id)->get();
-                    $item_receives = SmItemReceive::where('updated_at', '>=', $date_time_from)->where('updated_at', '<=', $date_time_to)->where('active_status', 1)->where('school_id', Auth::user()->school_id)->sum('total_paid');
-                    $payroll_payments = SmHrPayrollGenerate::where('updated_at', '>=', $date_time_from)->where('updated_at', '<=', $date_time_to)->where('active_status', 1)->where('payroll_status', 'P')->where('school_id', Auth::user()->school_id)->sum('net_salary');
+                    $add_expenses = SmAddExpense::where('date', '>=', $date_from)->where('date', '<=', $date_to)->where('active_status', 1)->where('church_id', Auth::user()->church_id)->get();
+                    $item_receives = SmItemReceive::where('updated_at', '>=', $date_time_from)->where('updated_at', '<=', $date_time_to)->where('active_status', 1)->where('church_id', Auth::user()->church_id)->sum('total_paid');
+                    $payroll_payments = SmHrPayrollGenerate::where('updated_at', '>=', $date_time_from)->where('updated_at', '<=', $date_time_to)->where('active_status', 1)->where('payroll_status', 'P')->where('church_id', Auth::user()->church_id)->sum('net_salary');
                 } elseif ($request->filtering_expense == "receive") {
                     $add_expenses = [];
-                    $item_receives = SmItemReceive::where('updated_at', '>=', $date_time_from)->where('updated_at', '<=', $date_time_to)->where('active_status', 1)->where('school_id', Auth::user()->school_id)->sum('total_paid');
+                    $item_receives = SmItemReceive::where('updated_at', '>=', $date_time_from)->where('updated_at', '<=', $date_time_to)->where('active_status', 1)->where('church_id', Auth::user()->church_id)->sum('total_paid');
                     $payroll_payments = '';
                 } else {
                     $add_expenses = [];
                     $item_receives = '';
-                    $payroll_payments = SmItemReceive::where('updated_at', '>=', $date_time_from)->where('updated_at', '<=', $date_time_to)->where('active_status', 1)->where('school_id', Auth::user()->school_id)->sum('total_paid');
+                    $payroll_payments = SmItemReceive::where('updated_at', '>=', $date_time_from)->where('updated_at', '<=', $date_time_to)->where('active_status', 1)->where('church_id', Auth::user()->church_id)->sum('total_paid');
                 }
                 return view('backEnd.accounts.search_income', compact('add_expenses', 'item_receives', 'payroll_payments', 'type_id', 'from_date', 'to_date'));
             }
@@ -159,8 +159,8 @@ class SmAccountsController extends Controller
 
             $add_expenses = SmAddExpense::where('date', '>=', $date_from)->where('date', '<=', $date_to)->where('active_status', 1)->get();
 
-            $item_receives = SmItemReceive::where('updated_at', '>=', $date_time_from)->where('updated_at', '<=', $date_time_to)->where('active_status', 1)->where('school_id', Auth::user()->school_id)->sum('total_paid');
-            $payroll_payments = SmHrPayrollGenerate::where('updated_at', '>=', $date_time_from)->where('updated_at', '<=', $date_time_to)->where('active_status', 1)->where('payroll_status', 'P')->where('school_id', Auth::user()->school_id)->sum('net_salary');
+            $item_receives = SmItemReceive::where('updated_at', '>=', $date_time_from)->where('updated_at', '<=', $date_time_to)->where('active_status', 1)->where('church_id', Auth::user()->church_id)->sum('total_paid');
+            $payroll_payments = SmHrPayrollGenerate::where('updated_at', '>=', $date_time_from)->where('updated_at', '<=', $date_time_to)->where('active_status', 1)->where('payroll_status', 'P')->where('church_id', Auth::user()->church_id)->sum('net_salary');
             return view('backEnd.accounts.search_expense', compact('add_expenses', 'item_receives', 'payroll_payments'));
         } catch (Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -173,14 +173,14 @@ class SmAccountsController extends Controller
         try {
             $add_incomes = SmAddIncome::where('active_status', 1)
                 ->where('name', '!=', "Fund Transfer")
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->sum('amount');
 
             $total_income = $add_incomes;
 
             $add_expenses = SmAddExpense::where('active_status', 1)
                 ->where('name', '!=', "Fund Transfer")
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->sum('amount');
 
             $total_expense = $add_expenses;
@@ -219,7 +219,7 @@ class SmAccountsController extends Controller
             $add_incomes = SmAddIncome::where('date', '>=', $date_from)
                 ->where('date', '<=', $date_to)
                 ->where('active_status', 1)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->sum('amount');
 
             $total_income = $add_incomes;
@@ -228,7 +228,7 @@ class SmAccountsController extends Controller
             $add_expenses = SmAddExpense::where('date', '>=', $date_from)
                 ->where('date', '<=', $date_to)
                 ->where('active_status', 1)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->sum('amount');
 
             $total_expense = $add_expenses;
@@ -244,7 +244,7 @@ class SmAccountsController extends Controller
     public function transaction()
     {
         try {
-            $payment_methods = SmPaymentMethhod::where('school_id', Auth::user()->school_id)->get();
+            $payment_methods = SmPaymentMethhod::where('church_id', Auth::user()->church_id)->get();
             return view('backEnd.accounts.transaction', compact('payment_methods'));
         } catch (Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -260,7 +260,7 @@ class SmAccountsController extends Controller
                 $date_from = new DateTime(trim($rangeArr[0]));
                 $date_to = new DateTime(trim($rangeArr[1]));
             }
-            $payment_methods = SmPaymentMethhod::where('school_id', Auth::user()->school_id)->get();
+            $payment_methods = SmPaymentMethhod::where('church_id', Auth::user()->church_id)->get();
             $payment_method = $request->payment_method;
 
             if ($request->payment_method != "all") {
@@ -273,12 +273,12 @@ class SmAccountsController extends Controller
                 $add_incomes = SmAddIncome::where('date', '>=', $date_from)
                     ->where('date', '<=', $date_to)
                     ->where('active_status', 1)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->get();
                 $add_expenses = SmAddExpense::where('date', '>=', $date_from)
                     ->where('date', '<=', $date_to)
                     ->where('active_status', 1)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->get();
                 return view('backEnd.accounts.transaction', compact('payment_methods', 'add_incomes', 'add_expenses'));
             } elseif ($request->date_range && $request->type == "In") {
@@ -289,7 +289,7 @@ class SmAccountsController extends Controller
                     $add_incomes = SmAddIncome::where('date', '>=', $date_from)
                         ->where('date', '<=', $date_to)
                         ->where('active_status', 1)
-                        ->where('school_id', Auth::user()->school_id)
+                        ->where('church_id', Auth::user()->church_id)
                         ->get();
                     return view('backEnd.accounts.transaction', compact('payment_methods', 'add_incomes'));
                 }
@@ -301,7 +301,7 @@ class SmAccountsController extends Controller
                     $add_expenses = SmAddExpense::where('date', '>=', $date_from)
                         ->where('date', '<=', $date_to)
                         ->where('active_status', 1)
-                        ->where('school_id', Auth::user()->school_id)
+                        ->where('church_id', Auth::user()->church_id)
                         ->get();
                     return view('backEnd.accounts.transaction', compact('payment_methods', 'add_expenses'));
                 }
@@ -335,7 +335,7 @@ class SmAccountsController extends Controller
                 ->where('date', '<=', $date_to)
                 ->where('active_status', 1)
                 ->where('name', "Staff Payroll")
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             return view('backEnd.accounts.accounts_payroll_report', compact('payroll_infos'));
@@ -350,7 +350,7 @@ class SmAccountsController extends Controller
         try {
             $payment_methods = SmPaymentMethhod::get(['method', 'id']);
             $bank_accounts = SmBankAccount::get();
-            $transfers = SmAmountTransfer::where('school_id', Auth::user()->school_id)->get();
+            $transfers = SmAmountTransfer::where('church_id', Auth::user()->church_id)->get();
             $bank_amount = SmBankAccount::sum('current_balance');
             return view('backEnd.accounts.fund_transfer', compact('payment_methods', 'bank_accounts', 'transfers', 'bank_amount'));
         } catch (Exception $e) {
@@ -374,7 +374,7 @@ class SmAccountsController extends Controller
 
             if ($request->from_payment_method == 3 && $request->from_bank_name == $request->to_bank_name) {
                 $message = SmBankAccount::where('id', $request->from_bank_name)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->first();
 
                 Toastr::warning($message->bank_name . ' to ' . $message->bank_name . ' transfer is not accepted', 'Warning');
@@ -382,7 +382,7 @@ class SmAccountsController extends Controller
             } elseif ($request->from_payment_method == $request->to_payment_method) {
                 if ($request->from_payment_method != 3) {
                     $message = SmPaymentMethhod::where('id', $request->from_payment_method)
-                        ->where('school_id', Auth::user()->school_id)
+                        ->where('church_id', Auth::user()->church_id)
                         ->first();
                     Toastr::warning(@$message->method . ' to ' . @$message->method . ' transfer is not accepted', 'Warning');
                     return redirect()->back();
@@ -390,10 +390,10 @@ class SmAccountsController extends Controller
             }
             // Validation Part End
 
-            $from_payment = SmPaymentMethhod::where('school_id', Auth::user()->school_id)->findOrFail($request->from_payment_method);
+            $from_payment = SmPaymentMethhod::where('church_id', Auth::user()->church_id)->findOrFail($request->from_payment_method);
 
             if ($from_payment->method == 'Bank') {
-                $balance = SmBankAccount::where('school_id', Auth::user()->school_id)->findOrFail($request->from_bank_name)->current_balance;
+                $balance = SmBankAccount::where('church_id', Auth::user()->church_id)->findOrFail($request->from_bank_name)->current_balance;
 
                 if ($balance > $request->amount && $balance != 0) {
                     $transfer = new SmAmountTransfer();
@@ -404,8 +404,8 @@ class SmAccountsController extends Controller
                     $transfer->to_payment_method = $request->to_payment_method;
                     $transfer->to_bank_name = $request->to_bank_name;
                     $transfer->transfer_date = Carbon::now();
-                    $transfer->school_id = Auth::user()->school_id;
-                    $transfer->academic_id = getAcademicId();
+                    $transfer->church_id = Auth::user()->church_id;
+                    $transfer->church_year_id = getAcademicId();
                     $transfer->save();
 
                     $add_expense = new SmAddExpense();
@@ -414,8 +414,8 @@ class SmAccountsController extends Controller
                     $add_expense->amount = $request->amount;
                     $add_expense->payment_method_id = $request->from_payment_method;
                     $add_expense->account_id = $request->from_bank_name;
-                    $add_expense->school_id = Auth::user()->school_id;
-                    $add_expense->academic_id = getAcademicId();
+                    $add_expense->church_id = Auth::user()->church_id;
+                    $add_expense->church_year_id = getAcademicId();
                     $add_expense->save();
 
                     $add_income = new SmAddIncome();
@@ -427,13 +427,13 @@ class SmAccountsController extends Controller
                         $add_income->account_id = $request->to_bank_name;
                     }
                     $add_income->account_id = $request->to_bank_name;
-                    $add_income->school_id = Auth::user()->school_id;
-                    $add_income->academic_id = getAcademicId();
+                    $add_income->church_id = Auth::user()->church_id;
+                    $add_income->church_year_id = getAcademicId();
                     $add_income->save();
 
 
                     $bank_id = SmBankAccount::where('id', $request->from_bank_name)
-                        ->where('school_id', Auth::user()->school_id)
+                        ->where('church_id', Auth::user()->church_id)
                         ->first();
                     $bank_expense = $bank_id->current_balance - $request->amount;
 
@@ -445,7 +445,7 @@ class SmAccountsController extends Controller
                     $bank_statement->item_receive_id = $transfer->id;
                     $bank_statement->payment_date = Carbon::now();
                     $bank_statement->bank_id = $request->from_bank_name;
-                    $bank_statement->school_id = Auth::user()->school_id;
+                    $bank_statement->church_id = Auth::user()->church_id;
                     $bank_statement->payment_method = $request->from_payment_method;
                     $bank_statement->save();
 
@@ -466,7 +466,7 @@ class SmAccountsController extends Controller
                         $bank_statement->item_receive_id = $transfer->id;
                         $bank_statement->payment_date = Carbon::now();
                         $bank_statement->bank_id = $request->to_bank_name;
-                        $bank_statement->school_id = Auth::user()->school_id;
+                        $bank_statement->church_id = Auth::user()->church_id;
                         $bank_statement->payment_method = $request->to_payment_method;
                         $bank_statement->save();
 
@@ -482,11 +482,11 @@ class SmAccountsController extends Controller
                 }
             } else {
                 $income = SmAddIncome::where('payment_method_id', $request->from_payment_method)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->sum('amount');
 
                 $expense = SmAddExpense::where('payment_method_id', $request->from_payment_method)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->sum('amount');
 
                 $balance = $income - $expense;
@@ -501,8 +501,8 @@ class SmAccountsController extends Controller
                         $transfer->to_bank_name = $request->to_bank_name;
                     }
                     $transfer->transfer_date = Carbon::now();
-                    $transfer->school_id = Auth::user()->school_id;
-                    $transfer->academic_id = getAcademicId();
+                    $transfer->church_id = Auth::user()->church_id;
+                    $transfer->church_year_id = getAcademicId();
                     $transfer->save();
 
                     $add_expense = new SmAddExpense();
@@ -513,8 +513,8 @@ class SmAccountsController extends Controller
                     if ($request->to_bank_name) {
                         $add_expense->account_id = $request->to_bank_name;
                     }
-                    $add_expense->school_id = Auth::user()->school_id;
-                    $add_expense->academic_id = getAcademicId();
+                    $add_expense->church_id = Auth::user()->church_id;
+                    $add_expense->church_year_id = getAcademicId();
                     $add_expense->save();
 
                     $add_income = new SmAddIncome();
@@ -525,14 +525,14 @@ class SmAccountsController extends Controller
                     if ($request->to_bank_name) {
                         $add_expense->account_id = $request->to_bank_name;
                     }
-                    $add_income->school_id = Auth::user()->school_id;
-                    $add_income->academic_id = getAcademicId();
+                    $add_income->church_id = Auth::user()->church_id;
+                    $add_income->church_year_id = getAcademicId();
                     $add_income->save();
 
                     if ($request->to_bank_name) {
 
                         $bank_id = SmBankAccount::where('id', $request->to_bank_name)
-                            ->where('school_id', Auth::user()->school_id)
+                            ->where('church_id', Auth::user()->church_id)
                             ->first();
 
                         $bank_income = $bank_id->current_balance + $request->amount;
@@ -545,7 +545,7 @@ class SmAccountsController extends Controller
                         $bank_statement->item_receive_id = $transfer->id;
                         $bank_statement->payment_date = Carbon::now();
                         $bank_statement->bank_id = $request->to_bank_name;
-                        $bank_statement->school_id = Auth::user()->school_id;
+                        $bank_statement->church_id = Auth::user()->church_id;
                         $bank_statement->payment_method = $request->to_payment_method;
                         $bank_statement->save();
 

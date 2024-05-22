@@ -173,7 +173,7 @@ class LoginController extends Controller
     {
 
         $school = app('school');
-        $request->merge(['school_id' => $school->id]);
+        $request->merge(['church_id' => $school->id]);
         $logged_in = false;
         if ($school->id !=1 && $school->active_status !=1) {           
             Toastr::error('Your Institution is not Active, Please contact with administrator.', 'Failed');
@@ -195,9 +195,9 @@ class LoginController extends Controller
                 return $this->sendLockoutResponse($request);
             }
 
-            $user = User::where('username', $request->email)->where('school_id', $school->id)->first();
+            $user = User::where('username', $request->email)->where('church_id', $school->id)->first();
             if(!$user){
-                $user = User::where('phone_number', $request->email)->where('school_id', $school->id)->first();
+                $user = User::where('phone_number', $request->email)->where('church_id', $school->id)->first();
             }
 
             if($user){
@@ -249,23 +249,23 @@ class LoginController extends Controller
             $ttl_rtl = generalSetting()->ttl_rtl;
             session()->put('text_direction', $ttl_rtl);
 
-            $active_style = SmStyle::where('school_id', Auth::user()->school_id)->where('is_active', 1)->first();
+            $active_style = SmStyle::where('church_id', Auth::user()->church_id)->where('is_active', 1)->first();
             session()->put('active_style', $active_style);
 
-            $all_styles = SmStyle::where('school_id', Auth::user()->school_id)->get();
+            $all_styles = SmStyle::where('church_id', Auth::user()->church_id)->get();
             session()->put('all_styles', $all_styles);
 
             //Session put activeLanguage
-            $systemLanguage = SmLanguage::where('school_id', Auth::user()->school_id)->get();
+            $systemLanguage = SmLanguage::where('church_id', Auth::user()->church_id)->get();
             session()->put('systemLanguage', $systemLanguage);
             //session put academic years
             
             if(moduleStatusCheck('University')){
-                $academic_years = Auth::check() ? UnAcademicYear::where('active_status', 1)->where('school_id', Auth::user()->school_id)->get() : '';
+                $church_years = Auth::check() ? UnAcademicYear::where('active_status', 1)->where('church_id', Auth::user()->church_id)->get() : '';
             }else{
-                $academic_years = Auth::check() ? SmAcademicYear::where('active_status', 1)->where('school_id', Auth::user()->school_id)->get() : '';
+                $church_years = Auth::check() ? SmAcademicYear::where('active_status', 1)->where('church_id', Auth::user()->church_id)->get() : '';
             }
-            session()->put('academic_years', $academic_years);
+            session()->put('church_years', $church_years);
             //session put sessions and selected language
 
 
@@ -273,19 +273,19 @@ class LoginController extends Controller
                 $profile = SmStudent::where('user_id', Auth::id())->withOutGlobalScopes([StatusAcademicSchoolScope::class])->first();
 
                 session()->put('profile', @$profile->student_photo);
-                $session_id = $profile ? $profile->academic_id : generalSetting()->session_id;
+                $session_id = $profile ? $profile->church_year_id : generalSetting()->session_id;
             } else {
                 $profile = SmStaff::where('user_id', Auth::id())->first();
                 if ($profile) {
                     session()->put('profile', $profile->staff_photo);
                 }
-                $session_id = $profile && $profile->academic_id ? $profile->academic_id : generalSetting()->session_id;
+                $session_id = $profile && $profile->church_year_id ? $profile->church_year_id : generalSetting()->session_id;
             }
 
             if(moduleStatusCheck('University')){
-                $session_id = generalSetting()->un_academic_id;
+                $session_id = generalSetting()->un_church_year_id;
                 if(!$session_id){
-                    $session = UnAcademicYear::where('school_id', Auth::user()->school_id)->where('active_status', 1)->first();
+                    $session = UnAcademicYear::where('church_id', Auth::user()->church_id)->where('active_status', 1)->first();
                 } else{
                     $session = UnAcademicYear::find($session_id);
                 }
@@ -295,12 +295,12 @@ class LoginController extends Controller
             }
             else{
                 if(!$session_id){
-                    $session = SmAcademicYear::where('school_id', Auth::user()->school_id)->where('active_status', 1)->first();
+                    $session = SmAcademicYear::where('church_id', Auth::user()->church_id)->where('active_status', 1)->first();
                 } else{
                     $session = SmAcademicYear::find($session_id);
                 }
                 if(!$session){
-                    $session = SmAcademicYear::where('school_id', Auth::user()->school_id)->first();
+                    $session = SmAcademicYear::where('church_id', Auth::user()->church_id)->first();
                 }
 
                 session()->put('sessionId', $session->id);
@@ -313,7 +313,7 @@ class LoginController extends Controller
             $dashboard_background = DB::table('sm_background_settings')->where([['is_default', 1], ['title', 'Dashboard Background']])->first();
             session()->put('dashboard_background', $dashboard_background);
 
-            $email_template = SmsTemplate::where('school_id',Auth::user()->school_id)->first();
+            $email_template = SmsTemplate::where('church_id',Auth::user()->church_id)->first();
             session()->put('email_template', $email_template);
 
             session(['role_id' => Auth::user()->role_id]);
@@ -321,12 +321,12 @@ class LoginController extends Controller
             $user_log = new SmUserLog();
             $user_log->user_id = Auth::user()->id;
             $user_log->role_id = Auth::user()->role_id;
-            $user_log->school_id = Auth::user()->school_id;
+            $user_log->church_id = Auth::user()->church_id;
             $user_log->ip_address = $request->ip();
             if(moduleStatusCheck('University')){
-                $user_log->un_academic_id = getAcademicid();
+                $user_log->un_church_year_id = getAcademicid();
             }else{
-                $user_log->academic_id = getAcademicid() ?? 1;
+                $user_log->church_year_id = getAcademicid() ?? 1;
             }
             $user_log->user_agent = $agent->browser() . ', ' . $agent->platform();
             $user_log->save();
@@ -385,9 +385,9 @@ class LoginController extends Controller
     protected function credentials(Request $request)
     {
         if (filter_var($request->email, FILTER_VALIDATE_EMAIL)) {
-            return $request->only($this->username(), 'password', 'school_id');
+            return $request->only($this->username(), 'password', 'church_id');
         } else {
-            return $request->only('username', 'password', 'school_id');
+            return $request->only('username', 'password', 'church_id');
         }
     }
 
@@ -487,7 +487,7 @@ class LoginController extends Controller
         $school = app('school');
         $data = [];
 
-        $login_background = SmBackgroundSetting::where('school_id', $school->id)->where([['is_default', 1], ['title', 'Login Background']])->first();
+        $login_background = SmBackgroundSetting::where('church_id', $school->id)->where([['is_default', 1], ['title', 'Login Background']])->first();
 
         if (empty($login_background)) {
             $data['css'] = "background: url(" . url('public/backEnd/login2/img/login-bg.png') . ")  no-repeat center; background-size: cover; ";
@@ -505,10 +505,10 @@ class LoginController extends Controller
                 $roles = [1, 2, 3, 4, 5, 6, 7, 8];
             }
 
-            $data['users'] = User::whereIn('role_id', $roles)->select('role_id', 'email')->where('school_id', $school->id)->orderByRaw('FIELD(role_id, 1, 5, 4, 3, 6, 7, 8, 2)')->get()->groupBy('role_id');
+            $data['users'] = User::whereIn('role_id', $roles)->select('role_id', 'email')->where('church_id', $school->id)->orderByRaw('FIELD(role_id, 1, 5, 4, 3, 6, 7, 8, 2)')->get()->groupBy('role_id');
 
             if (moduleStatusCheck('Saas')) {
-                $data['schools'] = SmSchool::orderBy('school_name', 'asc')->take(5)->get()->except($school->id);
+                $data['schools'] = SmSchool::orderBy('church_name', 'asc')->take(5)->get()->except($school->id);
             }
         }
 
@@ -518,12 +518,12 @@ class LoginController extends Controller
 
     public function loginCodeCanyon()
     {
-        $school_id = 1;
+        $church_id = 1;
         if(app()->bound('school')){
-            $school_id = app('school')->id;
+            $church_id = app('school')->id;
         }
 
-        $login_background = SmBackgroundSetting::where('school_id', $school_id)->where([['is_default', 1], ['title', 'Login Background']])->first();
+        $login_background = SmBackgroundSetting::where('church_id', $church_id)->where([['is_default', 1], ['title', 'Login Background']])->first();
 
         if (empty($login_background)) {
             $css = "background: url(" . url('public/backEnd/img/login-bg.jpg') . ")  no-repeat center; background-size: cover; ";

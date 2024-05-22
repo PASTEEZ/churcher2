@@ -34,8 +34,8 @@
                                     @else
                                         <a class="nav-link @if ($key == 0) active @endif "
                                             href="#tab{{ $key }}" role="tab"
-                                            data-toggle="tab">{{ $record->class->class_name }}
-                                            ({{ $record->section->section_name }})
+                                            data-toggle="tab">{{ $record->class->age_group_name }}
+                                            ({{ $record->section->mgender_name }})
                                         </a>
                                     @endif
                                 </li>
@@ -92,10 +92,10 @@
                                                                         @php
                                                                         if(moduleStatusCheck('University'))
                                                                         {
-                                                                            $parentRoutine = App\SmWeekend::studentClassRoutineFromRecordUniversity($record->un_academic_id, $record->un_semester_label_id, $sm_weekend->id);
+                                                                            $parentRoutine = App\SmWeekend::studentClassRoutineFromRecordUniversity($record->un_church_year_id, $record->un_semester_label_id, $sm_weekend->id);
                                                                         } else {
 
-                                                                            $parentRoutine = App\SmWeekend::studentClassRoutineFromRecord($record->class_id, $record->section_id, $sm_weekend->id);
+                                                                            $parentRoutine = App\SmWeekend::studentClassRoutineFromRecord($record->age_group_id, $record->mgender_id, $sm_weekend->id);
                                                                         }
                                                                         @endphp
                                                                         @if ($parentRoutine->count() > $height)
@@ -120,9 +120,9 @@
                                                                 @php
                                                                   if(moduleStatusCheck('University'))
                                                                     {
-                                                                        $parentRoutine = App\SmWeekend::studentClassRoutineFromRecordUniversity($record->un_academic_id, $record->un_semester_label_id, $sm_weekend->id);
+                                                                        $parentRoutine = App\SmWeekend::studentClassRoutineFromRecordUniversity($record->un_church_year_id, $record->un_semester_label_id, $sm_weekend->id);
                                                                     } else {
-                                                                        $parentRoutine = App\SmWeekend::studentClassRoutineFromRecord($record->class_id, $record->section_id, $sm_weekend->id);
+                                                                        $parentRoutine = App\SmWeekend::studentClassRoutineFromRecord($record->age_group_id, $record->mgender_id, $sm_weekend->id);
                                                                     }
                                                                     $i = 0;
                                                                 @endphp
@@ -213,17 +213,17 @@
                                                                                                         ->where('un_semester_label_id', $un_semester_label_id) 
                                                                                                         ->where('un_subject_id',$subject_id)
                                                                                                         ->where('routine_id',$routine_id)
-                                                                                                        ->where('school_id',Auth::user()->school_id)
+                                                                                                        ->where('church_id',Auth::user()->church_id)
                                                                                                         ->first();
                                                                                     } else {
                                                                                             $lessonPlan = DB::table('lesson_planners')
                                                                                                 ->where('lesson_date', $lesson_date)
-                                                                                                ->where('class_id', $record->class_id)
-                                                                                                ->where('section_id', $record->section_id)
+                                                                                                ->where('age_group_id', $record->age_group_id)
+                                                                                                ->where('mgender_id', $record->mgender_id)
                                                                                                 ->where('subject_id', $subject_id)
                                                                                                 ->where('routine_id', $routine_id)
-                                                                                                ->where('academic_id', getAcademicId())
-                                                                                                ->where('school_id', Auth::user()->school_id)
+                                                                                                ->where('church_year_id', getAcademicId())
+                                                                                                ->where('church_id', Auth::user()->church_id)
                                                                                                 ->first();
                                                                                     }
                                                                                         @endphp

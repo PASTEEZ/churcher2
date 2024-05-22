@@ -12,7 +12,7 @@ class SmStudentsTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run($school_id, $academic_id, $count = 5)
+    public function run($church_id, $church_year_id, $count = 5)
     {
 
     }

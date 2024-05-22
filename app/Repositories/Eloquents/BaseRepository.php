@@ -29,12 +29,12 @@ class BaseRepository implements EloquentRepositoryInterface
      */
     public function all(array $columns = ['*'], array $relations = []): Collection
     {
-        return $this->model->with($relations)->where('school_id', auth()->user()->school_id)->get($columns);
+        return $this->model->with($relations)->where('church_id', auth()->user()->church_id)->get($columns);
     }
 
     public function count(): int
     {
-        return $this->model->where('school_id', auth()->user()->school_id)->count();
+        return $this->model->where('church_id', auth()->user()->church_id)->count();
     }
     
     /**
@@ -46,7 +46,7 @@ class BaseRepository implements EloquentRepositoryInterface
 
     public function getByCondition(array $condition, array $relations = [], array $columns = ['*']): Collection
     {
-        return $this->model->where($condition)->with($relations)->where('school_id', auth()->user()->school_id)->get($columns);
+        return $this->model->where($condition)->with($relations)->where('church_id', auth()->user()->church_id)->get($columns);
     }
 
     /**
@@ -63,7 +63,7 @@ class BaseRepository implements EloquentRepositoryInterface
         array $appends = []
     ): ?Model
     {
-        return $this->model->select($columns)->with($relations)->where('school_id', auth()->user()->school_id)->findOrFail($modelId)->append($appends);
+        return $this->model->select($columns)->with($relations)->where('church_id', auth()->user()->church_id)->findOrFail($modelId)->append($appends);
     }
 
     /**

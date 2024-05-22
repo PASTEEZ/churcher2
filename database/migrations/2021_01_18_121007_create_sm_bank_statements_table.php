@@ -29,9 +29,9 @@ class CreateSmBankStatementsTable extends Migration
             $table->integer('item_sell_id')->nullable();
             $table->date('payment_date')->nullable();
             $table->tinyInteger('active_status')->default(1);
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
 
-            $table->integer('academic_id')->nullable()->unsigned();
+            $table->integer('church_year_id')->nullable()->unsigned();
 
             $table->timestamps();
         });

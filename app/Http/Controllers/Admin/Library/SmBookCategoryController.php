@@ -43,11 +43,11 @@ class SmBookCategoryController extends Controller
         try{
             $categories = new SmBookCategory();
             $categories->category_name = $request->category_name;
-            $categories->school_id = Auth::user()->school_id;
+            $categories->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $categories->un_academic_id = getAcademicId();
+                $categories->un_church_year_id = getAcademicId();
             }else{
-                $categories->academic_id = getAcademicId();
+                $categories->church_year_id = getAcademicId();
             }
             $categories->save();
 
@@ -68,7 +68,7 @@ class SmBookCategoryController extends Controller
         try{
             // $editData = SmBookCategory::find($id);
             $editData = SmBookCategory::status()->find($id);
-            $bookCategories = SmBookCategory::where('school_id',Auth::user()->school_id)->get();
+            $bookCategories = SmBookCategory::where('church_id',Auth::user()->church_id)->get();
             return view('backEnd.library.bookCategoryList', compact('bookCategories', 'editData'));
         }catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');

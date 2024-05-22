@@ -24,7 +24,7 @@ class SmInstructionController extends Controller
     {
 
         try{
-            $instructions = SmInstruction::where('school_id',Auth::user()->school_id)->get();
+            $instructions = SmInstruction::where('church_id',Auth::user()->church_id)->get();
             return view('backEnd.examination.instruction', compact('instructions'));
         }catch (\Exception $e) {
            Toastr::error('Operation Failed', 'Failed');
@@ -41,8 +41,8 @@ class SmInstructionController extends Controller
             $instruction = new SmInstruction();
             $instruction->title = $request->title;
             $instruction->description = $request->description;
-            $instruction->school_id = Auth::user()->school_id;
-            $instruction->academic_id = getAcademicId();
+            $instruction->church_id = Auth::user()->church_id;
+            $instruction->church_year_id = getAcademicId();
             $result = $instruction->save();
             if($result){
                 Toastr::success('Operation successful', 'Success');
@@ -70,7 +70,7 @@ class SmInstructionController extends Controller
 
         try{
             $instruction = SmInstruction::find($id);
-            $instructions = SmInstruction::where('school_id',Auth::user()->school_id)->get();
+            $instructions = SmInstruction::where('church_id',Auth::user()->church_id)->get();
             return view('backEnd.examination.instruction', compact('instruction', 'instructions'));
         }catch (\Exception $e) {
            Toastr::error('Operation Failed', 'Failed');

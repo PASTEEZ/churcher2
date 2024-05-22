@@ -9,12 +9,12 @@ use Illuminate\Database\Seeder;
 class SmExpenseHeadsTableSeeder extends Seeder
 {
 
-    public function run($school_id = 1, $count = 10){
+    public function run($church_id = 1, $count = 10){
         SmExpenseHead::factory()->times($count)->create([
-            'school_id' => $school_id
+            'church_id' => $church_id
         ])->each(function ($expense_head){
             SmAddExpense::factory()->times(10)->create([
-                'school_id' => $expense_head->school_id,
+                'church_id' => $expense_head->church_id,
                 'expense_head_id' => $expense_head->id,
             ]);
         });

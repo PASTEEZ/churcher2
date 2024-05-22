@@ -30,9 +30,9 @@ class SmRoomListController extends Controller
     {
 
         try{
-            $room_lists = SmRoomList::where('active_status', 1)->where('school_id',Auth::user()->school_id)->orderby('id','DESC')->get();
-            $room_types = SmRoomType::where('active_status', 1)->where('school_id',Auth::user()->school_id)->get();
-            $dormitory_lists = SmDormitoryList::where('active_status', 1)->where('school_id',Auth::user()->school_id)->orderby('id','DESC')->get();
+            $room_lists = SmRoomList::where('active_status', 1)->where('church_id',Auth::user()->church_id)->orderby('id','DESC')->get();
+            $room_types = SmRoomType::where('active_status', 1)->where('church_id',Auth::user()->church_id)->get();
+            $dormitory_lists = SmDormitoryList::where('active_status', 1)->where('church_id',Auth::user()->church_id)->orderby('id','DESC')->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -74,8 +74,8 @@ class SmRoomListController extends Controller
             $room_list->number_of_bed = $request->number_of_bed;
             $room_list->cost_per_bed = $request->cost_per_bed;
             $room_list->description = $request->description;
-            $room_list->school_id = Auth::user()->school_id;
-            $room_list->academic_id = getAcademicId();
+            $room_list->church_id = Auth::user()->church_id;
+            $room_list->church_year_id = getAcademicId();
             $result = $room_list->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -113,11 +113,11 @@ class SmRoomListController extends Controller
              if (checkAdmin()) {
                 $room_list = SmRoomList::find($id);
             }else{
-                $room_list = SmRoomList::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+                $room_list = SmRoomList::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
             }
-            $room_lists = SmRoomList::where('school_id',Auth::user()->school_id)->get();
-            $room_types = SmRoomType::where('school_id',Auth::user()->school_id)->get();
-            $dormitory_lists = SmDormitoryList::where('school_id',Auth::user()->school_id)->get();
+            $room_lists = SmRoomList::where('church_id',Auth::user()->church_id)->get();
+            $room_types = SmRoomType::where('church_id',Auth::user()->church_id)->get();
+            $dormitory_lists = SmDormitoryList::where('church_id',Auth::user()->church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -158,7 +158,7 @@ class SmRoomListController extends Controller
             if (checkAdmin()) {
                 $room_list = SmRoomList::find($request->id);
             }else{
-                $room_list = SmRoomList::where('id',$request->id)->where('school_id',Auth::user()->school_id)->first();
+                $room_list = SmRoomList::where('id',$request->id)->where('church_id',Auth::user()->church_id)->first();
             }
             $room_list->name = $request->name;
             $room_list->dormitory_id = $request->dormitory;
@@ -207,7 +207,7 @@ class SmRoomListController extends Controller
                     if (checkAdmin()) {
                         $delete_query = SmRoomList::destroy($id);
                     }else{
-                        $delete_query = SmRoomList::where('id',$id)->where('school_id',Auth::user()->school_id)->delete();
+                        $delete_query = SmRoomList::where('id',$id)->where('church_id',Auth::user()->church_id)->delete();
                     }
                 if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                     if ($delete_query) {

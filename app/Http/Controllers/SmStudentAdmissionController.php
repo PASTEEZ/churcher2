@@ -88,7 +88,7 @@ class SmStudentAdmissionController extends Controller
 
     function admissionCheck($val)
     {
-        $data = DB::table('sm_students')->where('admission_no', $val)->where('school_id', Auth::user()->school_id)->first();
+        $data = DB::table('sm_students')->where('registration_no', $val)->where('church_id', Auth::user()->church_id)->first();
         if (!is_null($data)) {
             $msg = 'found';
             $status = 200;
@@ -101,11 +101,11 @@ class SmStudentAdmissionController extends Controller
     }
     function admissionCheckUpdate($val, $id)
     {
-        $data = DB::table('sm_students')->where('admission_no', $val)->where('school_id', Auth::user()->school_id)->first();
+        $data = DB::table('sm_students')->where('registration_no', $val)->where('church_id', Auth::user()->church_id)->first();
 
         $student = SmStudent::find($id);
 
-        if (!is_null($data) && $student->admission_no != $data->admission_no) {
+        if (!is_null($data) && $student->registration_no != $data->registration_no) {
             $msg = 'found';
             $status = 200;
             return response()->json($msg, $status);
@@ -122,7 +122,7 @@ class SmStudentAdmissionController extends Controller
         try {
             if(isSubscriptionEnabled()){
 
-                $active_student = SmStudent::where('school_id', Auth::user()->school_id)->where('active_status', 1)->count();
+                $active_student = SmStudent::where('church_id', Auth::user()->church_id)->where('active_status', 1)->count();
 
                 if(\Modules\Saas\Entities\SmPackagePlan::student_limit() <= $active_student){
 
@@ -133,21 +133,21 @@ class SmStudentAdmissionController extends Controller
             }
 
 
-            $max_admission_id = SmStudent::where('school_id', Auth::user()->school_id)->max('id');
-            $max_roll_id = SmStudent::where('school_id', Auth::user()->school_id)->max('roll_no');
+            $max_admission_id = SmStudent::where('church_id', Auth::user()->church_id)->max('id');
+            $max_roll_id = SmStudent::where('church_id', Auth::user()->church_id)->max('roll_no');
 
-            $classes = SmClass::where('active_status', '=', '1')->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $classes = SmClass::where('active_status', '=', '1')->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
-            $religions = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '2')->where('school_id', Auth::user()->school_id)->get();
-            $blood_groups = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '3')->where('school_id', Auth::user()->school_id)->get();
-            $genders = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '1')->where('school_id', Auth::user()->school_id)->get();
-            $route_lists = SmRoute::where('active_status', '=', '1')->where('school_id', Auth::user()->school_id)->get();
-            $vehicles = SmVehicle::where('active_status', '=', '1')->where('school_id', Auth::user()->school_id)->get();
-            $driver_lists = SmStaff::where([['active_status', '=', '1'], ['role_id', 9]])->where('school_id', Auth::user()->school_id)->get();
-            $dormitory_lists = SmDormitoryList::where('active_status', '=', '1')->where('school_id', Auth::user()->school_id)->get();
-            $categories = SmStudentCategory::where('school_id', Auth::user()->school_id)->get();
-            $groups = SmStudentGroup::where('school_id', Auth::user()->school_id)->get();
-            $sessions = SmAcademicYear::where('active_status', '=', '1')->where('school_id', Auth::user()->school_id)->get();
+            $religions = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '2')->where('church_id', Auth::user()->church_id)->get();
+            $blood_groups = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '3')->where('church_id', Auth::user()->church_id)->get();
+            $genders = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '1')->where('church_id', Auth::user()->church_id)->get();
+            $route_lists = SmRoute::where('active_status', '=', '1')->where('church_id', Auth::user()->church_id)->get();
+            $vehicles = SmVehicle::where('active_status', '=', '1')->where('church_id', Auth::user()->church_id)->get();
+            $driver_lists = SmStaff::where([['active_status', '=', '1'], ['role_id', 9]])->where('church_id', Auth::user()->church_id)->get();
+            $dormitory_lists = SmDormitoryList::where('active_status', '=', '1')->where('church_id', Auth::user()->church_id)->get();
+            $categories = SmStudentCategory::where('church_id', Auth::user()->church_id)->get();
+            $groups = SmStudentGroup::where('church_id', Auth::user()->church_id)->get();
+            $sessions = SmAcademicYear::where('active_status', '=', '1')->where('church_id', Auth::user()->church_id)->get();
 
             $custom_fields = SmCustomField::where('form_name','student_registration')->get();
 
@@ -164,19 +164,19 @@ class SmStudentAdmissionController extends Controller
     {
         try {
             if (teacherAccess()) {
-                $sectionIds = SmAssignSubject::where('class_id', '=', $request->id)
+                $sectionIds = SmAssignSubject::where('age_group_id', '=', $request->id)
                     ->where('teacher_id',Auth::user()->staff->id)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->get();
             } else {
-                $sectionIds = SmClassSection::where('class_id', '=', $request->id)
-                    ->where('school_id', Auth::user()->school_id)
+                $sectionIds = SmClassSection::where('age_group_id', '=', $request->id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->get();
             }
 
             $sections = [];
             foreach ($sectionIds as $sectionId) {
-                $sections[] = SmSection::where('id',$sectionId->section_id)->select('id','section_name')->first();
+                $sections[] = SmSection::where('id',$sectionId->mgender_id)->select('id','mgender_name')->first();
             }
             return response()->json([$sections]);
         } catch (\Exception $e) {
@@ -189,14 +189,14 @@ class SmStudentAdmissionController extends Controller
     {
         try {
             if (teacherAccess()) {
-                $subjectIds = SmAssignSubject::where('class_id', '=', $request->id)
+                $subjectIds = SmAssignSubject::where('age_group_id', '=', $request->id)
                     ->where('teacher_id',Auth::user()->staff->id)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->groupby('subject_id')
                     ->get();
             } else {
-                $subjectIds = SmAssignSubject::where('class_id', '=',$request->id)
-                    ->where('school_id', Auth::user()->school_id)
+                $subjectIds = SmAssignSubject::where('age_group_id', '=',$request->id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->groupby('subject_id')
                     ->get();
             }
@@ -340,13 +340,13 @@ class SmStudentAdmissionController extends Controller
     public function academicYearGetClass(Request $request)
     {
         try {
-            $academic_year = SmAcademicYear::select('id')->where('school_id', Auth::user()->school_id)->where('id', $request->id)->first();
+            $church_year = SmAcademicYear::select('id')->where('church_id', Auth::user()->church_id)->where('id', $request->id)->first();
 
             $classes = SmClass::where('active_status', '=', '1')
-                ->where('academic_id', $academic_year->id)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', $church_year->id)
+                ->where('church_id', Auth::user()->church_id)
                 ->withoutGlobalScope(StatusAcademicSchoolScope::class)
-                ->get(['class_name','id']);
+                ->get(['age_group_name','id']);
 
 
             return response()->json([$classes]);
@@ -358,11 +358,11 @@ class SmStudentAdmissionController extends Controller
     public function ajaxSectionSibling(Request $request)
     {
         try {
-            $sectionIds = SmClassSection::where('class_id', '=', $request->id)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $sectionIds = SmClassSection::where('age_group_id', '=', $request->id)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
             $sibling_sections = [];
             foreach ($sectionIds as $sectionId) {
-                $sibling_sections[] = SmSection::find($sectionId->section_id);
+                $sibling_sections[] = SmSection::find($sectionId->mgender_id);
             }
             return response()->json([$sibling_sections]);
         } catch (\Exception $e) {
@@ -373,9 +373,9 @@ class SmStudentAdmissionController extends Controller
     {
         try {
             if ($request->id == "") {
-                $siblings = SmStudent::where('class_id', '=', $request->class_id)->where('section_id', '=', $request->section_id)->where('active_status', 1)->where('school_id', Auth::user()->school_id)->get();
+                $siblings = SmStudent::where('age_group_id', '=', $request->age_group_id)->where('mgender_id', '=', $request->mgender_id)->where('active_status', 1)->where('church_id', Auth::user()->church_id)->get();
             } else {
-                $siblings = SmStudent::where('class_id', '=', $request->class_id)->where('section_id', '=', $request->section_id)->where('active_status', 1)->where('id', '!=', $request->id)->where('school_id', Auth::user()->school_id)->get();
+                $siblings = SmStudent::where('age_group_id', '=', $request->age_group_id)->where('mgender_id', '=', $request->mgender_id)->where('active_status', 1)->where('id', '!=', $request->id)->where('church_id', Auth::user()->church_id)->get();
             }
             return response()->json($siblings);
         } catch (\Exception $e) {
@@ -422,7 +422,7 @@ class SmStudentAdmissionController extends Controller
     public function ajaxRoomDetails(Request $request)
     {
         try {
-            $room_details = SmRoomList::where('dormitory_id', '=', $request->id)->where('school_id', Auth::user()->school_id)->get();
+            $room_details = SmRoomList::where('dormitory_id', '=', $request->id)->where('church_id', Auth::user()->church_id)->get();
             $rest_rooms = [];
             foreach ($room_details as $room_detail) {
                 $count_room = SmStudent::where('room_id', $room_detail->id)->count();
@@ -440,9 +440,9 @@ class SmStudentAdmissionController extends Controller
     {
 
         try {
-            $max_roll = SmStudent::where('class_id', $request->class)
-                ->where('section_id', $request->section)
-                ->where('school_id', Auth::user()->school_id)
+            $max_roll = SmStudent::where('age_group_id', $request->class)
+                ->where('mgender_id', $request->section)
+                ->where('church_id', Auth::user()->church_id)
                 ->max('roll_no');
             // return $max_roll;
             if ($max_roll == "") {
@@ -513,8 +513,8 @@ class SmStudentAdmissionController extends Controller
             );
         }
 
-        $is_duplicate = SmStudent::where('school_id', Auth::user()->school_id)
-            ->where('admission_no', $request->admission_number)
+        $is_duplicate = SmStudent::where('church_id', Auth::user()->church_id)
+            ->where('registration_no', $request->admission_number)
             ->first();
 
         if ($is_duplicate) {
@@ -523,7 +523,7 @@ class SmStudentAdmissionController extends Controller
         }
 
         if(  $request->guardians_phone != ""){
-            $is_duplicate = SmParent::where('school_id', Auth::user()->school_id)
+            $is_duplicate = SmParent::where('church_id', Auth::user()->church_id)
                 ->where('guardians_mobile', $request->guardians_phone)
                 ->first();
 
@@ -615,27 +615,27 @@ class SmStudentAdmissionController extends Controller
             }
         }
 
-        // $get_admission_number = SmStudent::where('school_id',Auth::user()->school_id)->max('admission_no') + 1;
+        // $get_admission_number = SmStudent::where('church_id',Auth::user()->church_id)->max('registration_no') + 1;
 
         $shcool_details = SmGeneralSettings::find(1);
-        $school_name = explode(' ', $shcool_details->school_name);
+        $church_name = explode(' ', $shcool_details->church_name);
         $short_form = '';
-        foreach ($school_name as $value) {
+        foreach ($church_name as $value) {
             $ch = str_split($value);
             $short_form = $short_form . '' . $ch[0];
         }
         DB::beginTransaction();
 
         try {
-            $academic_year = SmAcademicYear::find($request->session);
+            $church_year = SmAcademicYear::find($request->session);
             $user_stu = new User();
             $user_stu->role_id = 2;
             $user_stu->full_name = $request->first_name . ' ' . $request->last_name;
             $user_stu->username = $request->admission_number;
             $user_stu->email = $request->email_address;
             $user_stu->password = Hash::make(123456);
-            $user_stu->school_id = Auth::user()->school_id;
-            $user_stu->created_at = $academic_year->year . '-01-01 12:00:00';
+            $user_stu->church_id = Auth::user()->church_id;
+            $user_stu->created_at = $church_year->year . '-01-01 12:00:00';
             $user_stu->save();
             $user_stu->toArray();
 
@@ -650,8 +650,8 @@ class SmStudentAdmissionController extends Controller
                     
                     $user_parent->email = $request->guardians_email;
                     $user_parent->password = Hash::make(123456);
-                    $user_parent->school_id = Auth::user()->school_id;
-                    $user_parent->created_at = $academic_year->year . '-01-01 12:00:00';
+                    $user_parent->church_id = Auth::user()->church_id;
+                    $user_parent->created_at = $church_year->year . '-01-01 12:00:00';
                     $user_parent->save();
                     $user_parent->toArray();
                 }
@@ -682,9 +682,9 @@ class SmStudentAdmissionController extends Controller
                         }
                         $parent->guardians_address = $request->guardians_address;
                         $parent->is_guardian = $request->is_guardian;
-                        $parent->school_id = Auth::user()->school_id;
-                        $parent->academic_id = $request->session;
-                        $parent->created_at = $academic_year->year . '-01-01 12:00:00';
+                        $parent->church_id = Auth::user()->church_id;
+                        $parent->church_year_id = $request->session;
+                        $parent->created_at = $church_year->year . '-01-01 12:00:00';
                         $parent->save();
                         $parent->toArray();
                     }
@@ -692,8 +692,8 @@ class SmStudentAdmissionController extends Controller
                     try {
                         $student = new SmStudent();
                         //$student->siblings_id = $request->sibling_id;
-                        $student->class_id = $request->class;
-                        $student->section_id = $request->section;
+                        $student->age_group_id = $request->class;
+                        $student->mgender_id = $request->section;
                         $student->session_id = $request->session;
                         $student->user_id = $user_stu->id;
                         if ($request->parent_id == "") {
@@ -702,7 +702,7 @@ class SmStudentAdmissionController extends Controller
                             $student->parent_id = $request->parent_id;
                         }
                         $student->role_id = 2;
-                        $student->admission_no = $request->admission_number;
+                        $student->registration_no = $request->admission_number;
                         $student->roll_no = $request->roll_number;
                         $student->first_name = $request->first_name;
                         $student->last_name = $request->last_name;
@@ -765,11 +765,11 @@ class SmStudentAdmissionController extends Controller
                         $student->document_file_3 = $document_file_3;
                         $student->document_title_4 = $request->document_title_4;
                         $student->document_file_4 = $document_file_4;
-                        $student->school_id = Auth::user()->school_id;
-                        $student->academic_id = $request->session;
+                        $student->church_id = Auth::user()->church_id;
+                        $student->church_year_id = $request->session;
                         $student->student_category_id = $request->student_category_id;
                         $student->student_group_id = $request->student_group_id;
-                        $student->created_at = $academic_year->year . '-01-01 12:00:00';
+                        $student->created_at = $church_year->year . '-01-01 12:00:00';
 
 
                         //Custom Field Start
@@ -819,7 +819,7 @@ class SmStudentAdmissionController extends Controller
                         }
 
                         $user_info = [];
-                        $emailTemplete = SmsTemplate::where('school_id',auth()->user()->school_id)->first();
+                        $emailTemplete = SmsTemplate::where('church_id',auth()->user()->church_id)->first();
                         if ($student) {
                             $user_info[] =  array('email' => $request->email_address, 'name' => $student->full_name, 'id' => $student->id, 'slug' => 'student');
                         }
@@ -841,14 +841,14 @@ class SmStudentAdmissionController extends Controller
 
                         try {
                             if (count($user_info) != 0) {
-                                $systemSetting = SmGeneralSettings::select('school_name', 'email')
-                                    ->where('school_id',Auth::user()->school_id)->first();
+                                $systemSetting = SmGeneralSettings::select('church_name', 'email')
+                                    ->where('church_id',Auth::user()->church_id)->first();
 
-                                $systemEmail = SmEmailSetting::where('school_id',Auth::user()->school_id)->first();
+                                $systemEmail = SmEmailSetting::where('church_id',Auth::user()->church_id)->first();
                                 $system_email = $systemEmail->from_email;
-                                $school_name = $systemSetting->school_name;
+                                $church_name = $systemSetting->church_name;
                                 $sender['system_email'] = $system_email;
-                                $sender['school_name'] = $school_name;
+                                $sender['church_name'] = $church_name;
                                 try{
                                     // dispatch(new \App\Jobs\SendUserMailJob($user_info, $sender));
                                     foreach($user_info as $info){
@@ -1011,17 +1011,17 @@ class SmStudentAdmissionController extends Controller
     {
         try {
             $classes = SmClass::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
-            $students = SmStudent::where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
-                ->where('school_id', Auth::user()->school_id)
+            $students = SmStudent::where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             $sessions = SmAcademicYear::where('active_status', 1)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             return view('backEnd.studentInformation.student_details', compact('classes', 'sessions'));
@@ -1036,17 +1036,17 @@ class SmStudentAdmissionController extends Controller
     {
         try {
             $classes = SmClass::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
-            $students = SmStudent::where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+            $students = SmStudent::where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
      
                 ->get();
 
             $sessions = SmAcademicYear::where('active_status', 1)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             return view('backEnd.studentInformation.csmember_details', compact('classes', 'sessions'));
@@ -1062,17 +1062,17 @@ class SmStudentAdmissionController extends Controller
     {
         try {
             $classes = SmClass::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
-            $students = SmStudent::where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+            $students = SmStudent::where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
          
                 ->get();
 
             $sessions = SmAcademicYear::where('active_status', 1)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             return view('backEnd.studentInformation.jymember_details', compact('classes', 'sessions'));
@@ -1086,28 +1086,28 @@ class SmStudentAdmissionController extends Controller
     public function getClassBySchool($schoolId)
     {
         return  $classes = SmClass::where('active_status', 1)
-            ->where('academic_id', getAcademicId())
-            ->where('school_id', $schoolId)
-            ->pluck('class_name','id');
+            ->where('church_year_id', getAcademicId())
+            ->where('church_id', $schoolId)
+            ->pluck('age_group_name','id');
     }
 
     public function studentDetailsSearch(Request $request)
     {
         $request->validate([
             'class' => 'required',
-            'academic_year' => 'required',
+            'church_year' => 'required',
         ]);
         try {
             $students = SmStudent::query();
             $students->where('active_status', 1);
             if ($request->class != "") {
-                $students->where('class_id', $request->class);
+                $students->where('age_group_id', $request->class);
             }
             if ($request->section != "") {
-                $students->where('section_id', $request->section);
+                $students->where('mgender_id', $request->section);
             }
-            if ($request->academic_year != "") {
-                $students->where('academic_id', $request->academic_year);
+            if ($request->church_year != "") {
+                $students->where('church_year_id', $request->church_year);
             }
             if ($request->name != "") {
                 $students->where('full_name', 'like', '%' . $request->name . '%');
@@ -1117,32 +1117,32 @@ class SmStudentAdmissionController extends Controller
             }
 
             $students = $students->with('class','section','parents','section','gender','category')
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             $classes = SmClass::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
-            $sessions = SmAcademicYear::where('school_id', Auth::user()->school_id)->get();
+            $sessions = SmAcademicYear::where('church_id', Auth::user()->church_id)->get();
 
             $sections = '';
 
             if ($request->class)
                 $sections = SmClassSection::with('sectionName')
-                    ->where('class_id',$request->class)
+                    ->where('age_group_id',$request->class)
                     ->where('active_status', 1)
-                    ->where('academic_id', getAcademicId())
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_year_id', getAcademicId())
+                    ->where('church_id', Auth::user()->church_id)
                     ->get();
 
-            $class_id = $request->class;
+            $age_group_id = $request->class;
             $name = $request->name;
             $roll_no = $request->roll_no;
-            $academic = $request->academic_year;
-            $section_id = $request->section;
-            return view('backEnd.studentInformation.student_details', compact('students','sections','academic','section_id', 'classes', 'class_id', 'name', 'roll_no', 'sessions'));
+            $academic = $request->church_year;
+            $mgender_id = $request->section;
+            return view('backEnd.studentInformation.student_details', compact('students','sections','academic','mgender_id', 'classes', 'age_group_id', 'name', 'roll_no', 'sessions'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed ' . $e->getMessage(), 'Failed');
             return redirect()->back();
@@ -1159,41 +1159,41 @@ class SmStudentAdmissionController extends Controller
             if (checkAdmin()) {
                 $student_detail = SmStudent::find($id);
             }else{
-                $student_detail = SmStudent::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+                $student_detail = SmStudent::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
             }
             $siblings = SmStudent::where('parent_id', $student_detail->parent_id)
                 ->where('active_status', 1)
-                ->where('academic_id', getAcademicId())
+                ->where('church_year_id', getAcademicId())
                 ->where('id', '!=', $student_detail->id)
-                ->where('school_id', Auth::user()->school_id)->get();
+                ->where('church_id', Auth::user()->church_id)->get();
 
-            $optional_subject_setup = SmClassOptionalSubject::where('class_id','=',$student_detail->class_id)->first();
-            $student_optional_subject= SmOptionalSubjectAssign::where('student_id',$student_detail->id)->where('session_id','=', $student_detail->session_id)->first();
+            $optional_subject_setup = SmClassOptionalSubject::where('age_group_id','=',$student_detail->age_group_id)->first();
+            $student_optional_subject= SmOptionalSubjectAssign::where('member_id',$student_detail->id)->where('session_id','=', $student_detail->session_id)->first();
 
             $vehicle = DB::table('sm_vehicles')->where('id', $student_detail->vehicle_id)->first();
             // return $vehicle;
-            $fees_assigneds = SmFeesAssign::where('student_id', $id)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $fees_assigneds = SmFeesAssign::where('member_id', $id)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
             //  return $fees_assigneds;
-            $fees_discounts = SmFeesAssignDiscount::where('student_id', $id)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-            // $documents = SmStudentDocument::where('student_staff_id', $id)->where('type', 'stu')->where('academic_id', getAcademicId())->where('school_id',Auth::user()->school_id)->get();
-            $documents = SmStudentDocument::where('student_staff_id', $id)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $fees_discounts = SmFeesAssignDiscount::where('member_id', $id)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+            // $documents = SmStudentDocument::where('student_staff_id', $id)->where('type', 'stu')->where('church_year_id', getAcademicId())->where('church_id',Auth::user()->church_id)->get();
+            $documents = SmStudentDocument::where('student_staff_id', $id)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
-            $timelines = SmStudentTimeline::where('staff_student_id', $id)->where('type', 'stu')->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $timelines = SmStudentTimeline::where('staff_member_id', $id)->where('type', 'stu')->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
-            $exams = SmExamSchedule::where('class_id', $student_detail->class_id)->where('section_id', $student_detail->section_id)->where('school_id', Auth::user()->school_id)->get();
+            $exams = SmExamSchedule::where('age_group_id', $student_detail->age_group_id)->where('mgender_id', $student_detail->mgender_id)->where('church_id', Auth::user()->church_id)->get();
 
-            $academic_year = SmAcademicYear::where('id', $student_detail->session_id)->first();
+            $church_year = SmAcademicYear::where('id', $student_detail->session_id)->first();
 
             $siblings = SmStudent::where('parent_id', $student_detail->parent_id)
                 ->where('active_status', 1)
-                ->where('academic_id', getAcademicId())
+                ->where('church_year_id', getAcademicId())
                 ->where('id', '!=', $student_detail->id)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
-            $optional_subject_setup = SmClassOptionalSubject::where('class_id','=',$student_detail->class_id)->first();
+            $optional_subject_setup = SmClassOptionalSubject::where('age_group_id','=',$student_detail->age_group_id)->first();
 
-            $student_optional_subject = SmOptionalSubjectAssign::where('student_id',$student_detail->id)
+            $student_optional_subject = SmOptionalSubjectAssign::where('member_id',$student_detail->id)
                 ->where('session_id','=', $student_detail->session_id)
                 ->first();
 
@@ -1201,52 +1201,52 @@ class SmStudentAdmissionController extends Controller
                 ->where('id', $student_detail->vehicle_id)
                 ->first();
 
-            $fees_assigneds = SmFeesAssign::where('student_id', $id)
-                ->where('academic_id', getAcademicId() )
-                ->where('school_id', Auth::user()->school_id)
+            $fees_assigneds = SmFeesAssign::where('member_id', $id)
+                ->where('church_year_id', getAcademicId() )
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
-            $fees_discounts = SmFeesAssignDiscount::where('student_id', $id)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+            $fees_discounts = SmFeesAssignDiscount::where('member_id', $id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             $documents = SmStudentDocument::where('student_staff_id', $id)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
-            $timelines = SmStudentTimeline::where('staff_student_id', $id)
-                ->where('type', 'stu')->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+            $timelines = SmStudentTimeline::where('staff_member_id', $id)
+                ->where('type', 'stu')->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
-            $exams = SmExamSchedule::where('class_id', $student_detail->class_id)
-                ->where('section_id', $student_detail->section_id)
-                ->where('school_id', Auth::user()->school_id)
+            $exams = SmExamSchedule::where('age_group_id', $student_detail->age_group_id)
+                ->where('mgender_id', $student_detail->mgender_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
-            $academic_year = SmAcademicYear::where('id', $student_detail->session_id)
+            $church_year = SmAcademicYear::where('id', $student_detail->session_id)
                 ->first();
 
             $grades = SmMarksGrade::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             $maxgpa = SmMarksGrade::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->max('gpa');
 
             $failgpa= SmMarksGrade::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->min('gpa');
 
             $failgpaname= SmMarksGrade::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->where('gpa',$failgpa)
                 ->first();
 
@@ -1258,15 +1258,15 @@ class SmStudentAdmissionController extends Controller
                 $driver_info = '';
             }
 
-            $exam_terms = SmExamType::where('school_id', Auth::user()->school_id)
-                ->where('academic_id', getAcademicId())
+            $exam_terms = SmExamType::where('church_id', Auth::user()->church_id)
+                ->where('church_year_id', getAcademicId())
                 ->get();
 
             $leave_details = SmLeaveRequest::where('staff_id', $student_detail->user_id)
                 ->where('role_id', 2)
                 ->where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             $custom_field_data = $student_detail->custom_field;
@@ -1277,7 +1277,7 @@ class SmStudentAdmissionController extends Controller
                 $custom_field_values = NUll;
             }
 
-            return view('backEnd.studentInformation.student_view', compact('student_detail', 'driver_info', 'fees_assigneds', 'fees_discounts', 'exams', 'documents', 'timelines', 'siblings', 'grades', 'academic_year', 'exam_terms','leave_details','optional_subject_setup','student_optional_subject','maxgpa','failgpaname','custom_field_values','academic_history','transections'));
+            return view('backEnd.studentInformation.student_view', compact('student_detail', 'driver_info', 'fees_assigneds', 'fees_discounts', 'exams', 'documents', 'timelines', 'siblings', 'grades', 'church_year', 'exam_terms','leave_details','optional_subject_setup','student_optional_subject','maxgpa','failgpaname','custom_field_values','academic_history','transections'));
         } catch (\Exception $e) {
 
 
@@ -1315,11 +1315,11 @@ class SmStudentAdmissionController extends Controller
 
                 $document = new SmStudentDocument();
                 $document->title = $request->title;
-                $document->student_staff_id = $request->student_id;
+                $document->student_staff_id = $request->member_id;
                 $document->type = 'stu';
                 $document->file = $document_photo;
-                $document->school_id = Auth::user()->school_id;
-                $document->academic_id = getAcademicId();
+                $document->church_id = Auth::user()->church_id;
+                $document->church_year_id = getAcademicId();
                 $document->save();
             }
             Toastr::success('Document uploaded successfully', 'Success');
@@ -1337,7 +1337,7 @@ class SmStudentAdmissionController extends Controller
             if (checkAdmin()) {
                 $document = SmStudentDocument::find($id);
             }else{
-                $document = SmStudentDocument::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+                $document = SmStudentDocument::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
             }
             if ($document->file != "") {
                 unlink($document->file);
@@ -1354,7 +1354,7 @@ class SmStudentAdmissionController extends Controller
     {
 
         try {
-            $student_detail = SmStudent::where('id',$request->student_id)->first();
+            $student_detail = SmStudent::where('id',$request->member_id)->first();
 
             if ($request->doc_id == 1) {
                 if ($student_detail->document_file_1 != "") {
@@ -1415,11 +1415,11 @@ class SmStudentAdmissionController extends Controller
 
                 $document = new SmStudentDocument();
                 $document->title = $request->title;
-                $document->student_staff_id = $request->student_id;
+                $document->student_staff_id = $request->member_id;
                 $document->type = 'stu';
                 $document->file = $document_photo;
-                $document->school_id = Auth::user()->school_id;
-                $document->academic_id = getAcademicId();
+                $document->church_id = Auth::user()->church_id;
+                $document->church_year_id = getAcademicId();
                 $document->save();
             }
 
@@ -1457,7 +1457,7 @@ class SmStudentAdmissionController extends Controller
                 }
 
                 $timeline = new SmStudentTimeline();
-                $timeline->staff_student_id = $request->student_id;
+                $timeline->staff_member_id = $request->member_id;
                 $timeline->type = 'stu';
                 $timeline->title = $request->title;
                 $timeline->date = date('Y-m-d', strtotime($request->date));
@@ -1466,8 +1466,8 @@ class SmStudentAdmissionController extends Controller
                     $timeline->visible_to_student = $request->visible_to_student;
                 }
                 $timeline->file = $document_photo;
-                $timeline->school_id = Auth::user()->school_id;
-                $timeline->academic_id = getAcademicId();
+                $timeline->church_id = Auth::user()->church_id;
+                $timeline->church_year_id = getAcademicId();
                 $timeline->save();
             }
             $data['studentTimeline'] ='active';
@@ -1487,7 +1487,7 @@ class SmStudentAdmissionController extends Controller
             if ($document->file != "") {
                 unlink($document->file);
             }
-            $staff_student_id = $document->staff_student_id;
+            $staff_member_id = $document->staff_member_id;
             $result = SmStudentTimeline::destroy($id);
             return redirect()->back()->with(['studentTimeline'=>'active']);
         } catch (\Exception $e) {
@@ -1502,11 +1502,11 @@ class SmStudentAdmissionController extends Controller
     public function studentDelete(Request $request)
     {
         try {
-            $tables = \App\tableList::getTableList('student_id', $request->id);
+            $tables = \App\tableList::getTableList('member_id', $request->id);
             try {
                 $student_detail = SmStudent::find($request->id);
                 $siblings = SmStudent::where('parent_id', $student_detail->parent_id)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->get();
 
                 DB::beginTransaction();
@@ -1601,7 +1601,7 @@ class SmStudentAdmissionController extends Controller
 
     public function SearchMultipleSection(Request $request)
     {
-        $sectionIds = SmClassSection::where('class_id', '=', $request->id)->where('school_id', Auth::user()->school_id)->get();
+        $sectionIds = SmClassSection::where('age_group_id', '=', $request->id)->where('church_id', Auth::user()->church_id)->get();
         return response()->json([$sectionIds]);
     }
 
@@ -1632,17 +1632,17 @@ class SmStudentAdmissionController extends Controller
 
             $exams = SmExamType::where('active_status', 1)
                 ->where('id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
             $Upsessions = SmAcademicYear::where('active_status', 1)->whereYear('created_at', '>', date('Y', strtotime($UpYear->year)) . ' 00:00:00')
-                ->where('school_id', Auth::user()->school_id)->get();
-            $sessions = SmAcademicYear::where('active_status', 1)->where('id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+                ->where('church_id', Auth::user()->church_id)->get();
+            $sessions = SmAcademicYear::where('active_status', 1)->where('id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
             $promot_year = SmAcademicYear::find($request->promote_session);
 
             if ($request->promote_class == "" || $request->promote_session == "") {
-                $students = SmStudent::where('class_id', '=', $request->promote_class)->where('session_id', '=', $request->promote_session)
-                    ->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+                $students = SmStudent::where('age_group_id', '=', $request->promote_class)->where('session_id', '=', $request->promote_session)
+                    ->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
                 Session::flash('message-danger', 'Something went wrong, please try again');
 
@@ -1662,9 +1662,9 @@ class SmStudentAdmissionController extends Controller
                 try {
                     $std_info = [];
                     $student = SmStudent::findOrFail($request->id[0]);
-                    event(new StudentPromotionGroupDisable($student->section_id, $request->current_class));
-                    foreach ($request->id as $student_id) {
-                        $student_details = SmStudent::findOrFail($student_id);
+                    event(new StudentPromotionGroupDisable($student->mgender_id, $request->current_class));
+                    foreach ($request->id as $member_id) {
+                        $student_details = SmStudent::findOrFail($member_id);
 
                         $new_section = $request->promote_section;
 
@@ -1672,30 +1672,30 @@ class SmStudentAdmissionController extends Controller
                         $merit_list = null;
 
                         $student_promote = new SmStudentPromotion();
-                        $student_promote->student_id = $student_id;
-                        $student_promote->previous_class_id = $request->current_class;
-                        $student_promote->current_class_id = $request->promote_class;
+                        $student_promote->member_id = $member_id;
+                        $student_promote->previous_age_group_id = $request->current_class;
+                        $student_promote->current_age_group_id = $request->promote_class;
                         $student_promote->previous_session_id = $request->current_session;
                         $student_promote->current_session_id = $request->promote_session;
 
-                        $student_promote->previous_section_id = $student_details->section_id;
-                        $student_promote->current_section_id = $new_section;
+                        $student_promote->previous_mgender_id = $student_details->mgender_id;
+                        $student_promote->current_mgender_id = $new_section;
 
-                        $student_promote->admission_number = $student_details->admission_no;
+                        $student_promote->admission_number = $student_details->registration_no;
                         $student_promote->student_info = $student_details->toJson();
                         $student_promote->merit_student_info = ($merit_list != null ? $merit_list->toJson() : $student_details->toJson());
 
                         $student_promote->previous_roll_number = $student_details->roll_no;
                         $student_promote->current_roll_number = $roll;
 
-                        $student_promote->result_status = $request->result[$student_id];
+                        $student_promote->result_status = $request->result[$member_id];
                         $student_promote->save();
 
-                        $student = SmStudent::find($student_id);
-                        $student->class_id = $request->promote_class;
+                        $student = SmStudent::find($member_id);
+                        $student->age_group_id = $request->promote_class;
                         $student->session_id = $request->promote_session;
-                        $student->academic_id = $request->promote_session;
-                        $student->section_id = $new_section;
+                        $student->church_year_id = $request->promote_session;
+                        $student->mgender_id = $new_section;
                         $student->roll_no = $roll;
                         $student->created_at = $promot_year->starting_date . ' 12:00:00';
                         $student->save();
@@ -1706,8 +1706,8 @@ class SmStudentAdmissionController extends Controller
 
                     DB::commit();
                     /*
-                                        $students = SmStudent::where('class_id', '=', $request->promote_class)->where('session_id', '=', $request->promote_session)
-                                            ->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();*/
+                                        $students = SmStudent::where('age_group_id', '=', $request->promote_class)->where('session_id', '=', $request->promote_session)
+                                            ->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();*/
 
                     if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                         return ApiBaseMethod::sendResponse(null, 'Student has been promoted successfully');
@@ -1716,8 +1716,8 @@ class SmStudentAdmissionController extends Controller
                     return redirect('student-promote');
                 } catch (\Exception $e) {
                     DB::rollback();
-                    $students = SmStudent::where('class_id', '=', $request->current_class)->where('session_id', '=', $request->current_session)
-                        ->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+                    $students = SmStudent::where('age_group_id', '=', $request->current_class)->where('session_id', '=', $request->current_session)
+                        ->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
                     Session::flash('message-danger-table', 'Something went wrong, please try again');
 
@@ -1743,9 +1743,9 @@ class SmStudentAdmissionController extends Controller
     public function studentReport(Request $request)
     {
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-            $types = SmStudentCategory::where('school_id', Auth::user()->school_id)->get();
-            $genders = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '1')->where('school_id', Auth::user()->school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+            $types = SmStudentCategory::where('church_id', Auth::user()->church_id)->get();
+            $genders = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '1')->where('church_id', Auth::user()->church_id)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
                 $data['classes'] = $classes->toArray();
@@ -1769,15 +1769,15 @@ class SmStudentAdmissionController extends Controller
         try {
             $students = SmStudent::query();
 
-            $students->where('academic_id', getAcademicId())->where('active_status', 1);
+            $students->where('church_year_id', getAcademicId())->where('active_status', 1);
 
             //if no class is selected
             if ($request->class != "") {
-                $students->where('class_id', $request->class);
+                $students->where('age_group_id', $request->class);
             }
             //if no section is selected
             if ($request->section != "") {
-                $students->where('section_id', $request->section);
+                $students->where('mgender_id', $request->section);
             }
             //if no student is category selected
             if ($request->type != "") {
@@ -1788,13 +1788,13 @@ class SmStudentAdmissionController extends Controller
             if ($request->gender != "") {
                 $students->where('gender_id', $request->gender);
             }
-            $students = $students->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $students = $students->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
-            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-            $types = SmStudentCategory::where('school_id', Auth::user()->school_id)->get();
-            $genders = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '1')->where('school_id', Auth::user()->school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+            $types = SmStudentCategory::where('church_id', Auth::user()->church_id)->get();
+            $genders = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '1')->where('church_id', Auth::user()->church_id)->get();
 
-            $class_id = $request->class;
+            $age_group_id = $request->class;
             $type_id = $request->type;
             $gender_id = $request->gender;
 
@@ -1804,13 +1804,13 @@ class SmStudentAdmissionController extends Controller
                 $data['classes'] = $classes->toArray();
                 $data['types'] = $types->toArray();
                 $data['genders'] = $genders->toArray();
-                $data['class_id'] = $class_id;
+                $data['age_group_id'] = $age_group_id;
                 $data['type_id'] = $type_id;
                 $data['gender_id'] = $gender_id;
                 return ApiBaseMethod::sendResponse($data, null);
             }
             $clas = SmClass::find($request->class);
-            return view('backEnd.studentInformation.student_report', compact('students', 'classes', 'types', 'genders', 'class_id', 'type_id', 'gender_id', 'clas'));
+            return view('backEnd.studentInformation.student_report', compact('students', 'classes', 'types', 'genders', 'age_group_id', 'type_id', 'gender_id', 'clas'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -1822,21 +1822,21 @@ class SmStudentAdmissionController extends Controller
         try {
             if (teacherAccess()) {
                 $teacher_info=SmStaff::where('user_id',Auth::user()->id)->first();
-                $classes= SmAssignSubject::where('teacher_id',$teacher_info->id)->join('sm_classes','sm_classes.id','sm_assign_subjects.class_id')
-                    ->where('sm_assign_subjects.academic_id', getAcademicId())
+                $classes= SmAssignSubject::where('teacher_id',$teacher_info->id)->join('sm_classes','sm_classes.id','sm_assign_subjects.age_group_id')
+                    ->where('sm_assign_subjects.church_year_id', getAcademicId())
                     ->where('sm_assign_subjects.active_status', 1)
-                    ->where('sm_assign_subjects.school_id',Auth::user()->school_id)
-                    ->select('sm_classes.id','class_name')
+                    ->where('sm_assign_subjects.church_id',Auth::user()->church_id)
+                    ->select('sm_classes.id','age_group_name')
                     ->groupBy('sm_classes.id')
                     ->get();
             } else {
                 $classes = SmClass::where('active_status', 1)
-                    ->where('academic_id', getAcademicId())
-                    ->where('school_id',Auth::user()->school_id)
+                    ->where('church_year_id', getAcademicId())
+                    ->where('church_id',Auth::user()->church_id)
                     ->get();
             }
-            $types = SmStudentCategory::where('school_id', Auth::user()->school_id)->get();
-            $genders = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '1')->where('school_id', Auth::user()->school_id)->get();
+            $types = SmStudentCategory::where('church_id', Auth::user()->church_id)->get();
+            $genders = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '1')->where('church_id', Auth::user()->church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -1874,32 +1874,32 @@ class SmStudentAdmissionController extends Controller
         try {
             $year = $request->year;
             $month = $request->month;
-            $class_id = $request->class;
-            $section_id = $request->section;
+            $age_group_id = $request->class;
+            $mgender_id = $request->section;
             $current_day = date('d');
             $clas = SmClass::findOrFail($request->class);
             $sec = SmSection::findOrFail($request->section);
             $days = cal_days_in_month(CAL_GREGORIAN, $request->month, $request->year);
             if (teacherAccess()) {
                 $teacher_info=SmStaff::where('user_id',Auth::user()->id)->first();
-                $classes= SmAssignSubject::where('teacher_id',$teacher_info->id)->join('sm_classes','sm_classes.id','sm_assign_subjects.class_id')
-                    ->where('sm_assign_subjects.academic_id', getAcademicId())
+                $classes= SmAssignSubject::where('teacher_id',$teacher_info->id)->join('sm_classes','sm_classes.id','sm_assign_subjects.age_group_id')
+                    ->where('sm_assign_subjects.church_year_id', getAcademicId())
                     ->where('sm_assign_subjects.active_status', 1)
-                    ->where('sm_assign_subjects.school_id',Auth::user()->school_id)
-                    ->select('sm_classes.id','class_name')
+                    ->where('sm_assign_subjects.church_id',Auth::user()->church_id)
+                    ->select('sm_classes.id','age_group_name')
                     ->groupBy('sm_classes.id')
                     ->get();
             } else {
                 $classes = SmClass::where('active_status', 1)
-                    ->where('academic_id', getAcademicId())
-                    ->where('school_id',Auth::user()->school_id)
+                    ->where('church_year_id', getAcademicId())
+                    ->where('church_id',Auth::user()->church_id)
                     ->get();
             }
-            $students = SmStudent::where('class_id', $request->class)->where('section_id', $request->section)->where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $students = SmStudent::where('age_group_id', $request->class)->where('mgender_id', $request->section)->where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
             $attendances = [];
             foreach ($students as $student) {
-                $attendance = SmStudentAttendance::where('student_id', $student->id)->where('attendance_date', 'like', $request->year . '-' . $request->month . '%')->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+                $attendance = SmStudentAttendance::where('member_id', $student->id)->where('attendance_date', 'like', $request->year . '-' . $request->month . '%')->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
                 if (count($attendance) != 0) {
                     $attendances[] = $attendance;
                 }
@@ -1913,13 +1913,13 @@ class SmStudentAdmissionController extends Controller
                 $data['year'] = $year;
                 $data['month'] = $month;
                 $data['current_day'] = $current_day;
-                $data['class_id'] = $class_id;
-                $data['section_id'] = $section_id;
+                $data['age_group_id'] = $age_group_id;
+                $data['mgender_id'] = $mgender_id;
                 return ApiBaseMethod::sendResponse($data, null);
             }
 
             return view('backEnd.studentInformation.student_attendance_report', compact('classes','attendances','students', 'days', 'year', 'month', 'current_day',
-                'class_id', 'section_id', 'clas', 'sec'));
+                'age_group_id', 'mgender_id', 'clas', 'sec'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -1927,7 +1927,7 @@ class SmStudentAdmissionController extends Controller
     }
 
 
-    public function studentAttendanceReportPrint($class_id, $section_id, $month, $year)
+    public function studentAttendanceReportPrint($age_group_id, $mgender_id, $month, $year)
     {
         set_time_limit(2700);
         try {
@@ -1935,17 +1935,17 @@ class SmStudentAdmissionController extends Controller
             $days = cal_days_in_month(CAL_GREGORIAN, $month, $year);
 
             $students = DB::table('sm_students')
-                ->where('class_id', $class_id)
-                ->where('section_id', $section_id)
+                ->where('age_group_id', $age_group_id)
+                ->where('mgender_id', $mgender_id)
                 ->where('active_status', 1)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             $attendances = [];
             foreach ($students as $student) {
-                $attendance = SmStudentAttendance::where('student_id', $student->id)
+                $attendance = SmStudentAttendance::where('member_id', $student->id)
                     ->where('attendance_date', 'like', $year . '-' . $month . '%')
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->get();
 
                 if ($attendance) {
@@ -1960,17 +1960,17 @@ class SmStudentAdmissionController extends Controller
             //         'days' => $days,
             //         'year' => $year,
             //         'month' => $month,
-            //         'class_id' => $class_id,
-            //         'section_id' => $section_id,
-            //         'class' => SmClass::find($class_id),
-            //         'section' => SmSection::find($section_id),
+            //         'age_group_id' => $age_group_id,
+            //         'mgender_id' => $mgender_id,
+            //         'class' => SmClass::find($age_group_id),
+            //         'section' => SmSection::find($mgender_id),
             //     ]
             // )->setPaper('A4', 'landscape');
             // return $pdf->stream('student_attendance.pdf');
 
-            $class = SmClass::find($class_id);
-            $section = SmSection::find($section_id);
-            return view('backEnd.studentInformation.student_attendance_print', compact('class', 'section', 'attendances', 'days', 'year', 'month', 'current_day', 'class_id', 'section_id'));
+            $class = SmClass::find($age_group_id);
+            $section = SmSection::find($mgender_id);
+            return view('backEnd.studentInformation.student_attendance_print', compact('class', 'section', 'attendances', 'days', 'year', 'month', 'current_day', 'age_group_id', 'mgender_id'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -1983,7 +1983,7 @@ class SmStudentAdmissionController extends Controller
             // start check student limitation for subscription
             if(isSubscriptionEnabled()){
 
-                $active_student = SmStudent::where('school_id', Auth::user()->school_id)->where('active_status', 1)->count();
+                $active_student = SmStudent::where('church_id', Auth::user()->church_id)->where('active_status', 1)->count();
 
                 if(\Modules\Saas\Entities\SmPackagePlan::student_limit() <= $active_student){
 
@@ -1994,11 +1994,11 @@ class SmStudentAdmissionController extends Controller
             // End check student limitation for subscription
 
 
-            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-            $genders = SmBaseSetup::where('base_group_id', 1)->where('school_id', Auth::user()->school_id)->get();
-            $blood_groups = SmBaseSetup::where('base_group_id', 3)->where('school_id', Auth::user()->school_id)->get();
-            $religions = SmBaseSetup::where('base_group_id', 2)->where('school_id', Auth::user()->school_id)->get();
-            $sessions = SmAcademicYear::where('school_id', Auth::user()->school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+            $genders = SmBaseSetup::where('base_group_id', 1)->where('church_id', Auth::user()->church_id)->get();
+            $blood_groups = SmBaseSetup::where('base_group_id', 3)->where('church_id', Auth::user()->church_id)->get();
+            $religions = SmBaseSetup::where('base_group_id', 2)->where('church_id', Auth::user()->church_id)->get();
+            $sessions = SmAcademicYear::where('church_id', Auth::user()->church_id)->get();
             return view('backEnd.studentInformation.import_student', compact('classes', 'genders', 'blood_groups', 'religions', 'sessions'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -2062,10 +2062,10 @@ class SmStudentAdmissionController extends Controller
                 } */
 
 
-                $shcool_details = SmGeneralSettings::where('school_id',auth()->user()->school_id)->first();
-                $school_name = explode(' ', $shcool_details->school_name);
+                $shcool_details = SmGeneralSettings::where('church_id',auth()->user()->church_id)->first();
+                $church_name = explode(' ', $shcool_details->church_name);
                 $short_form = '';
-                foreach ($school_name as $value) {
+                foreach ($church_name as $value) {
                     $ch = str_split($value);
                     $short_form = $short_form . '' . $ch[0];
                 }
@@ -2074,7 +2074,7 @@ class SmStudentAdmissionController extends Controller
                     foreach ($data as $key => $value) {
                         if(isSubscriptionEnabled()){
 
-                            $active_student = SmStudent::where('school_id', Auth::user()->school_id)->where('active_status', 1)->count();
+                            $active_student = SmStudent::where('church_id', Auth::user()->church_id)->where('active_status', 1)->count();
 
                             if(\Modules\Saas\Entities\SmPackagePlan::student_limit() <= $active_student){
 
@@ -2087,7 +2087,7 @@ class SmStudentAdmissionController extends Controller
                         }
 
 
-                        $ad_check = SmStudent::where('admission_no', (int) $value->admission_number)->where('school_id', Auth::user()->school_id)->get();
+                        $ad_check = SmStudent::where('registration_no', (int) $value->admission_number)->where('church_id', Auth::user()->church_id)->get();
                         //  return $ad_check;
 
                         if ($ad_check->count() > 0) {
@@ -2098,7 +2098,7 @@ class SmStudentAdmissionController extends Controller
                         }
 
                         if ($value->email != "") {
-                            $chk =  DB::table('sm_students')->where('email', $value->email)->where('school_id', Auth::user()->school_id)->count();
+                            $chk =  DB::table('sm_students')->where('email', $value->email)->where('church_id', Auth::user()->church_id)->count();
                             if ($chk >= 1) {
                                 DB::rollback();
                                 StudentBulkTemporary::where('user_id', Auth::user()->id)->delete();
@@ -2116,7 +2116,7 @@ class SmStudentAdmissionController extends Controller
                             }else{
 
                             }
-                            $academic_year = SmAcademicYear::find($request->session);
+                            $church_year = SmAcademicYear::find($request->session);
 
 
                             $user_stu = new User();
@@ -2131,11 +2131,11 @@ class SmStudentAdmissionController extends Controller
 
                             $user_stu->email = $value->email;
 
-                            $user_stu->school_id = Auth::user()->school_id;
+                            $user_stu->church_id = Auth::user()->church_id;
 
                             $user_stu->password = Hash::make(123456);
 
-                            $user_stu->created_at = $academic_year->year . '-01-01 12:00:00';
+                            $user_stu->created_at = $church_year->year . '-01-01 12:00:00';
 
                             $user_stu->save();
 
@@ -2156,9 +2156,9 @@ class SmStudentAdmissionController extends Controller
                                 $user_parent->email = $value->guardian_email;
 
                                 $user_parent->password = Hash::make(123456);
-                                $user_parent->school_id = Auth::user()->school_id;
+                                $user_parent->church_id = Auth::user()->church_id;
 
-                                $user_parent->created_at = $academic_year->year . '-01-01 12:00:00';
+                                $user_parent->created_at = $church_year->year . '-01-01 12:00:00';
 
                                 $user_parent->save();
                                 $user_parent->toArray();
@@ -2204,10 +2204,10 @@ class SmStudentAdmissionController extends Controller
                                     $parent->guardians_occupation = $value->guardian_occupation;
                                     $parent->guardians_address = $value->guardian_address;
                                     $parent->guardians_email = $value->guardian_email;
-                                    $parent->school_id = Auth::user()->school_id;
-                                    $parent->academic_id = $request->session;
+                                    $parent->church_id = Auth::user()->church_id;
+                                    $parent->church_year_id = $request->session;
 
-                                    $parent->created_at = $academic_year->year . '-01-01 12:00:00';
+                                    $parent->created_at = $church_year->year . '-01-01 12:00:00';
 
                                     $parent->save();
                                     $parent->toArray();
@@ -2215,15 +2215,15 @@ class SmStudentAdmissionController extends Controller
                                     try {
                                         $student = new SmStudent();
                                         // $student->siblings_id = $value->sibling_id;
-                                        $student->class_id = $request->class;
-                                        $student->section_id = $request->section;
+                                        $student->age_group_id = $request->class;
+                                        $student->mgender_id = $request->section;
                                         $student->session_id = $request->session;
                                         $student->user_id = $user_stu->id;
 
                                         $student->parent_id = $parent->id;
                                         $student->role_id = 2;
 
-                                        $student->admission_no = $value->admission_number;
+                                        $student->registration_no = $value->admission_number;
                                         $student->roll_no = $value->roll_no;
                                         $student->first_name = $value->first_name;
                                         $student->last_name = $value->last_name;
@@ -2246,10 +2246,10 @@ class SmStudentAdmissionController extends Controller
                                         $student->bank_name = $value->bank_name;
                                         $student->previous_school_details = $value->previous_school_details;
                                         $student->aditional_notes = $value->note;
-                                        $student->school_id = Auth::user()->school_id;
-                                        $student->academic_id = $request->session;
+                                        $student->church_id = Auth::user()->church_id;
+                                        $student->church_year_id = $request->session;
 
-                                        $student->created_at = $academic_year->year . '-01-01 12:00:00';
+                                        $student->created_at = $church_year->year . '-01-01 12:00:00';
 
                                         $student->save();
 
@@ -2308,8 +2308,8 @@ class SmStudentAdmissionController extends Controller
     public function guardianReport(Request $request)
     {
         try {
-            $students = SmStudent::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $students = SmStudent::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -2341,27 +2341,27 @@ class SmStudentAdmissionController extends Controller
         }
         try {
             $students = SmStudent::query();
-            $students->where('academic_id', getAcademicId())->where('active_status', 1);
-            $students->where('class_id', $request->class);
+            $students->where('church_year_id', getAcademicId())->where('active_status', 1);
+            $students->where('age_group_id', $request->class);
             if ($request->section != "") {
-                $students->where('section_id', $request->section);
+                $students->where('mgender_id', $request->section);
             }
-            $students = $students->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $students = $students->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
-            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
 
-            $class_id = $request->class;
+            $age_group_id = $request->class;
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
                 $data['students'] = $students->toArray();
                 $data['classes'] = $classes->toArray();
-                $data['class_id'] = $class_id;
+                $data['age_group_id'] = $age_group_id;
                 return ApiBaseMethod::sendResponse($data, null);
             }
             $clas = SmClass::find($request->class);
-            return view('backEnd.studentInformation.guardian_report', compact('students', 'classes', 'class_id', 'clas'));
+            return view('backEnd.studentInformation.guardian_report', compact('students', 'classes', 'age_group_id', 'clas'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -2371,8 +2371,8 @@ class SmStudentAdmissionController extends Controller
     public function studentLoginReport(Request $request)
     {
         try {
-            $students = SmStudent::where('school_id', Auth::user()->school_id)->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $students = SmStudent::where('church_id', Auth::user()->church_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -2405,25 +2405,25 @@ class SmStudentAdmissionController extends Controller
         }
         try {
             $students = SmStudent::query();
-            $students->where('academic_id', getAcademicId())->where('active_status', 1);
-            $students->where('class_id', $request->class);
+            $students->where('church_year_id', getAcademicId())->where('active_status', 1);
+            $students->where('age_group_id', $request->class);
             if ($request->section != "") {
-                $students->where('section_id', $request->section);
+                $students->where('mgender_id', $request->section);
             }
-            $students = $students->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $students = $students->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
-            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-            $class_id = $request->class;
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+            $age_group_id = $request->class;
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
                 $data['students'] = $students->toArray();
                 $data['classes'] = $classes->toArray();
-                $data['class_id'] = $class_id;
+                $data['age_group_id'] = $age_group_id;
                 return ApiBaseMethod::sendResponse($data, null);
             }
             $clas = SmClass::find($request->class);
-            return view('backEnd.studentInformation.login_info', compact('students', 'classes', 'class_id', 'clas'));
+            return view('backEnd.studentInformation.login_info', compact('students', 'classes', 'age_group_id', 'clas'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -2436,9 +2436,9 @@ class SmStudentAdmissionController extends Controller
         try {
 
             $pt = trans('student.disabled_student');
-            $students = SmStudent::where('active_status', 0)->where('school_id', Auth::user()->school_id)->get();
+            $students = SmStudent::where('active_status', 0)->where('church_id', Auth::user()->church_id)->get();
            
-            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
 
             return view('backEnd.studentInformation.disabled_student', compact('students', 'classes','pt'));
@@ -2463,35 +2463,35 @@ class SmStudentAdmissionController extends Controller
         }
         try {
             $pt = trans('student.disabled_student');
-            $student_ids = StudentRecord::when($request->class, function ($query) use ($request) {
-                $query->where('class_id', $request->class);
+            $member_ids = StudentRecord::when($request->class, function ($query) use ($request) {
+                $query->where('age_group_id', $request->class);
             })
             ->when($request->section, function ($query) use ($request) {
-                $query->where('section_id', $request->section);
+                $query->where('mgender_id', $request->section);
             })
-            ->where('academic_id', getAcademicId())
-            ->where('school_id', Auth::user()->school_id)
-            ->pluck('student_id')->unique();
+            ->where('church_year_id', getAcademicId())
+            ->where('church_id', Auth::user()->church_id)
+            ->pluck('member_id')->unique();
 
             $students = SmStudent::query()->withOutGlobalScope(StatusAcademicSchoolScope::class);
-            $students->where('academic_id', getAcademicId())->where('active_status', 0);            
+            $students->where('church_year_id', getAcademicId())->where('active_status', 0);            
             if ($request->name != "") {
                 $students->where('full_name', 'like', '%' . $request->name . '%');
             }
             if ($request->roll_no != "") {
                 $students->where('roll_no', 'like', '%' . $request->roll_no . '%');
             }
-            $students = $students->whereIn('id', $student_ids)->where('school_id', Auth::user()->school_id)->get();
+            $students = $students->whereIn('id', $member_ids)->where('church_id', Auth::user()->church_id)->get();
 
-            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
-            $class_id = $request->class;
-            $section_id = $request->section;
+            $age_group_id = $request->class;
+            $mgender_id = $request->section;
             $name = $request->name;
             $roll_no = $request->roll_no;
 
 
-            return view('backEnd.studentInformation.disabled_student', compact('students', 'classes', 'class_id', 'section_id', 'name', 'roll_no','pt'));
+            return view('backEnd.studentInformation.disabled_student', compact('students', 'classes', 'age_group_id', 'mgender_id', 'name', 'roll_no','pt'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -2508,7 +2508,7 @@ class SmStudentAdmissionController extends Controller
             $parent_user = @$student_detail->parents->user_id;
 
 
-            $siblings = SmStudent::withOutGlobalScope(StatusAcademicSchoolScope::class)->where('parent_id', $student_detail->parent_id)->where('school_id', Auth::user()->school_id)->get();
+            $siblings = SmStudent::withOutGlobalScope(StatusAcademicSchoolScope::class)->where('parent_id', $student_detail->parent_id)->where('church_id', Auth::user()->church_id)->get();
 
 
             DB::beginTransaction();
@@ -2579,19 +2579,19 @@ class SmStudentAdmissionController extends Controller
     public function disabledStudentDelete(Request $request)
     {
         try {
-            $tables = \App\tableList::getTableList('student_id', $request->id);
+            $tables = \App\tableList::getTableList('member_id', $request->id);
             try {
                 $single_data = 0;
 
                 if (checkAdmin()) {
                     $student_detail = SmStudent::withOutGlobalScope(StatusAcademicSchoolScope::class)->find($request->id);
                 }else{
-                    $student_detail = SmStudent::withOutGlobalScope(StatusAcademicSchoolScope::class)->where('id',$request->id)->where('school_id',Auth::user()->school_id)->first();
+                    $student_detail = SmStudent::withOutGlobalScope(StatusAcademicSchoolScope::class)->where('id',$request->id)->where('church_id',Auth::user()->church_id)->first();
                 }
 
 
                 $parent_user = @$student_detail->parents->user_id;
-                $siblings = SmStudent::withOutGlobalScope(StatusAcademicSchoolScope::class)->where('parent_id', $student_detail->parent_id)->where('school_id', Auth::user()->school_id)->get();
+                $siblings = SmStudent::withOutGlobalScope(StatusAcademicSchoolScope::class)->where('parent_id', $student_detail->parent_id)->where('church_id', Auth::user()->church_id)->get();
                 DB::beginTransaction();
                 if ($student_detail->student_photo != "") {
                     if (file_exists($student_detail->student_photo)) {
@@ -2633,16 +2633,16 @@ class SmStudentAdmissionController extends Controller
                     }
                     
                 }
-                $table_list=\App\tableList::ONLY_TABLE_LIST('student_id');
+                $table_list=\App\tableList::ONLY_TABLE_LIST('member_id');
                 foreach ($table_list as $key => $table) {
-                    $table_data=DB::table($table)->where('student_id',$request->id)->get();
+                    $table_data=DB::table($table)->where('member_id',$request->id)->get();
                     foreach ($table_data as $key => $data) {
                         $single_data==DB::table($table)->where('id',$data->id)->delete();
                     }
                 }
 
                 foreach ($table_list as $key => $table) {
-                    $table_data=DB::table($table)->where('student_id',$request->id)->get();
+                    $table_data=DB::table($table)->where('member_id',$request->id)->get();
                     foreach ($table_data as $key => $data) {
                         $single_data==DB::table($table)->where('id',$data->id)->delete();
                     }
@@ -2679,7 +2679,7 @@ class SmStudentAdmissionController extends Controller
     {
         try {
             if(isSubscriptionEnabled()){
-                $active_student = SmStudent::where('school_id', Auth::user()->school_id)->where('active_status', 1)->count();
+                $active_student = SmStudent::where('church_id', Auth::user()->church_id)->where('active_status', 1)->count();
                 if(\Modules\Saas\Entities\SmPackagePlan::student_limit() <= $active_student){
                     Toastr::error('Your student limit has been crossed.', 'Failed');
                     return redirect()->back();
@@ -2691,7 +2691,7 @@ class SmStudentAdmissionController extends Controller
             if (checkAdmin()) {
                 $student_detail = SmStudent::withOutGlobalScope(StatusAcademicSchoolScope::class)->find($request->id);
             }else{
-                $student_detail = SmStudent::withOutGlobalScope(StatusAcademicSchoolScope::class)->where('id',$request->id)->where('school_id',Auth::user()->school_id)->first();
+                $student_detail = SmStudent::withOutGlobalScope(StatusAcademicSchoolScope::class)->where('id',$request->id)->where('church_id',Auth::user()->church_id)->first();
             }
 
             $student_detail->active_status = 1;
@@ -2740,17 +2740,17 @@ class SmStudentAdmissionController extends Controller
     {
         try {
             $classes = SmClass::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             $students = SmStudent::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             $years = SmStudent::select('admission_date')->where('active_status', 1)
-                ->where('academic_id', getAcademicId())->get()
+                ->where('church_year_id', getAcademicId())->get()
                 ->groupBy(function ($val) {
                     return Carbon::parse($val->admission_date)->format('Y');
                 });
@@ -2786,24 +2786,24 @@ class SmStudentAdmissionController extends Controller
                 ->withInput();
         }
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
             $students = SmStudent::query();
-            $students->where('academic_id', getAcademicId())->where('active_status', 1);
-            $students->where('class_id', $request->class);
+            $students->where('church_year_id', getAcademicId())->where('active_status', 1);
+            $students->where('age_group_id', $request->class);
             $students->where('active_status', 1);
             if ($request->admission_year != "") {
                 $students->where('admission_date', 'like',  $request->admission_year . '%');
             }
 
-            $students = $students->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $students = $students->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
             $years = SmStudent::select('admission_date')->where('active_status', 1)
-                ->where('academic_id', getAcademicId())->get()
+                ->where('church_year_id', getAcademicId())->get()
                 ->groupBy(function ($val) {
                     return Carbon::parse($val->admission_date)->format('Y');
                 });
 
-            $class_id = $request->class;
+            $age_group_id = $request->class;
             $year = $request->admission_year;
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -2811,12 +2811,12 @@ class SmStudentAdmissionController extends Controller
                 $data['students'] = $students->toArray();
                 $data['classes'] = $classes->toArray();
                 $data['years'] = $years->toArray();
-                $data['class_id'] = $class_id;
+                $data['age_group_id'] = $age_group_id;
                 $data['year'] = $year;
                 return ApiBaseMethod::sendResponse($data, null);
             }
             $clas = SmClass::find($request->class);
-            return view('backEnd.studentInformation.student_history', compact('students', 'classes', 'years', 'class_id', 'year', 'clas'));
+            return view('backEnd.studentInformation.student_history', compact('students', 'classes', 'years', 'age_group_id', 'year', 'clas'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -2834,14 +2834,14 @@ class SmStudentAdmissionController extends Controller
     function previousRecord()
     {
         try {
-            $academic_years = SmAcademicYear::where('school_id', Auth::user()->school_id)->get();
-            $exam_types = SmExamType::where('school_id', Auth::user()->school_id)->get();
+            $church_years = SmAcademicYear::where('church_id', Auth::user()->church_id)->get();
+            $exam_types = SmExamType::where('church_id', Auth::user()->church_id)->get();
 
             $classes = SmClass::where('active_status', 1)
-                    ->where('academic_id', getAcademicId())
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_year_id', getAcademicId())
+                    ->where('church_id', Auth::user()->church_id)
                     ->get();
-            return view('backEnd.examination.previous_record', compact('classes', 'exam_types', 'academic_years'));
+            return view('backEnd.examination.previous_record', compact('classes', 'exam_types', 'church_years'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -2866,20 +2866,20 @@ class SmStudentAdmissionController extends Controller
             $students = SmStudentPromotion::where('created_at', 'LIKE', '%' . $yearCh->year . '%');
             
             if ($request->promote_class != "") {
-                $students->where('previous_class_id', $request->promote_class);
+                $students->where('previous_age_group_id', $request->promote_class);
             }
             if ($request->promote_section != "") {
-                $students->where('previous_section_id', $request->promote_section);
+                $students->where('previous_mgender_id', $request->promote_section);
             }
             $year = $request->promote_session;
-            $students = $students->where('school_id', Auth::user()->school_id)->get();
+            $students = $students->where('church_id', Auth::user()->church_id)->get();
 
-            $academic_years = SmAcademicYear::where('school_id', Auth::user()->school_id)->get();
-            $exam_types = SmExamType::where('school_id', Auth::user()->school_id)->get();
-            $classes = SmClass::where('active_status', 1)->where('school_id', Auth::user()->school_id)->get();
+            $church_years = SmAcademicYear::where('church_id', Auth::user()->church_id)->get();
+            $exam_types = SmExamType::where('church_id', Auth::user()->church_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_id', Auth::user()->church_id)->get();
             $class = SmClass::withoutGlobalScope(StatusAcademicSchoolScope::class)->find($request->promote_class);
             $section = SmSection::withoutGlobalScope(StatusAcademicSchoolScope::class)->find($request->promote_section);
-            return view('backEnd.examination.previous_record', compact('classes', 'exam_types', 'academic_years', 'students', 'year', 'class', 'section'));
+            return view('backEnd.examination.previous_record', compact('classes', 'exam_types', 'church_years', 'students', 'year', 'class', 'section'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -2911,8 +2911,8 @@ class SmStudentAdmissionController extends Controller
     {
         try{
             $academiYear= SmAcademicYear::find(getAcademicId());
-            $students = SmStudent::where('school_id',Auth::user()->school_id)
-                        ->where('academic_id',getAcademicId())
+            $students = SmStudent::where('church_id',Auth::user()->church_id)
+                        ->where('church_year_id',getAcademicId())
                         ->get();
 
             return view('backEnd.studentInformation.allStudentExportPdfPrint', compact('students','academiYear'));
@@ -2932,8 +2932,8 @@ class SmStudentAdmissionController extends Controller
     {
         try {
             $pt = trans('student.unassigned_student_list');
-            $students = SmStudent::wheredoesnthave('studentRecords')->where('school_id', Auth::user()->school_id)->where('academic_id',getAcademicId())->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $students = SmStudent::wheredoesnthave('studentRecords')->where('church_id', Auth::user()->church_id)->where('church_year_id',getAcademicId())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
             return view('backEnd.studentInformation.unassigned_student', compact('students', 'classes','pt'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -2943,25 +2943,25 @@ class SmStudentAdmissionController extends Controller
 
    
 
-    public function sortingStudent( $class_id)
+    public function sortingStudent( $age_group_id)
     {
         try {
-            $class = SmClass::find($class_id);
-            $pt = trans('student.class') . " ". @$class->class_name . " ". trans('student.student_list') ;
-            return view('backEnd.studentInformation.sortingStudent', compact('class_id','pt'));
+            $class = SmClass::find($age_group_id);
+            $pt = trans('student.class') . " ". @$class->age_group_name . " ". trans('student.student_list') ;
+            return view('backEnd.studentInformation.sortingStudent', compact('age_group_id','pt'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
         }
     }
 
-    public function sortingSectionStudent($class_id,$section_id)
+    public function sortingSectionStudent($age_group_id,$mgender_id)
     {
         try {
-            $class = SmClass::find($class_id);
-            $section = SmSection::find($section_id);
-            $pt = trans('student.class') . "-". @$class->class_name .'(' .$section->section_name .') ' . trans('student.student_list') ;
-            return view('backEnd.studentInformation.sortingStudent', compact('section_id','class_id','pt'));
+            $class = SmClass::find($age_group_id);
+            $section = SmSection::find($mgender_id);
+            $pt = trans('student.class') . "-". @$class->age_group_name .'(' .$section->mgender_name .') ' . trans('student.student_list') ;
+            return view('backEnd.studentInformation.sortingStudent', compact('mgender_id','age_group_id','pt'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();

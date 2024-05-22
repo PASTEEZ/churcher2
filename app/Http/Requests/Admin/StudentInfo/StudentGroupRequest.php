@@ -25,7 +25,7 @@ class StudentGroupRequest extends FormRequest
     public function rules()
     {
         return [
-            'group' => ['required', Rule::unique('sm_student_groups')->where('school_id', auth()->user()->school_id)->ignore($this->id) ],
+            'group' => ['required', Rule::unique('sm_student_groups')->where('church_id', auth()->user()->church_id)->ignore($this->id) ],
         ];
     }
 }

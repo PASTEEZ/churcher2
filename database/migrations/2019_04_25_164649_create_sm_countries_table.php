@@ -28,8 +28,8 @@ class CreateSmCountriesTable extends Migration
             $table->string('languages', 255)->nullable()->charset('utf8')->collate('utf8_general_ci');
             $table->timestamps();
 
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
         });
 
         $sql = "INSERT INTO sm_countries (code, name, native, phone, continent, capital, currency, languages)  VALUES

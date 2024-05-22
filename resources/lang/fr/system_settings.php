@@ -242,17 +242,17 @@ return [
 
 "copyright_text" => "Texte du copyright",
 
-"edit_academic_year" => "Editer l'année académique",
+"edit_church_year" => "Editer l'année académique",
 
-"add_academic_year" => "Ajouter une année universitaire",
+"add_church_year" => "Ajouter une année universitaire",
 
-"delete_academic_year" => "Supprimer l'année académique",
+"delete_church_year" => "Supprimer l'année académique",
 
-"academic_year_list" => "Liste des années universitaires",
+"church_year_list" => "Liste des années universitaires",
 
-"academic_year_delete_confirmation" => "Confirmation de suppression de l'année universitaire",
+"church_year_delete_confirmation" => "Confirmation de suppression de l'année universitaire",
 
-"copy_with_academic_year" => "Copier avec l'année académique",
+"copy_with_church_year" => "Copier avec l'année académique",
 
 "holiday_list" => "Liste de congés",
 
@@ -612,9 +612,9 @@ return [
 
 "confirm_password" => "Confirmer mot de",
 
-"school_name" => "Nom de l'école",
+"church_name" => "Nom de l'école",
 
-"school_code" => "Code scolaire",
+"church_code" => "Code scolaire",
 
 "sl" => "SL",
 
@@ -628,7 +628,7 @@ return [
 
 "check_update" => "Vérifier le point",
 
-"academic_year" => "Année universitaire",
+"church_year" => "Année universitaire",
 
 "language" => "Langue",
 

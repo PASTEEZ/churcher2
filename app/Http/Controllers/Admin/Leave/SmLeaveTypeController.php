@@ -31,11 +31,11 @@ class SmLeaveTypeController extends Controller
         try{
             $leave_type = new SmLeaveType();
             $leave_type->type = $request->type;
-            $leave_type->school_id = Auth::user()->school_id;
+            $leave_type->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $leave_type->un_academic_id = getAcademicId();
+                $leave_type->un_church_year_id = getAcademicId();
             }else{
-                $leave_type->academic_id = getAcademicId();
+                $leave_type->church_year_id = getAcademicId();
             }
             $leave_type->save();
 
@@ -53,7 +53,7 @@ class SmLeaveTypeController extends Controller
             if (checkAdmin()) {
                 $leave_type = SmLeaveType::find($id);
             }else{
-                $leave_type = SmLeaveType::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+                $leave_type = SmLeaveType::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
             }
             $leave_types = SmLeaveType::get();
             return view('backEnd.humanResource.leave_type', compact('leave_types', 'leave_type'));
@@ -69,12 +69,12 @@ class SmLeaveTypeController extends Controller
             if (checkAdmin()) {
                 $leave_type = SmLeaveType::find($request->id);
             }else{
-                $leave_type = SmLeaveType::where('id',$request->id)->where('school_id',Auth::user()->school_id)->first();
+                $leave_type = SmLeaveType::where('id',$request->id)->where('church_id',Auth::user()->church_id)->first();
             }
             $leave_type->type = $request->type;
             $leave_type->total_days = $request->total_days;
             if(moduleStatusCheck('University')){
-                $leave_type->un_academic_id = getAcademicId();
+                $leave_type->un_church_year_id = getAcademicId();
             }
             $leave_type->save();
 
@@ -95,7 +95,7 @@ class SmLeaveTypeController extends Controller
                     if (checkAdmin()) {
                         SmLeaveType::destroy($id);
                     }else{
-                        SmLeaveType::where('id',$id)->where('school_id',Auth::user()->school_id)->delete();
+                        SmLeaveType::where('id',$id)->where('church_id',Auth::user()->church_id)->delete();
                     }
 
                     Toastr::success('Operation successful', 'Success');

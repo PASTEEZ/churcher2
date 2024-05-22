@@ -32,7 +32,7 @@ class ApiSmAssignClassTeacherControler extends Controller
     {
 
         try{
-            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', getAcademicId())->get();
             $teachers = SmStaff::where('active_status', 1)->where('role_id', 4)->get();
             $assign_class_teachers = SmAssignClassTeacher::where('active_status', 1)->get();
     
@@ -104,8 +104,8 @@ class ApiSmAssignClassTeacherControler extends Controller
         try {
 
             $assign_class_teacher = new SmAssignClassTeacher();
-            $assign_class_teacher->class_id = $request->class;
-            $assign_class_teacher->section_id = $request->section;
+            $assign_class_teacher->age_group_id = $request->class;
+            $assign_class_teacher->mgender_id = $request->section;
             $assign_class_teacher->save();
             $assign_class_teacher->toArray();
 
@@ -158,12 +158,12 @@ class ApiSmAssignClassTeacherControler extends Controller
     {
 
         try{
-            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', getAcademicId())->get();
             $teachers = SmStaff::where('active_status', 1)->where(function($q)  {
 	$q->where('role_id', 4)->orWhere('previous_role_id', 4);})->get();
-            $assign_class_teachers = SmAssignClassTeacher::where('active_status', 1)->where('academic_id', getAcademicId())->get();
+            $assign_class_teachers = SmAssignClassTeacher::where('active_status', 1)->where('church_year_id', getAcademicId())->get();
             $assign_class_teacher = SmAssignClassTeacher::find($id);
-            $sections = SmSection::where('active_status', '=', 1)->where('academic_id', getAcademicId())->get();
+            $sections = SmSection::where('active_status', '=', 1)->where('church_year_id', getAcademicId())->get();
 
             $teacherId = array();
             foreach ($assign_class_teacher->classTeachers as $classTeacher) {
@@ -233,8 +233,8 @@ class ApiSmAssignClassTeacherControler extends Controller
             SmClassTeacher::where('assign_class_teacher_id', $request->id)->delete();
 
             $assign_class_teacher = SmAssignClassTeacher::find($request->id);
-            $assign_class_teacher->class_id = $request->class;
-            $assign_class_teacher->section_id = $request->section;
+            $assign_class_teacher->age_group_id = $request->class;
+            $assign_class_teacher->mgender_id = $request->section;
             $assign_class_teacher->save();
             $assign_class_teacher->toArray();
 

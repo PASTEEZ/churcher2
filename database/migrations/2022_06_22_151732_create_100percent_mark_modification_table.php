@@ -49,7 +49,7 @@ class Create100percentMarkModificationTable extends Migration
                 $module_info->active_status=$info[9];
                 $module_info->created_by=$info[10];
                 $module_info->updated_by=$info[11];
-                $module_info->school_id=$info[12];
+                $module_info->church_id=$info[12];
                 $module_info->created_at=$info[13];
                 $module_info->updated_at=$info[14];
                 $module_info->save();

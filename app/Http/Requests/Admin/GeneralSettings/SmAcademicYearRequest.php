@@ -26,7 +26,7 @@ class SmAcademicYearRequest extends FormRequest
         return [
             'year' => 'required|numeric|digits:4',
             'starting_date'=>'sometimes|nullable|date',
-            'copy_with_academic_year'=>'sometimes|nullable|array',
+            'copy_with_church_year'=>'sometimes|nullable|array',
             'starting_date' => 'required',
             'ending_date' => 'required',
             'title' => "required|max:150",

@@ -1,6 +1,6 @@
 <?php
 
-namespace $CLASS_NAMESPACE$;
+namespace $age_group_nameSPACE$;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;

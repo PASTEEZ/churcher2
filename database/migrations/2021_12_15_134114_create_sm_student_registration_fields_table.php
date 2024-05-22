@@ -35,11 +35,11 @@ class CreateSmStudentRegistrationFieldsTable extends Migration
             $table->integer('created_by')->nullable()->default(1)->unsigned();
             $table->integer('updated_by')->nullable()->default(1)->unsigned();
 
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
 
-            $table->integer('academic_id')->nullable()->unsigned();
-            $table->foreign('academic_id')->references('id')->on('sm_academic_years')->onDelete('set null');
+            $table->integer('church_year_id')->nullable()->unsigned();
+            $table->foreign('church_year_id')->references('id')->on('sm_academic_years')->onDelete('set null');
 
             $table->timestamps();
         });
@@ -102,14 +102,14 @@ class CreateSmStudentRegistrationFieldsTable extends Migration
             $all_schools = SmSchool::get();
             foreach ($all_schools as $school) {
                 foreach ($request_fields as $key=>$value) {
-                    $exit = SmStudentRegistrationField::where('school_id', $school->id)->where('field_name', $value)->first();
+                    $exit = SmStudentRegistrationField::where('church_id', $school->id)->where('field_name', $value)->first();
                     if (!$exit) {
                         $field=new SmStudentRegistrationField;
                         $field->position=$key+1;
                         $field->field_name=$value;
                         $field->label_name=$value;
                         $field->type=1;
-                        $field->school_id = $school->id;
+                        $field->church_id = $school->id;
                         $field->save();
                     }
                 }
@@ -123,11 +123,11 @@ class CreateSmStudentRegistrationFieldsTable extends Migration
                 'guardians_photo','guardians_phone','guardians_occupation','guardians_address',
                 'current_address', 'permanent_address'];
 
-                SmStudentRegistrationField::where('school_id', $school->id)->whereIn('field_name', $required_fields)->update(['is_required'=>1, 'is_system_required'=>1]);
+                SmStudentRegistrationField::where('church_id', $school->id)->whereIn('field_name', $required_fields)->update(['is_required'=>1, 'is_system_required'=>1]);
 
-                SmStudentRegistrationField::where('school_id', $school->id)->whereIn('field_name', $student_edit)->update(['student_edit'=>1]);
+                SmStudentRegistrationField::where('church_id', $school->id)->whereIn('field_name', $student_edit)->update(['student_edit'=>1]);
 
-                SmStudentRegistrationField::where('school_id', $school->id)->whereIn('field_name', $parent_edit)->update(['parent_edit'=>1]);
+                SmStudentRegistrationField::where('church_id', $school->id)->whereIn('field_name', $parent_edit)->update(['parent_edit'=>1]);
 
                 $currencies = [
                     [1, 'Leke', 'ALL', 'Lek'],
@@ -253,20 +253,20 @@ class CreateSmStudentRegistrationFieldsTable extends Migration
                 ];
 
                 foreach ($currencies as $currency) {
-                    if(!\App\SmCurrency::where('name', $currency[1])->where('school_id', $school->id)->first()){
+                    if(!\App\SmCurrency::where('name', $currency[1])->where('church_id', $school->id)->first()){
                         $store = new \App\SmCurrency();
                         $store->name = $currency[1];
                         $store->code = $currency[2];
                         $store->symbol = $currency[3];
-                        $store->school_id = $school->id;
+                        $store->church_id = $school->id;
                         $store->save();
                     }
 
                 }
 
-                if(!\App\SmBackgroundSetting::where('title', 'Dashboard Background')->where('school_id', $school->id)->first()){
+                if(!\App\SmBackgroundSetting::where('title', 'Dashboard Background')->where('church_id', $school->id)->first()){
                     $b = new \App\SmBackgroundSetting();
-                    $b->school_id = $school->id;
+                    $b->church_id = $school->id;
                     $b->title = 'Dashboard Background';
                     $b->type = 'image';
                     $b->color = '';
@@ -274,9 +274,9 @@ class CreateSmStudentRegistrationFieldsTable extends Migration
                     $b->is_default = 1;
                     $b->save();
                 }
-                if(!\App\SmBackgroundSetting::where('title', 'Login Background')->where('school_id', $school->id)->first()){
+                if(!\App\SmBackgroundSetting::where('title', 'Login Background')->where('church_id', $school->id)->first()){
                     $b = new \App\SmBackgroundSetting();
-                    $b->school_id = $school->id;
+                    $b->church_id = $school->id;
                     $b->title = 'Login Background';
                     $b->type = 'image';
                     $b->color = '';
@@ -292,7 +292,7 @@ class CreateSmStudentRegistrationFieldsTable extends Migration
             Log::info($e);
         }
 
-        $sql = ("INSERT INTO `infix_module_infos` (`id`, `module_id`, `parent_id`, `type`, `is_saas`, `name`, `route`, `lang_name`, `icon_class`, `active_status`, `created_by`, `updated_by`, `school_id`, `created_at`, `updated_at`) VALUES (951, 3, 61, '2', 0,'Student Settings','student_settings','student_settings','', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22')
+        $sql = ("INSERT INTO `infix_module_infos` (`id`, `module_id`, `parent_id`, `type`, `is_saas`, `name`, `route`, `lang_name`, `icon_class`, `active_status`, `created_by`, `updated_by`, `church_id`, `created_at`, `updated_at`) VALUES (951, 3, 61, '2', 0,'Student Settings','student_settings','student_settings','', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22')
          ");
         \Illuminate\Support\Facades\DB::insert($sql);
     }

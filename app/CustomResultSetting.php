@@ -17,7 +17,7 @@ class CustomResultSetting extends Model
     }
     public static function getGpa($marks){
         try {
-            $marks_gpa=DB::table('sm_marks_grades')->where('percent_from','<=',$marks)->where('percent_upto','>=',$marks)->where('academic_id', getAcademicId())->first();
+            $marks_gpa=DB::table('sm_marks_grades')->where('percent_from','<=',$marks)->where('percent_upto','>=',$marks)->where('church_year_id', getAcademicId())->first();
             return $marks_gpa->gpa;
         } catch (\Exception $e) {
             $data=[];
@@ -26,7 +26,7 @@ class CustomResultSetting extends Model
     }
     public static function getDrade($marks){
         try {
-            $marks_gpa=DB::table('sm_marks_grades')->where('percent_from','<=',$marks)->where('percent_upto','>=',$marks)->where('academic_id', getAcademicId())->first();
+            $marks_gpa=DB::table('sm_marks_grades')->where('percent_from','<=',$marks)->where('percent_upto','>=',$marks)->where('church_year_id', getAcademicId())->first();
             return $marks_gpa->grade_name;
         } catch (\Exception $e) {
             $data=[];
@@ -35,21 +35,21 @@ class CustomResultSetting extends Model
     }
     public static function gpaToGrade($gpa){
         try {
-            $marks_gpa=DB::table('sm_marks_grades')->where('from','<=',$gpa)->where('up','>=',$gpa)->where('academic_id', getAcademicId())->first();
+            $marks_gpa=DB::table('sm_marks_grades')->where('from','<=',$gpa)->where('up','>=',$gpa)->where('church_year_id', getAcademicId())->first();
                 return $marks_gpa->grade_name;
         } catch (\Exception $e) {
             $data=[];
             return $data;
         }
     }
-    public static function termResult($exam_id,$class_id,$section_id,$student_id,$subject_count){
+    public static function termResult($exam_id,$age_group_id,$mgender_id,$member_id,$subject_count){
         try {
-            $assigned_subject=SmAssignSubject::where('class_id',$class_id)->where('section_id',$section_id)->get();
-            $mark_store=DB::table('sm_mark_stores')->where([['class_id', $class_id], ['section_id', $section_id], ['exam_term_id', $exam_id], ['student_id', $student_id]])->first();
+            $assigned_subject=SmAssignSubject::where('age_group_id',$age_group_id)->where('mgender_id',$mgender_id)->get();
+            $mark_store=DB::table('sm_mark_stores')->where([['age_group_id', $age_group_id], ['mgender_id', $mgender_id], ['exam_term_id', $exam_id], ['member_id', $member_id]])->first();
             $subject_marks=[];
             $subject_gpas=[];
             foreach ($assigned_subject as $subject) {
-                $subject_mark=DB::table('sm_mark_stores')->where([['class_id', $class_id], ['section_id', $section_id], ['exam_term_id', $exam_id], ['student_id', $student_id],['subject_id', $subject->subject_id]])->first();
+                $subject_mark=DB::table('sm_mark_stores')->where([['age_group_id', $age_group_id], ['mgender_id', $mgender_id], ['exam_term_id', $exam_id], ['member_id', $member_id],['subject_id', $subject->subject_id]])->first();
                 $custom_result = new CustomResultSetting;  // correct
                 
                 $subject_gpa=$custom_result->getGpa($subject_mark->total_marks);
@@ -66,10 +66,10 @@ class CustomResultSetting extends Model
             return $data;
         }
     }
-    public static function getSubjectGpa($class_id,$section_id,$exam_id,$student_id,$subject){
+    public static function getSubjectGpa($age_group_id,$mgender_id,$exam_id,$member_id,$subject){
         try {
             $subject_marks=[];
-            $subject_mark=DB::table('sm_mark_stores')->where('student_id', $student_id)
+            $subject_mark=DB::table('sm_mark_stores')->where('member_id', $member_id)
             ->where('exam_term_id','=', $exam_id)->first();
             
             $custom_result = new CustomResultSetting; 
@@ -86,18 +86,18 @@ class CustomResultSetting extends Model
         }
     }
 
-    public static function getFinalResult($exam_id,$class_id,$section_id,$student_id,$percentage){
+    public static function getFinalResult($exam_id,$age_group_id,$mgender_id,$member_id,$percentage){
         try {
-            $system_setting=SmGeneralSettings::where('id',auth()->user()->school_id)->first();
+            $system_setting=SmGeneralSettings::where('id',auth()->user()->church_id)->first();
                 $system_setting=$system_setting->session_id;
-                $custom_result_setup=CustomResultSetting::where('academic_year',$system_setting)->first();
+                $custom_result_setup=CustomResultSetting::where('church_year',$system_setting)->first();
 
-                $assigned_subject=SmAssignSubject::where('class_id',$class_id)->where('section_id',$section_id)->get();
+                $assigned_subject=SmAssignSubject::where('age_group_id',$age_group_id)->where('mgender_id',$mgender_id)->get();
 
                 $all_subjects_gpa=[];
                 foreach ($assigned_subject as  $subject) {
                     $custom_result = new CustomResultSetting;
-                    $subject_gpa=$custom_result->getSubjectGpa($exam_id,$class_id,$section_id,$student_id,$subject->subject_id);
+                    $subject_gpa=$custom_result->getSubjectGpa($exam_id,$age_group_id,$mgender_id,$member_id,$subject->subject_id);
                     $all_subjects_gpa[]=$subject_gpa[$subject->subject_id][1];
                 }
                 $percentage= $custom_result_setup->$percentage;
@@ -111,6 +111,6 @@ class CustomResultSetting extends Model
         }
     }
     public function scopeStatus($query){
-        return $query->where('school_id', auth()->user()->school_id)->where('academic_id',getAcademicId());
+        return $query->where('church_id', auth()->user()->church_id)->where('church_year_id',getAcademicId());
     }
 }

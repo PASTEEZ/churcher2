@@ -32,18 +32,18 @@
                                         @csrf
                                         <div class="row">
                                             <div class="col-lg-6 d-flex relation-button justify-content-between mb-3 justify-content-between">
-                                                <p class="text-uppercase mb-0">@lang('examplan::exp.school_name')</p>
+                                                <p class="text-uppercase mb-0">@lang('examplan::exp.church_name')</p>
                                                 <div class="d-flex radio-btn-flex ml-30 mt-1">
                                                     <div class="mr-20">
-                                                        <input type="radio" name="school_name" id="school_name_on" value="1" class="common-radio relationButton" @if($setting->school_name) checked @endif>
-                                                        <label for="school_name_on">@lang('examplan::exp.show')</label>
+                                                        <input type="radio" name="church_name" id="church_name_on" value="1" class="common-radio relationButton" @if($setting->church_name) checked @endif>
+                                                        <label for="church_name_on">@lang('examplan::exp.show')</label>
                                                     </div>
                                                     <div class="mr-20">
-                                                        <input type="radio" name="school_name"
-                                                                        id="school_name" value="0"
-                                                                        class="common-radio relationButton" @if($setting->school_name == 0) checked @endif>
+                                                        <input type="radio" name="church_name"
+                                                                        id="church_name" value="0"
+                                                                        class="common-radio relationButton" @if($setting->church_name == 0) checked @endif>
                                                                     <label
-                                                                        for="school_name">@lang('examplan::exp.hide')</label>
+                                                                        for="church_name">@lang('examplan::exp.hide')</label>
                                                     </div>
                                                 </div>
                                             </div>
@@ -65,38 +65,38 @@
                                             </div>
 
                                             <div class="col-lg-6 d-flex relation-button justify-content-between mb-3">
-                                                <p class="text-uppercase mb-0"> @lang('examplan::exp.student_name')</p>
+                                                <p class="text-uppercase mb-0"> @lang('examplan::exp.member_name')</p>
                                                 <div class="d-flex radio-btn-flex ml-30 mt-1">
                                                     <div class="mr-20">
-                                                        <input type="radio" name="student_name"
-                                                                        id="student_name_on" value="1"
-                                                                        class="common-radio relationButton" @if($setting->student_name) checked @endif>
+                                                        <input type="radio" name="member_name"
+                                                                        id="member_name_on" value="1"
+                                                                        class="common-radio relationButton" @if($setting->member_name) checked @endif>
                                                                     <label
-                                                                        for="student_name_on">@lang('examplan::exp.show')</label>
+                                                                        for="member_name_on">@lang('examplan::exp.show')</label>
                                                     </div>
                                                     <div class="mr-20">
-                                                        <input type="radio" name="student_name"
-                                                        id="student_name" value="0"
-                                                        class="common-radio relationButton" @if($setting->student_name == 0) checked @endif>
+                                                        <input type="radio" name="member_name"
+                                                        id="member_name" value="0"
+                                                        class="common-radio relationButton" @if($setting->member_name == 0) checked @endif>
                                                     <label
-                                                        for="student_name">@lang('examplan::exp.hide')</label>
+                                                        for="member_name">@lang('examplan::exp.hide')</label>
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <div class="col-lg-6 d-flex relation-button justify-content-between mb-3">
-                                                <p class="text-uppercase mb-0"> @lang('examplan::exp.admission_no')</p>
+                                                <p class="text-uppercase mb-0"> @lang('examplan::exp.registration_no')</p>
                                                 <div class="d-flex radio-btn-flex ml-30 mt-1">
                                                     <div class="mr-20">
-                                                        <input type="radio" name="admission_no"
-                                                        id="admission_no_on" value="1"
-                                                        class="common-radio relationButton" @if($setting->admission_no) checked @endif>
+                                                        <input type="radio" name="registration_no"
+                                                        id="registration_no_on" value="1"
+                                                        class="common-radio relationButton" @if($setting->registration_no) checked @endif>
                                                     <label
-                                                        for="admission_no_on">@lang('examplan::exp.show')</label>
+                                                        for="registration_no_on">@lang('examplan::exp.show')</label>
                                                     </div>
                                                     <div class="mr-20">
-                                                        <input type="radio" name="admission_no" id="admission_no" value="0" class="common-radio relationButton" @if($setting->admission_no == 0) checked @endif>
-                                                        <label for="admission_no">@lang('examplan::exp.hide')</label>
+                                                        <input type="radio" name="registration_no" id="registration_no" value="0" class="common-radio relationButton" @if($setting->registration_no == 0) checked @endif>
+                                                        <label for="registration_no">@lang('examplan::exp.hide')</label>
                                                     </div>
                                                 </div>
                                             </div>
@@ -149,18 +149,18 @@
                                                 </div>
                                             </div>
                                             <div class="col-lg-6 d-flex relation-button justify-content-between mb-3">
-                                                <p class="text-uppercase mb-0"> @lang('examplan::exp.academic_year')</p>
+                                                <p class="text-uppercase mb-0"> @lang('examplan::exp.church_year')</p>
                                                 <div class="d-flex radio-btn-flex ml-30 mt-1">
                                                     <div class="mr-20">
-                                                        <input type="radio" name="academic_year"
-                                                        id="academic_year_on" value="1"
-                                                        class="common-radio relationButton" @if($setting->academic_year) checked @endif>
+                                                        <input type="radio" name="church_year"
+                                                        id="church_year_on" value="1"
+                                                        class="common-radio relationButton" @if($setting->church_year) checked @endif>
                                                     <label
-                                                        for="academic_year_on">@lang('examplan::exp.show')</label>
+                                                        for="church_year_on">@lang('examplan::exp.show')</label>
                                                     </div>
                                                     <div class="mr-20">
-                                                        <input type="radio" name="academic_year" id="academic_year" value="0" class="common-radio relationButton" @if($setting->academic_year == 0) checked @endif>
-                                                        <label for="academic_year">@lang('examplan::exp.hide')</label>
+                                                        <input type="radio" name="church_year" id="church_year" value="0" class="common-radio relationButton" @if($setting->church_year == 0) checked @endif>
+                                                        <label for="church_year">@lang('examplan::exp.hide')</label>
                                                     </div>
                                                 </div>
                                             </div>

@@ -15,12 +15,12 @@ class SmHrPayrollGeneratesTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run($school_id, $academic_id)
+    public function run($church_id, $church_year_id)
     {
         $faker = Faker::create();
         $increment = 100;
 
-        $staffs = SmStaff::where('active_status', 1)->whereIn('role_id',[4,5,6,7,8,9])->where('school_id', 1)->get(['id','user_id']);
+        $staffs = SmStaff::where('active_status', 1)->whereIn('role_id',[4,5,6,7,8,9])->where('church_id', 1)->get(['id','user_id']);
         foreach ($staffs as $staff) { 
         $store = new SmHrPayrollGenerate();
             $store->staff_id = $staff->id;
@@ -36,8 +36,8 @@ class SmHrPayrollGeneratesTableSeeder extends Seeder
             $store->payment_mode = 1;
             $store->created_at = date('Y-m-d h:i:s');
             $store->note = $faker->realText($maxNbChars = 100, $indexSize = 1);
-            $store->school_id=$school_id;
-            $store->academic_id=$academic_id;
+            $store->church_id=$church_id;
+            $store->church_year_id=$church_year_id;
             $store->save();
         }
     }

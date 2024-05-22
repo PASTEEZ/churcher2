@@ -49,7 +49,7 @@ class SmBaseGroupController extends Controller
         try{
             $base_group = new SmBaseGroup();
             $base_group->name = $request->name;
-            $base_group->school_id = Auth::user()->school_id;
+            $base_group->church_id = Auth::user()->church_id;
             $result = $base_group->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -80,7 +80,7 @@ class SmBaseGroupController extends Controller
              if (checkAdmin()) {
                 $base_group = SmBaseGroup::find($id);
             }else{
-                $base_group = SmBaseGroup::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+                $base_group = SmBaseGroup::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
             }
             $base_groups = SmBaseGroup::where('active_status', '=', 1)->orderBy('id', 'desc')->get();
 
@@ -117,7 +117,7 @@ class SmBaseGroupController extends Controller
              if (checkAdmin()) {
                 $base_group = SmBaseGroup::find($request->id);
             }else{
-                $base_group = SmBaseGroup::where('id',$request->id)->where('school_id',Auth::user()->school_id)->first();
+                $base_group = SmBaseGroup::where('id',$request->id)->where('church_id',Auth::user()->church_id)->first();
             }
             $base_group->name = $request->name;
             $result = $base_group->save();
@@ -151,7 +151,7 @@ class SmBaseGroupController extends Controller
                  if (checkAdmin()) {
                     $result = SmBaseGroup::destroy($id);
                 }else{
-                    $result = SmBaseGroup::where('id',$id)->where('school_id',Auth::user()->school_id)->delete();
+                    $result = SmBaseGroup::where('id',$id)->where('church_id',Auth::user()->church_id)->delete();
                 }
                 if($result){
                     return ApiBaseMethod::sendResponse(null, 'Base group has been deleted successfully');

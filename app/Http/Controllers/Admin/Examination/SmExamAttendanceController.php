@@ -64,16 +64,16 @@ class SmExamAttendanceController extends Controller
                 $un_session = UnSession::find($request->un_session_id);
                 $un_faculty = UnFaculty::find($request->un_faculty_id);
                 $un_department= UnDepartment::find($request->un_department_id);
-                $un_academic = UnAcademicYear::find($request->un_academic_id);
+                $un_academic = UnAcademicYear::find($request->un_church_year_id);
                 $un_semester = UnSemester::find($request->un_semester_id);
                 $un_semester_label = UnSemesterLabel::find($request->un_semester_label_id);
-                $un_section = SmSection::find($request->un_section_id);
+                $un_section = SmSection::find($request->un_mgender_id);
 
                 $SmExamSchedule = SmExamSchedule::query();
                 $exam_schedules = universityFilter($SmExamSchedule, $request)
                                 ->where('exam_term_id', $request->exam_type)
                                 ->where('un_subject_id', $request->subject_id)
-                                ->orWhereNull('un_section_id')
+                                ->orWhereNull('un_mgender_id')
                                 ->count();
     
                 if ($exam_schedules == 0 && !isSkip('exam_schedule')) {
@@ -136,11 +136,11 @@ class SmExamAttendanceController extends Controller
 
                 $exam_schedules = SmExamSchedule::query();
                 if ($request->class !=null) {
-                        $exam_schedules-> where('class_id', $request->class);
+                        $exam_schedules-> where('age_group_id', $request->class);
                 }
                 
                 if ($request->section !=null) {
-                        $exam_schedules->where('section_id', $request->section);
+                        $exam_schedules->where('mgender_id', $request->section);
                 }
                                     
                 $exam_schedules=$exam_schedules->where('exam_term_id', $request->exam)
@@ -155,19 +155,19 @@ class SmExamAttendanceController extends Controller
                 $students = StudentRecord::query()->with('class', 'section');
 
                 if ($request->class !=null) {
-                    $students ->where('class_id', $request->class);
+                    $students ->where('age_group_id', $request->class);
                 }
 
                 if ($request->section !=null) {
-                    $students->where('section_id', $request->section);
+                    $students->where('mgender_id', $request->section);
                 }
                 
 
-                $students = $students->where('academic_id', getAcademicId())
+                $students = $students->where('church_year_id', getAcademicId())
                 ->whereHas('studentDetail', function ($q)  {
                     $q->where('active_status', 1);
                 })
-                ->where('school_id', auth()->user()->school_id)->where('is_promote', 0)
+                ->where('church_id', auth()->user()->church_id)->where('is_promote', 0)
                 ->get()->sortBy('roll_no');
             
                 if ($students->count() == 0) {
@@ -177,11 +177,11 @@ class SmExamAttendanceController extends Controller
 
                 $exam_attendance = SmExamAttendance::query();
                 if ($request->class !=null) {
-                    $exam_attendance->where('class_id', $request->class);
+                    $exam_attendance->where('age_group_id', $request->class);
                 }
 
                 if ($request->section !=null) {
-                    $exam_attendance->where('section_id', $request->section);
+                    $exam_attendance->where('mgender_id', $request->section);
                 }
 
                 if ($request->subject !=null) {
@@ -201,15 +201,15 @@ class SmExamAttendanceController extends Controller
                 $subjects = SmSubject::get();
                 $exam_id  = $request->exam;
                 $subject_id = $request->subject;
-                $class_id = $request->class;
-                $section_id =$request->section !=null ? $request->section : null;
+                $age_group_id = $request->class;
+                $mgender_id =$request->section !=null ? $request->section : null;
                 
                 $subject_info = SmSubject::find($request->subject);
-                $search_info['class_name'] = SmClass::find($request->class)->class_name;
-                $search_info['section_name'] =  $section_id==null ? 'All Sections' : SmSection::find($request->section)->section_name;
+                $search_info['age_group_name'] = SmClass::find($request->class)->age_group_name;
+                $search_info['mgender_name'] =  $mgender_id==null ? 'All Sections' : SmSection::find($request->section)->mgender_name;
                 $search_info['subject_name'] =  SmSubject::find($request->subject)->subject_name;
 
-                return view('backEnd.examination.exam_attendance_create', compact('exams', 'classes', 'subjects', 'students', 'exam_id', 'subject_id', 'class_id', 'section_id', 'exam_attendance_childs', 'search_info'));
+                return view('backEnd.examination.exam_attendance_create', compact('exams', 'classes', 'subjects', 'students', 'exam_id', 'subject_id', 'age_group_id', 'mgender_id', 'exam_attendance_childs', 'search_info'));
             }
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -250,8 +250,8 @@ class SmExamAttendanceController extends Controller
                     $exam_attendance->exam_id = $sm_exam->id;
                     $exam_attendance->un_subject_id = $request->un_subject_id;
                     $exam_attendance->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
-                    $exam_attendance->school_id = Auth::user()->school_id;
-                    $exam_attendance->un_academic_id = getAcademicId();
+                    $exam_attendance->church_id = Auth::user()->church_id;
+                    $exam_attendance->un_church_year_id = getAcademicId();
                     
                     $exam_attendance->save();
                     $exam_attendance->toArray();
@@ -263,22 +263,22 @@ class SmExamAttendanceController extends Controller
                     foreach ($request->attendance as $record_id => $record) {
                         $exam_attendance_child = new SmExamAttendanceChild();
                         $exam_attendance_child->exam_attendance_id = $exam_attendance->id;
-                        $exam_attendance_child->student_id = gv($record, 'student');
+                        $exam_attendance_child->member_id = gv($record, 'student');
                         $exam_attendance_child->student_record_id = $record_id;
                         $exam_attendance_child->attendance_type = gv($record, 'attendance_type');
                         $exam_attendance_child->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
-                        $exam_attendance_child->school_id = Auth::user()->school_id;
-                        $exam_attendance_child->un_academic_id = getAcademicId();
+                        $exam_attendance_child->church_id = Auth::user()->church_id;
+                        $exam_attendance_child->un_church_year_id = getAcademicId();
                         $exam_attendance_child->save();
                     }
 
                 }else{
                     $alreday_assigned  = SmExamAttendance::query();
-                    if ($request->class_id !=null) {
-                        $alreday_assigned ->where('class_id', $request->class_id);
+                    if ($request->age_group_id !=null) {
+                        $alreday_assigned ->where('age_group_id', $request->age_group_id);
                     }
-                    if ($request->section_id !='') {
-                        $alreday_assigned->where('section_id', $request->section_id);
+                    if ($request->mgender_id !='') {
+                        $alreday_assigned->where('mgender_id', $request->mgender_id);
                     }
                     if ($request->subject_id !=null) {
                         $alreday_assigned->where('subject_id', $request->subject_id);
@@ -288,32 +288,32 @@ class SmExamAttendanceController extends Controller
                     DB::beginTransaction();
                     DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
-                    if ($request->section_id !='') {
+                    if ($request->mgender_id !='') {
                         if ($alreday_assigned == "") {
                             $exam_attendance = new SmExamAttendance();
                         } else {
-                            $exam_attendance = SmExamAttendance::where('class_id', $request->class_id)
-                                                ->where('section_id', $request->section_id)
+                            $exam_attendance = SmExamAttendance::where('age_group_id', $request->age_group_id)
+                                                ->where('mgender_id', $request->mgender_id)
                                                 ->where('subject_id', $request->subject_id)
                                                 ->where('exam_id', $request->exam_id)
                                                 ->first();
                         }       
-                        $this->storeAttendance($exam_attendance, $request, $request->section_id, $alreday_assigned);
+                        $this->storeAttendance($exam_attendance, $request, $request->mgender_id, $alreday_assigned);
                     } else {
-                        $classSections= SmAssignSubject::where('class_id', $request->class_id)
+                        $classSections= SmAssignSubject::where('age_group_id', $request->age_group_id)
                                         ->where('subject_id', $request->subject_id)
-                                        ->groupBy(['section_id','subject_id'])
+                                        ->groupBy(['mgender_id','subject_id'])
                                         ->get();                      
                         foreach ($classSections as $section) {                           
-                            $exam_attendance = SmExamAttendance::where('class_id', $request->class_id)
-                                                ->where('section_id', $section->section_id)
+                            $exam_attendance = SmExamAttendance::where('age_group_id', $request->age_group_id)
+                                                ->where('mgender_id', $section->mgender_id)
                                                 ->where('subject_id', $request->subject_id)
                                                 ->where('exam_id', $request->exam_id)
                                                 ->first();                          
                             if(!$exam_attendance) {
                                 $exam_attendance = new SmExamAttendance();
                             };
-                            $this->storeAttendance($exam_attendance, $request, $section->section_id, $alreday_assigned);
+                            $this->storeAttendance($exam_attendance, $request, $section->mgender_id, $alreday_assigned);
                         
                         }
                        
@@ -330,15 +330,15 @@ class SmExamAttendanceController extends Controller
                 return redirect()->back();
         }
     }
-    private function storeAttendance($exam_attendance, $request, int $section_id, $alreday_assigned = null)
+    private function storeAttendance($exam_attendance, $request, int $mgender_id, $alreday_assigned = null)
     {
         $exam_attendance->exam_id = $request->exam_id;
         $exam_attendance->subject_id = $request->subject_id;
-        $exam_attendance->class_id = $request->class_id;
-        $exam_attendance->section_id = $section_id;
+        $exam_attendance->age_group_id = $request->age_group_id;
+        $exam_attendance->mgender_id = $mgender_id;
         $exam_attendance->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
-        $exam_attendance->school_id = Auth::user()->school_id;
-        $exam_attendance->academic_id = getAcademicId();
+        $exam_attendance->church_id = Auth::user()->church_id;
+        $exam_attendance->church_year_id = getAcademicId();
         $exam_attendance->save();
         $exam_attendance->toArray();
     
@@ -350,15 +350,15 @@ class SmExamAttendanceController extends Controller
             $exam_attendance_child = new SmExamAttendanceChild();
             $exam_attendance_child->exam_attendance_id = $exam_attendance->id;
 
-            $exam_attendance_child->student_id = gv($record, 'student');
+            $exam_attendance_child->member_id = gv($record, 'student');
             $exam_attendance_child->student_record_id = $record_id;
-            $exam_attendance_child->class_id = gv($record, 'class');
-            $exam_attendance_child->section_id = gv($record, 'section');
+            $exam_attendance_child->age_group_id = gv($record, 'class');
+            $exam_attendance_child->mgender_id = gv($record, 'section');
             $exam_attendance_child->attendance_type = gv($record, 'attendance_type');
 
             $exam_attendance_child->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
-            $exam_attendance_child->school_id = Auth::user()->school_id;
-            $exam_attendance_child->academic_id = getAcademicId();
+            $exam_attendance_child->church_id = Auth::user()->church_id;
+            $exam_attendance_child->church_year_id = getAcademicId();
             $exam_attendance_child->save();
         }
     }

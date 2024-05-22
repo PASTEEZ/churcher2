@@ -16,7 +16,7 @@
             <div class="card_text" style="line-height:1.02; display: flex; align-items: center; justify-content: space-between; width: 100%; flex-direction: column;">
                 <div class="card_text_head " style="line-height:1.02; display: flex; align-items: center; justify-content: space-between; width: 100%; margin-top:25px; margin-bottom:10px">
                     <div class="card_text_left hId">
-                        <div id="gHName" style="{{($id_card->student_name==0)? 'display:none':''}}">
+                        <div id="gHName" style="{{($id_card->member_name==0)? 'display:none':''}}">
                             <h4 style="line-height:1.02; margin-top: 0; margin-bottom: 0px; font-size:11px; font-weight:600 ; text-transform: uppercase; color: #2656a6;">InfixEdu</h4>
                         </div>
                     </div>
@@ -95,7 +95,7 @@
             <div class="card_text" style="line-height:1.02; display: flex; align-items: center; justify-content: space-between; width: 100%; flex-direction: column;">
                 <div class="card_text_head " style="line-height:1.02; display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom:0px"> 
                     <div class="card_text_left vId">
-                        <div id="gVName" style="{{($id_card->student_name==0)? 'display:none':''}}">
+                        <div id="gVName" style="{{($id_card->member_name==0)? 'display:none':''}}">
                             <h3 style="line-height:1.02; margin-top: 0; margin-bottom: 3px; font-size:11px; font-weight:600 ; text-transform: uppercase; color: #2656a6;">InfixEdu</h3>
                         </div>
                     </div>

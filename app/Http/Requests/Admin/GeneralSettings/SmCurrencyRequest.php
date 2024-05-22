@@ -25,10 +25,10 @@ class SmCurrencyRequest extends FormRequest
     public function rules()
     {
         
-        $school_id=auth()->user()->school_id;
+        $church_id=auth()->user()->church_id;
         return [
             'name' => ['required', 'max:25'],
-            'code' => ['required', 'max:15' ,Rule::unique('sm_currencies', 'code')->where('school_id', $school_id)->ignore($this->id) ],
+            'code' => ['required', 'max:15' ,Rule::unique('sm_currencies', 'code')->where('church_id', $church_id)->ignore($this->id) ],
             'symbol' => 'required | max:15',
             'currency_type'=>['required', 'in:S,C'],
             'currency_position'=>['required', 'in:S,P'],

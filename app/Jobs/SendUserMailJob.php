@@ -43,7 +43,7 @@ class SendUserMailJob implements ShouldQueue
 
             // $mailer->send('backEnd.studentInformation.user_credential', ['data'=> $info], function ($message) use($info) {
 
-            //     $message->from($this->sender['system_email'], $this->sender['school_name']);
+            //     $message->from($this->sender['system_email'], $this->sender['church_name']);
                 
             //     $message->to($info['email'])->subject('Login Credentials');
 

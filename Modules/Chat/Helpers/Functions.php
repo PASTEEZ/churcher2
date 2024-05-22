@@ -73,7 +73,7 @@ if (!function_exists('createGroupUser')) {
             [
                 'invitation_id' => $invitation->id,
                 'type' => 'class-teacher',
-                'section_id' => $group->section_id,
+                'mgender_id' => $group->mgender_id,
                 'class_teacher_id' => $invited_by ?? $group->created_by,
             ]);
         }

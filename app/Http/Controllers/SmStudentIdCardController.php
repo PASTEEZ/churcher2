@@ -27,8 +27,8 @@ class SmStudentIdCardController extends Controller
     public function index()
     {
         try {
-            $id_cards = SmStudentIdCard::where('active_status', 1)->where('school_id', Auth::user()->school_id)->get();
-            return view('backEnd.admin.idCard.student_id_card_list',compact('id_cards'));
+            $id_cards = SmStudentIdCard::where('active_status', 1)->where('church_id', Auth::user()->church_id)->get();
+            return view('backEnd.admin.idCard.member_id_card_list',compact('id_cards'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -38,11 +38,11 @@ class SmStudentIdCardController extends Controller
     public function create_id_card()
     {
         try{
-            $id_cards = SmStudentIdCard::where('active_status', 1)->where('school_id', Auth::user()->school_id)->get();
+            $id_cards = SmStudentIdCard::where('active_status', 1)->where('church_id', Auth::user()->church_id)->get();
             $roles = InfixRole::select('*')->where('id', '!=', 1)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
-            return view('backEnd.admin.idCard.student_id_card', compact('id_cards','roles'));
+            return view('backEnd.admin.idCard.member_id_card', compact('id_cards','roles'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -134,8 +134,8 @@ class SmStudentIdCardController extends Controller
             $id_card = new SmStudentIdCard();
             $id_card->title = $request->title;
             $id_card->logo = $fileNameLogo;
-            $id_card->school_id = Auth::user()->school_id;
-            $id_card->academic_id = getAcademicId();
+            $id_card->church_id = Auth::user()->church_id;
+            $id_card->church_year_id = getAcademicId();
 
             if (isset($fileNameSignature)) {
                 $id_card->signature = $fileNameSignature;
@@ -162,8 +162,8 @@ class SmStudentIdCardController extends Controller
             $id_card->b_space = $request->b_space;
             $id_card->l_space = $request->l_space;
             $id_card->r_space = $request->r_space;
-            $id_card->admission_no = $request->admission_no;
-            $id_card->student_name = $request->student_name;
+            $id_card->registration_no = $request->registration_no;
+            $id_card->member_name = $request->member_name;
             $id_card->class = $request->class;
             $id_card->father_name = $request->father_name;
             $id_card->mother_name = $request->mother_name;
@@ -191,16 +191,16 @@ class SmStudentIdCardController extends Controller
     public function edit($id)
     {
         try {
-            $id_cards = SmStudentIdCard::where('active_status', 1)->where('school_id', Auth::user()->school_id)->get();
+            $id_cards = SmStudentIdCard::where('active_status', 1)->where('church_id', Auth::user()->church_id)->get();
             $roles = InfixRole::select('*')->where('id', '!=', 1)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
              if (checkAdmin()) {
                 $id_card = SmStudentIdCard::find($id);
             }else{
-                $id_card = SmStudentIdCard::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+                $id_card = SmStudentIdCard::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
             }
-            return view('backEnd.admin.idCard.student_id_card', compact('id_cards', 'id_card','roles'));
+            return view('backEnd.admin.idCard.member_id_card', compact('id_cards', 'id_card','roles'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -319,7 +319,7 @@ class SmStudentIdCardController extends Controller
              if (checkAdmin()) {
                 $id_card = SmStudentIdCard::find($request->id);
             }else{
-                $id_card = SmStudentIdCard::where('id',$request->id)->where('school_id',Auth::user()->school_id)->first();
+                $id_card = SmStudentIdCard::where('id',$request->id)->where('church_id',Auth::user()->church_id)->first();
             }
             $id_card->title = $request->title;
             if ($fileNamelogo != "") {
@@ -357,8 +357,8 @@ class SmStudentIdCardController extends Controller
             $id_card->b_space = $request->b_space;
             $id_card->l_space = $request->l_space;
             $id_card->r_space = $request->r_space;
-            $id_card->admission_no = $request->admission_no;
-            $id_card->student_name = $request->student_name;
+            $id_card->registration_no = $request->registration_no;
+            $id_card->member_name = $request->member_name;
             $id_card->class = $request->class;
             $id_card->father_name = $request->father_name;
             $id_card->mother_name = $request->mother_name;
@@ -392,7 +392,7 @@ class SmStudentIdCardController extends Controller
             if (checkAdmin()) {
                 $id_card = SmStudentIdCard::find($request->id);
             }else{
-                $id_card = SmStudentIdCard::where('id',$request->id)->where('school_id',Auth::user()->school_id)->first();
+                $id_card = SmStudentIdCard::where('id',$request->id)->where('church_id',Auth::user()->church_id)->first();
             }
             if ($id_card->logo != "") {
                 unlink($id_card->logo);
@@ -428,8 +428,8 @@ class SmStudentIdCardController extends Controller
     {
 
         try {
-            $id_cards = SmStudentIdCard::where('active_status', 1)->where('school_id', Auth::user()->school_id)->get();
-            $roles = Role::where('school_id', Auth::user()->school_id)->whereNotIn('id',[1])->get();
+            $id_cards = SmStudentIdCard::where('active_status', 1)->where('church_id', Auth::user()->church_id)->get();
+            $roles = Role::where('church_id', Auth::user()->church_id)->whereNotIn('id',[1])->get();
             return view('backEnd.admin.idCard.generate_id_card', compact('id_cards','roles'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -465,14 +465,14 @@ class SmStudentIdCardController extends Controller
         if($request->role==2){
             $s_students=SmStudent::query();
             if($request->class){
-                $s_students->where('class_id',$request->class_id);
+                $s_students->where('age_group_id',$request->age_group_id);
             }
             if($request->section){
-                $request->where('section_id',$request->section_id);
+                $request->where('mgender_id',$request->mgender_id);
             }
            $s_students = $s_students->status()->get();
        }elseif($request->role==3){
-           $studentGuardian = SmStudent::where('school_id', Auth::user()->school_id)->get('parent_id');
+           $studentGuardian = SmStudent::where('church_id', Auth::user()->church_id)->get('parent_id');
            $s_students = SmParent::whereIn('id',$studentGuardian)->get();
        }
        else{
@@ -484,9 +484,9 @@ class SmStudentIdCardController extends Controller
 
        $gridGap = $request->grid_gap;
 
-     return view('backEnd.admin.idCard.student_id_card_print_bulk', ['id_card' => $id_card, 's_students' => $s_students,'role_id'=>$role_id,'gridGap'=>$gridGap]);
+     return view('backEnd.admin.idCard.member_id_card_print_bulk', ['id_card' => $id_card, 's_students' => $s_students,'role_id'=>$role_id,'gridGap'=>$gridGap]);
 
-     $pdf = PDF::loadView('backEnd.admin.student_id_card_print_2', ['id_card' => $id_card, 's_students' => $s_students]);
+     $pdf = PDF::loadView('backEnd.admin.member_id_card_print_2', ['id_card' => $id_card, 's_students' => $s_students]);
      return $pdf->stream($id_card->title . '.pdf');
     }
 
@@ -503,17 +503,17 @@ class SmStudentIdCardController extends Controller
 
         try {
             $card_id = $request->id_card;
-            $class_id = $request->class;
+            $age_group_id = $request->class;
        
 
 
                 $students = SmStudent::with('class','parents','section','gender')->where('active_status', 1)
-                  ->where('academic_id', getAcademicId())->where('school_id',Auth::user()->school_id)->get();
+                  ->where('church_year_id', getAcademicId())->where('church_id',Auth::user()->church_id)->get();
 
 
-            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-            $id_cards = SmStudentIdCard::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-            return view('backEnd.admin.idCard.generate_id_card_old', compact('id_cards', 'class_id', 'classes', 'students', 'card_id','section'));
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+            $id_cards = SmStudentIdCard::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+            return view('backEnd.admin.idCard.generate_id_card_old', compact('id_cards', 'age_group_id', 'classes', 'students', 'card_id','section'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -524,7 +524,7 @@ class SmStudentIdCardController extends Controller
     {
 
         try {
-            $pdf = PDF::loadView('backEnd.admin.idCard.student_id_card_print');
+            $pdf = PDF::loadView('backEnd.admin.idCard.member_id_card_print');
             return response()->$pdf->stream('certificate.pdf');
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -547,9 +547,9 @@ class SmStudentIdCardController extends Controller
 
             $id_card = SmStudentIdCard::find($c_id);
 
-            return view('backEnd.admin.idCard.student_id_card_print_2', ['id_card' => $id_card, 'students' => $students]);
+            return view('backEnd.admin.idCard.member_id_card_print_2', ['id_card' => $id_card, 'students' => $students]);
 
-            $pdf = PDF::loadView('backEnd.admin.idCard.student_id_card_print_2', ['id_card' => $id_card, 'students' => $students]);
+            $pdf = PDF::loadView('backEnd.admin.idCard.member_id_card_print_2', ['id_card' => $id_card, 'students' => $students]);
             return $pdf->stream($id_card->title . '.pdf');
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');

@@ -129,7 +129,7 @@
                                                 <span class="error text-danger"><strong>{{ $errors->first('body') }}</strong></span>
                                             @endif
                                         </div>
-                                        <span class="text-primary">[name] [dob] [present_address] [guardian] [created_at] [admission_no] [roll_no] [class] [section] [gender] [admission_date] [category] [cast] [father_name] [mother_name] [religion] [email] [phone]</span>
+                                        <span class="text-primary">[name] [dob] [present_address] [guardian] [created_at] [registration_no] [roll_no] [class] [section] [gender] [admission_date] [category] [cast] [father_name] [mother_name] [religion] [email] [phone]</span>
                                     </div>
                                 </div>
 

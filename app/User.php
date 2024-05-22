@@ -115,7 +115,7 @@ class User extends Authenticatable
 
     public function school()
     {
-        return $this->belongsTo('App\SmSchool', 'school_id', 'id');
+        return $this->belongsTo('App\SmSchool', 'church_id', 'id');
     }
 
     public function roles()
@@ -152,7 +152,7 @@ class User extends Authenticatable
     {
         return true;
         // $gcc = new SmGeneralSettings;
-        // $php_extension_dll = SmGeneralSettings::where('id',auth()->user()->school_id)->first();
+        // $php_extension_dll = SmGeneralSettings::where('id',auth()->user()->church_id)->first();
         // $str = $gcc::$students;
         // $php_extension_ssl = Envato::aci($php_extension_dll->$str);
         // if (isset($php_extension_ssl[$gcc::$users][$gcc::$parents])) {
@@ -210,7 +210,7 @@ class User extends Authenticatable
 
     public function enrolledCourses()
     {
-        return $this->hasMany('Modules\Lms\Entities\CoursePurchaseLog', 'student_id', 'id')->where('active_status','=', 'approve');
+        return $this->hasMany('Modules\Lms\Entities\CoursePurchaseLog', 'member_id', 'id')->where('active_status','=', 'approve');
     }
 
     public function enrolls()

@@ -24,9 +24,9 @@ class SmDepartmentRequest extends FormRequest
      */
     public function rules()
     {
-        $school_id=auth()->user()->school_id;
+        $church_id=auth()->user()->church_id;
         return [
-            'name' => ['required', 'max:200', Rule::unique('sm_human_departments')->where('school_id', $school_id)->ignore($this->id) ],
+            'name' => ['required', 'max:200', Rule::unique('sm_human_departments')->where('church_id', $church_id)->ignore($this->id) ],
         ];
     }
 }

@@ -18,7 +18,7 @@ class SmSupplierController extends Controller
     public function index(Request $request)
     {
         try{
-            $suppliers = SmSupplier::where('school_id',Auth::user()->school_id)->get();
+            $suppliers = SmSupplier::where('church_id',Auth::user()->church_id)->get();
             return view('backEnd.inventory.supplierList', compact('suppliers'));
         }catch (\Exception $e) {
            Toastr::error('Operation Failed', 'Failed');
@@ -36,11 +36,11 @@ class SmSupplierController extends Controller
             $suppliers->contact_person_mobile = $request->contact_person_mobile;
             $suppliers->contact_person_email = $request->contact_person_email;
             $suppliers->description = $request->description;
-            $suppliers->school_id = Auth::user()->school_id;
+            $suppliers->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $suppliers->un_academic_id = getAcademicId();
+                $suppliers->un_church_year_id = getAcademicId();
             }else{
-                $suppliers->academic_id = getAcademicId();
+                $suppliers->church_year_id = getAcademicId();
             }
             $suppliers->save();
 
@@ -56,7 +56,7 @@ class SmSupplierController extends Controller
     {
         try{
             $editData = SmSupplier::find($id);
-            $suppliers = SmSupplier::where('school_id',Auth::user()->school_id)->get();
+            $suppliers = SmSupplier::where('church_id',Auth::user()->church_id)->get();
             return view('backEnd.inventory.supplierList', compact('editData', 'suppliers'));
         }catch (\Exception $e) {
            Toastr::error('Operation Failed', 'Failed');
@@ -76,7 +76,7 @@ class SmSupplierController extends Controller
             $suppliers->description = $request->description;
             $suppliers->updated_by = Auth()->user()->id;
             if(moduleStatusCheck('University')){
-                $suppliers->un_academic_id = getAcademicId();
+                $suppliers->un_church_year_id = getAcademicId();
             }
             $suppliers->update();
 

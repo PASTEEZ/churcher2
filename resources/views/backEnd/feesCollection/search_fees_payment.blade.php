@@ -94,7 +94,7 @@
                                 <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                     <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                     @foreach(@$classes as $class)
-                                    <option value="{{$class->id}}"  {{( old("class") == $class->id ? "selected":"")}}>{{$class->class_name}}</option>
+                                    <option value="{{$class->id}}"  {{( old("class") == $class->id ? "selected":"")}}>{{$class->age_group_name}}</option>
                                     @endforeach
                                 </select>
                                 @if ($errors->has('class'))
@@ -121,7 +121,7 @@
                             <div class="col-lg-6 mt-30">
                                 <div class="input-effect">
                                     <input class="primary-input form-control" type="text" name="keyword">
-                                    <label>@lang('common.search_by_name'), @lang('student.admission_no'),@lang('student.roll_no')</label>
+                                    <label>@lang('common.search_by_name'), @lang('student.registration_no'),@lang('student.roll_no')</label>
                                     <span class="focus-border"> </span>
                                 </div>
                             </div>
@@ -190,7 +190,7 @@
                                                 <td>{{@$fees_payment->recordDetail->semesterLabel->name}} ({{@$fees_payment->recordDetail->unDepartment->name}})</td>
                                                 <td>{{@$fees_payment->feesInstallment->installment->title}}</td>
                                             @else
-                                            <td>{{@$fees_payment->recordDetail->class->class_name}} ({{@$fees_payment->recordDetail->section->section_name}})</td>
+                                            <td>{{@$fees_payment->recordDetail->class->age_group_name}} ({{@$fees_payment->recordDetail->section->mgender_name}})</td>
                                                     @if(directFees())
                                                     <td>{{@$fees_payment->feesInstallment->installment->title}}</td>
                                                     @else

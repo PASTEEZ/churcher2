@@ -13,13 +13,13 @@ class SmHomeworksTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run($school_id, $academic_id, $count=10)
+    public function run($church_id, $church_year_id, $count=10)
     {
-        $classSectionSubjects=SmAssignSubject::where('school_id',$school_id)->where('academic_id',$academic_id)->get();
+        $classSectionSubjects=SmAssignSubject::where('church_id',$church_id)->where('church_year_id',$church_year_id)->get();
         foreach($classSectionSubjects as  $classSectionSubject){ 
             $s = new SmHomework();
-            $s->class_id =  $classSectionSubject->class_id;
-            $s->section_id = $classSectionSubject->section_id;
+            $s->age_group_id =  $classSectionSubject->age_group_id;
+            $s->mgender_id = $classSectionSubject->mgender_id;
             $s->subject_id = $classSectionSubject->subject_id;
             $s->homework_date = date('Y-m-d');
             $s->submission_date = date('Y-m-d');
@@ -28,8 +28,8 @@ class SmHomeworksTableSeeder extends Seeder
             $s->marks = rand(10, 15);
             $s->description = 'Test';
             $s->created_at = date('Y-m-d h:i:s');
-            $s->school_id = $school_id;
-            $s->academic_id = $academic_id;
+            $s->church_id = $church_id;
+            $s->church_year_id = $church_year_id;
             $s->save();
          }
     }

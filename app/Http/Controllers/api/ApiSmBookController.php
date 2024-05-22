@@ -34,7 +34,7 @@ class ApiSmBookController extends Controller
 
     public function library_subject_index(Request $request){
         try {
-            $subjects = LibrarySubject::where('active_status', 1)->orderBy('id', 'DESC')->where('school_id', $request->user()->id)->get();
+            $subjects = LibrarySubject::where('active_status', 1)->orderBy('id', 'DESC')->where('church_id', $request->user()->id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($subjects, null);
@@ -44,12 +44,12 @@ class ApiSmBookController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_Library_index(Request $request, $school_id)
+    public function saas_Library_index(Request $request, $church_id)
     {
 
         try {
 
-            $books = SmBook::withOutGlobalScope(ActiveStatusSchoolScope::class)->where('school_id', $school_id)->get()->map(function ($q) {
+            $books = SmBook::withOutGlobalScope(ActiveStatusSchoolScope::class)->where('church_id', $church_id)->get()->map(function ($q) {
                 return ([
                     'id'=>$q->id,
                     'book_title'=>$q->book_title,
@@ -79,7 +79,7 @@ class ApiSmBookController extends Controller
                 'user_id' => "required",
                 'quantity' => "sometimes|nullable|integer|min:0",
                 'book_price' => "sometimes|nullable|integer|min:0",
-                'school_id' => "required",
+                'church_id' => "required",
             ]);
         }
 
@@ -107,7 +107,7 @@ class ApiSmBookController extends Controller
             $books->isbn_no = $request->isbn_no;
             $books->publisher_name = $request->publisher_name;
             $books->author_name = $request->author_name;
-            $books->school_id = $request->school_id;
+            $books->church_id = $request->church_id;
             if (@$request->subject_id) {
                 $books->book_subject_id = $request->subject_id;
             }
@@ -141,7 +141,7 @@ class ApiSmBookController extends Controller
                 'user_id' => "required",
                 'quantity' => "sometimes|nullable|integer|min:0",
                 'book_price' => "sometimes|nullable|integer|min:0",
-                'school_id' => "required",
+                'church_id' => "required",
             ]);
         }
 
@@ -170,7 +170,7 @@ class ApiSmBookController extends Controller
             $books->isbn_no = $request->isbn_no;
             $books->publisher_name = $request->publisher_name;
             $books->author_name = $request->author_name;
-            $books->school_id = $request->school_id;
+            $books->church_id = $request->church_id;
             if (@$request->subject_id) {
                 $books->book_subject_id = $request->subject_id;
             }
@@ -212,14 +212,14 @@ class ApiSmBookController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_editBook(Request $request,$school_id, $id)
+    public function saas_editBook(Request $request,$church_id, $id)
     {
 
 
         try {
-            $editData = SmBook::where('school_id',$school_id)->find($id);
-            $categories = SmBookCategory::where('school_id',$school_id)->get();
-            $subjects = SmSubject::where('school_id',$school_id)->get();
+            $editData = SmBook::where('church_id',$church_id)->find($id);
+            $categories = SmBookCategory::where('church_id',$church_id)->get();
+            $subjects = SmSubject::where('church_id',$church_id)->get();
 
 
             $data = [];
@@ -304,7 +304,7 @@ class ApiSmBookController extends Controller
                 'user_id' => "required",
                 'quantity' => "sometimes|nullable|integer|min:0",
                 'book_price' => "sometimes|nullable|integer|min:0",
-                'school_id' => "required"
+                'church_id' => "required"
             ]);
         }
 
@@ -342,7 +342,7 @@ class ApiSmBookController extends Controller
                 $books->book_price = $request->book_price;
             }
             $books->details = $request->details;
-            $books->school_id = $request->school_id;
+            $books->church_id = $request->church_id;
             $books->post_date = date('Y-m-d');
             $books->updated_by = $user_id;
             $results = $books->update();
@@ -364,25 +364,25 @@ class ApiSmBookController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_deleteBookView(Request $request,$school_id, $id)
+    public function saas_deleteBookView(Request $request,$church_id, $id)
     {
 
         try {
             $title = "Are you sure to detete this Book?";
-            $url = url('school/'.$school_id.'/'.'delete-book/' . $id);
+            $url = url('school/'.$church_id.'/'.'delete-book/' . $id);
             return ApiBaseMethod::sendResponse($id, null);
 
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function deleteBook(Request $request, $school_id, $id)
+    public function deleteBook(Request $request, $church_id, $id)
     {
 
         try {
             $tables = \App\tableList::getTableList('book_id', $id);
             try {
-                $result = SmBook::where('school_id', $school_id)->destroy($id);
+                $result = SmBook::where('church_id', $church_id)->destroy($id);
                 return ApiBaseMethod::sendResponse(null, 'Operation successful');
             } catch (\Illuminate\Database\QueryException $e) {
                 $msg = 'This data already used in  : ' . $tables . ' Please remove those data first';

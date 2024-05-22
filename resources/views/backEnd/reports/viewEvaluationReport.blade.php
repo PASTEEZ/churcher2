@@ -9,8 +9,8 @@
                         <table id="" class="school-table-data school-table shadow-none" cellspacing="0" width="100%">
                             <thead>
                                 <tr>
-                                    <th>@lang('student.admission_no')</th>
-                                    <th>@lang('student.student_name')</th>
+                                    <th>@lang('student.registration_no')</th>
+                                    <th>@lang('student.member_name')</th>
                                     <th>@lang('exam.marks')</th>
                                     <th>@lang('homework.comments')</th>
                                     <th>@lang('homework.home_work_status')</th>
@@ -21,7 +21,7 @@
 
                                 @foreach($homework_students as $value)
                                 <tr>
-                                    <td width="8%">{{$value->studentInfo!=""?$value->studentInfo->admission_no:""}}</td>
+                                    <td width="8%">{{$value->studentInfo!=""?$value->studentInfo->registration_no:""}}</td>
                                     <td width="15%">{{$value->studentInfo!=""?$value->studentInfo->full_name:""}}</td>
                                     <td width="15%">{{$value->marks}}</td>
 
@@ -170,7 +170,7 @@
                         <div class="col-lg-6 col-md-6">
                             <div class="value text-left">
                              @if(isset($homeworkDetails))
-                             {{$homeworkDetails->classes->class_name}}
+                             {{$homeworkDetails->classes->age_group_name}}
                              @endif
                          </div>
                      </div>
@@ -187,7 +187,7 @@
                     <div class="col-lg-6 col-md-6">
                         <div class="value text-left">
                           @if(isset($homeworkDetails))
-                          {{$homeworkDetails->sections->section_name}}
+                          {{$homeworkDetails->sections->mgender_name}}
                           @endif
                       </div>
                   </div>

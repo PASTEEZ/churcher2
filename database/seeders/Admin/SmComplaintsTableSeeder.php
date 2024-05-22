@@ -14,16 +14,16 @@ class SmComplaintsTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run($school_id, $academic_id, $count = 5)
+    public function run($church_id, $church_year_id, $count = 5)
     {
         SmSetupAdmin::factory()->times($count)->create([
             'type' => 2,
-            'school_id' => $school_id,
-            'academic_id' => $academic_id
+            'church_id' => $church_id,
+            'church_year_id' => $church_year_id
         ])->each(function ($complaint_type) use ($count){
             SmComplaint::factory()->times($count)->create([
-                'school_id' => $complaint_type->school_id,
-                'academic_id' => $complaint_type->academic_id
+                'church_id' => $complaint_type->church_id,
+                'church_year_id' => $complaint_type->church_year_id
             ]);
         });
 

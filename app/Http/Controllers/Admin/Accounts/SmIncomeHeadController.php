@@ -19,7 +19,7 @@ class SmIncomeHeadController extends Controller
     public function index(){
 
 		try{
-			$income_heads = SmIncomeHead::where('school_id',Auth::user()->school_id)->get();
+			$income_heads = SmIncomeHead::where('church_id',Auth::user()->church_id)->get();
 			return view('backEnd.accounts.income_head', compact('income_heads'));
 		}catch (\Exception $e) {
 		   Toastr::error('Operation Failed', 'Failed');
@@ -35,8 +35,8 @@ class SmIncomeHeadController extends Controller
 			$income_head = new SmIncomeHead();
 			$income_head->name = $request->income_head;
 			$income_head->description = $request->description;
-			$income_head->school_id = Auth::user()->school_id;
-			$income_head->academic_id = getAcademicId();
+			$income_head->church_id = Auth::user()->church_id;
+			$income_head->church_year_id = getAcademicId();
 		    $income_head->save();
 
 			Toastr::success('Operation successful', 'Success');
@@ -55,9 +55,9 @@ class SmIncomeHeadController extends Controller
 			 if (checkAdmin()) {
 				$income_head = SmIncomeHead::find($id);
 			}else{
-				$income_head = SmIncomeHead::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+				$income_head = SmIncomeHead::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
 			}
-			$income_heads = SmIncomeHead::where('school_id',Auth::user()->school_id)->get();
+			$income_heads = SmIncomeHead::where('church_id',Auth::user()->church_id)->get();
 			return view('backEnd.accounts.income_head', compact('income_head', 'income_heads'));
 		}catch (\Exception $e) {
 		   Toastr::error('Operation Failed', 'Failed');

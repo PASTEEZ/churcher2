@@ -20,7 +20,7 @@ return [
 
     "section_limit" => "সেকশন লিমিট",
 
-    "admission_no_limit" => "Admission No Limit",
+    "registration_no_limit" => "Admission No Limit",
 
     "invoice_number_position" => "ইনভয়েস নাম্বার অবস্থান",
 

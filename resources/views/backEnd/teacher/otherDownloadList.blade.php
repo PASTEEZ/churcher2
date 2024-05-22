@@ -83,10 +83,10 @@
                                     @endif
 
                                     @if(@$value->classes != "" && $value->sections != "")
-                                        @lang('study.all_students_of') ({{@$value->classes->class_name.'->'.@$value->sections->section_name}})
+                                        @lang('study.all_students_of') ({{@$value->classes->age_group_name.'->'.@$value->sections->mgender_name}})
                                     @endif
                                     @if(@$value->classes != "" && $value->section ==null)
-                                    @lang('study.all_students_of') ({{@$value->classes->class_name.'->'}} @lang('study.all_sections'))
+                                    @lang('study.all_students_of') ({{@$value->classes->age_group_name.'->'}} @lang('study.all_sections'))
                                     @endif
                                 @endif     
                             </td>
@@ -95,10 +95,10 @@
                                 {{ $value->semesterLabel->name }} -({{@$value->unAcademic->name}})
                                 @else 
                                     @if(@$value->classes != "")
-                                        {{@$value->classes->class_name}}
+                                        {{@$value->classes->age_group_name}}
                                     @endif
                                     @if($value->sections != "")
-                                        ({{@$value->sections->section_name}})
+                                        ({{@$value->sections->mgender_name}})
                                     @endif
 
                                     @if($value->section == Null)

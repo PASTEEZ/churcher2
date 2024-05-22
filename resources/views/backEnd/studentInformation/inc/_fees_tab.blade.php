@@ -7,10 +7,10 @@
                     <div class="main-title">
                         <h3 class="mb-10">
                             @if (moduleStatusCheck('University'))
-                                {{ $record->semesterLabel->name }} ({{ $record->unSection->section_name }}) -
+                                {{ $record->semesterLabel->name }} ({{ $record->unSection->mgender_name }}) -
                                 {{ @$record->unAcademic->name }}
                             @else
-                                {{ $record->class->class_name }} ({{ $record->section->section_name }})
+                                {{ $record->class->age_group_name }} ({{ $record->section->mgender_name }})
                             @endif
                         </h3>
                     </div>
@@ -102,14 +102,14 @@
                                     @php
                                         @$discount_amount = $fees_assigned->applied_discount;
                                         @$total_discount += @$discount_amount;
-                                        @$student_id = @$fees_assigned->student_id;
+                                        @$member_id = @$fees_assigned->member_id;
                                     @endphp
                                     @php
-                                        @$paid = App\SmFeesAssign::discountSum(@$fees_assigned->student_id, @$fees_assigned->feesGroupMaster->feesTypes->id, 'amount', $fees_assigned->record_id);
+                                        @$paid = App\SmFeesAssign::discountSum(@$fees_assigned->member_id, @$fees_assigned->feesGroupMaster->feesTypes->id, 'amount', $fees_assigned->record_id);
                                         @$total_grand_paid += @$paid;
                                     @endphp
                                     @php
-                                        @$fine = App\SmFeesAssign::discountSum(@$fees_assigned->student_id, @$fees_assigned->feesGroupMaster->feesTypes->id, 'fine', $fees_assigned->record_id);
+                                        @$fine = App\SmFeesAssign::discountSum(@$fees_assigned->member_id, @$fees_assigned->feesGroupMaster->feesTypes->id, 'fine', $fees_assigned->record_id);
                                         @$total_fine += @$fine;
                                     @endphp
 
@@ -160,7 +160,7 @@
                                         </td>
                                     </tr>
                                     @php
-                                        @$payments = App\SmFeesAssign::feesPayment(@$fees_assigned->feesGroupMaster->feesTypes->id, @$fees_assigned->student_id, $fees_assigned->record_id);
+                                        @$payments = App\SmFeesAssign::feesPayment(@$fees_assigned->feesGroupMaster->feesTypes->id, @$fees_assigned->member_id, $fees_assigned->record_id);
                                         $i = 0;
                                     @endphp
                                     @foreach ($payments as $payment)

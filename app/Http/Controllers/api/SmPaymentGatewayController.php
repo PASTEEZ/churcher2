@@ -15,7 +15,7 @@ class SmPaymentGatewayController extends Controller
     public function dataSave(Request $request){
 
         $fees_payment = new SmFeesPayment();
-        $fees_payment->student_id = $request->student_id;
+        $fees_payment->member_id = $request->member_id;
         $fees_payment->fees_type_id =$request->fees_type_id;
         $fees_payment->discount_amount = 0;
         $fees_payment->fine = 0;
@@ -23,8 +23,8 @@ class SmPaymentGatewayController extends Controller
         $fees_payment->assign_id = $request->assign_id;
         $fees_payment->payment_date = date('Y-m-d', strtotime(date('Y-m-d')));
         $fees_payment->payment_mode = $request->method;
-        $fees_payment->school_id = $request->school_id;
-        $fees_payment->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+        $fees_payment->church_id = $request->church_id;
+        $fees_payment->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
         $result = $fees_payment->save();
         if($result){
             return response()->json(['payment_ref' => $fees_payment->id], 200);
@@ -50,8 +50,8 @@ class SmPaymentGatewayController extends Controller
                 $add_income->income_head_id = $gs->income_head_id;
                 $add_income->payment_method_id = 4;
                 $add_income->created_by = Auth()->user()->id;
-                $add_income->school_id = Auth::user()->school_id;
-                $add_income->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+                $add_income->church_id = Auth::user()->church_id;
+                $add_income->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
                 $add_income->save();
 
                 return response()->json(['message' => "Payment successfully completed"], 200);

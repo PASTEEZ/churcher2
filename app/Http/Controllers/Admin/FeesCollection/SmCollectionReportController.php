@@ -50,9 +50,9 @@ class SmCollectionReportController extends Controller
                 $students = universityFilter($StudentRecord, $request)->get();
 
                 $fees_payments = UnFeesInstallmentAssign::with('payments')->whereIn('active_status', [1,2])
-                            ->whereIn('student_id', $students->pluck('student_id'))
+                            ->whereIn('member_id', $students->pluck('member_id'))
                             ->where('un_semester_label_id',$request->un_semester_label_id)
-                            ->where('school_id',auth()->user()->school_id)
+                            ->where('church_id',auth()->user()->church_id)
                             ->when($request->date_range, function ($q) use ($date_from, $date_to) {
                                 $q->where('payment_date',  '>=', $date_from);
                                 $q->where('payment_date',  '<=', $date_to);
@@ -62,12 +62,12 @@ class SmCollectionReportController extends Controller
             }elseif(directFees()){
                 $classes = SmClass::get();
                 $allStudent = StudentRecord::when($request->class, function ($q) use ($request) {
-                    $q->where('class_id', $request->class);
+                    $q->where('age_group_id', $request->class);
                 })
                 ->when($request->section, function ($q) use ($request){
-                    $q->where('section_id',$request->section);
+                    $q->where('mgender_id',$request->section);
                 })
-                ->where('academic_id', getAcademicId())
+                ->where('church_year_id', getAcademicId())
                 ->get();
                 $fees_payments = DireFeesInstallmentChildPayment::where('active_status', 1)
                             ->whereIn('record_id', $allStudent->pluck('id'))
@@ -76,46 +76,46 @@ class SmCollectionReportController extends Controller
                                 $q->where('payment_date',  '<=', $date_to);
                             })
                             ->where('paid_amount', '>', 0)
-                            ->where('school_id',auth()->user()->school_id)
+                            ->where('church_id',auth()->user()->church_id)
                             ->get();
             }else{
                 $classes = SmClass::get();
                 if($request->date_range ){
                     if($request->class){
-                        $students=StudentRecord::where('class_id',$request->class)
+                        $students=StudentRecord::where('age_group_id',$request->class)
                                             ->get();
     
                         $fees_payments = SmFeesPayment::where('active_status',1)
-                                        ->whereIn('student_id', $students->pluck('student_id'))
+                                        ->whereIn('member_id', $students->pluck('member_id'))
                                         ->where('payment_date', '>=', $date_from)
                                         ->where('payment_date', '<=', $date_to)
-                                        ->where('school_id',Auth::user()->school_id)
+                                        ->where('church_id',Auth::user()->church_id)
                                         ->get();
-                        $fees_payments = $fees_payments->groupBy('student_id');
+                        $fees_payments = $fees_payments->groupBy('member_id');
                     }else{
                         $fees_payments = SmFeesPayment::where('active_status',1)
                                     ->where('payment_date', '>=', $date_from)
                                     ->where('payment_date', '<=', $date_to)
-                                    ->where('school_id',Auth::user()->school_id)
+                                    ->where('church_id',Auth::user()->church_id)
                                     ->get();
-                        $fees_payments = $fees_payments->groupBy('student_id');
+                        $fees_payments = $fees_payments->groupBy('member_id');
                     }
                 }
 
                 if($request->class && $request->section){
-                    $students=StudentRecord::where('class_id',$request->class)
-                            ->where('section_id',$request->section)
-                            ->where('school_id',Auth::user()->school_id)
-                            ->where('academic_id', getAcademicId())
+                    $students=StudentRecord::where('age_group_id',$request->class)
+                            ->where('mgender_id',$request->section)
+                            ->where('church_id',Auth::user()->church_id)
+                            ->where('church_year_id', getAcademicId())
                             ->get();
     
                     $fees_payments = SmFeesPayment::where('active_status',1)
-                                    ->whereIn('student_id', $students->pluck('student_id'))
+                                    ->whereIn('member_id', $students->pluck('member_id'))
                                     ->where('payment_date', '>=', $date_from)
                                     ->where('payment_date', '<=', $date_to)
-                                    ->where('school_id',Auth::user()->school_id)
+                                    ->where('church_id',Auth::user()->church_id)
                                     ->get();
-                   $fees_payments = $fees_payments->groupBy('student_id');
+                   $fees_payments = $fees_payments->groupBy('member_id');
                    
                 }
 

@@ -42,7 +42,7 @@ class SmAddIncome extends Model
         return $query->where('date', '>=', $date_from)
             ->where('date', '<=', $date_to)
             ->where('active_status', 1)
-            ->where('school_id', Auth::user()->school_id)
+            ->where('church_id', Auth::user()->church_id)
             ->where('payment_method_id', $payment_method);
     }
 
@@ -50,16 +50,16 @@ class SmAddIncome extends Model
     {
         try {
             if(moduleStatusCheck('University')){
-                $m_total_income = SmAddIncome::where('un_academic_id', getAcademicId())
+                $m_total_income = SmAddIncome::where('un_church_year_id', getAcademicId())
                                 ->where('name', '!=', 'Fund Transfer')
-                                ->where('school_id', Auth::user()->school_id)
+                                ->where('church_id', Auth::user()->church_id)
                                 ->where('active_status', 1)
                                 ->where('date', 'like', date('Y-m-') . $i)
                                 ->sum('amount');
             }else{
-                $m_total_income = SmAddIncome::where('academic_id', getAcademicId())
+                $m_total_income = SmAddIncome::where('church_year_id', getAcademicId())
                                 ->where('name', '!=', 'Fund Transfer')
-                                ->where('school_id', Auth::user()->school_id)
+                                ->where('church_id', Auth::user()->church_id)
                                 ->where('active_status', 1)
                                 ->where('date', 'like', date('Y-m-') . $i)
                                 ->sum('amount');
@@ -75,16 +75,16 @@ class SmAddIncome extends Model
     {
         try {
             if(moduleStatusCheck('University')){
-                $m_total_expense = SmAddExpense::where('un_academic_id', getAcademicId())
+                $m_total_expense = SmAddExpense::where('un_church_year_id', getAcademicId())
                                 ->where('name', '!=', 'Fund Transfer')
-                                ->where('school_id', Auth::user()->school_id)
+                                ->where('church_id', Auth::user()->church_id)
                                 ->where('active_status', 1)
                                 ->where('date', 'like', date('Y-m-') . $i)
                                 ->sum('amount');
             }else{
-                $m_total_expense = SmAddExpense::where('academic_id', getAcademicId())
+                $m_total_expense = SmAddExpense::where('church_year_id', getAcademicId())
                                 ->where('name', '!=', 'Fund Transfer')
-                                ->where('school_id', Auth::user()->school_id)
+                                ->where('church_id', Auth::user()->church_id)
                                 ->where('active_status', 1)
                                 ->where('date', 'like', date('Y-m-') . $i)
                                 ->sum('amount');
@@ -100,16 +100,16 @@ class SmAddIncome extends Model
     {
         try {
             if(moduleStatusCheck('University')){
-                $y_total_income = SmAddIncome::where('un_academic_id', getAcademicId())
+                $y_total_income = SmAddIncome::where('un_church_year_id', getAcademicId())
                                 ->where('name', '!=', 'Fund Transfer')
-                                ->where('school_id', Auth::user()->school_id)
+                                ->where('church_id', Auth::user()->church_id)
                                 ->where('active_status', 1)
                                 ->where('date', 'like', date('Y-' . $i) . '%')
                                 ->sum('amount');
             }else{
-                $y_total_income = SmAddIncome::where('academic_id', getAcademicId())
+                $y_total_income = SmAddIncome::where('church_year_id', getAcademicId())
                                 ->where('name', '!=', 'Fund Transfer')
-                                ->where('school_id', Auth::user()->school_id)
+                                ->where('church_id', Auth::user()->church_id)
                                 ->where('active_status', 1)
                                 ->where('date', 'like', date('Y-' . $i) . '%')
                                 ->sum('amount');
@@ -124,9 +124,9 @@ class SmAddIncome extends Model
     public static function yearlyExpense($i)
     {
         try {
-            $m_add_expenses = SmAddExpense::where('academic_id', getAcademicId())
+            $m_add_expenses = SmAddExpense::where('church_year_id', getAcademicId())
                 ->where('name', '!=', 'Fund Transfer')
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->where('active_status', 1)
                 ->where('date', 'like', date('Y-' . $i) . '%')
                 ->sum('amount');

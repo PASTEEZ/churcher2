@@ -44,74 +44,74 @@ class SmEventController extends Controller
             $events->to_date = date('Y-m-d', strtotime($request->to_date));
             $events->created_by = $login_id;
             $events->uplad_image_file =fileUpload($request->upload_file_name,$destination);
-            $events->school_id = Auth::user()->school_id;
+            $events->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $events->un_academic_id = getAcademicId();
+                $events->un_church_year_id = getAcademicId();
             }else{
-                $events->academic_id = getAcademicId();
+                $events->church_year_id = getAcademicId();
             }
             $events->save();
             if ($request->for_whom == 'All') {
-                $users = User::where('school_id', Auth::user()->school_id)->where('active_status', 1)->get();
+                $users = User::where('church_id', Auth::user()->church_id)->where('active_status', 1)->get();
                 foreach ($users as $value) {
                     $notification = new SmNotification;
                     $notification->user_id = $value->id;
                     $notification->role_id = $value->role_id;
                     $notification->date = date('Y-m-d');
                     $notification->message = $request->event_title;
-                    $notification->school_id = Auth::user()->school_id;
+                    $notification->church_id = Auth::user()->church_id;
                     if(moduleStatusCheck('University')){
-                        $notification->un_academic_id = getAcademicId();
+                        $notification->un_church_year_id = getAcademicId();
                     }else{
-                        $notification->academic_id = getAcademicId();
+                        $notification->church_year_id = getAcademicId();
                     }
                     $notification->save();
                 }
             } elseif ($request->for_whom == 'Teacher') {
-                $users = User::where('school_id', Auth::user()->school_id)->where('active_status', 1)->where('role_id', 4)->get();
+                $users = User::where('church_id', Auth::user()->church_id)->where('active_status', 1)->where('role_id', 4)->get();
                 foreach ($users as $value) {
                     $notification = new SmNotification;
                     $notification->user_id = $value->id;
                     $notification->role_id = $value->role_id;
                     $notification->date = date('Y-m-d');
                     $notification->message = $request->event_title;
-                    $notification->school_id = Auth::user()->school_id;
+                    $notification->church_id = Auth::user()->church_id;
                     if(moduleStatusCheck('University')){
-                        $notification->un_academic_id = getAcademicId();
+                        $notification->un_church_year_id = getAcademicId();
                     }else{
-                        $notification->academic_id = getAcademicId();
+                        $notification->church_year_id = getAcademicId();
                     }
                     $notification->save();
                 }
             } elseif ($request->for_whom == 'Student') {
-                $users = User::where('school_id', Auth::user()->school_id)->where('active_status', 1)->where('role_id', 2)->get();
+                $users = User::where('church_id', Auth::user()->church_id)->where('active_status', 1)->where('role_id', 2)->get();
                 foreach ($users as $value) {
                     $notification = new SmNotification;
                     $notification->user_id = $value->id;
                     $notification->role_id = $value->role_id;
                     $notification->date = date('Y-m-d');
                     $notification->message = $request->event_title;
-                    $notification->school_id = Auth::user()->school_id;
+                    $notification->church_id = Auth::user()->church_id;
                     if(moduleStatusCheck('University')){
-                        $notification->un_academic_id = getAcademicId();
+                        $notification->un_church_year_id = getAcademicId();
                     }else{
-                        $notification->academic_id = getAcademicId();
+                        $notification->church_year_id = getAcademicId();
                     }
                     $notification->save();
                 }
             } elseif ($request->for_whom == 'Parents') {
-                $users = User::where('school_id', Auth::user()->school_id)->where('active_status', 1)->where('role_id', 3)->get();
+                $users = User::where('church_id', Auth::user()->church_id)->where('active_status', 1)->where('role_id', 3)->get();
                 foreach ($users as $value) {
                     $notification = new SmNotification;
                     $notification->user_id = $value->id;
                     $notification->role_id = $value->role_id;
                     $notification->date = date('Y-m-d');
                     $notification->message = $request->event_title;
-                    $notification->school_id = Auth::user()->school_id;
+                    $notification->church_id = Auth::user()->church_id;
                     if(moduleStatusCheck('University')){
-                        $notification->un_academic_id = getAcademicId();
+                        $notification->un_church_year_id = getAcademicId();
                     }else{
-                        $notification->academic_id = getAcademicId();
+                        $notification->church_year_id = getAcademicId();
                     }
                     $notification->save();
                 }

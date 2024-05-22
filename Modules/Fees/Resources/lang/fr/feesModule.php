@@ -20,7 +20,7 @@ return [
 
     "section_limit" => "Limite de section",
 
-    "admission_no_limit" => "Droits d'entrée No Limit",
+    "registration_no_limit" => "Droits d'entrée No Limit",
 
     "invoice_number_position" => "Position du numéro de facture",
 
