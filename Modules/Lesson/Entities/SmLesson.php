@@ -20,11 +20,11 @@ class SmLesson extends Model
 
     public function class()
     {
-        return $this->belongsTo('App\SmClass', 'class_id', 'id');
+        return $this->belongsTo('App\SmClass', 'age_group_id', 'id');
     }
     public function section()
     {
-        return $this->belongsTo('App\SmSection', 'section_id', 'id');
+        return $this->belongsTo('App\SmSection', 'mgender_id', 'id');
     }
     public function subject()
     {
@@ -37,15 +37,15 @@ class SmLesson extends Model
     }
     public static function lessonName($class, $section, $subject)
     {
-        return SmLesson::where('class_id', $class)->where('section_id', $section)
+        return SmLesson::where('age_group_id', $class)->where('mgender_id', $section)
             ->where('subject_id', $subject)
-            ->where('academic_id', getAcademicId())
-            ->where('school_id', Auth::user()->school_id)
+            ->where('church_year_id', getAcademicId())
+            ->where('church_id', Auth::user()->church_id)
             ->get();
     }
     public function scopeStatusCheck($query)
     {
-        return $query->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->where('active_status', 1);
+        return $query->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->where('active_status', 1);
     }
     public function unSession()
     {
@@ -61,7 +61,7 @@ class SmLesson extends Model
     }
     public function unAcademic()
     {
-        return $this->belongsTo('Modules\University\Entities\UnAcademicYear', 'un_academic_id', 'id')->withDefault();
+        return $this->belongsTo('Modules\University\Entities\UnAcademicYear', 'un_church_year_id', 'id')->withDefault();
     }
     public function unSemester()
     {

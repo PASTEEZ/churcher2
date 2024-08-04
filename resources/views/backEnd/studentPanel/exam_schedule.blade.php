@@ -37,8 +37,8 @@
                                     <option data-display="Select Exam *" value="">@lang('exam.select_exam') *</option>
                                     @foreach($records as $record)
                                     @if($record->Exam)
-                                        @foreach($record->Exam->unique(['exam_type_id', 'class_id','section_id']) as $exam)
-                                        <option value="{{$exam->id}}" {{isset($exam_id)? (@$exam->id == @$exam_id? 'selected':''):''}}>{{$exam->examType->title}} - {{$record->class->class_name}} ({{$record->section->section_name}})</option>
+                                        @foreach($record->Exam->unique(['exam_type_id', 'age_group_id','mgender_id']) as $exam)
+                                        <option value="{{$exam->id}}" {{isset($exam_id)? (@$exam->id == @$exam_id? 'selected':''):''}}>{{$exam->examType->title}} - {{$record->class->age_group_name}} ({{$record->section->mgender_name}})</option>
                                         @endforeach
                                     @endif
                                     @endforeach
@@ -76,7 +76,7 @@
                     <div class="col-lg-6 pull-right">
                         <div class="main-title">
                             <div class="print_button pull-right mb-30">
-                                <a href="{{route('student-routine-print', [$class_id, $section_id,$exam_type_id])}}" class="primary-btn small fix-gr-bg pull-left" target="_blank"><i class="ti-printer"> </i> @lang('common.print')</a>
+                                <a href="{{route('student-routine-print', [$age_group_id, $mgender_id,$exam_type_id])}}" class="primary-btn small fix-gr-bg pull-left" target="_blank"><i class="ti-printer"> </i> @lang('common.print')</a>
                             </div>
                         </div>
                     </div>
@@ -107,7 +107,7 @@
                                     <td>
                                       <strong> {{ $exam_routine->subject ? $exam_routine->subject->subject_name :'' }} </strong>  {{ $exam_routine->subject ? '('.$exam_routine->subject->subject_code .')':'' }}
                                     </td>
-                                    <td>{{ $exam_routine->class ? $exam_routine->class->class_name :'' }} {{ $exam_routine->section ? '('. $exam_routine->section->section_name .')':'' }}</td>
+                                    <td>{{ $exam_routine->class ? $exam_routine->class->age_group_name :'' }} {{ $exam_routine->section ? '('. $exam_routine->section->mgender_name .')':'' }}</td>
                                     <td>{{ $exam_routine->teacher ? $exam_routine->teacher->full_name :'' }}</td>
                                    
                                     <td> {{ date('h:i A', strtotime(@$exam_routine->start_time))  }} - {{ date('h:i A', strtotime(@$exam_routine->end_time))  }} </td>

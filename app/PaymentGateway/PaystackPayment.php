@@ -42,7 +42,7 @@ class PaystackPayment{
             $payStackData = [];
             $email = "";
             $amount = $data['amount'];
-            $student = SmStudent::find($data['student_id']);
+            $student = SmStudent::find($data['member_id']);
                 if(!($student->email)){
                     $parent = SmParent::find($student->parent_id);
                     $email =  $parent->guardians_email;
@@ -52,7 +52,7 @@ class PaystackPayment{
           
 
             $paystack_info = SmPaymentGatewaySetting::where('gateway_name', 'Paystack')
-                            ->where('school_id', Auth::user()->school_id)
+                            ->where('church_id', Auth::user()->church_id)
                             ->first();
 
             if(!$paystack_info || !$paystack_info->gateway_secret_key){
@@ -87,7 +87,7 @@ class PaystackPayment{
                
                 
             }elseif($data['type'] == "Lms"){
-                Session::put('student_id', $data['student_id']);
+                Session::put('member_id', $data['member_id']);
                 Session::put('payment_type', "Lms");
                 Session::put('amount',  $data['amount']);
                 Session::put('payment_method', "Paystack");
@@ -103,7 +103,7 @@ class PaystackPayment{
             elseif($data['type'] == "direct_fees_total"){
                 Session::put('payment_type', $data['type']);
                 Session::put('record_id', $data['record_id']);
-                Session::put('student_id', $data['student_id']);
+                Session::put('member_id', $data['member_id']);
                 Session::put('request_amount', $data['request_amount']);
             }
 
@@ -148,8 +148,8 @@ class PaystackPayment{
                 $addPayment->payment_method= "Paystack";
                 $addPayment->user_id= $user->id;
                 $addPayment->type= $walletType;
-                $addPayment->school_id= Auth::user()->school_id;
-                $addPayment->academic_id= getAcademicId();
+                $addPayment->church_id= Auth::user()->church_id;
+                $addPayment->church_year_id= getAcademicId();
                 $addPayment->status = 'approve';
                 $result = $addPayment->save();
 
@@ -162,7 +162,7 @@ class PaystackPayment{
                     $compact['full_name'] =  $user->full_name;
                     $compact['method'] =  $addPayment->payment_method;
                     $compact['create_date'] =  date('Y-m-d');
-                    $compact['school_name'] =  $gs->school_name;
+                    $compact['church_name'] =  $gs->church_name;
                     $compact['current_balance'] =  $user->wallet_balance;
                     $compact['add_balance'] =  session()->get('amount');
 
@@ -193,7 +193,7 @@ class PaystackPayment{
                 Session::forget('transcation_id');
              
                 Toastr::success('Operation successful', 'Success');
-                return redirect()->to(url('fees/student-fees-list',$transcation->student_id));
+                return redirect()->to(url('fees/student-fees-list',$transcation->member_id));
                 
             }elseif(Session::get('payment_type') == "Lms"){
                 if(Session::get('purchase_log_id')) {
@@ -212,8 +212,8 @@ class PaystackPayment{
                     Session::forget('purchase_log_id');
 
                     Toastr::success('Operation successful', 'Success');
-                    return redirect()->to(url('lms/student/purchase-log',$coursePurchase->student_id));
-                    Session::forget('student_id');
+                    return redirect()->to(url('lms/student/purchase-log',$coursePurchase->member_id));
+                    Session::forget('member_id');
                 }
             } else if(Session::get('payment_type') == "Saas"){
                 $paymentId = Session::get('payment_id');
@@ -223,7 +223,7 @@ class PaystackPayment{
                 $payment->payment_date = date('Y-m-d');
                 $payment->save();
 
-                $school = SmSchool::find($payment->school_id);
+                $school = SmSchool::find($payment->church_id);
               
                 DB::commit();
                 Toastr::success('Operation successful', 'Success');
@@ -245,14 +245,14 @@ class PaystackPayment{
                 $result = $sub_payment->save();
                 if($result && $installment){
                     $fees_payment = new SmFeesPayment();
-                    $fees_payment->student_id = $installment->student_id;
+                    $fees_payment->member_id = $installment->member_id;
                     $fees_payment->amount = $sub_payment->amount;
                     $fees_payment->payment_date = date('Y-m-d', strtotime($sub_payment->payment_date));
                     $fees_payment->payment_mode = $sub_payment->payment_mode;
                     $fees_payment->created_by = Auth::user()->id;
-                    $fees_payment->school_id = Auth::user()->school_id;
+                    $fees_payment->church_id = Auth::user()->church_id;
                     $fees_payment->record_id = $sub_payment->record_id;
-                    $fees_payment->academic_id = getAcademicid();
+                    $fees_payment->church_year_id = getAcademicid();
                     $fees_payment->installment_payment_id = $sub_payment->id;
                     if(($all_sub_payment + $sub_payment->amount) == $payable_amount){
                         $installment->active_status = 1;
@@ -272,7 +272,7 @@ class PaystackPayment{
                     if(Auth::user()->role_id == 2){
                         return redirect()->to(url('student-fees'));
                     }else{
-                        return redirect()->to(url('parent-fees'.'/'.$installment->student_id));
+                        return redirect()->to(url('parent-fees'.'/'.$installment->member_id));
                     }
                 }
 
@@ -281,7 +281,7 @@ class PaystackPayment{
             {
                 $request_amount = Session::get('request_amount');
                 $record_id = Session::get('record_id');
-                $student_id = Session::get('student_id');
+                $member_id = Session::get('member_id');
                 $after_paid = $request_amount;
                 $installments = DirectFeesInstallmentAssign::where('record_id', $record_id)->get();
                 $total_paid = $installments->sum('paid_amount');
@@ -293,7 +293,7 @@ class PaystackPayment{
                     if(Auth::user()->role_id == 2){
                         return redirect()->to(url('student-fees'));
                     }else{
-                        return redirect()->to(url('parent-fees'.'/'.$student_id));
+                        return redirect()->to(url('parent-fees'.'/'.$member_id));
                     }
                 }
                 
@@ -311,16 +311,16 @@ class PaystackPayment{
                         }
 
                        $fees_payment = new SmFeesPayment();
-                       $fees_payment->student_id = $installment->student_id;
+                       $fees_payment->member_id = $installment->member_id;
                        $fees_payment->fees_discount_id = !empty($request->fees_discount_id) ? $request->fees_discount_id : "";
                        $fees_payment->discount_amount = !empty($request->applied_amount) ? $request->applied_amount : 0;
                        $fees_payment->amount = $paid_amount;
                        $fees_payment->payment_date = date('Y-m-d');
                        $fees_payment->payment_mode =  "Paystack";;
                        $fees_payment->created_by = Auth::id();
-                       $fees_payment->school_id = Auth::user()->school_id;
+                       $fees_payment->church_id = Auth::user()->church_id;
                        $fees_payment->record_id = $installment->record_id;
-                       $fees_payment->academic_id = getAcademicid();
+                       $fees_payment->church_year_id = getAcademicid();
                        $fees_payment->direct_fees_installment_assign_id = $installment->id;
                    
                         $payment_mode_name= "Paystack";
@@ -332,7 +332,7 @@ class PaystackPayment{
     
                         $payable_amount =  discountFees($installment->id);
                         $sub_payment = $installment->payments->sum('paid_amount');
-                        $last_inovoice = DireFeesInstallmentChildPayment::where('school_id',auth()->user()->school_id)->max('invoice_no');
+                        $last_inovoice = DireFeesInstallmentChildPayment::where('church_id',auth()->user()->church_id)->max('invoice_no');
     
                         $new_subPayment = new DireFeesInstallmentChildPayment();
                         $new_subPayment->direct_fees_installment_assign_id = $installment->id;
@@ -344,11 +344,11 @@ class PaystackPayment{
                         $new_subPayment->active_status = 1;
                         $new_subPayment->discount_amount = 0;
                         $new_subPayment->fees_type_id =  $installment->fees_type_id;
-                        $new_subPayment->student_id = $installment->student_id;
+                        $new_subPayment->member_id = $installment->member_id;
                         $new_subPayment->record_id = $installment->record_id;
                         $new_subPayment->created_by = Auth::user()->id;
                         $new_subPayment->updated_by =  Auth::user()->id;
-                        $new_subPayment->school_id = Auth::user()->school_id;
+                        $new_subPayment->church_id = Auth::user()->church_id;
                         $new_subPayment->balance_amount = ( $payable_amount - ($sub_payment + $paid_amount) ); 
                         $new_subPayment->save();
                         $fees_payment->installment_payment_id = $new_subPayment->id;
@@ -372,8 +372,8 @@ class PaystackPayment{
                        $add_income->income_head_id = $income_head->income_head_id;
                        $add_income->payment_method_id = $payment_method->id;
                        $add_income->created_by = Auth()->user()->id;
-                       $add_income->school_id = Auth::user()->school_id;
-                       $add_income->academic_id = getAcademicId();
+                       $add_income->church_id = Auth::user()->church_id;
+                       $add_income->church_year_id = getAcademicId();
                        $add_income->save();
                        $after_paid -= ( $paid_amount);
                     }
@@ -382,7 +382,7 @@ class PaystackPayment{
                 if(Auth::user()->role_id == 2){
                     return redirect()->to(url('student-fees'));
                 }else{
-                    return redirect()->to(url('parent-fees'.'/'.$installment->student_id));
+                    return redirect()->to(url('parent-fees'.'/'.$installment->member_id));
                 }
             } 
 

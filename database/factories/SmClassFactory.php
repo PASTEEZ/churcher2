@@ -24,8 +24,8 @@ class SmClassFactory extends Factory
     public function definition(): array
     {
         return [
-            'class_name' => $this->class[$this->i++] ?? $this->faker->word,
-            'school_id' => 1
+            'age_group_name' => $this->class[$this->i++] ?? $this->faker->word,
+            'church_id' => 1
         ];
     }
 }

@@ -55,7 +55,7 @@ class SmFeesController extends Controller
             $student = Auth::user()->student;
             $payment_gateway = SmPaymentMethhod::first();
             $records = studentRecords(null, $student->id)->with('fees.feesGroupMaster', 'class','section')->get();
-            $fees_discounts = SmFeesAssignDiscount::where('student_id', $student->id)->where('school_id',Auth::user()->school_id)->get();
+            $fees_discounts = SmFeesAssignDiscount::where('member_id', $student->id)->where('church_id',Auth::user()->church_id)->get();
             $applied_discount = [];
             foreach ($fees_discounts as $fees_discount) {
                 $fees_payment = SmFeesPayment::select('fees_discount_id')
@@ -68,7 +68,7 @@ class SmFeesController extends Controller
             }
 
             $paystack_info = DB::table('sm_payment_gateway_settings')->where('gateway_name', 'Paystack')
-                                        ->where('school_id', Auth::user()->school_id)->first();
+                                        ->where('church_id', Auth::user()->church_id)->first();
 
 
             $data['bank_info'] = SmPaymentMethhod::where('method', 'Bank')->first();
@@ -85,7 +85,7 @@ class SmFeesController extends Controller
     public function redirectToGateway(Request $request)
     {
         try {
-            $paystack_info = DB::table('sm_payment_gateway_settings')->where('gateway_name', 'Paystack')->where('school_id', Auth::user()->school_id)->first();
+            $paystack_info = DB::table('sm_payment_gateway_settings')->where('gateway_name', 'Paystack')->where('church_id', Auth::user()->church_id)->first();
             $withServiceCharge = $request->amount + (chargeAmount('Paystack', $request->amount));
            
             Config::set('paystack.publicKey', $paystack_info->gateway_publisher_key);
@@ -93,7 +93,7 @@ class SmFeesController extends Controller
             Config::set('paystack.merchantEmail', $paystack_info->gateway_username);
 
             Session::put('fees_type_id', $request->fees_type_id);
-            Session::put('student_id', $request->student_id);
+            Session::put('member_id', $request->member_id);
             Session::put('fees_master_id', $request->fees_master_id);
             Session::put('amount', $request->amount);
             Session::put('payment_mode', $request->payment_mode);
@@ -128,7 +128,7 @@ class SmFeesController extends Controller
             $amount = $amount / 100;
             $fees_master_id = Session::get('fees_master_id');
             $fees_payment = new SmFeesPayment();
-            $fees_payment->student_id = Session::get('student_id');
+            $fees_payment->member_id = Session::get('member_id');
             $fees_payment->discount_amount = 0;
             $fees_payment->fine = 0;
             $fees_payment->amount = $amount;
@@ -136,12 +136,12 @@ class SmFeesController extends Controller
             $fees_payment->payment_date = date('Y-m-d', strtotime(date('Y-m-d')));
             $fees_payment->payment_mode = 'PS';
             $fees_payment->record_id = Session::get('record_id');
-            $fees_payment->school_id = Auth::user()->school_id;
+            $fees_payment->church_id = Auth::user()->church_id;
 
             if(moduleStatusCheck('University')){
                 $installment = UnFeesInstallmentAssign::find(Session::get('installment_id'));
                 if($installment){
-                    $fees_payment->un_academic_id = getAcademicId();
+                    $fees_payment->un_church_year_id = getAcademicId();
                     $fees_payment->un_fees_installment_id  = $installment->installment_id;
                     $fees_payment->un_semester_label_id = $installment->un_semester_label_id;
                     $installment->paid_amount = discountFeesAmount($installment->id);
@@ -153,7 +153,7 @@ class SmFeesController extends Controller
             }
             else{
                 $fees_payment->fees_type_id = Session::get('fees_type_id');
-                $fees_payment->academic_id = getAcademicId();
+                $fees_payment->church_year_id = getAcademicId();
                 }
             $result = $fees_payment->save();
 
@@ -168,16 +168,16 @@ class SmFeesController extends Controller
             $add_income->income_head_id = $income_head->income_head_id;
             $add_income->payment_method_id = 5;
             $add_income->created_by = Auth()->user()->id;
-            $add_income->school_id = Auth::user()->school_id;
-            $add_income->academic_id = getAcademicId();
+            $add_income->church_id = Auth::user()->church_id;
+            $add_income->church_year_id = getAcademicId();
             $add_income->save();
 
             if(! moduleStatusCheck('University')){
                 $get_master_id=SmFeesMaster::join('sm_fees_assigns','sm_fees_assigns.fees_master_id','=','sm_fees_masters.id')
                 ->where('sm_fees_masters.fees_type_id',$fees_payment->fees_type_id)
-                ->where('sm_fees_assigns.student_id',$fees_payment->student_id)->first();
+                ->where('sm_fees_assigns.member_id',$fees_payment->member_id)->first();
 
-                $fees_assign=SmFeesAssign::where('fees_master_id',$get_master_id->fees_master_id)->where('student_id',$fees_payment->student_id)->where('school_id',Auth::user()->school_id)->first();
+                $fees_assign=SmFeesAssign::where('fees_master_id',$get_master_id->fees_master_id)->where('member_id',$fees_payment->member_id)->where('church_id',Auth::user()->church_id)->first();
                 $fees_assign->fees_amount-=$amount;
                 $fees_assign->save();
             }
@@ -190,8 +190,8 @@ class SmFeesController extends Controller
                     // return redirect('student-fees')->with('message-success', 'Fees payment has been collected  successfully');
                 } else {
                     Toastr::success('Operation successful', 'Success');
-                    return redirect('parent-fees/' . Session::get('student_id'));
-                    // return redirect('parent-fees/'.Session::get('student_id'))->with('message-success', 'Fees payment has been collected  successfully');
+                    return redirect('parent-fees/' . Session::get('member_id'));
+                    // return redirect('parent-fees/'.Session::get('member_id'))->with('message-success', 'Fees payment has been collected  successfully');
                 }
             } else {
                 if ($user->role_id == 2) {
@@ -210,16 +210,16 @@ class SmFeesController extends Controller
         }
     }
 
-    public function feesPaymentStripe($fees_type, $student_id, $amount,$assign_id,$record_id)
+    public function feesPaymentStripe($fees_type, $member_id, $amount,$assign_id,$record_id)
     {
-        $stripe_info = SmPaymentGatewaySetting::where('gateway_name', 'stripe')->where('school_id', Auth::user()->school_id)->first();
-        return view('backEnd.studentPanel.stripe_payment', compact('stripe_info', 'fees_type', 'student_id', 'amount','assign_id','record_id'));
+        $stripe_info = SmPaymentGatewaySetting::where('gateway_name', 'stripe')->where('church_id', Auth::user()->church_id)->first();
+        return view('backEnd.studentPanel.stripe_payment', compact('stripe_info', 'fees_type', 'member_id', 'amount','assign_id','record_id'));
     }
 
     public function feesPaymentStripeStore(Request $request)
     {
        
-        $payment_setting = SmPaymentGatewaySetting::where('gateway_name', 'Stripe')->where('school_id', Auth::user()->school_id)->first();
+        $payment_setting = SmPaymentGatewaySetting::where('gateway_name', 'Stripe')->where('church_id', Auth::user()->church_id)->first();
         $withServiceCharge = $request->amount +  chargeAmount('Stripe', $request->amount);
         
         Stripe\Stripe::setApiKey($payment_setting->gateway_secret_key);
@@ -228,14 +228,14 @@ class SmFeesController extends Controller
             "amount" => $withServiceCharge * 100,
             "currency" => "usd",
             "source" => $request->stripeToken,
-            "description" => generalSetting()->school_name
+            "description" => generalSetting()->church_name
         ]);
 
         $user = Auth::User();
 
-        // $student = SmStudent::where('user_id', $id)->where('school_id',Auth::user()->school_id)->first();
+        // $student = SmStudent::where('user_id', $id)->where('church_id',Auth::user()->church_id)->first();
         $fees_payment = new SmFeesPayment();
-        $fees_payment->student_id = $request->student_id;
+        $fees_payment->member_id = $request->member_id;
         $fees_payment->discount_amount = 0;
         $fees_payment->fine = 0;
         $fees_payment->amount = $request->amount;
@@ -243,10 +243,10 @@ class SmFeesController extends Controller
         $fees_payment->payment_date = date('Y-m-d', strtotime(date('Y-m-d')));
         $fees_payment->record_id = $request->record_id;
         $fees_payment->payment_mode = 'ST';
-        $fees_payment->school_id = Auth::user()->school_id;
+        $fees_payment->church_id = Auth::user()->church_id;
 
         if(moduleStatusCheck('University')){
-            $fees_payment->un_academic_id = getAcademicId();
+            $fees_payment->un_church_year_id = getAcademicId();
             $fees_payment->un_fees_installment_id  = $request->installment_id;
             $fees_payment->un_semester_label_id = $request->un_semester_label_id;
 
@@ -267,7 +267,7 @@ class SmFeesController extends Controller
         }
         else{
         $fees_payment->fees_type_id = $request->fees_type;
-        $fees_payment->academic_id = getAcademicId();
+        $fees_payment->church_year_id = getAcademicId();
         }
         
         $result = $fees_payment->save();
@@ -283,8 +283,8 @@ class SmFeesController extends Controller
         $add_income->income_head_id = $income_head->income_head_id;
         $add_income->payment_method_id = 4;
         $add_income->created_by = Auth()->user()->id;
-        $add_income->school_id = Auth::user()->school_id;
-        $add_income->academic_id = getAcademicId();
+        $add_income->church_id = Auth::user()->church_id;
+        $add_income->church_year_id = getAcademicId();
         $add_income->save();
 
         if(moduleStatusCheck('University')){
@@ -295,9 +295,9 @@ class SmFeesController extends Controller
         else{
             $get_master_id=SmFeesMaster::join('sm_fees_assigns','sm_fees_assigns.fees_master_id','=','sm_fees_masters.id')
                 ->where('sm_fees_masters.fees_type_id',$request->fees_type)
-                ->where('sm_fees_assigns.student_id',$request->student_id)->first();
+                ->where('sm_fees_assigns.member_id',$request->member_id)->first();
 
-            $fees_assign=SmFeesAssign::where('fees_master_id',$get_master_id->fees_master_id)->where('student_id',$fees_payment->student_id)->where('school_id',Auth::user()->school_id)->first();
+            $fees_assign=SmFeesAssign::where('fees_master_id',$get_master_id->fees_master_id)->where('member_id',$fees_payment->member_id)->where('church_id',Auth::user()->church_id)->first();
             $fees_assign->fees_amount-=$request->amount;
             $fees_assign->save();
         }
@@ -309,8 +309,8 @@ class SmFeesController extends Controller
                 // return redirect('student-fees')->with('message-success', 'Fees payment has been collected  successfully');
             } else {
                 Toastr::success('Operation successful', 'Success');
-                return redirect('parent-fees/' . $request->student_id);
-                // return redirect('parent-fees/'.Session::get('student_id'))->with('message-success', 'Fees payment has been collected  successfully');
+                return redirect('parent-fees/' . $request->member_id);
+                // return redirect('parent-fees/'.Session::get('member_id'))->with('message-success', 'Fees payment has been collected  successfully');
             }
         } else {
             if ($user->role_id == 2) {
@@ -318,7 +318,7 @@ class SmFeesController extends Controller
                 return redirect('student-fees');
             } else {
                 Toastr::error('Operation Failed', 'Failed');
-                return redirect('parent-fees/' . $request->student_id);
+                return redirect('parent-fees/' . $request->member_id);
               
             }
         }
@@ -326,36 +326,36 @@ class SmFeesController extends Controller
 
     }
 
-    public function feesGenerateModalChild(Request $request, $amount, $student_id, $type,$assign_id, $record_id)
+    public function feesGenerateModalChild(Request $request, $amount, $member_id, $type,$assign_id, $record_id)
     {
         try {
             $amount = $amount;
             $fees_type_id = $type;
-            $std_info = StudentRecord::where('id',$record_id)->where('student_id',$student_id)->select('class_id','section_id')->first();
+            $std_info = StudentRecord::where('id',$record_id)->where('member_id',$member_id)->select('age_group_id','mgender_id')->first();
             
-            $discounts = SmFeesAssignDiscount::where('student_id', $student_id)->where('record_id',$record_id)->where('school_id', Auth::user()->school_id)->get();
+            $discounts = SmFeesAssignDiscount::where('member_id', $member_id)->where('record_id',$record_id)->where('church_id', Auth::user()->church_id)->get();
             
             $banks = SmBankAccount::where('active_status', '=', 1)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->get();
 
                 $applied_discount = [];
                 foreach ($discounts as $fees_discount) {
-                    $fees_payment = SmFeesPayment::where('record_id',$record_id)->where('active_status',1)->select('fees_discount_id')->where('fees_discount_id', $fees_discount->id)->where('school_id', Auth::user()->school_id)->first();
+                    $fees_payment = SmFeesPayment::where('record_id',$record_id)->where('active_status',1)->select('fees_discount_id')->where('fees_discount_id', $fees_discount->id)->where('church_id', Auth::user()->church_id)->first();
                     if (isset($fees_payment->fees_discount_id)) {
                         $applied_discount[] = $fees_payment->fees_discount_id;
                     }
                 }
 
 
-            $data['bank_info'] = SmPaymentGatewaySetting::where('gateway_name', 'Bank')->where('school_id', Auth::user()->school_id)->first();
-            $data['cheque_info'] = SmPaymentGatewaySetting::where('gateway_name', 'Cheque')->where('school_id', Auth::user()->school_id)->first();
+            $data['bank_info'] = SmPaymentGatewaySetting::where('gateway_name', 'Bank')->where('church_id', Auth::user()->church_id)->first();
+            $data['cheque_info'] = SmPaymentGatewaySetting::where('gateway_name', 'Cheque')->where('church_id', Auth::user()->church_id)->first();
 
 
-            $method['bank_info'] = SmPaymentMethhod::where('method', 'Bank')->where('school_id', Auth::user()->school_id)->first();
-            $method['cheque_info'] = SmPaymentMethhod::where('method', 'Cheque')->where('school_id', Auth::user()->school_id)->first();
+            $method['bank_info'] = SmPaymentMethhod::where('method', 'Bank')->where('church_id', Auth::user()->church_id)->first();
+            $method['cheque_info'] = SmPaymentMethhod::where('method', 'Cheque')->where('church_id', Auth::user()->church_id)->first();
 
-            return view('backEnd.studentPanel.fees_generate_modal_child', compact('amount','assign_id', 'discounts', 'fees_type_id', 'student_id', 'std_info','applied_discount', 'data', 'method','banks','record_id'));
+            return view('backEnd.studentPanel.fees_generate_modal_child', compact('amount','assign_id', 'discounts', 'fees_type_id', 'member_id', 'std_info','applied_discount', 'data', 'method','banks','record_id'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -385,7 +385,7 @@ class SmFeesController extends Controller
                     $payable_amount =  discountFees($installment->id);
                     $sub_payment = $installment->payments->sum('paid_amount');
                    
-                    $last_inovoice = DireFeesInstallmentChildPayment::where('school_id',auth()->user()->school_id)->max('invoice_no');
+                    $last_inovoice = DireFeesInstallmentChildPayment::where('church_id',auth()->user()->church_id)->max('invoice_no');
                     $new_subPayment = new DireFeesInstallmentChildPayment();
                     $new_subPayment->direct_fees_installment_assign_id = $installment->id;
                     $new_subPayment->invoice_no = ( $last_inovoice +1 ) ?? 1;
@@ -397,16 +397,16 @@ class SmFeesController extends Controller
                     $new_subPayment->active_status = 0;
                     $new_subPayment->discount_amount = 0;
                     $new_subPayment->fees_type_id =  $installment->fees_type_id;
-                    $new_subPayment->student_id = $request->student_id;
+                    $new_subPayment->member_id = $request->member_id;
                     $new_subPayment->record_id = $request->record_id;
                     $new_subPayment->created_by = Auth::user()->id;
                     $new_subPayment->updated_by =  Auth::user()->id;
-                    $new_subPayment->school_id = Auth::user()->school_id;
+                    $new_subPayment->church_id = Auth::user()->church_id;
                     $new_subPayment->balance_amount = ( $payable_amount - ($sub_payment + $request->amount) ); 
                     $new_subPayment->save();
                     $data = [];
                     $serviceCharge = 0;
-                    $gateway_setting = SmPaymentGatewaySetting::where('gateway_name',$request->payment_mode)->where('school_id',Auth::user()->school_id)->first();
+                    $gateway_setting = SmPaymentGatewaySetting::where('gateway_name',$request->payment_mode)->where('church_id',Auth::user()->church_id)->first();
                     if($gateway_setting){
                         $serviceCharge = chargeAmount($request->payment_mode, $request->amount);
                     }
@@ -416,10 +416,10 @@ class SmFeesController extends Controller
                     $data['sub_payment_id'] = $new_subPayment->id;
                     $data['installment_id'] = $installment->id;
                     $data['record_id'] = $installment->id;
-                    $data['student_id'] = $installment->student_id;
+                    $data['member_id'] = $installment->member_id;
                     $data['type'] = "direct_fees";
                     $data['method'] = $request->payment_mode;
-                    $data['description'] = generalSetting()->school_name." Fees Installment";
+                    $data['description'] = generalSetting()->church_name." Fees Installment";
                     
                     $classMap = config('paymentGateway.'.$data['method']);
                     
@@ -480,14 +480,14 @@ class SmFeesController extends Controller
             $payment->amount = $request->amount;
             $payment->note = $request->note;
             $payment->slip = $fileName;
-            $payment->student_id = $request->student_id;
+            $payment->member_id = $request->member_id;
             $payment->payment_mode = $request->payment_mode;
             if($payment_method->id==3){
                 $payment->bank_id = $request->bank_id;
             }
-            $payment->academic_id = getAcademicId();
+            $payment->church_year_id = getAcademicId();
             if(moduleStatusCheck('University')){
-                $payment->un_academic_id= getAcademicId();
+                $payment->un_church_year_id= getAcademicId();
                 $payment->un_fees_installment_id  = $request->installment_id;
                 $payment->un_semester_label_id = $request->un_semester_label_id;
 
@@ -505,7 +505,7 @@ class SmFeesController extends Controller
                 $payable_amount =  discountFeesAmount($installment->id);
                 $sub_payment = $installment->payments->sum('paid_amount');
                
-                $last_inovoice = UnFeesInstallAssignChildPayment::where('school_id',auth()->user()->school_id)->max('invoice_no');
+                $last_inovoice = UnFeesInstallAssignChildPayment::where('church_id',auth()->user()->church_id)->max('invoice_no');
                 $new_subPayment = new UnFeesInstallAssignChildPayment();
                 $new_subPayment->un_fees_installment_assign_id = $installment->id;
                 $new_subPayment->invoice_no = ( $last_inovoice + 1 ) ?? 1;
@@ -519,23 +519,23 @@ class SmFeesController extends Controller
                 $new_subPayment->bank_id = $request->bank_id;
                 $new_subPayment->discount_amount = 0;
                 $new_subPayment->fees_type_id =  $installment->fees_type_id;
-                $new_subPayment->student_id = $request->student_id;
+                $new_subPayment->member_id = $request->member_id;
                 $new_subPayment->record_id = $request->record_id;
                 $new_subPayment->un_semester_label_id = $request->un_semester_label_id;;
-                $new_subPayment->un_academic_id = getAcademicId();
+                $new_subPayment->un_church_year_id = getAcademicId();
                 $new_subPayment->created_by = Auth::user()->id;
                 $new_subPayment->updated_by =  Auth::user()->id;
-                $new_subPayment->school_id = Auth::user()->school_id;
+                $new_subPayment->church_id = Auth::user()->church_id;
                 $new_subPayment->balance_amount = ( $payable_amount - ($sub_payment + $request->amount) ); 
                 $new_subPayment->save();
 
                 $payment->child_payment_id = $new_subPayment->id;
 
             }elseif(directFees()){
-                $payment->class_id = $student_record->class_id;
-                $payment->section_id = $student_record->section_id;
+                $payment->age_group_id = $student_record->age_group_id;
+                $payment->mgender_id = $student_record->mgender_id;
                 $payment->record_id = $student_record->id;
-                $payment->school_id = Auth::user()->school_id;
+                $payment->church_id = Auth::user()->church_id;
                 $installment = DirectFeesInstallmentAssign::find($request->installment_id);
                 $installment->payment_date =  $newformat;
                 $installment->payment_mode = $request->payment_mode;
@@ -549,7 +549,7 @@ class SmFeesController extends Controller
                 $payable_amount =  discountFees($installment->id);
                 $sub_payment = $installment->payments->sum('paid_amount');
                
-                $last_inovoice = DireFeesInstallmentChildPayment::where('school_id',auth()->user()->school_id)->max('invoice_no');
+                $last_inovoice = DireFeesInstallmentChildPayment::where('church_id',auth()->user()->church_id)->max('invoice_no');
                 $new_subPayment = new DireFeesInstallmentChildPayment();
                 $new_subPayment->direct_fees_installment_assign_id = $installment->id;
                 $new_subPayment->invoice_no = ( $last_inovoice +1 ) ?? 1;
@@ -563,11 +563,11 @@ class SmFeesController extends Controller
                 $new_subPayment->bank_id = $request->bank_id;
                 $new_subPayment->discount_amount = 0;
                 $new_subPayment->fees_type_id =  $installment->fees_type_id;
-                $new_subPayment->student_id = $request->student_id;
+                $new_subPayment->member_id = $request->member_id;
                 $new_subPayment->record_id = $request->record_id;
                 $new_subPayment->created_by = Auth::user()->id;
                 $new_subPayment->updated_by =  Auth::user()->id;
-                $new_subPayment->school_id = Auth::user()->school_id;
+                $new_subPayment->church_id = Auth::user()->church_id;
                 $new_subPayment->balance_amount = ( $payable_amount - ($sub_payment + $request->amount) ); 
                 $new_subPayment->save();
                 
@@ -577,10 +577,10 @@ class SmFeesController extends Controller
             
             else{
                 $payment->assign_id= $request->assign_id;
-                $payment->class_id = $request->class_id;
-                $payment->section_id = $request->section_id;
+                $payment->age_group_id = $request->age_group_id;
+                $payment->mgender_id = $request->mgender_id;
                 $payment->record_id = $request->record_id;
-                $payment->school_id = Auth::user()->school_id;
+                $payment->church_id = Auth::user()->church_id;
                 $payment->fees_type_id = $request->fees_type_id;
             }
 
@@ -597,14 +597,14 @@ class SmFeesController extends Controller
     public function feesGenerateModalChildView($id,$type_id)
     {
 
-        $fees_payments = SmBankPaymentSlip::where('student_id',$id)->where('fees_type_id',$id)->get();
+        $fees_payments = SmBankPaymentSlip::where('member_id',$id)->where('fees_type_id',$id)->get();
         return view('backEnd.studentPanel.view_bank_payment', compact('fees_payments'));
     }
 
     public function feesGenerateModalBankView($sid,$ft_id)
     {
-        $fees_payments = SmBankPaymentSlip::where('student_id',$sid)->where('fees_type_id',$ft_id)->get();
-        $amount = SmBankPaymentSlip::where('student_id',$sid)->where('fees_type_id',$ft_id)->sum('amount');
+        $fees_payments = SmBankPaymentSlip::where('member_id',$sid)->where('fees_type_id',$ft_id)->get();
+        $amount = SmBankPaymentSlip::where('member_id',$sid)->where('fees_type_id',$ft_id)->sum('amount');
         return view('backEnd.studentPanel.view_bank_payment', compact('fees_payments','amount'));
     }
 
@@ -652,35 +652,35 @@ class SmFeesController extends Controller
         try {
             $amount = $amount;
             $std_info = StudentRecord::find($record_id);
-            $student_id = $std_info->student_id;
-            $discounts = SmFeesAssignDiscount::where('student_id', $std_info->student_id)->where('record_id',$record_id)->where('school_id', Auth::user()->school_id)->get();
+            $member_id = $std_info->member_id;
+            $discounts = SmFeesAssignDiscount::where('member_id', $std_info->member_id)->where('record_id',$record_id)->where('church_id', Auth::user()->church_id)->get();
             
             $banks = SmBankAccount::where('active_status', '=', 1)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->get();
                     
                 $applied_discount = [];
                 foreach ($discounts as $fees_discount) {
-                    $fees_payment = SmFeesPayment::where('record_id',$record_id)->where('active_status',1)->select('fees_discount_id')->where('fees_discount_id', $fees_discount->id)->where('school_id', Auth::user()->school_id)->first();
+                    $fees_payment = SmFeesPayment::where('record_id',$record_id)->where('active_status',1)->select('fees_discount_id')->where('fees_discount_id', $fees_discount->id)->where('church_id', Auth::user()->church_id)->first();
                     if (isset($fees_payment->fees_discount_id)) {
                         $applied_discount[] = $fees_payment->fees_discount_id;
                     }
                 }
 
-            $data['bank_info'] = SmPaymentGatewaySetting::where('gateway_name', 'Bank')->where('school_id', Auth::user()->school_id)->first();
-            $method['bank_info'] = SmPaymentMethhod::where('method', 'Bank')->where('school_id', Auth::user()->school_id)->first();
+            $data['bank_info'] = SmPaymentGatewaySetting::where('gateway_name', 'Bank')->where('church_id', Auth::user()->church_id)->first();
+            $method['bank_info'] = SmPaymentMethhod::where('method', 'Bank')->where('church_id', Auth::user()->church_id)->first();
 
-            $data['cheque_info'] = SmPaymentGatewaySetting::where('gateway_name', 'Cheque')->where('school_id', Auth::user()->school_id)->first();
-            $method['cheque_info'] = SmPaymentMethhod::where('method', 'Cheque')->where('school_id', Auth::user()->school_id)->first();
+            $data['cheque_info'] = SmPaymentGatewaySetting::where('gateway_name', 'Cheque')->where('church_id', Auth::user()->church_id)->first();
+            $method['cheque_info'] = SmPaymentMethhod::where('method', 'Cheque')->where('church_id', Auth::user()->church_id)->first();
             
-            $method['PayPal'] = SmPaymentMethhod::where('method', 'PayPal')->where('school_id', Auth::user()->school_id)->first();
-            $method['Stripe'] = SmPaymentMethhod::where('method', 'Stripe')->where('school_id', Auth::user()->school_id)->first();
-            $method['Paystack'] = SmPaymentMethhod::where('method', 'Paystack')->where('school_id', Auth::user()->school_id)->first();
+            $method['PayPal'] = SmPaymentMethhod::where('method', 'PayPal')->where('church_id', Auth::user()->church_id)->first();
+            $method['Stripe'] = SmPaymentMethhod::where('method', 'Stripe')->where('church_id', Auth::user()->church_id)->first();
+            $method['Paystack'] = SmPaymentMethhod::where('method', 'Paystack')->where('church_id', Auth::user()->church_id)->first();
 
-            $data['Stripe'] = SmPaymentGatewaySetting::where('gateway_name', 'Stripe')->where('school_id', Auth::user()->school_id)->first();
+            $data['Stripe'] = SmPaymentGatewaySetting::where('gateway_name', 'Stripe')->where('church_id', Auth::user()->church_id)->first();
             $installment = DirectFeesInstallmentAssign::find($installment_id);
             $balance_fees = discountFees($installment_id)  - $installment->payments->sum('paid_amount');
-            return view('backEnd.feesCollection.directFees.fees_generate_modal_child', compact('amount','discounts','student_id', 'std_info','applied_discount', 'data', 'method','banks','record_id','installment_id','balance_fees'));
+            return view('backEnd.feesCollection.directFees.fees_generate_modal_child', compact('amount','discounts','member_id', 'std_info','applied_discount', 'data', 'method','banks','record_id','installment_id','balance_fees'));
         } catch (\Exception $e) {
        
             Toastr::error('Operation Failed', 'Failed');
@@ -691,7 +691,7 @@ class SmFeesController extends Controller
 
     public function directFeesPaymentStripe($installment_id){
         $installment = DirectFeesInstallmentAssign::find($installment_id);
-        $stripe_info = SmPaymentGatewaySetting::where('gateway_name', 'stripe')->where('school_id', Auth::user()->school_id)->first();
+        $stripe_info = SmPaymentGatewaySetting::where('gateway_name', 'stripe')->where('church_id', Auth::user()->church_id)->first();
         return view('backEnd.feesCollection.directFees.stripePaymentModal', compact('stripe_info', 'installment'));
 
     }
@@ -700,39 +700,39 @@ class SmFeesController extends Controller
 
         try{
             $studentRerod = StudentRecord::find($record_id);
-            $student_id =   $studentRerod->student_id; 
+            $member_id =   $studentRerod->member_id; 
     
-            $banks = SmBankAccount::where('school_id', Auth::user()->school_id)
+            $banks = SmBankAccount::where('church_id', Auth::user()->church_id)
                     ->get();
             $discounts = [];
             $data['bank_info'] = SmPaymentGatewaySetting::where('gateway_name', 'Bank')
-                                ->where('school_id', Auth::user()->school_id)
+                                ->where('church_id', Auth::user()->church_id)
                                 ->first();
     
             $data['cheque_info'] = SmPaymentGatewaySetting::where('gateway_name', 'Cheque')
-                                ->where('school_id', Auth::user()->school_id)
+                                ->where('church_id', Auth::user()->church_id)
                                 ->first();
     
             $method['bank_info'] = SmPaymentMethhod::where('method', 'Bank')
-                                ->where('school_id', Auth::user()->school_id)
+                                ->where('church_id', Auth::user()->church_id)
                                 ->first();
     
             $method['cheque_info'] = SmPaymentMethhod::where('method', 'Cheque')
-                                    ->where('school_id', Auth::user()->school_id)
+                                    ->where('church_id', Auth::user()->church_id)
                                     ->first();
 
-            $method['PayPal'] = SmPaymentMethhod::where('method', 'PayPal')->where('school_id', Auth::user()->school_id)->first();
-            $method['Stripe'] = SmPaymentMethhod::where('method', 'Stripe')->where('school_id', Auth::user()->school_id)->first();
-            $method['Paystack'] = SmPaymentMethhod::where('method', 'Paystack')->where('school_id', Auth::user()->school_id)->first();
+            $method['PayPal'] = SmPaymentMethhod::where('method', 'PayPal')->where('church_id', Auth::user()->church_id)->first();
+            $method['Stripe'] = SmPaymentMethhod::where('method', 'Stripe')->where('church_id', Auth::user()->church_id)->first();
+            $method['Paystack'] = SmPaymentMethhod::where('method', 'Paystack')->where('church_id', Auth::user()->church_id)->first();
 
-            $data['Stripe'] = SmPaymentGatewaySetting::where('gateway_name', 'Stripe')->where('school_id', Auth::user()->school_id)->first();
+            $data['Stripe'] = SmPaymentGatewaySetting::where('gateway_name', 'Stripe')->where('church_id', Auth::user()->church_id)->first();
 
             $total_amount = DirectFeesInstallmentAssign::where('record_id', $record_id)->sum('amount');
             $total_discount = DirectFeesInstallmentAssign::where('record_id', $record_id)->sum('discount_amount');
             $total_paid = DirectFeesInstallmentAssign::where('record_id', $record_id)->sum('paid_amount');
             $balace_amount = $total_amount -  ($total_discount +  $total_paid);
             $amount = $balace_amount;
-            return view('backEnd.feesCollection.directFees.total_payment_modal', compact('amount','discounts',  'student_id', 'data', 'method','banks','record_id','balace_amount'));
+            return view('backEnd.feesCollection.directFees.total_payment_modal', compact('amount','discounts',  'member_id', 'data', 'method','banks','record_id','balace_amount'));
 
         }
         catch(\Exception $e){
@@ -747,7 +747,7 @@ class SmFeesController extends Controller
                 if($request->payment_mode == "Stripe" || $request->payment_mode == "Paystack" || $request->payment_mode == "PayPal"){
                     $data = [];
                         $serviceCharge = 0;
-                        $gateway_setting = SmPaymentGatewaySetting::where('gateway_name',$request->payment_mode)->where('school_id',Auth::user()->school_id)->first();
+                        $gateway_setting = SmPaymentGatewaySetting::where('gateway_name',$request->payment_mode)->where('church_id',Auth::user()->church_id)->first();
                         if($gateway_setting){
                             $serviceCharge = chargeAmount($request->payment_mode, $request->request_amount);
                         }
@@ -756,17 +756,17 @@ class SmFeesController extends Controller
                         $data['amount'] = $request->request_amount + $serviceCharge;
                         $data['stripeToken'] = $request->stripeToken;
                         $data['record_id'] = $request->record_id;
-                        $data['student_id'] = $request->student_id;
+                        $data['member_id'] = $request->member_id;
                         $data['type'] = "direct_fees_total";
                         $data['method'] = $request->payment_mode;
-                        $data['description'] = generalSetting()->school_name." Fees Installment";
+                        $data['description'] = generalSetting()->church_name." Fees Installment";
                         $classMap = config('paymentGateway.'.$data['method']);
                         $make_payment = new $classMap();
                         return $make_payment->handle($data);
                 }
                 $record_id = $request->record_id;
                 $student_record = StudentRecord::find($record_id);
-                $student_id = $request->student_id;
+                $member_id = $request->member_id;
                 $request_amount = $request->request_amount;
                 $after_paid = $request_amount;
                 
@@ -826,14 +826,14 @@ class SmFeesController extends Controller
                         $payment->amount = $paid_amount;
                         $payment->note = $request->note;
                         $payment->slip = $fileName;
-                        $payment->student_id = $request->student_id;
+                        $payment->member_id = $request->member_id;
                         $payment->payment_mode = $request->payment_mode;
                         if($payment_method->id==3){
                             $payment->bank_id = $request->bank_id;
                         }
-                        $payment->academic_id = getAcademicId();
+                        $payment->church_year_id = getAcademicId();
                         if(moduleStatusCheck('University')){
-                            $payment->un_academic_id= getAcademicId();
+                            $payment->un_church_year_id= getAcademicId();
                             $payment->un_fees_installment_id  = $installment->id;
                             $payment->un_semester_label_id = $student_record->un_semester_label_id;
                             $installment = UnFeesInstallmentAssign::find($installment->id);
@@ -850,7 +850,7 @@ class SmFeesController extends Controller
                             $payable_amount =  discountFeesAmount($installment->id);
                             $sub_payment = $installment->payments->sum('paid_amount');
                         
-                            $last_inovoice = UnFeesInstallAssignChildPayment::where('school_id',auth()->user()->school_id)->max('invoice_no');
+                            $last_inovoice = UnFeesInstallAssignChildPayment::where('church_id',auth()->user()->church_id)->max('invoice_no');
                             $new_subPayment = new UnFeesInstallAssignChildPayment();
                             $new_subPayment->un_fees_installment_assign_id = $installment->id;
                             $new_subPayment->invoice_no = ( $last_inovoice + 1 ) ?? 1;
@@ -864,23 +864,23 @@ class SmFeesController extends Controller
                             $new_subPayment->bank_id = $request->bank_id;
                             $new_subPayment->discount_amount = 0;
                             $new_subPayment->fees_type_id =  $installment->fees_type_id;
-                            $new_subPayment->student_id = $student_record->student_id;
+                            $new_subPayment->member_id = $student_record->member_id;
                             $new_subPayment->record_id = $request->record_id;
                             $new_subPayment->un_semester_label_id = $student_record->un_semester_label_id;;
-                            $new_subPayment->un_academic_id = getAcademicId();
+                            $new_subPayment->un_church_year_id = getAcademicId();
                             $new_subPayment->created_by = Auth::user()->id;
                             $new_subPayment->updated_by =  Auth::user()->id;
-                            $new_subPayment->school_id = Auth::user()->school_id;
+                            $new_subPayment->church_id = Auth::user()->church_id;
                             $new_subPayment->balance_amount = ($payable_amount - ($sub_payment + $paid_amount)); 
                             $new_subPayment->save();
                             $payment->child_payment_id = $new_subPayment->id;
 
                         }
                         elseif(directFees()){
-                            $payment->class_id = $student_record->class_id;
-                            $payment->section_id = $student_record->section_id;
+                            $payment->age_group_id = $student_record->age_group_id;
+                            $payment->mgender_id = $student_record->mgender_id;
                             $payment->record_id = $student_record->id;
-                            $payment->school_id = Auth::user()->school_id;
+                            $payment->church_id = Auth::user()->church_id;
                             $installment = DirectFeesInstallmentAssign::find($installment->id);
                             $installment->payment_date =  $newformat;
                             $installment->payment_mode = $request->payment_mode;
@@ -894,7 +894,7 @@ class SmFeesController extends Controller
                             $payable_amount =  discountFees($installment->id);
                             $sub_payment = $installment->payments->sum('paid_amount');
                         
-                            $last_inovoice = DireFeesInstallmentChildPayment::where('school_id',auth()->user()->school_id)->max('invoice_no');
+                            $last_inovoice = DireFeesInstallmentChildPayment::where('church_id',auth()->user()->church_id)->max('invoice_no');
                             $new_subPayment = new DireFeesInstallmentChildPayment();
                             $new_subPayment->direct_fees_installment_assign_id = $installment->id;
                             $new_subPayment->invoice_no = ( $last_inovoice +1 ) ?? 1;
@@ -908,11 +908,11 @@ class SmFeesController extends Controller
                             $new_subPayment->bank_id = $request->bank_id;
                             $new_subPayment->discount_amount = 0;
                             $new_subPayment->fees_type_id =  $installment->fees_type_id;
-                            $new_subPayment->student_id = $request->student_id;
+                            $new_subPayment->member_id = $request->member_id;
                             $new_subPayment->record_id = $request->record_id;
                             $new_subPayment->created_by = Auth::user()->id;
                             $new_subPayment->updated_by =  Auth::user()->id;
-                            $new_subPayment->school_id = Auth::user()->school_id;
+                            $new_subPayment->church_id = Auth::user()->church_id;
                             $new_subPayment->balance_amount = ( $payable_amount - ($sub_payment + $paid_amount) ); 
                             $new_subPayment->save();
                             

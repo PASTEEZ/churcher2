@@ -139,7 +139,7 @@ table{
     display: flex;
     flex-basis: 50%;
 }
-.school_name{
+.church_name{
     text-align: center;
 }
 .numbered_table_row{
@@ -192,7 +192,7 @@ td.border-top.border_left_hide {
   display: flex;
   
 }
-.school_name{
+.church_name{
   text-align: left;
   margin-left: 50px;
 }
@@ -339,9 +339,9 @@ $setting_info=generalSetting();
                       <div class="logo_thumb">
                         <img src=" {{asset('/')}}{{generalSetting()->logo }}" alt="">
                       </div>
-                      <div class="school_name ">
+                      <div class="church_name ">
                       <h2>
-                        {{isset(generalSetting()->school_name)?generalSetting()->school_name:'Infix School Management ERP'}} 
+                        {{isset(generalSetting()->church_name)?generalSetting()->church_name:'Infix School Management ERP'}} 
                       </h2>
                       <p>
                         {{isset(generalSetting()->address)?generalSetting()->address:'Infix School Address'}} 

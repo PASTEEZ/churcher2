@@ -99,8 +99,8 @@
                         <div class="row mb-40 mt-30">
                             <div class="col-lg-2">
                                 <div class="input-effect sm2_mb_20 md_mb_20">
-                                    <select class="niceSelect w-100 bb form-control{{ $errors->has('session') ? ' is-invalid' : '' }}" name="session" id="academic_year">
-                                        <option data-display="@lang('common.academic_year') @if(is_required('session')==true) * @endif" value="">@lang('common.academic_year') @if(is_required('session')==true) * @endif</option>
+                                    <select class="niceSelect w-100 bb form-control{{ $errors->has('session') ? ' is-invalid' : '' }}" name="session" id="church_year">
+                                        <option data-display="@lang('common.church_year') @if(is_required('session')==true) * @endif" value="">@lang('common.church_year') @if(is_required('session')==true) * @endif</option>
                                         @foreach($sessions as $session)
                                         <option value="{{$session->id}}" {{old('session', getAcademicId()) == $session->id? 'selected': ''}}>{{$session->year}}[{{$session->title}}]</option>
                                         @endforeach
@@ -121,7 +121,7 @@
                             <div class="col-lg-2">
                                 <div class="input-effect">
                                     <input class="primary-input  form-control{{ $errors->has('admission_number') ? ' is-invalid' : '' }}" type="text" onkeyup="GetAdmin(this.value)" name="admission_number"
-                                    value="{{$max_admission_id != ''?  "PMCB/".substr(date('Y'),-2)."/".date('m').$max_admission_id + 1 : 1}}" >
+                                    value="{{$max_admission_id != ''?  "PCGA/".substr(date('Y'),-2)."/".$max_admission_id + 1 : 1}}" >
 
                      
                                    <label>@lang('student.admission_number') @if(is_required('admission_number')==true) * @endif</label>
@@ -391,7 +391,7 @@
                              <div class="col-lg-2">
                                  <div class="input-effect sm2_mb_20 md_mb_20">
                                      <select class="niceSelect w-100 bb form-control{{ $errors->has('gender') ? ' is-invalid' : '' }}" name="gender">                          
-                                         <option data-display="@lang('common.gender') @if(is_required('gender')==true) * @endif" value="">@lang('common.gender') @if(is_required('gender')==true) <span>*</span> @endif </option>
+                                         <option data-display="@lang('common.gender') @if(is_required('gender')==true) * @endif" value="">@lang('common.gender')  @if(is_required('gender')==true) <span>*</span> @endif </option>
                                          @foreach($genders as $gender)
                                          <option value="{{$gender->id}}" {{old('gender') == $gender->id? 'selected': ''}}>{{$gender->base_setup_name}}</option>
                                          @endforeach
@@ -638,7 +638,7 @@
                                                             <select class="niceSelect w-100 bb" name="sibling_class" id="select_sibling_class">
                                                                 <option data-display="@lang('student.class') *" value="">@lang('student.class') *</option>
                                                                 @foreach($classes as $class)
-                                                                <option value="{{$class->id}}" {{old('sibling_class') == $class->id? 'selected': '' }} >{{$class->class_name}}</option>
+                                                                <option value="{{$class->id}}" {{old('sibling_class') == $class->id? 'selected': '' }} >{{$class->age_group_name}}</option>
                                                                 @endforeach
                                                             </select>
                                                         </div>
@@ -1543,7 +1543,7 @@
                         @if(is_show('previous_school_details'))
                         <div class="col-lg-3">
                            <div class="input-effect sm2_mb_20 md_mb_20">
-                            <input   class="primary-input" type="text" id="previous_school_details" name="student_school_name"  value="{{old('previous_school_details')}}">
+                            <input   class="primary-input" type="text" id="previous_school_details" name="previous_school_details"  value="{{old('previous_school_details')}}">
                                 <label>@lang('student.previous_school_details')@if(is_required('previous_school_details')==true) <span> *</span> @endif</label>
                                 <span class="focus-border textarea"></span>
                                 @if ($errors->has('previous_school_details'))

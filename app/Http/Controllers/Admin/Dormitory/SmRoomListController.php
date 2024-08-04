@@ -40,11 +40,11 @@ class SmRoomListController extends Controller
             $room_list->number_of_bed = $request->number_of_bed;
             $room_list->cost_per_bed = $request->cost_per_bed;
             $room_list->description = $request->description;
-            $room_list->school_id = Auth::user()->school_id;
+            $room_list->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $room_list->un_academic_id = getAcademicId();
+                $room_list->un_church_year_id = getAcademicId();
             }else{
-                $room_list->academic_id = getAcademicId();
+                $room_list->church_year_id = getAcademicId();
             }
             $room_list->save();
 
@@ -62,7 +62,7 @@ class SmRoomListController extends Controller
             $room_list = SmRoomList::find($id);
             $room_lists = SmRoomList::with('dormitory','roomType')->get();
             $room_types = SmRoomType::get();
-            $dormitory_lists = SmDormitoryList::where('school_id',Auth::user()->school_id)->get();
+            $dormitory_lists = SmDormitoryList::where('church_id',Auth::user()->church_id)->get();
             return view('backEnd.dormitory.room_list', compact('room_lists', 'room_list', 'room_types', 'dormitory_lists'));
         }catch (\Exception $e) {
            Toastr::error('Operation Failed', 'Failed');
@@ -81,7 +81,7 @@ class SmRoomListController extends Controller
             $room_list->cost_per_bed = $request->cost_per_bed;
             $room_list->description = $request->description;
             if(moduleStatusCheck('University')){
-                $room_list->un_academic_id = getAcademicId();
+                $room_list->un_church_year_id = getAcademicId();
             }
             $room_list->save();
 

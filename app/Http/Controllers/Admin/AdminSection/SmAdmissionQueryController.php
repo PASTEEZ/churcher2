@@ -57,11 +57,11 @@ class SmAdmissionQueryController extends Controller
                 $data = $common->storeUniversityData($admission_query, $request);
             } else {
                 $admission_query->class = $request->class;
-                $admission_query->academic_id = getAcademicId();
+                $admission_query->church_year_id = getAcademicId();
             }
             $admission_query->no_of_child = $request->no_of_child;
             $admission_query->created_by = Auth::user()->id;
-            $admission_query->school_id = Auth::user()->school_id;
+            $admission_query->church_id = Auth::user()->church_id;
             $admission_query->save();
            
             Toastr::success('Operation successful', 'Success');
@@ -119,8 +119,8 @@ class SmAdmissionQueryController extends Controller
                 $admission_query->class = $request->class;
             }
             $admission_query->no_of_child = $request->no_of_child;
-            $admission_query->school_id = Auth::user()->school_id;
-            $admission_query->academic_id = getAcademicId();
+            $admission_query->church_id = Auth::user()->church_id;
+            $admission_query->church_year_id = getAcademicId();
             $admission_query->save();
          
             Toastr::success('Operation successful', 'Success');
@@ -134,11 +134,11 @@ class SmAdmissionQueryController extends Controller
     public function addQuery($id)
     {
         try {
-            $admission_query = SmAdmissionQuery::where('school_id', auth()->user()->school_id)->where('id', $id)->first();
-            $follow_up_lists = SmAdmissionQueryFollowup::where('academic_id', getAcademicId())->where('admission_query_id', $id)->orderby('id', 'DESC')->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-            $references = SmSetupAdmin::where('type', 4)->where('active_status', 1)->where('school_id', Auth::user()->school_id)->get();
-            $sources = SmSetupAdmin::where('type', 3)->where('active_status', 1)->where('school_id', Auth::user()->school_id)->get();
+            $admission_query = SmAdmissionQuery::where('church_id', auth()->user()->church_id)->where('id', $id)->first();
+            $follow_up_lists = SmAdmissionQueryFollowup::where('church_year_id', getAcademicId())->where('admission_query_id', $id)->orderby('id', 'DESC')->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+            $references = SmSetupAdmin::where('type', 4)->where('active_status', 1)->where('church_id', Auth::user()->church_id)->get();
+            $sources = SmSetupAdmin::where('type', 3)->where('active_status', 1)->where('church_id', Auth::user()->church_id)->get();
             return view('backEnd.admin.add_query', compact('admission_query', 'follow_up_lists', 'references', 'classes', 'sources'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -154,8 +154,8 @@ class SmAdmissionQueryController extends Controller
             $admission_query->follow_up_date = date('Y-m-d', strtotime($request->follow_up_date));
             $admission_query->next_follow_up_date = date('Y-m-d', strtotime($request->next_follow_up_date));
             $admission_query->active_status = $request->status;
-            $admission_query->school_id = Auth::user()->school_id;
-            $admission_query->academic_id = getAcademicId();
+            $admission_query->church_id = Auth::user()->church_id;
+            $admission_query->church_year_id = getAcademicId();
             $admission_query->save();
             $admission_query->toArray();
 
@@ -164,8 +164,8 @@ class SmAdmissionQueryController extends Controller
             $follow_up->response = $request->response;
             $follow_up->note = $request->note;
             $follow_up->created_by =Auth::user()->id;
-            $follow_up->school_id = Auth::user()->school_id;
-            $follow_up->academic_id = getAcademicId();
+            $follow_up->church_id = Auth::user()->church_id;
+            $follow_up->church_year_id = getAcademicId();
             $follow_up->save();
             DB::commit();
 

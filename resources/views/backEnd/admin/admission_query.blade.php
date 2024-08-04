@@ -365,7 +365,7 @@
                                                         value="">@lang('common.class') *
                                                 </option>
                                                 @foreach($classes as $class)
-                                                    <option value="{{@$class->id}}">{{ @$class->class_name}}</option>
+                                                    <option value="{{@$class->id}}">{{ @$class->age_group_name}}</option>
                                                 @endforeach
                                             </select>
                                             <span class="text-danger" role="alert" id="classError"></span>
@@ -387,7 +387,7 @@
                                 <div class="col-lg-12 mt-25">
                                     <div class="row">
                                         @includeIf('university::common.session_faculty_depart_academic_semester_level',['mt' => 'mt-25', 'div' => 'col-lg-4',  'hide'=> ['USUB','UA'], 'required' => ['USN','UF', 'UD', 'US', 'USL']])
-                                        <input type="hidden" name="un_academic_id" id="select_academic" value="{{getAcademicId()}}">
+                                        <input type="hidden" name="un_church_year_id" id="select_academic" value="{{getAcademicId()}}">
                                     </div>
                                 </div>
 

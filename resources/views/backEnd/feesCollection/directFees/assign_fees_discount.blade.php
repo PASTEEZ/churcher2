@@ -27,7 +27,7 @@
                                     <select class="niceSelect w-100 bb form-control{{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                         <option data-display="@lang('common.select_class')" value="">@lang('common.select_class')*</option>
                                         @foreach($classes as $class)
-                                            <option value="{{$class->id}}" {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{$class->class_name}}</option>
+                                            <option value="{{$class->id}}" {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{$class->age_group_name}}</option>
                                         @endforeach
                                     </select>
                                     @if ($errors->has('class'))
@@ -138,8 +138,8 @@
                                                             @endphp>
                                                         <label for="checkAll"> @lang('common.all')</label>
                                                     </th>
-                                                    <th width="20%">@lang('student.student_name')</th>
-                                                    <th width="10%">@lang('student.admission_no')</th>
+                                                    <th width="20%">@lang('student.member_name')</th>
+                                                    <th width="10%">@lang('student.registration_no')</th>
                                                     <th width="15%">@lang('common.class_sec')</th>
                                                 
                                                     <th width="10%">@lang('student.category')</th>
@@ -154,13 +154,13 @@
                                                             <input type="checkbox" id="student.{{$student->id}}" {{@$show}} class="common-checkbox" name="data[{{$loop->index}}][checked]" value="1" {{in_array($student->id, $already_assigned) ? 'checked':''}}>
                                                             <label for="student.{{$student->id}}"></label>
                                                         </td>
-                                                            <input type="hidden" name="data[{{$loop->index}}][class_id]" value="{{@$student->class_id}}">
-                                                            <input type="hidden" name="data[{{$loop->index}}][section_id]" value="{{@$student->section_id}}">
+                                                            <input type="hidden" name="data[{{$loop->index}}][age_group_id]" value="{{@$student->age_group_id}}">
+                                                            <input type="hidden" name="data[{{$loop->index}}][mgender_id]" value="{{@$student->mgender_id}}">
                                                             <input type="hidden" name="data[{{$loop->index}}][record_id]" value="{{@$student->id}}">
-                                                            <input type="hidden" name="data[{{$loop->index}}][student_id]" value="{{@$student->studentDetail->forwardBalance->id ?? $student->student_id}}">
+                                                            <input type="hidden" name="data[{{$loop->index}}][member_id]" value="{{@$student->studentDetail->forwardBalance->id ?? $student->member_id}}">
                                                         <td>{{$student->studentDetail->full_name}} {{in_array($student->id, $already_assigned)}}</td>
-                                                        <td>{{$student->studentDetail->admission_no}}</td>
-                                                        <td>{{$student->class->class_name}}({{$student->section->section_name}})</td>
+                                                        <td>{{$student->studentDetail->registration_no}}</td>
+                                                        <td>{{$student->class->age_group_name}}({{$student->section->mgender_name}})</td>
                                                         <td>{{$student->studentDetail->category!=""?$student->studentDetail->category->category_name:""}}</td>
                                                         <td>{{$student->studentDetail->gender!=""?$student->studentDetail->gender->base_setup_name:""}}</td>
                                                     </tr>

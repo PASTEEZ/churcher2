@@ -15,25 +15,25 @@ class SmAssignSubjectsTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run($school_id, $academic_id)
+    public function run($church_id, $church_year_id)
     {
-        $teacher = SmStaff::where('role_id', 4)->where('school_id', $school_id)->pluck('id')->unique();
+        $teacher = SmStaff::where('role_id', 4)->where('church_id', $church_id)->pluck('id')->unique();
         if($teacher){
-            $data = SmClassSection::where('school_id', $school_id)->where('academic_id', $academic_id)->get();
-        $subject_id = SmSubject::where('school_id', $school_id)->where('academic_id', $academic_id)->pluck('id')->unique();
+            $data = SmClassSection::where('church_id', $church_id)->where('church_year_id', $church_year_id)->get();
+        $subject_id = SmSubject::where('church_id', $church_id)->where('church_year_id', $church_year_id)->pluck('id')->unique();
         foreach ($data as $datum) {
-            $class_id = $datum->class_id;
-            $section_id = $datum->section_id;
+            $age_group_id = $datum->age_group_id;
+            $mgender_id = $datum->mgender_id;
             foreach ($subject_id as $subject) {
                 DB::table('sm_assign_subjects')->insert([
                     [
-                        'class_id' => $class_id,
-                        'section_id' => $section_id,
+                        'age_group_id' => $age_group_id,
+                        'mgender_id' => $mgender_id,
                         'teacher_id' => $teacher[random_int(0,count($teacher)-1)] ?? $teacher[0],
                         'subject_id' => $subject,
                         'created_at' => date('Y-m-d h:i:s'),
-                        'school_id'  => $school_id,
-                        'academic_id'  => $academic_id,
+                        'church_id'  => $church_id,
+                        'church_year_id'  => $church_year_id,
                     ]
                 ]);
             }

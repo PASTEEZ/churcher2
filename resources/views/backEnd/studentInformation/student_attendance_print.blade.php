@@ -47,7 +47,7 @@
                 <img class="logo-img" src="{{ url('/')}}/{{generalSetting()->logo }}" alt=""> 
             </td>
             <td> 
-                <h3 style="font-size:22px !important" class="text-white"> {{isset(generalSetting()->school_name)?generalSetting()->school_name:'Infix School Management ERP'}} </h3> 
+                <h3 style="font-size:22px !important" class="text-white"> {{isset(generalSetting()->church_name)?generalSetting()->church_name:'Infix School Management ERP'}} </h3> 
                 <p style="font-size:18px !important" class="text-white mb-0"> {{isset(generalSetting()->address)?generalSetting()->address:'Infix School Address'}} </p>  
             </td>
             <td style="text-aligh:center"> 
@@ -56,8 +56,8 @@
              
                 <p style="font-size:14px !important; border-bottom:1px solid gray" align="left" class="text-white">@lang('university::un.semester(label)'): {{ isset($unSemesterLabel) ? $unSemesterLabel->semesterDetails->name .'('. (isset($unSemesterLabel) ? $unSemesterLabel->name : '') .')' :''}} </p>
                @else
-                <p style="font-size:14px !important; border-bottom:1px solid gray" align="left" class="text-white">{{ __('academics.class') }}: {{ $class->class_name}} </p>
-                <p style="font-size:14px !important; border-bottom:1px solid gray" align="left" class="text-white">{{__('academics.section')}}: {{ $section->section_name}} </p>
+                <p style="font-size:14px !important; border-bottom:1px solid gray" align="left" class="text-white">{{ __('academics.class') }}: {{ $class->age_group_name}} </p>
+                <p style="font-size:14px !important; border-bottom:1px solid gray" align="left" class="text-white">{{__('academics.section')}}: {{ $section->mgender_name}} </p>
                 @endif
                 <p style="font-size:14px !important; border-bottom:1px solid gray" align="left" class="text-white">{{ __('hr.month') }}: {{ date("F", strtotime('00-'.$month.'-01')) }} </p>
                 <p style="font-size:14px !important; border-bottom:1px solid gray" align="left" class="text-white">{{ __('common.year') }}: {{ $year }} </p>
@@ -70,7 +70,7 @@
         <tr>
             <th>SL</th>
             <th width="7%">@lang('common.name')</th>
-            <th width="10%">@lang('student.admission_no')</th>
+            <th width="10%">@lang('student.registration_no')</th>
             <th>P</th>
             <th>L</th>
             <th>A</th>
@@ -120,7 +120,7 @@
                 @foreach($values as $value)
                     @php $student++; @endphp
                     @if($student == 1)
-                        {{$value->studentInfo->admission_no}}
+                        {{$value->studentInfo->registration_no}}
                     @endif
                 @endforeach
             </td>

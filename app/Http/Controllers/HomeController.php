@@ -111,13 +111,13 @@ class HomeController extends Controller
                 }
             }
             $user_id = Auth::id();
-            $school_id = Auth::user()->school_id;
+            $church_id = Auth::user()->church_id;
 
             $user = Auth::user();
             $role_id = $user->role_id;
 
             if(isSubscriptionEnabled()){
-                $last_payment = SmSubscriptionPayment::where('school_id',Auth::user()->school_id)
+                $last_payment = SmSubscriptionPayment::where('church_id',Auth::user()->church_id)
                     ->where('start_date', '<=', Carbon::now())
                     ->where('end_date', '>=', Carbon::now())
                     ->where('approve_status', '=','approved')
@@ -156,8 +156,8 @@ class HomeController extends Controller
                 $m_add_incomes = SmAddIncome::where('active_status', 1)
                                 ->where('name','!=','Fund Transfer')
                                 ->where('date', 'like', date('Y-m-') . '%')
-                                ->where('academic_id', getAcademicId())
-                                ->where('school_id', $school_id)
+                                ->where('church_year_id', getAcademicId())
+                                ->where('church_id', $church_id)
                                 ->sum('amount');
             
             
@@ -167,8 +167,8 @@ class HomeController extends Controller
                 $m_add_expenses = SmAddExpense::where('active_status', 1)
                                 ->where('name','!=','Fund Transfer')
                                 ->where('date', 'like', date('Y-m-') . '%')
-                                ->where('academic_id', getAcademicId())
-                                ->where('school_id', $school_id)
+                                ->where('church_year_id', getAcademicId())
+                                ->where('church_id', $church_id)
                                 ->sum('amount');
           
             
@@ -176,7 +176,7 @@ class HomeController extends Controller
             $m_total_expense = $m_add_expenses;
 
             if(moduleStatusCheck('Wallet'))
-                $monthlyWalletBalance = $this->showWalletBalance('diposit','refund','expense', 'fees_refund','Y-m-',$school_id);
+                $monthlyWalletBalance = $this->showWalletBalance('diposit','refund','expense', 'fees_refund','Y-m-',$church_id);
 
 
 
@@ -186,8 +186,8 @@ class HomeController extends Controller
                 $y_add_incomes = SmAddIncome::where('active_status', 1)
                                 ->where('name','!=','Fund Transfer')
                                 ->where('date', 'like', date('Y-') . '%')
-                                ->where('academic_id', getAcademicId())
-                                ->where('school_id', Auth::user()->school_id)
+                                ->where('church_year_id', getAcademicId())
+                                ->where('church_id', Auth::user()->church_id)
                                 ->sum('amount');
             
             $y_total_income = $y_add_incomes;
@@ -195,42 +195,42 @@ class HomeController extends Controller
                 $y_add_expenses = SmAddExpense::where('active_status', 1)
                                 ->where('name','!=','Fund Transfer')
                                 ->where('date', 'like', date('Y-') . '%')
-                                ->where('academic_id', getAcademicId())
-                                ->where('school_id', Auth::user()->school_id)
+                                ->where('church_year_id', getAcademicId())
+                                ->where('church_id', Auth::user()->church_id)
                                 ->sum('amount');
             
 
             $y_total_expense = $y_add_expenses;
 
             if(moduleStatusCheck('Wallet'))
-                $yearlyWalletBalance = $this->showWalletBalance('diposit','refund','expense', 'fees_refund','Y-',$school_id);
+                $yearlyWalletBalance = $this->showWalletBalance('diposit','refund','expense', 'fees_refund','Y-',$church_id);
 
             // for current year end
 
 
             if (Auth::user()->role_id == 4) {
                 $events = SmEvent::where('active_status', 1)
-                    ->where('academic_id', getAcademicId())
-                    ->where('school_id', $school_id)
+                    ->where('church_year_id', getAcademicId())
+                    ->where('church_id', $church_id)
                     ->where(function ($q) {
                         $q->where('for_whom', 'All')->orWhere('for_whom', 'Teacher');
                     })
                     ->get();
             } else {
                 $events = SmEvent::where('active_status', 1)
-                    ->where('academic_id', getAcademicId())
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_year_id', getAcademicId())
+                    ->where('church_id', Auth::user()->church_id)
                     ->where('for_whom', 'All')
                     ->get();
             }
 
-            $staffs = SmStaff::where('school_id', $school_id)
+            $staffs = SmStaff::where('church_id', $church_id)
                 ->where('active_status', 1);
 
 
             $holidays = SmHoliday::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', $school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', $church_id)
                 ->get();
 
 
@@ -256,8 +256,8 @@ class HomeController extends Controller
             }
             //added by abu nayem -for lead
             if (moduleStatusCheck('Lead')==true) {
-                $reminders = LeadReminder::with('lead:first_name,last_name,id')->where('academic_id', getAcademicId())
-                    ->where('school_id', $school_id)
+                $reminders = LeadReminder::with('lead:first_name,last_name,id')->where('church_year_id', getAcademicId())
+                    ->where('church_id', $church_id)
                     ->when(auth()->user()->role_id!=1 && auth()->user()->staff, function ($q) {
                         $q->where('reminder_to', auth()->user()->staff->id);
                     })->get();
@@ -274,28 +274,28 @@ class HomeController extends Controller
 
 
             $total_staffs= $staffs->where('role_id', '!=', 1)
-                ->where('school_id', $school_id)->count();
+                ->where('church_id', $church_id)->count();
             $data =[
                     'totalStudents' => StudentRecord::where('active_status', 1)
-                    ->where('school_id', $school_id)
-                    ->whereIn('class_id', [3, 4, 5])
+                    ->where('church_id', $church_id)
+                    ->whereIn('age_group_id', [3, 4, 5])
                     ->count(),
                     
                     'totalchildrenservice' => StudentRecord::where('active_status', 1)
-                    ->where('school_id', $school_id)
-                    ->where('class_id', 1)
+                    ->where('church_id', $church_id)
+                    ->where('age_group_id', 1)
                     ->count(),
 
 
                     'total_jy' => StudentRecord::where('active_status', 1)
-                    ->where('school_id', $school_id)
-                    ->where('class_id', 2)
+                    ->where('church_id', $church_id)
+                    ->where('age_group_id', 2)
                     ->count(),
 
 
 
                     'totalpaymentsthismonth' => FmFeesInvoice::where('type', 'fees')
-                    ->where('school_id', $school_id)
+                    ->where('church_id', $church_id)
                     ->where('active_status', 1)
                     ->whereMonth('created_at', now()->month)  // Assuming 'created_at' is the timestamp of invoice creation
                     ->count(),
@@ -311,12 +311,12 @@ class HomeController extends Controller
                 'totalStaffs' => $total_staffs,
 
                 'toDos' => SmToDo::where('created_by', $user_id)
-                    ->where('school_id', $school_id)
+                    ->where('church_id', $church_id)
                     ->get(),
 
                 'notices' => SmNoticeBoard::where('active_status', 1)
-                    ->where('academic_id', getAcademicId())
-                    ->where('school_id', $school_id)
+                    ->where('church_year_id', getAcademicId())
+                    ->where('church_id', $church_id)
                     ->get(),
 
                 'm_total_income' => $m_total_income,
@@ -356,11 +356,11 @@ class HomeController extends Controller
         }
     }
 
-    private function showWalletBalance($diposit , $refund, $expense, $feesRefund, $date, $school_id){
+    private function showWalletBalance($diposit , $refund, $expense, $feesRefund, $date, $church_id){
 
         $walletTranscations= WalletTransaction::where('status','approve')
                             ->where('updated_at', 'like', date($date) . '%')
-                            ->where('school_id',$school_id)
+                            ->where('church_id',$church_id)
                             ->get();
 
         $totalWalletBalance = $walletTranscations->where('type',$diposit)->sum('amount');
@@ -378,8 +378,8 @@ class HomeController extends Controller
             $toDolists->todo_title = $request->todo_title;
             $toDolists->date = date('Y-m-d', strtotime($request->date));
             $toDolists->created_by = Auth()->user()->id;
-            $toDolists->school_id = Auth()->user()->school_id;
-            $toDolists->academic_id = getAcademicId();
+            $toDolists->church_id = Auth()->user()->church_id;
+            $toDolists->church_year_id = getAcademicId();
             $results = $toDolists->save();
 
             if ($results) {
@@ -402,7 +402,7 @@ class HomeController extends Controller
             if (checkAdmin()) {
                 $toDolists = SmToDo::find($id);
             }else{
-                $toDolists = SmToDo::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+                $toDolists = SmToDo::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
             }
             return view('backEnd.dashboard.viewToDo', compact('toDolists'));
         } catch (\Exception $e) {
@@ -419,7 +419,7 @@ class HomeController extends Controller
             if (checkAdmin()) {
                 $editData = SmToDo::find($id);
             }else{
-                $editData = SmToDo::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+                $editData = SmToDo::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
             }
             return view('backEnd.dashboard.editToDo', compact('editData', 'id'));
         } catch (\Exception $e) {
@@ -458,7 +458,7 @@ class HomeController extends Controller
         try {
             $to_do = SmToDo::find($request->id);
             $to_do->complete_status = "C";
-            $to_do->academic_id = getAcademicId();
+            $to_do->church_year_id = getAcademicId();
             $to_do->save();
             $html = "";
             return response()->json('html');
@@ -472,7 +472,7 @@ class HomeController extends Controller
     {
         try {
 
-            $to_do_list = SmToDo::where('complete_status', 'C')->where('school_id', Auth::user()->school_id)->get();
+            $to_do_list = SmToDo::where('complete_status', 'C')->where('church_id', Auth::user()->church_id)->get();
             $datas = [];
             foreach ($to_do_list as $to_do) {
                 $datas[] = array(

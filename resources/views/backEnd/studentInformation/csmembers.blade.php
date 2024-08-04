@@ -52,7 +52,7 @@
         {{-- <table id="table_id" class="table table-bordered data-table"> --}}
             <thead>
                 <tr>
-                    <th>@lang('student.admission_no')</th>
+                    <th>@lang('student.registration_no')</th>
                     <th>@lang('student.name')</th>
                  
                     <th>@lang('student.date_of_birth')</th>
@@ -85,7 +85,7 @@ $(document).ready(function() {
                         
                     } ),
                     columns: [
-                            {data: 'admission_no', name: 'admission_no'},
+                            {data: 'registration_no', name: 'registration_no'},
                             {data: 'full_name', name: 'full_name'},
                             @if(generalSetting()->multiple_roll==0)
                             {data: 'roll_no', name: 'roll_no'},

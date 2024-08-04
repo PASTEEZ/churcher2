@@ -17,7 +17,7 @@ class UniqueCategory implements Rule
     public function passes($attribute, $value)
     {
 
-        $isExist= SmBookCategory::where('id','!=',$this->id)->where('school_id', Auth::user()->school_id)->where('category_name', $value)->exists();
+        $isExist= SmBookCategory::where('id','!=',$this->id)->where('church_id', Auth::user()->church_id)->where('category_name', $value)->exists();
         
         if ($isExist) {
             return false;

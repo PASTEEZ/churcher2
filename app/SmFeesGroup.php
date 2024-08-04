@@ -10,7 +10,7 @@ class SmFeesGroup extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'created_by', 'active_status', 'school_id', 'un_semester_label_id','un_subject_id','un_academic_id'];
+    protected $fillable = ['name', 'description', 'created_by', 'active_status', 'church_id', 'un_semester_label_id','un_subject_id','un_church_year_id'];
 	
     protected static function boot()
     {

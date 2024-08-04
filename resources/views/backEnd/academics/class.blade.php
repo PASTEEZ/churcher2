@@ -53,7 +53,7 @@
                                             <div class="input-effect">
                                                 <input class="primary-input form-control{{ @$errors->has('name') ? ' is-invalid' : '' }}"
                                                        type="text" name="name" autocomplete="off"
-                                                       value="{{isset($classById)? @$classById->class_name: ''}}">
+                                                       value="{{isset($classById)? @$classById->age_group_name: ''}}">
                                                 <input type="hidden" name="id"
                                                        value="{{isset($classById)? $classById->id: ''}}">
                                                 <label>@lang('common.name') <span>*</span></label>
@@ -78,12 +78,12 @@
                                                                class="common-checkbox form-control{{ @$errors->has('section') ? ' is-invalid' : '' }}"
                                                                name="section[]"
                                                                value="{{@$section->id}}" {{in_array(@$section->id, @$sectionId)? 'checked': ''}}>
-                                                        <label for="section{{@$section->id}}"> {{@$section->section_name}}</label>
+                                                        <label for="section{{@$section->id}}"> {{@$section->mgender_name}}</label>
                                                     @else
                                                         <input type="checkbox" id="section{{@$section->id}}"
                                                                class="common-checkbox form-control{{ @$errors->has('section') ? ' is-invalid' : '' }}"
                                                                name="section[]" value="{{@$section->id}}">
-                                                        <label for="section{{@$section->id}}"> {{@$section->section_name}}</label>
+                                                        <label for="section{{@$section->id}}"> {{@$section->mgender_name}}</label>
                                                     @endif
                                                 </div>
                                             @endforeach
@@ -150,11 +150,11 @@
                                 <tbody>
                                 @foreach($classes as $class)
                                     <tr>
-                                        <td valign="top">{{@$class->class_name}}</td>
+                                        <td valign="top">{{@$class->age_group_name}}</td>
                                         <td>
                                             @if(@$class->groupclassSections)
                                                 @foreach ($class->groupclassSections as $section)
-                                                 <a href="{{route('sorting_student_list_section',[$class->id,$section->sectionName->id])}}">{{@$section->sectionName->section_name}}-({{total_no_records($class->id, $section->sectionName->id)}})</a> 
+                                                 <a href="{{route('sorting_student_list_section',[$class->id,$section->sectionName->id])}}">{{@$section->sectionName->mgender_name}}-({{total_no_records($class->id, $section->sectionName->id)}})</a> 
                                                  {{ !$loop->last ? ', ':'' }}
                                                 @endforeach
                                             @endif

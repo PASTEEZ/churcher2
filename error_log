@@ -1,0 +1,81 @@
+[16-Apr-2024 08:08:39 UTC] PHP Fatal error:  During class fetch: Uncaught ParseError: syntax error, unexpected ',' in /home/pastechss/pcgecak.pastechsolutions.com/vendor/symfony/translation-contracts/TranslatorTrait.php:138
+Stack trace:
+#0 /home/pastechss/pcgecak.pastechsolutions.com/vendor/composer/ClassLoader.php(427): Composer\Autoload\{closure}('/home/pastechss...')
+#1 [internal function]: Composer\Autoload\ClassLoader->loadClass('Symfony\\Contrac...')
+#2 /home/pastechss/pcgecak.pastechsolutions.com/vendor/symfony/translation/IdentityTranslator.php(23): spl_autoload_call('Symfony\\Contrac...')
+#3 /home/pastechss/pcgecak.pastechsolutions.com/vendor/composer/ClassLoader.php(576): include('/home/pastechss...')
+#4 /home/pastechss/pcgecak.pastechsolutions.com/vendor/composer/ClassLoader.php(427): Composer\Autoload\{closure}('/home/pastechss...')
+#5 [internal function]: Composer\Autoload\ClassLoader->loadClass('Symfony\\Compone...')
+#6 /home/pastechss/pcgecak.pastechsolutions.com/vendor/symfony/translation/Formatter/MessageFormatter.php(33): spl_autoload_ in /home/pastechss/pcgecak.pastechsolutions.com/vendor/symfony/translation/IdentityTranslator.php on line 23
+[16-Apr-2024 08:08:39 UTC] PHP Fatal error:  During class fetch: Uncaught ParseError: syntax error, unexpected ',' in /home/pastechss/pcgecak.pastechsolutions.com/vendor/symfony/translation-contracts/TranslatorTrait.php:138
+Stack trace:
+#0 /home/pastechss/pcgecak.pastechsolutions.com/vendor/composer/ClassLoader.php(427): Composer\Autoload\{closure}('/home/pastechss...')
+#1 [internal function]: Composer\Autoload\ClassLoader->loadClass('Symfony\\Contrac...')
+#2 /home/pastechss/pcgecak.pastechsolutions.com/vendor/symfony/translation/IdentityTranslator.php(23): spl_autoload_call('Symfony\\Contrac...')
+#3 /home/pastechss/pcgecak.pastechsolutions.com/vendor/composer/ClassLoader.php(576): include('/home/pastechss...')
+#4 /home/pastechss/pcgecak.pastechsolutions.com/vendor/composer/ClassLoader.php(427): Composer\Autoload\{closure}('/home/pastechss...')
+#5 [internal function]: Composer\Autoload\ClassLoader->loadClass('Symfony\\Compone...')
+#6 /home/pastechss/pcgecak.pastechsolutions.com/vendor/symfony/translation/Formatter/MessageFormatter.php(33): spl_autoload_ in /home/pastechss/pcgecak.pastechsolutions.com/vendor/symfony/translation/IdentityTranslator.php on line 23
+[16-Apr-2024 08:08:39 UTC] PHP Fatal error:  During class fetch: Uncaught ParseError: syntax error, unexpected ',' in /home/pastechss/pcgecak.pastechsolutions.com/vendor/symfony/translation-contracts/TranslatorTrait.php:138
+Stack trace:
+#0 /home/pastechss/pcgecak.pastechsolutions.com/vendor/composer/ClassLoader.php(427): Composer\Autoload\{closure}('/home/pastechss...')
+#1 [internal function]: Composer\Autoload\ClassLoader->loadClass('Symfony\\Contrac...')
+#2 /home/pastechss/pcgecak.pastechsolutions.com/vendor/symfony/translation/IdentityTranslator.php(23): spl_autoload_call('Symfony\\Contrac...')
+#3 /home/pastechss/pcgecak.pastechsolutions.com/vendor/composer/ClassLoader.php(576): include('/home/pastechss...')
+#4 /home/pastechss/pcgecak.pastechsolutions.com/vendor/composer/ClassLoader.php(427): Composer\Autoload\{closure}('/home/pastechss...')
+#5 [internal function]: Composer\Autoload\ClassLoader->loadClass('Symfony\\Compone...')
+#6 /home/pastechss/pcgecak.pastechsolutions.com/vendor/symfony/translation/Formatter/MessageFormatter.php(33): spl_autoload_ in /home/pastechss/pcgecak.pastechsolutions.com/vendor/symfony/translation/IdentityTranslator.php on line 23
+[16-Apr-2024 08:08:40 UTC] PHP Fatal error:  During class fetch: Uncaught ParseError: syntax error, unexpected ',' in /home/pastechss/pcgecak.pastechsolutions.com/vendor/symfony/translation-contracts/TranslatorTrait.php:138
+Stack trace:
+#0 /home/pastechss/pcgecak.pastechsolutions.com/vendor/composer/ClassLoader.php(427): Composer\Autoload\{closure}('/home/pastechss...')
+#1 [internal function]: Composer\Autoload\ClassLoader->loadClass('Symfony\\Contrac...')
+#2 /home/pastechss/pcgecak.pastechsolutions.com/vendor/symfony/translation/IdentityTranslator.php(23): spl_autoload_call('Symfony\\Contrac...')
+#3 /home/pastechss/pcgecak.pastechsolutions.com/vendor/composer/ClassLoader.php(576): include('/home/pastechss...')
+#4 /home/pastechss/pcgecak.pastechsolutions.com/vendor/composer/ClassLoader.php(427): Composer\Autoload\{closure}('/home/pastechss...')
+#5 [internal function]: Composer\Autoload\ClassLoader->loadClass('Symfony\\Compone...')
+#6 /home/pastechss/pcgecak.pastechsolutions.com/vendor/symfony/translation/Formatter/MessageFormatter.php(33): spl_autoload_ in /home/pastechss/pcgecak.pastechsolutions.com/vendor/symfony/translation/IdentityTranslator.php on line 23
+[16-Apr-2024 08:11:11 UTC] PHP Fatal error:  During class fetch: Uncaught ParseError: syntax error, unexpected ',' in /home/pastechss/pcgecak.pastechsolutions.com/vendor/symfony/translation-contracts/TranslatorTrait.php:138
+Stack trace:
+#0 /home/pastechss/pcgecak.pastechsolutions.com/vendor/composer/ClassLoader.php(427): Composer\Autoload\{closure}('/home/pastechss...')
+#1 [internal function]: Composer\Autoload\ClassLoader->loadClass('Symfony\\Contrac...')
+#2 /home/pastechss/pcgecak.pastechsolutions.com/vendor/symfony/translation/IdentityTranslator.php(23): spl_autoload_call('Symfony\\Contrac...')
+#3 /home/pastechss/pcgecak.pastechsolutions.com/vendor/composer/ClassLoader.php(576): include('/home/pastechss...')
+#4 /home/pastechss/pcgecak.pastechsolutions.com/vendor/composer/ClassLoader.php(427): Composer\Autoload\{closure}('/home/pastechss...')
+#5 [internal function]: Composer\Autoload\ClassLoader->loadClass('Symfony\\Compone...')
+#6 /home/pastechss/pcgecak.pastechsolutions.com/vendor/symfony/translation/Formatter/MessageFormatter.php(33): spl_autoload_ in /home/pastechss/pcgecak.pastechsolutions.com/vendor/symfony/translation/IdentityTranslator.php on line 23
+[16-Apr-2024 08:11:13 UTC] PHP Fatal error:  During class fetch: Uncaught ParseError: syntax error, unexpected ',' in /home/pastechss/pcgecak.pastechsolutions.com/vendor/symfony/translation-contracts/TranslatorTrait.php:138
+Stack trace:
+#0 /home/pastechss/pcgecak.pastechsolutions.com/vendor/composer/ClassLoader.php(427): Composer\Autoload\{closure}('/home/pastechss...')
+#1 [internal function]: Composer\Autoload\ClassLoader->loadClass('Symfony\\Contrac...')
+#2 /home/pastechss/pcgecak.pastechsolutions.com/vendor/symfony/translation/IdentityTranslator.php(23): spl_autoload_call('Symfony\\Contrac...')
+#3 /home/pastechss/pcgecak.pastechsolutions.com/vendor/composer/ClassLoader.php(576): include('/home/pastechss...')
+#4 /home/pastechss/pcgecak.pastechsolutions.com/vendor/composer/ClassLoader.php(427): Composer\Autoload\{closure}('/home/pastechss...')
+#5 [internal function]: Composer\Autoload\ClassLoader->loadClass('Symfony\\Compone...')
+#6 /home/pastechss/pcgecak.pastechsolutions.com/vendor/symfony/translation/Formatter/MessageFormatter.php(33): spl_autoload_ in /home/pastechss/pcgecak.pastechsolutions.com/vendor/symfony/translation/IdentityTranslator.php on line 23
+[16-Apr-2024 08:11:19 UTC] PHP Fatal error:  During class fetch: Uncaught ParseError: syntax error, unexpected ',' in /home/pastechss/pcgecak.pastechsolutions.com/vendor/symfony/translation-contracts/TranslatorTrait.php:138
+Stack trace:
+#0 /home/pastechss/pcgecak.pastechsolutions.com/vendor/composer/ClassLoader.php(427): Composer\Autoload\{closure}('/home/pastechss...')
+#1 [internal function]: Composer\Autoload\ClassLoader->loadClass('Symfony\\Contrac...')
+#2 /home/pastechss/pcgecak.pastechsolutions.com/vendor/symfony/translation/IdentityTranslator.php(23): spl_autoload_call('Symfony\\Contrac...')
+#3 /home/pastechss/pcgecak.pastechsolutions.com/vendor/composer/ClassLoader.php(576): include('/home/pastechss...')
+#4 /home/pastechss/pcgecak.pastechsolutions.com/vendor/composer/ClassLoader.php(427): Composer\Autoload\{closure}('/home/pastechss...')
+#5 [internal function]: Composer\Autoload\ClassLoader->loadClass('Symfony\\Compone...')
+#6 /home/pastechss/pcgecak.pastechsolutions.com/vendor/symfony/translation/Formatter/MessageFormatter.php(33): spl_autoload_ in /home/pastechss/pcgecak.pastechsolutions.com/vendor/symfony/translation/IdentityTranslator.php on line 23
+[16-Apr-2024 08:11:20 UTC] PHP Fatal error:  During class fetch: Uncaught ParseError: syntax error, unexpected ',' in /home/pastechss/pcgecak.pastechsolutions.com/vendor/symfony/translation-contracts/TranslatorTrait.php:138
+Stack trace:
+#0 /home/pastechss/pcgecak.pastechsolutions.com/vendor/composer/ClassLoader.php(427): Composer\Autoload\{closure}('/home/pastechss...')
+#1 [internal function]: Composer\Autoload\ClassLoader->loadClass('Symfony\\Contrac...')
+#2 /home/pastechss/pcgecak.pastechsolutions.com/vendor/symfony/translation/IdentityTranslator.php(23): spl_autoload_call('Symfony\\Contrac...')
+#3 /home/pastechss/pcgecak.pastechsolutions.com/vendor/composer/ClassLoader.php(576): include('/home/pastechss...')
+#4 /home/pastechss/pcgecak.pastechsolutions.com/vendor/composer/ClassLoader.php(427): Composer\Autoload\{closure}('/home/pastechss...')
+#5 [internal function]: Composer\Autoload\ClassLoader->loadClass('Symfony\\Compone...')
+#6 /home/pastechss/pcgecak.pastechsolutions.com/vendor/symfony/translation/Formatter/MessageFormatter.php(33): spl_autoload_ in /home/pastechss/pcgecak.pastechsolutions.com/vendor/symfony/translation/IdentityTranslator.php on line 23
+[16-Apr-2024 08:11:39 UTC] PHP Fatal error:  During class fetch: Uncaught ParseError: syntax error, unexpected ',' in /home/pastechss/pcgecak.pastechsolutions.com/vendor/symfony/translation-contracts/TranslatorTrait.php:138
+Stack trace:
+#0 /home/pastechss/pcgecak.pastechsolutions.com/vendor/composer/ClassLoader.php(427): Composer\Autoload\{closure}('/home/pastechss...')
+#1 [internal function]: Composer\Autoload\ClassLoader->loadClass('Symfony\\Contrac...')
+#2 /home/pastechss/pcgecak.pastechsolutions.com/vendor/symfony/translation/IdentityTranslator.php(23): spl_autoload_call('Symfony\\Contrac...')
+#3 /home/pastechss/pcgecak.pastechsolutions.com/vendor/composer/ClassLoader.php(576): include('/home/pastechss...')
+#4 /home/pastechss/pcgecak.pastechsolutions.com/vendor/composer/ClassLoader.php(427): Composer\Autoload\{closure}('/home/pastechss...')
+#5 [internal function]: Composer\Autoload\ClassLoader->loadClass('Symfony\\Compone...')
+#6 /home/pastechss/pcgecak.pastechsolutions.com/vendor/symfony/translation/Formatter/MessageFormatter.php(33): spl_autoload_ in /home/pastechss/pcgecak.pastechsolutions.com/vendor/symfony/translation/IdentityTranslator.php on line 23

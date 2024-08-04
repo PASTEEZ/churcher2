@@ -52,14 +52,14 @@
 @php
     $generalSetting= generalSetting(); 
     if(!empty($generalSetting)){
-        $school_name =$generalSetting->school_name;
+        $church_name =$generalSetting->church_name;
         $site_title =$generalSetting->site_title;
-        $school_code =$generalSetting->school_code;
+        $church_code =$generalSetting->church_code;
         $address =$generalSetting->address;
         $phone =$generalSetting->phone; 
     } 
-    $class=DB::table('sm_classes')->find($class_id);
-    $section=DB::table('sm_sections')->find($section_id);
+    $class=DB::table('sm_classes')->find($age_group_id);
+    $section=DB::table('sm_sections')->find($mgender_id);
 @endphp
 <div class="container-fluid">
                     <table  cellspacing="0" width="100%" >
@@ -68,7 +68,7 @@
                                 <img class="logo-img" src="{{ url('/')}}/{{generalSetting()->logo }}" alt=""> 
                             </td>
                             <td> 
-                                <h3 style="font-size:22px !important" class="text-white"> {{isset(generalSetting()->school_name)?generalSetting()->school_name:'Infix School Management ERP'}} </h3> 
+                                <h3 style="font-size:22px !important" class="text-white"> {{isset(generalSetting()->church_name)?generalSetting()->church_name:'Infix School Management ERP'}} </h3> 
                                 <p style="font-size:18px !important" class="text-white mb-0"> {{isset(generalSetting()->address)?generalSetting()->address:'Infix School Address'}} </p> 
                                 <p style="font-size:15px !important" class="text-white mb-0">@lang('student.student_attendance') </p>
                           </td>
@@ -78,8 +78,8 @@
                 
                                     <p style="font-size:14px !important; border-bottom:1px solid gray" align="left" class="text-white">@lang('university::un.semester(label)'): {{ isset($unSemesterLabel) ? $unSemesterLabel->semesterDetails->name .'('. (isset($unSemesterLabel) ? $unSemesterLabel->name : '') .')' :''}} </p>
                                 @else                                   
-                                <p style="font-size:14px !important; border-bottom:1px solid gray" align="left" class="text-white">Class: {{ $class->class_name}} </p> 
-                                <p style="font-size:14px !important; border-bottom:1px solid gray" align="left" class="text-white">Section: {{ $section->section_name}} </p> 
+                                <p style="font-size:14px !important; border-bottom:1px solid gray" align="left" class="text-white">Class: {{ $class->age_group_name}} </p> 
+                                <p style="font-size:14px !important; border-bottom:1px solid gray" align="left" class="text-white">Section: {{ $section->mgender_name}} </p> 
                                 @endif
                                 <p style="font-size:14px !important; border-bottom:1px solid gray" align="left" class="text-white">Month: {{ date("F", strtotime('00-'.$month.'-01')) }} </p> 
                                 <p style="font-size:14px !important; border-bottom:1px solid gray" align="left" class="text-white">Year: {{ $year }} </p>
@@ -91,7 +91,7 @@
                                 <tr>
                                     <th width="3%">SL</th>
                                     <th width="8%">@lang('common.name')</th>
-                                    <th width="10%">@lang('student.admission_no')</th>
+                                    <th width="10%">@lang('student.registration_no')</th>
                                     <th width="3%">P</th>
                                     <th width="3%">L</th>
                                     <th width="3%">A</th>
@@ -139,7 +139,7 @@
                                         @foreach($values as $value)
                                             @php $student++; @endphp
                                             @if($student == 1)
-                                                {{@$value->student->admission_no}}
+                                                {{@$value->student->registration_no}}
                                             @endif
                                         @endforeach
                                         

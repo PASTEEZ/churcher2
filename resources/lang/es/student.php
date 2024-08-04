@@ -266,7 +266,7 @@ return [
 
 "student_category" => "Categoría de estudiantes",
 
-"promote_academic_year" => "Promover Año Académico",
+"promote_church_year" => "Promover Año Académico",
 
 "select_current_class" => "Seleccionar clase actual",
 
@@ -540,7 +540,7 @@ return [
 
 "date_of_birth" => "Fecha De Nacimiento",
 
-"student_id_card" => "Tarjeta de identificación del estudiante",
+"member_id_card" => "Tarjeta de identificación del estudiante",
 
 "mother" => "Madre",
 
@@ -550,7 +550,7 @@ return [
 
 "class_section" => "Clase (seg.)",
 
-"admission_no" => "Admisión no",
+"registration_no" => "Admisión no",
 
 "first_name" => "Nombre:",
 
@@ -578,7 +578,7 @@ return [
 
 "export_to_pdf" => "Exportar a PDF",
 
-"student_name" => "Nombre del estudiante",
+"member_name" => "Nombre del estudiante",
 
 "title" => "Título",
 
@@ -650,13 +650,13 @@ return [
 
 "email_address" => "Dirección electrónica",
 
-"academic_year" => "Año académico",
+"church_year" => "Año académico",
 
 "select_class" => "Seleccionar clase",
 
 "select_subject" => "Seleccionar asunto",
 
-"select_academic_year" => "Seleccionar Año Académico",
+"select_church_year" => "Seleccionar Año Académico",
 
 "room" => "Sala",
 

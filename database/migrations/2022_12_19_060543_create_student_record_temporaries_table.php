@@ -15,16 +15,16 @@ class CreateStudentRecordTemporariesTable extends Migration
     {
         Schema::create('student_record_temporaries', function (Blueprint $table) {
             $table->id();
-            $table->integer('sm_student_id')->unsigned();
-            $table->foreign('sm_student_id')->references('id')->on('sm_students')->onDelete('cascade');
+            $table->integer('sm_member_id')->unsigned();
+            $table->foreign('sm_member_id')->references('id')->on('sm_students')->onDelete('cascade');
 
             $table->bigInteger('student_record_id')->unsigned();
             $table->foreign('student_record_id')->references('id')->on('student_records')->onDelete('cascade'); 
 
             $table->integer('user_id')->nullable();
             
-            $table->integer('school_id')->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_id')->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
             $table->timestamps();
         });
     }

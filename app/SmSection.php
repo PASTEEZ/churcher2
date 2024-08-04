@@ -19,10 +19,10 @@ class SmSection extends Model
 
     public function students()
     {
-        return $this->hasMany('App\SmStudent', 'section_id', 'id');
+        return $this->hasMany('App\SmStudent', 'mgender_id', 'id');
     }
     public function unAcademic()
     {
-        return $this->belongsTo('Modules\University\Entities\UnAcademicYear', 'un_academic_id', 'id')->withDefault();
+        return $this->belongsTo('Modules\University\Entities\UnAcademicYear', 'un_church_year_id', 'id')->withDefault();
     }
 }

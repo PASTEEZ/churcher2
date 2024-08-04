@@ -54,8 +54,8 @@ class WalletController extends Controller
                 $addPayment->file = $uploadFile;
                 $addPayment->type = 'diposit';
                 $addPayment->user_id = Auth::user()->id;
-                $addPayment->school_id = Auth::user()->school_id;
-                $addPayment->academic_id = getAcademicId();
+                $addPayment->church_id = Auth::user()->church_id;
+                $addPayment->church_year_id = getAcademicId();
                 $addPayment->save();
             } else {
                 $data = [];
@@ -179,7 +179,7 @@ class WalletController extends Controller
 
     public function walletTransaction()
     {
-        $walletAmounts = WalletTransaction::where('school_id', Auth::user()->school_id)
+        $walletAmounts = WalletTransaction::where('church_id', Auth::user()->church_id)
             ->get();
         return view('wallet::walletTransaction', compact('walletAmounts'));
     }
@@ -187,7 +187,7 @@ class WalletController extends Controller
     public function walletRefundRequest()
     {
         $walletRefunds = WalletTransaction::where('type', 'refund')
-            ->where('school_id', Auth::user()->school_id)
+            ->where('church_id', Auth::user()->church_id)
             ->get();
 
         return view('wallet::walletRefundRequest', compact('walletRefunds'));
@@ -204,7 +204,7 @@ class WalletController extends Controller
         $existRefund = WalletTransaction::where('type', 'refund')
             ->where('user_id', $request->user_id)
             ->where('status', 'pending')
-            ->where('school_id', Auth::user()->school_id)
+            ->where('church_id', Auth::user()->church_id)
             ->first();
 
         if ($existRefund) {
@@ -235,7 +235,7 @@ class WalletController extends Controller
             $WalletRefund->payment_method = 'Wallet';
             $WalletRefund->note = $request->refund_note;
             $WalletRefund->file = $uploadFile;
-            $WalletRefund->school_id = Auth::user()->school_id;
+            $WalletRefund->church_id = Auth::user()->church_id;
             $WalletRefund->save();
 
             return response()->json(['success' => 'success']);
@@ -330,7 +330,7 @@ class WalletController extends Controller
 
             $walletReports = WalletTransaction::whereDate('created_at', '>=', $date_from)
                 ->whereDate('created_at', '<=', $date_to)
-                ->where('school_id', Auth::user()->school_id);
+                ->where('church_id', Auth::user()->church_id);
 
             $walletReports = $walletReports->when($request->type, function ($q) use ($request) {
                 return $q->where('type', $request->type);
@@ -349,24 +349,24 @@ class WalletController extends Controller
     {
         try {
             $paymentMethods = SmPaymentMethhod::whereNotIn('method', ["Cash", "Wallet"])
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
             
             $bankAccounts = SmBankAccount::where('active_status', 1)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             $walletAmounts = WalletTransaction::where('user_id', Auth::user()->id)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             $stripe_info = SmPaymentGatewaySetting::where('gateway_name', 'stripe')
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->first();
             $razorpay_info = null;
             if (moduleStatusCheck('RazorPay')) {
                 $razorpay_info = SmPaymentGatewaySetting::where('gateway_name', 'RazorPay')
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->first();
             }
 
@@ -384,7 +384,7 @@ class WalletController extends Controller
     {
         $walletAmounts = WalletTransaction::where('type', $type)
             ->where('status', $status)
-            ->where('school_id', Auth::user()->school_id)
+            ->where('church_id', Auth::user()->church_id)
             ->get();
         return $walletAmounts;
     }
@@ -396,8 +396,8 @@ class WalletController extends Controller
         $notification->role_id = $role_id;
         $notification->date = date('Y-m-d');
         $notification->message = $message;
-        $notification->school_id = Auth::user()->school_id;
-        $notification->academic_id = getAcademicId();
+        $notification->church_id = Auth::user()->church_id;
+        $notification->church_year_id = getAcademicId();
         $notification->save();
     }
 }

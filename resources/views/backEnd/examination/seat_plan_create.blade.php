@@ -62,7 +62,7 @@
                                 <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                     <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                     @foreach($classes as $class)
-                                    <option value="{{$class->id}}" {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{$class->class_name}}</option>
+                                    <option value="{{$class->id}}" {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{$class->age_group_name}}</option>
                                     @endforeach
                                 </select>
                                 @if ($errors->has('class'))
@@ -74,9 +74,9 @@
                             <div class="col-lg-2 mt-30-md" id="select_section_div">
                                 <select class="w-100 bb niceSelect form-control{{ $errors->has('section') ? ' is-invalid' : '' }} select_section" id="select_section" name="section">
                                     <option data-display="@lang('common.select_section') *" value="">@lang('common.select_section') *</option>
-                                    @if(isset($section_id))
-                                        <option value="" selected>@php $section = App\SmSection::select('section_name')->where('id', $section_id)->first();
-                                echo $section->section_name; @endphp</option>
+                                    @if(isset($mgender_id))
+                                        <option value="" selected>@php $section = App\SmSection::select('mgender_name')->where('id', $mgender_id)->first();
+                                echo $section->mgender_name; @endphp</option>
                                     @endif
                                 </select>
                                 @if ($errors->has('section'))
@@ -150,8 +150,8 @@
         {{ Form::open(['class' => 'form-horizontal', 'files' => true, 'route' => 'seat_plan_store', 'method' => 'POST', 'enctype' => 'multipart/form-data', 'id' => 'seat_plan_store']) }}
         <input type="hidden" name="exam_id" value="{{$exam_id}}">
         <input type="hidden" name="subject_id" value="{{$subject_id}}">
-        <input type="hidden" name="class_id" value="{{$class_id}}">
-        <input type="hidden" name="section_id" value="{{$section_id}}">
+        <input type="hidden" name="age_group_id" value="{{$age_group_id}}">
+        <input type="hidden" name="mgender_id" value="{{$mgender_id}}">
         <input type="hidden" name="exam_date" value="{{$date}}" id="exam_date">
         <div class="row">
             <div class="col-lg-12">

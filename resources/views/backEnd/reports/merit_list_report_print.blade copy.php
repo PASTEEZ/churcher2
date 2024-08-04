@@ -218,9 +218,9 @@
 @php 
     $generalSetting= generalSetting(); 
     if(!empty($generalSetting)){
-        $school_name =$generalSetting->school_name;
+        $church_name =$generalSetting->church_name;
         $site_title =$generalSetting->site_title;
-        $school_code =$generalSetting->school_code;
+        $church_code =$generalSetting->church_code;
         $address =$generalSetting->address;
         $phone =$generalSetting->phone; 
     } 
@@ -249,10 +249,10 @@
                             <td>
                                 <div class="logo_img">
                                     <div class="thumb_logo">
-                                        <img  src="{{asset('/')}}{{generalSetting()->logo }}" alt="{{$school_name}}">
+                                        <img  src="{{asset('/')}}{{generalSetting()->logo }}" alt="{{$church_name}}">
                                     </div>
                                     <div class="company_info">
-                                        <h3>{{isset(generalSetting()->school_name)?generalSetting()->school_name:'Infix School Management ERP'}} </h3>
+                                        <h3>{{isset(generalSetting()->church_name)?generalSetting()->church_name:'Infix School Management ERP'}} </h3>
                                         <h5>{{isset(generalSetting()->address)?generalSetting()->address:'Infix School Address'}}</h5>
                                     </div>
                                 </div>
@@ -274,7 +274,7 @@
                                                <td>
                                                 <p class="line_grid" >
                                                     <span>
-                                                        <span>@lang('common.academic_year')</span>
+                                                        <span>@lang('common.church_year')</span>
                                                         <span>:</span>
                                                     </span>
                                                     {{generalSetting()->session_year}}
@@ -286,7 +286,7 @@
                                                         <span>@lang('common.class')</span>
                                                         <span>:</span>
                                                     </span>
-                                                    {{$class_name}}
+                                                    {{$age_group_name}}
                                                 </p>
                                             </td>
                                            </tr>
@@ -306,7 +306,7 @@
                                                             <span>@lang('common.section')</span>
                                                             <span>:</span>
                                                         </span>
-                                                        {{$section->section_name}}
+                                                        {{$section->mgender_name}}
                                                     </p>
                                                 </td>
                                            </tr>
@@ -369,7 +369,7 @@
             <thead>
               <tr>
                 <th>@lang('lang.merit_position')</th>
-                <th>@lang('student.admission_no')</th>
+                <th>@lang('student.registration_no')</th>
                 <th>@lang('common.student')</th>
                 @foreach($subjectlist as $subject)
                 <th>{{$subject}}</th>
@@ -402,8 +402,8 @@
                 @endphp 
                 <tr>
                     <td>{{$key+1}}</td>
-                    <td>{{$row->admission_no}}</td>
-                    <td style="text-align:left !important;" nowrap >{{$row->student_name}}</td>
+                    <td>{{$row->registration_no}}</td>
+                    <td style="text-align:left !important;" nowrap >{{$row->member_name}}</td>
                     @if(!empty($markslist))
                         @foreach($markslist as $mark)
                             @php 

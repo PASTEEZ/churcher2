@@ -49,8 +49,8 @@ class ApiSmLeaveController extends Controller
                 $leaves=DB::table('sm_leave_defines')->where('role_id', $user->role_id)
                 ->join('sm_leave_types', 'sm_leave_types.id', '=', 'sm_leave_defines.type_id')
                 ->where('sm_leave_defines.user_id',$user_id)
-                ->where('sm_leave_defines.academic_id',SmAcademicYear::API_ACADEMIC_YEAR($request->user()->school_id))
-                ->where('sm_leave_defines.school_id',$request->user()->school_id)  
+                ->where('sm_leave_defines.church_year_id',SmAcademicYear::API_church_year($request->user()->church_id))
+                ->where('sm_leave_defines.church_id',$request->user()->church_id)  
                 ->select('sm_leave_types.id','sm_leave_types.type','sm_leave_defines.days')         
                 ->get();
                 
@@ -71,7 +71,7 @@ class ApiSmLeaveController extends Controller
         }
     }
 
-    public function saas_myLeaveType(Request $request,$school_id,$user_id){
+    public function saas_myLeaveType(Request $request,$church_id,$user_id){
         
         try{
 
@@ -83,8 +83,8 @@ class ApiSmLeaveController extends Controller
                 $leaves=DB::table('sm_leave_defines')->where('role_id', $user->role_id)
                 ->join('sm_leave_types', 'sm_leave_types.id', '=', 'sm_leave_defines.type_id')
                 ->where('sm_leave_defines.user_id',$user_id)
-                ->where('sm_leave_defines.academic_id',SmAcademicYear::API_ACADEMIC_YEAR($request->user()->school_id))
-                ->where('sm_leave_defines.school_id',$request->user()->school_id)  
+                ->where('sm_leave_defines.church_year_id',SmAcademicYear::API_church_year($request->user()->church_id))
+                ->where('sm_leave_defines.church_id',$request->user()->church_id)  
                 ->select('sm_leave_types.id','sm_leave_types.type','sm_leave_defines.days')         
                 ->get();
                 
@@ -126,14 +126,14 @@ class ApiSmLeaveController extends Controller
               $std_id = SmStudent::leftjoin('sm_parents','sm_parents.id','sm_students.parent_id')
                                 ->where('sm_parents.user_id',$user->id)
                                 ->where('sm_students.active_status', 1)
-                                ->where('sm_students.academic_id', SmAcademicYear::API_ACADEMIC_YEAR($request->user()->school_id))
-                                ->where('sm_students.school_id',$request->user()->school_id)
+                                ->where('sm_students.church_year_id', SmAcademicYear::API_church_year($request->user()->church_id))
+                                ->where('sm_students.church_id',$request->user()->church_id)
                                 ->select('sm_students.user_id')
                                 ->first();
                 $my_leaves = SmLeaveDefine::join('sm_leave_types', 'sm_leave_types.id', '=', 'sm_leave_defines.type_id')
             //   ->where('role_id', 2)
                ->where('sm_leave_defines.user_id',$user_id)
-               ->where('sm_leave_defines.school_id',$request->user()->school_id)
+               ->where('sm_leave_defines.church_id',$request->user()->church_id)
                ->select('sm_leave_defines.id','sm_leave_types.type','sm_leave_defines.days') 
                ->get();
                 $apply_leaves = SmLeaveRequest::where('staff_id', $user_id)
@@ -141,8 +141,8 @@ class ApiSmLeaveController extends Controller
                 ->where('sm_leave_requests.approve_status', '=', 'P')
                 ->where('sm_leave_requests.active_status', 1)
                 ->join('sm_leave_types', 'sm_leave_types.id', '=', 'sm_leave_requests.type_id')
-                ->where('sm_leave_requests.academic_id', SmAcademicYear::API_ACADEMIC_YEAR($request->user()->school_id))
-                ->where('sm_leave_requests.school_id',$request->user()->school_id)
+                ->where('sm_leave_requests.church_year_id', SmAcademicYear::API_church_year($request->user()->church_id))
+                ->where('sm_leave_requests.church_id',$request->user()->church_id)
                 ->select('sm_leave_requests.id','sm_leave_types.type','sm_leave_requests.apply_date','sm_leave_requests.leave_from','sm_leave_requests.leave_to','sm_leave_requests.approve_status','sm_leave_requests.active_status')
                 ->get();
          
@@ -211,15 +211,15 @@ class ApiSmLeaveController extends Controller
             $apply_leave->approve_status = 'P';
             $apply_leave->reason = $request->reason;
             $apply_leave->file = $fileName;
-            $apply_leave->school_id = $request->user()->school_id;
-            $apply_leave->academic_id = SmAcademicYear::API_ACADEMIC_YEAR($request->user()->school_id);
+            $apply_leave->church_id = $request->user()->church_id;
+            $apply_leave->church_year_id = SmAcademicYear::API_church_year($request->user()->church_id);
             $result = $apply_leave->save();
 
          
             if($user->role_id==2){
                 $student=SmStudent::where('user_id',$request->login_id)->first();
 
-                $teacher_assign=SmAssignClassTeacher::where('class_id',$student->class_id)->where('section_id',$student->section_id)->first();
+                $teacher_assign=SmAssignClassTeacher::where('age_group_id',$student->age_group_id)->where('mgender_id',$student->mgender_id)->first();
                 if($teacher_assign){
                     $classTeacher=SmClassTeacher::select('teacher_id')
                                             ->where('assign_class_teacher_id',$teacher_assign->id)
@@ -231,8 +231,8 @@ class ApiSmLeaveController extends Controller
                     $notification->url = "pending-leave";
                     $notification->user_id = $user->id;
                     $notification->role_id = $user->role_id;
-                    $notification->school_id = $request->user()->school_id;
-                    $notification->academic_id = $student->academic_id;
+                    $notification->church_id = $request->user()->church_id;
+                    $notification->church_year_id = $student->church_year_id;
                     $notification->date = date('Y-m-d');
                     $notification->save(); 
                 }
@@ -242,7 +242,7 @@ class ApiSmLeaveController extends Controller
          
 
             if($result){
-                $users = User::whereIn('role_id',[1,5])->where('school_id', $request->user()->school_id)->get();
+                $users = User::whereIn('role_id',[1,5])->where('church_id', $request->user()->church_id)->get();
                 foreach($users as $user){
                     $notification = new SmNotification();
                     $notification->message = $user->full_name .'Apply For Leave';
@@ -250,8 +250,8 @@ class ApiSmLeaveController extends Controller
                     $notification->url = "pending-leave";
                     $notification->user_id = $user->id;
                     $notification->role_id = $user->role_id;
-                    $notification->school_id = 1;
-                    $notification->academic_id = $user->academic_id;
+                    $notification->church_id = 1;
+                    $notification->church_year_id = $user->church_year_id;
                     $notification->date = date('Y-m-d');
                     $notification->save();
                 }
@@ -270,7 +270,7 @@ class ApiSmLeaveController extends Controller
         }
     }
 
-    public function paretnLeave(Request $request,$student_id){
+    public function paretnLeave(Request $request,$member_id){
 
     }
 
@@ -314,7 +314,7 @@ class ApiSmLeaveController extends Controller
             if ($user->role_id==1 || $user->role_id==5) {
                 $pending_leaves = SmLeaveRequest::where('sm_leave_requests.active_status', 1)
                 ->where('sm_leave_requests.approve_status', '=', $request->purpose)
-                ->where('sm_leave_requests.school_id', '=',$request->user()->school_id)
+                ->where('sm_leave_requests.church_id', '=',$request->user()->church_id)
                 ->join('sm_leave_defines', 'sm_leave_requests.leave_define_id', '=', 'sm_leave_defines.id')
                 ->join('users', 'sm_leave_requests.staff_id', '=', 'users.id')
                 ->leftjoin('sm_leave_types', 'sm_leave_requests.type_id', '=', 'sm_leave_types.id')
@@ -326,7 +326,7 @@ class ApiSmLeaveController extends Controller
                     $pending_leaves = SmLeaveRequest::where('sm_leave_requests.active_status', 1)
                                 ->where('sm_leave_requests.approve_status', '=', $request->purpose)
                                 ->where('sm_leave_requests.staff_id', '=', $user->id)
-                                ->where('sm_leave_requests.school_id', '=',$request->user()->school_id)
+                                ->where('sm_leave_requests.church_id', '=',$request->user()->church_id)
                                 ->join('sm_leave_defines', 'sm_leave_requests.leave_define_id', '=', 'sm_leave_defines.id')
                                 ->join('sm_leave_types', 'sm_leave_types.id', '=', 'sm_leave_defines.type_id')
                                 ->join('users', 'sm_leave_requests.staff_id', '=', 'users.id')
@@ -342,8 +342,8 @@ class ApiSmLeaveController extends Controller
                     ->join('sm_leave_defines', 'sm_leave_requests.leave_define_id', '=', 'sm_leave_defines.id')
                     ->join('users', 'sm_leave_requests.staff_id', '=', 'users.id')
                     ->leftjoin('sm_leave_types', 'sm_leave_requests.type_id', '=', 'sm_leave_types.id')  
-                    ->where('sm_leave_requests.school_id',$request->user()->school_id)
-                    ->where('sm_leave_requests.academic_id', getAcademicId())
+                    ->where('sm_leave_requests.church_id',$request->user()->church_id)
+                    ->where('sm_leave_requests.church_year_id', getAcademicId())
                     ->select('sm_leave_requests.id', 'users.full_name', 'apply_date', 'leave_from', 'leave_to', 'reason', 'file', 'sm_leave_types.type', 'approve_status')
                     ->get();
 
@@ -382,12 +382,12 @@ class ApiSmLeaveController extends Controller
             if ($user->role_id==1 || $user->role_id==5) {
                 $leave_request_data = SmLeaveRequest::find($request->id);
             }else{
-                $leave_request_data = SmLeaveRequest::where('id',$request->id)->where('school_id',$request->user()->school_id)->first();
+                $leave_request_data = SmLeaveRequest::where('id',$request->id)->where('church_id',$request->user()->church_id)->first();
             }
             $staff_id = $leave_request_data->staff_id;
             $role_id = $leave_request_data->role_id;
             $leave_request_data->approve_status = $request->approve_status;
-            $leave_request_data->academic_id = getAcademicId();
+            $leave_request_data->church_year_id = getAcademicId();
             $result = $leave_request_data->save();
 
 
@@ -396,8 +396,8 @@ class ApiSmLeaveController extends Controller
             $notification->role_id = $role_id;
             $notification->date = date('Y-m-d');
             $notification->message = 'Leave status updated';
-            $notification->school_id =$request->user()->school_id;
-            $notification->academic_id = SmAcademicYear::API_ACADEMIC_YEAR($request->user()->school_id);
+            $notification->church_id =$request->user()->church_id;
+            $notification->church_year_id = SmAcademicYear::API_church_year($request->user()->church_id);
             $notification->save();
 
 
@@ -421,7 +421,7 @@ class ApiSmLeaveController extends Controller
         ->join('users', 'sm_leave_requests.staff_id', '=', 'users.id')
         ->leftjoin('sm_leave_types', 'sm_leave_requests.type_id', '=', 'sm_leave_types.id')
         ->where('sm_leave_requests.approve_status', '=', 'P')
-        ->where('sm_leave_requests.school_id', $request->user()->school_id)
+        ->where('sm_leave_requests.church_id', $request->user()->church_id)
         ->get();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -436,7 +436,7 @@ class ApiSmLeaveController extends Controller
         ->join('sm_leave_defines', 'sm_leave_requests.leave_define_id', '=', 'sm_leave_defines.id')
         ->join('users', 'sm_leave_requests.staff_id', '=', 'users.id')
         ->leftjoin('sm_leave_types', 'sm_leave_requests.type_id', '=', 'sm_leave_types.id')
-        ->where('sm_leave_requests.school_id', $request->user()->school_id)
+        ->where('sm_leave_requests.church_id', $request->user()->church_id)
         ->where('sm_leave_requests.approve_status', '=', 'A')
         ->get();
 
@@ -452,7 +452,7 @@ class ApiSmLeaveController extends Controller
         ->join('sm_leave_defines', 'sm_leave_requests.leave_define_id', '=', 'sm_leave_defines.id')
         ->join('users', 'sm_leave_requests.staff_id', '=', 'users.id')
         ->leftjoin('sm_leave_types', 'sm_leave_requests.type_id', '=', 'sm_leave_types.id')
-        ->where('sm_leave_requests.school_id', $request->user()->school_id)
+        ->where('sm_leave_requests.church_id', $request->user()->church_id)
         ->where('sm_leave_requests.approve_status', '=', 'C')
         ->get();
 
@@ -470,7 +470,7 @@ class ApiSmLeaveController extends Controller
         ->leftjoin('sm_leave_types', 'sm_leave_requests.type_id', '=', 'sm_leave_types.id')
         ->where('sm_leave_requests.staff_id', '=', $user_id)
         ->where('sm_leave_requests.approve_status', '=', 'C')
-        ->where('sm_leave_requests.school_id', $request->user()->school_id)
+        ->where('sm_leave_requests.church_id', $request->user()->church_id)
         ->get();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -487,7 +487,7 @@ class ApiSmLeaveController extends Controller
         ->leftjoin('sm_leave_types', 'sm_leave_requests.type_id', '=', 'sm_leave_types.id')
         ->where('sm_leave_requests.staff_id', '=', $user_id)
         ->where('sm_leave_requests.approve_status', '=', 'A')
-        ->where('sm_leave_requests.school_id', $request->user()->school_id)
+        ->where('sm_leave_requests.church_id', $request->user()->church_id)
         ->get();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -507,7 +507,7 @@ class ApiSmLeaveController extends Controller
                 ->join('users', 'sm_leave_requests.staff_id', '=', 'users.id')
                 ->join('sm_leave_types', 'sm_leave_requests.type_id', '=', 'sm_leave_types.id')
                 ->where('sm_leave_requests.approve_status', '=', 'R')
-                ->where('sm_leave_requests.school_id', $request->user()->school_id)
+                ->where('sm_leave_requests.church_id', $request->user()->church_id)
                 ->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -519,7 +519,7 @@ class ApiSmLeaveController extends Controller
            return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_rejectLeave(Request $request, $school_id)
+    public function saas_rejectLeave(Request $request, $church_id)
     {
         try {
             $reject_request = SmLeaveRequest::where('sm_leave_requests.active_status', 1)
@@ -528,7 +528,7 @@ class ApiSmLeaveController extends Controller
                 ->join('users', 'sm_leave_requests.staff_id', '=', 'users.id')
                 ->join('sm_leave_types', 'sm_leave_requests.type_id', '=', 'sm_leave_types.id')
                 ->where('sm_leave_requests.approve_status', '=', 'C')
-                ->where('sm_leave_requests.school_id',$request->user()->school_id)->get();
+                ->where('sm_leave_requests.church_id',$request->user()->church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];

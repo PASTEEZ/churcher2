@@ -47,13 +47,13 @@ class SmApproveLeaveController extends Controller
             $user = Auth::user();
             $staff = SmStaff::where('user_id', Auth::user()->id)->first();
             if (Auth::user()->role_id == 1) {
-                $apply_leaves = SmLeaveRequest::with('leaveDefine','staffs','student')->where([['active_status', 1], ['approve_status', '!=', 'P']])->where('school_id', Auth::user()->school_id)->where('academic_id', getAcademicId())->get();
+                $apply_leaves = SmLeaveRequest::with('leaveDefine','staffs','student')->where([['active_status', 1], ['approve_status', '!=', 'P']])->where('church_id', Auth::user()->church_id)->where('church_year_id', getAcademicId())->get();
             } else {
-                $apply_leaves = SmLeaveRequest::with('leaveDefine','staffs','student')->where([['active_status', 1], ['approve_status', '!=', 'P'], ['staff_id', '=', $staff->id]])->where('academic_id', getAcademicId())->get();
+                $apply_leaves = SmLeaveRequest::with('leaveDefine','staffs','student')->where([['active_status', 1], ['approve_status', '!=', 'P'], ['staff_id', '=', $staff->id]])->where('church_year_id', getAcademicId())->get();
             }
             $leave_types = SmLeaveType::where('active_status', 1)->get();
             $roles = InfixRole::where('id', '!=', 1)->where('id', '!=', 2)->where('id', '!=', 3)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -79,13 +79,13 @@ class SmApproveLeaveController extends Controller
             if (checkAdmin()) {
              
                 $apply_leaves = SmLeaveRequest::with('leaveDefine','staffs','student')->where([['active_status', 1], ['approve_status', '!=', 'A']])
-                                ->where('school_id', Auth::user()->school_id)
-                                ->where('academic_id',getAcademicId())
+                                ->where('church_id', Auth::user()->church_id)
+                                ->where('church_year_id',getAcademicId())
                                 ->get();
             }elseif($staff->role_id == 4){
                 $class_teacher = SmClassTeacher::where('teacher_id', $staff->id)
-                                    ->where('school_id', Auth::user()->school_id)
-                                    ->where('academic_id',getAcademicId())
+                                    ->where('church_id', Auth::user()->church_id)
+                                    ->where('church_year_id',getAcademicId())
                                     ->first();
                                   
                 if($class_teacher){
@@ -94,19 +94,19 @@ class SmApproveLeaveController extends Controller
                         ['approve_status', '!=', 'A'],
                         ['role_id', '=', 2]
                         ])
-                        ->where('school_id', Auth::user()->school_id)
-                        ->where('academic_id',getAcademicId())
+                        ->where('church_id', Auth::user()->church_id)
+                        ->where('church_year_id',getAcademicId())
                         ->first();
                         $smAssignClassTeacher = SmAssignClassTeacher::find($class_teacher->assign_class_teacher_id);  
                         if($leaves){
                             $apply_leaves = SmLeaveRequest::with(array('student' => function($query)use($smAssignClassTeacher) {
-                                $query->where('class_id', $smAssignClassTeacher->class_id)->where('section_id',  $smAssignClassTeacher->section_id);
+                                $query->where('age_group_id', $smAssignClassTeacher->age_group_id)->where('mgender_id',  $smAssignClassTeacher->mgender_id);
                             }))->where([
                                 ['active_status', 1], 
                                 ['approve_status', '!=', 'A'],
                                 ['role_id', '=', 2]
-                                ])->where('school_id', Auth::user()->school_id)
-                            ->where('academic_id',getAcademicId())
+                                ])->where('church_id', Auth::user()->church_id)
+                            ->where('church_year_id',getAcademicId())
                             ->get();
                         }
                 }else{
@@ -116,19 +116,19 @@ class SmApproveLeaveController extends Controller
                         ['staff_id', '=', $staff->id],
                         ['role_id', '!=', 2]
                         ])
-                        ->where('school_id', Auth::user()->school_id)
-                        ->where('academic_id',getAcademicId())
+                        ->where('church_id', Auth::user()->church_id)
+                        ->where('church_year_id',getAcademicId())
                         ->get();
                 }
             }elseif(auth()->user()->role_id==1){
                 $apply_leaves = SmLeaveRequest::with('leaveDefine','staffs','student')->where([['active_status', 1], ['approve_status', '!=', 'A']])
-                ->where('school_id', Auth::user()->school_id)
-                ->where('academic_id',getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
+                ->where('church_year_id',getAcademicId())
                 ->get();
             }
             $leave_types = SmLeaveType::where('active_status', 1)->get();
             $roles = InfixRole::where('id', '!=', 1)->where('id', '!=', 3)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
 
             
@@ -166,7 +166,7 @@ class SmApproveLeaveController extends Controller
             $leave_request_data->approve_status = $request->approve_status;
             $leave_request_data->reason = $request->reason;
             $leave_request_data->file = $fileName;
-            $leave_request_data->school_id = Auth::user()->school_id;
+            $leave_request_data->church_id = Auth::user()->church_id;
             $leave_request_data->save();
 
             Toastr::success('Operation successful', 'Success');
@@ -187,12 +187,12 @@ class SmApproveLeaveController extends Controller
             if (checkAdmin()) {
                 $editData = SmLeaveRequest::find($id);
             }else{
-                $editData = SmLeaveRequest::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+                $editData = SmLeaveRequest::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
             }
-            $staffsByRole = SmStaff::where('role_id', '=', $editData->role_id)->where('school_id', Auth::user()->school_id)->get();
-            $roles = InfixRole::whereOr(['school_id', Auth::user()->school_id], ['school_id', 1])->get();
-            $apply_leaves = SmLeaveRequest::where('active_status', 1)->where('school_id', Auth::user()->school_id)->get();
-            $leave_types = SmLeaveType::where('active_status', 1)->where('school_id', Auth::user()->school_id)->get();
+            $staffsByRole = SmStaff::where('role_id', '=', $editData->role_id)->where('church_id', Auth::user()->church_id)->get();
+            $roles = InfixRole::whereOr(['church_id', Auth::user()->church_id], ['church_id', 1])->get();
+            $apply_leaves = SmLeaveRequest::where('active_status', 1)->where('church_id', Auth::user()->church_id)->get();
+            $leave_types = SmLeaveType::where('active_status', 1)->where('church_id', Auth::user()->church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -221,7 +221,7 @@ class SmApproveLeaveController extends Controller
     {
         try {
             if ($request->id != 3) {
-                $allStaffs = SmStaff::whereRole($request->id)->where('school_id', Auth::user()->school_id)->get(['id','full_name','user_id']);
+                $allStaffs = SmStaff::whereRole($request->id)->where('church_id', Auth::user()->church_id)->get(['id','full_name','user_id']);
                 $staffs = [];
                 foreach ($allStaffs as $staffsvalue) {
                     $staffs[] = SmStaff::where('id',$staffsvalue->id)->first(['id','full_name','user_id']);
@@ -243,20 +243,20 @@ class SmApproveLeaveController extends Controller
             if (checkAdmin()) {
                 $leave_request_data = SmLeaveRequest::find($request->id);
             }else{
-                $leave_request_data = SmLeaveRequest::where('id',$request->id)->where('school_id',Auth::user()->school_id)->first();
+                $leave_request_data = SmLeaveRequest::where('id',$request->id)->where('church_id',Auth::user()->church_id)->first();
             }
 
             $staff= User::find($leave_request_data->staff_id);
             $role_id = $leave_request_data->role_id;
             $leave_request_data->approve_status = $request->approve_status;
-            $leave_request_data->academic_id = getAcademicId();
+            $leave_request_data->church_year_id = getAcademicId();
             $result = $leave_request_data->save();
 
             if($request->approve_status == "A"){
                 if($staff->role_id == 2 || $staff->role_id == 2){
                     $compact['slug'] = 'student';
                     $compact['user_email'] = $staff->student->email;
-                    $compact['student_name'] = $staff->student->full_name;
+                    $compact['member_name'] = $staff->student->full_name;
                     @send_sms($staff->student->mobile, 'student_leave_approve', $compact);
 
                     $compact['slug'] = 'parent';
@@ -284,8 +284,8 @@ class SmApproveLeaveController extends Controller
                 $message = app('translator')->get('leave.leave_request_pending');;
             }
             $notification->message = $message;
-            $notification->school_id = Auth::user()->school_id;
-            $notification->academic_id = getAcademicId();
+            $notification->church_id = Auth::user()->church_id;
+            $notification->church_year_id = getAcademicId();
             $notification->save();
 
             try{
@@ -317,7 +317,7 @@ class SmApproveLeaveController extends Controller
             if (checkAdmin()) {
                 $leaveDetails = SmLeaveRequest::find($id);
             }else{
-                $leaveDetails = SmLeaveRequest::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+                $leaveDetails = SmLeaveRequest::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
             }
             $staff_leaves = SmLeaveDefine::where('user_id',$leaveDetails->staff_id)->where('role_id', $leaveDetails->role_id)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {

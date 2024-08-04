@@ -22,11 +22,11 @@ use Illuminate\Support\Facades\Validator;
 
 class ApiSmSaasBankController extends Controller
 {
-    public function saas_bankList(Request $request,$school_id){
+    public function saas_bankList(Request $request,$church_id){
         try {
              $banks=SmBankAccount::where('active_status',1)
-                            ->where('academic_id', SmAcademicYear::API_ACADEMIC_YEAR($school_id))
-                            ->where('school_id',$school_id)->get(['id','bank_name','account_name','account_number']);
+                            ->where('church_year_id', SmAcademicYear::API_church_year($church_id))
+                            ->where('church_id',$church_id)->get(['id','bank_name','account_name','account_number']);
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $data = [];
             $data['banks'] = $banks->toArray();           
@@ -44,13 +44,13 @@ class ApiSmSaasBankController extends Controller
             $validator = Validator::make($input, [
           
             'amount'=> "required",
-            'class_id' =>"required",
-            'section_id'=>"required",
+            'age_group_id' =>"required",
+            'mgender_id'=>"required",
             'user_id'=>"required",
             'fees_type_id'=>"required",
             'payment_mode'=>"required",
             'date'=>"required",
-            'school_id'=>"required",
+            'church_id'=>"required",
 
            
         ]);
@@ -93,19 +93,19 @@ class ApiSmSaasBankController extends Controller
             $payment->note = $request->note;
             $payment->slip = $fileName;
             $payment->fees_type_id = $request->fees_type_id;
-            $payment->student_id = $student->id;
+            $payment->member_id = $student->id;
             $payment->payment_mode = $request->payment_mode;
             if($payment_method->id==3){
                 $payment->bank_id = $request->bank_id;
             }
-            $payment->class_id = $request->class_id;
-            $payment->section_id = $request->section_id;
-            $payment->school_id = $request->school_id;
-            $payment->academic_id = SmAcademicYear::API_ACADEMIC_YEAR($request->school_id);
+            $payment->age_group_id = $request->age_group_id;
+            $payment->mgender_id = $request->mgender_id;
+            $payment->church_id = $request->church_id;
+            $payment->church_year_id = SmAcademicYear::API_church_year($request->church_id);
             $result=$payment->save();
 
             if($result){
-                $users = User::whereIn('role_id',[1,5])->where('school_id', 1)->get();
+                $users = User::whereIn('role_id',[1,5])->where('church_id', 1)->get();
                 foreach($users as $user){
                     $notification = new SmNotification();
                     $notification->message = $student->full_name .'Payment Recieve';
@@ -113,8 +113,8 @@ class ApiSmSaasBankController extends Controller
                     $notification->url = "bank-payment-slip";
                     $notification->user_id = $user->id;
                     $notification->role_id = $user->role_id;
-                    $notification->school_id = $request->school_id;
-                    $notification->academic_id = $student->academic_id;
+                    $notification->church_id = $request->church_id;
+                    $notification->church_year_id = $student->church_year_id;
                     $notification->date = date('Y-m-d');
                     $notification->save();
                 }
@@ -152,9 +152,9 @@ class ApiSmSaasBankController extends Controller
     }
 
     
-    public function saas_bookCategory(Request $request, $school_id)
+    public function saas_bookCategory(Request $request, $church_id)
     {
-        $book_category = DB::table('sm_book_categories')->where('school_id',$school_id)->get();
+        $book_category = DB::table('sm_book_categories')->where('church_id',$church_id)->get();
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             return ApiBaseMethod::sendResponse($book_category, null);
         }
@@ -164,7 +164,7 @@ class ApiSmSaasBankController extends Controller
                 $input = $request->all();
             $validator = Validator::make($input, [
             'category_name'=>"required|max:200|unique:sm_book_categories,category_name",
-            'school_id'=>"required",
+            'church_id'=>"required",
         ]);
         if ($validator->fails()) {
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -174,7 +174,7 @@ class ApiSmSaasBankController extends Controller
         try{
             $categories = new SmBookCategory();
             $categories->category_name = $request->category_name;
-            $categories->school_id = $request->school_id;          
+            $categories->church_id = $request->church_id;          
             $results = $categories->save();
 
            

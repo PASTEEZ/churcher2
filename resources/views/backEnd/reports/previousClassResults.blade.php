@@ -219,8 +219,8 @@
                                 $("#record").find("option").remove();
                                 $("#selectRecordDiv ul").find("li").not(":first").remove();
                                 $.each(item, function (i, record) {
-                                    let className = record.class.class_name;
-                                    let sectionName = record.section.section_name;
+                                    let className = record.class.age_group_name;
+                                    let sectionName = record.section.mgender_name;
                                     let academicYear = record.academic.year;
                                     $("#record").append(
                                         $("<option>", {

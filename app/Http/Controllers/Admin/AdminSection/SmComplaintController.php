@@ -52,11 +52,11 @@ class SmComplaintController extends Controller
             $complaint->action_taken = $request->action_taken;
             $complaint->assigned = $request->assigned;
             $complaint->file = $fileName;
-            $complaint->school_id = Auth::user()->school_id;
+            $complaint->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $complaint->un_academic_id = getAcademicId();
+                $complaint->un_church_year_id = getAcademicId();
             }else{
-                $complaint->academic_id = getAcademicId();
+                $complaint->church_year_id = getAcademicId();
             }
             $complaint->save();
 

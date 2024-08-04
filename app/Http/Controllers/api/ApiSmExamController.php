@@ -30,13 +30,13 @@ class ApiSmExamController extends Controller
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
 
-            $student_id = SmStudent::where('user_id', $user_id)->value('id');
-            $record = StudentRecord::where('student_id', $student_id)->where('id', $record_id)->first();
+            $member_id = SmStudent::where('user_id', $user_id)->value('id');
+            $record = StudentRecord::where('member_id', $member_id)->where('id', $record_id)->first();
 
             $exam_List = DB::table('sm_exam_types')
                 ->join('sm_exams', 'sm_exams.exam_type_id', '=', 'sm_exam_types.id')
-                ->where('sm_exams.class_id', '=', $record->class_id)
-                ->where('sm_exams.section_id', '=', $record->section_id)
+                ->where('sm_exams.age_group_id', '=', $record->age_group_id)
+                ->where('sm_exams.mgender_id', '=', $record->mgender_id)
                 ->distinct()
                 ->select('sm_exam_types.id as exam_id', 'sm_exam_types.title as exam_name')
                 ->get();
@@ -44,17 +44,17 @@ class ApiSmExamController extends Controller
             return ApiBaseMethod::sendResponse($exam_List, null);
         }
     }
-    public function saas_examListApi(Request $request, $school_id, $user_id, $record_id)
+    public function saas_examListApi(Request $request, $church_id, $user_id, $record_id)
     {
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
 
-            $student_id = SmStudent::where('user_id', $user_id)->where('school_id', $school_id)->value('id');
-            $record = StudentRecord::where('student_id', $student_id)->where('id', $record_id)->first();
+            $member_id = SmStudent::where('user_id', $user_id)->where('church_id', $church_id)->value('id');
+            $record = StudentRecord::where('member_id', $member_id)->where('id', $record_id)->first();
             $exam_List = DB::table('sm_exam_types')
                 ->join('sm_exams', 'sm_exams.exam_type_id', '=', 'sm_exam_types.id')
-                ->where('sm_exams.class_id', '=', @$record->class_id)
-                ->where('sm_exams.section_id', '=', @$record->section_id)
+                ->where('sm_exams.age_group_id', '=', @$record->age_group_id)
+                ->where('sm_exams.mgender_id', '=', @$record->mgender_id)
                 ->distinct()
                 ->select('sm_exam_types.id as exam_id', 'sm_exam_types.title as exam_name')
                 ->get();
@@ -67,8 +67,8 @@ class ApiSmExamController extends Controller
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
 
-            $student_id = SmStudent::where('user_id', $user_id)->value('id');
-            $record = StudentRecord::where('student_id', $student_id)->where('id', $record_id)->first();
+            $member_id = SmStudent::where('user_id', $user_id)->value('id');
+            $record = StudentRecord::where('member_id', $member_id)->where('id', $record_id)->first();
             $exam_schedule = DB::table('sm_exam_schedules')
                 ->join('sm_exam_types', 'sm_exam_types.id', '=', 'sm_exam_schedules.exam_term_id')
 
@@ -77,9 +77,9 @@ class ApiSmExamController extends Controller
                 ->join('sm_class_times', 'sm_class_times.id', '=', 'sm_exam_schedules.exam_period_id')
 
                 ->where('sm_exam_schedules.exam_term_id', '=', $exam_id)
-                ->where('sm_exam_schedules.school_id', '=', $record->school_id)
-                ->where('sm_exam_schedules.class_id', '=', $record->class_id)
-                ->where('sm_exam_schedules.section_id', '=', $record->section_id)
+                ->where('sm_exam_schedules.church_id', '=', $record->church_id)
+                ->where('sm_exam_schedules.age_group_id', '=', $record->age_group_id)
+                ->where('sm_exam_schedules.mgender_id', '=', $record->mgender_id)
 
                 ->where('sm_exam_schedules.active_status', '=', 1)
 
@@ -90,13 +90,13 @@ class ApiSmExamController extends Controller
             return ApiBaseMethod::sendResponse($exam_schedule, null);
         }
     }
-    public function saas_examScheduleApi(Request $request, $school_id, $user_id, $exam_id, $record_id)
+    public function saas_examScheduleApi(Request $request, $church_id, $user_id, $exam_id, $record_id)
     {
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
 
-            $student_id = SmStudent::where('user_id', $user_id)->where('school_id', $school_id)->value('id');
-            $record = StudentRecord::where('student_id', $student_id)->where('id', $record_id)->first();
+            $member_id = SmStudent::where('user_id', $user_id)->where('church_id', $church_id)->value('id');
+            $record = StudentRecord::where('member_id', $member_id)->where('id', $record_id)->first();
 
             $exam_schedule = DB::table('sm_exam_schedules')
                 ->join('sm_exam_types', 'sm_exam_types.id', '=', 'sm_exam_schedules.exam_term_id')
@@ -106,15 +106,15 @@ class ApiSmExamController extends Controller
                 ->join('sm_class_times', 'sm_class_times.id', '=', 'sm_exam_schedules.exam_period_id')
 
                 ->where('sm_exam_schedules.exam_term_id', '=', $exam_id)
-                ->where('sm_exam_schedules.school_id', '=', @$record->school_id)
-                ->where('sm_exam_schedules.class_id', '=', @$record->class_id)
-                ->where('sm_exam_schedules.section_id', '=', @$record->section_id)
+                ->where('sm_exam_schedules.church_id', '=', @$record->church_id)
+                ->where('sm_exam_schedules.age_group_id', '=', @$record->age_group_id)
+                ->where('sm_exam_schedules.mgender_id', '=', @$record->mgender_id)
 
                 ->where('sm_exam_schedules.active_status', '=', 1)
 
                 ->select('sm_exam_types.id', 'sm_exam_types.title as exam_name', 'sm_subjects.subject_name', 'date', 'sm_class_rooms.room_no', 'sm_class_times.start_time', 'sm_class_times.end_time')
 
-                ->where('sm_exam_schedules.school_id', $school_id)->get();
+                ->where('sm_exam_schedules.church_id', $church_id)->get();
 
             return ApiBaseMethod::sendResponse($exam_schedule, null);
         }
@@ -125,8 +125,8 @@ class ApiSmExamController extends Controller
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
 
-            $student_id = SmStudent::where('user_id', $user_id)->value('id');
-            $record = StudentRecord::where('student_id', $student_id)->where('id', $record_id)->first();
+            $member_id = SmStudent::where('user_id', $user_id)->value('id');
+            $record = StudentRecord::where('member_id', $member_id)->where('id', $record_id)->first();
 
             $exam = \App\SmExamType::find($exam_id);
             $get_results = \App\SmStudent::getExamResult(@$exam->id, @$record);
@@ -139,7 +139,7 @@ class ApiSmExamController extends Controller
                     'exam_name' => @$exam->title,
                     'subject_name' => @$mark->subject->subject_name,
                     'obtained_marks' => @$mark->total_marks,
-                    'total_marks' => @subjectFullMark($mark->exam_type_id, $mark->subject_id, $record->class_id, $record->section_id),
+                    'total_marks' => @subjectFullMark($mark->exam_type_id, $mark->subject_id, $record->age_group_id, $record->mgender_id),
                     'grade' => @$mark->total_gpa_grade,
                     ];
                 }
@@ -151,11 +151,11 @@ class ApiSmExamController extends Controller
             return ApiBaseMethod::sendResponse($data, null);
         }
     }
-    public function saas_examResult_Api(Request $request, $school_id, $user_id, $exam_id, $record_id)
+    public function saas_examResult_Api(Request $request, $church_id, $user_id, $exam_id, $record_id)
     {
             $data = [];
-            $student_id = SmStudent::where('user_id', $user_id)->value('id');
-            $record = StudentRecord::where('student_id', $student_id)->where('id', $record_id)->first();
+            $member_id = SmStudent::where('user_id', $user_id)->value('id');
+            $record = StudentRecord::where('member_id', $member_id)->where('id', $record_id)->first();
             $exam = \App\SmExamType::find($exam_id);
             $get_results = \App\SmStudent::getExamResult(@$exam->id, @$record);
             $result = [];
@@ -167,7 +167,7 @@ class ApiSmExamController extends Controller
                     'exam_name' => @$exam->title,
                     'subject_name' => @$mark->subject->subject_name,
                     'obtained_marks' => @$mark->total_marks,
-                    'total_marks' => @subjectFullMark($mark->exam_type_id, $mark->subject_id, $record->class_id, $record->section_id),
+                    'total_marks' => @subjectFullMark($mark->exam_type_id, $mark->subject_id, $record->age_group_id, $record->mgender_id),
                     'grade' => @$mark->total_gpa_grade,
                     ];
                 }
@@ -179,7 +179,7 @@ class ApiSmExamController extends Controller
             return ApiBaseMethod::sendResponse($data, null);
 
     }
-    public function saas_feesMasterUpdate(Request $request, $school_id)
+    public function saas_feesMasterUpdate(Request $request, $church_id)
     {
         $input = $request->all();
         if ($request->fees_group == "" || $request->fees_group != 1 && $request->fees_group != 2) {
@@ -203,10 +203,10 @@ class ApiSmExamController extends Controller
             }
         }
 
-        $combination = SmFeesMaster::where('fees_group_id', $request->fees_group)->where('fees_type_id', $request->fees_type)->where('school_id', $school_id)->count();
+        $combination = SmFeesMaster::where('fees_group_id', $request->fees_group)->where('fees_type_id', $request->fees_type)->where('church_id', $church_id)->count();
 
         if ($combination == 0) {
-            $fees_master = SmFeesMaster::where('school_id', $school_id)->find($request->id);
+            $fees_master = SmFeesMaster::where('church_id', $church_id)->find($request->id);
             $fees_master->fees_group_id = $request->fees_group;
             $fees_master->fees_type_id = $request->fees_type;
             $fees_master->date = date('Y-m-d', strtotime($request->date));
@@ -215,7 +215,7 @@ class ApiSmExamController extends Controller
             } else {
                 $fees_master->amount = null;
             }
-            $fees_master->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+            $fees_master->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
             $result = $fees_master->save();
             if ($result) {
                 if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -234,7 +234,7 @@ class ApiSmExamController extends Controller
         $input = $request->all();
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $validator = Validator::make($input, [
-                'class_ids' => 'required',
+                'age_group_ids' => 'required',
                 'subjects_ids' => 'required|array',
                 'exams_types' => 'required|array',
                 'exam_marks' => "required|min:0",
@@ -253,9 +253,9 @@ class ApiSmExamController extends Controller
 
         try {
 
-            $sections = SmClassSection::where('class_id', $request->class_ids)->get();
+            $sections = SmClassSection::where('age_group_id', $request->age_group_ids)->get();
 
-            $exist_check = SmExam::where('class_id', '=', $request->class_ids)->count();
+            $exist_check = SmExam::where('age_group_id', '=', $request->age_group_ids)->count();
 
             if ($exist_check == 0) {
 
@@ -263,7 +263,7 @@ class ApiSmExamController extends Controller
 
                     foreach ($sections as $section) {
 
-                        $subject_for_sections = SmAssignSubject::where('class_id', $request->class_ids)->where('section_id', $section->section_id)->get();
+                        $subject_for_sections = SmAssignSubject::where('age_group_id', $request->age_group_ids)->where('mgender_id', $section->mgender_id)->get();
 
                         $eligible_subjects = [];
 
@@ -276,12 +276,12 @@ class ApiSmExamController extends Controller
                             if (in_array($subject_id, $eligible_subjects)) {
                                 $exam = new SmExam();
                                 $exam->exam_type_id = $exam_type_id;
-                                $exam->class_id = $request->class_ids;
-                                $exam->section_id = $section->section_id;
+                                $exam->age_group_id = $request->age_group_ids;
+                                $exam->mgender_id = $section->mgender_id;
                                 $exam->subject_id = $subject_id;
                                 $exam->exam_mark = $request->exam_marks;
                                 $exam->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
-                                $exam->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+                                $exam->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
                                 $exam->save();
 
                                 $exam->toArray();
@@ -297,14 +297,14 @@ class ApiSmExamController extends Controller
 
                                     $newSetupExam = new SmExamSetup();
                                     $newSetupExam->exam_id = $exam->id;
-                                    $newSetupExam->class_id = $request->class_ids;
-                                    $newSetupExam->section_id = $section->section_id;
+                                    $newSetupExam->age_group_id = $request->age_group_ids;
+                                    $newSetupExam->mgender_id = $section->mgender_id;
                                     $newSetupExam->subject_id = $subject_id;
                                     $newSetupExam->exam_term_id = $exam_type_id;
                                     $newSetupExam->exam_title = $ex_title;
                                     $newSetupExam->exam_mark = $ex_mark;
                                     $newSetupExam->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
-                                    $newSetupExam->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+                                    $newSetupExam->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
                                     $result = $newSetupExam->save();
                                 }
                             }
@@ -321,13 +321,13 @@ class ApiSmExamController extends Controller
             return ApiBaseMethod::sendError('Operation Failed.', $validator->errors());
         }
     }
-    public function saas_NewExamSetup(Request $request, $school_id)
+    public function saas_NewExamSetup(Request $request, $church_id)
     {
 
         $input = $request->all();
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $validator = Validator::make($input, [
-                'class_ids' => 'required',
+                'age_group_ids' => 'required',
                 'subjects_ids' => 'required|array',
                 'exams_types' => 'required|array',
                 'exam_marks' => "required|min:0",
@@ -346,9 +346,9 @@ class ApiSmExamController extends Controller
 
         try {
 
-            $sections = SmClassSection::where('class_id', $request->class_ids)->where('school_id', $school_id)->get();
+            $sections = SmClassSection::where('age_group_id', $request->age_group_ids)->where('church_id', $church_id)->get();
 
-            $exist_check = SmExam::where('class_id', '=', $request->class_ids)->where('school_id', $school_id)->count();
+            $exist_check = SmExam::where('age_group_id', '=', $request->age_group_ids)->where('church_id', $church_id)->count();
 
             if ($exist_check == 0) {
 
@@ -356,7 +356,7 @@ class ApiSmExamController extends Controller
 
                     foreach ($sections as $section) {
 
-                        $subject_for_sections = SmAssignSubject::where('class_id', $request->class_ids)->where('section_id', $section->section_id)->where('school_id', $school_id)->get();
+                        $subject_for_sections = SmAssignSubject::where('age_group_id', $request->age_group_ids)->where('mgender_id', $section->mgender_id)->where('church_id', $church_id)->get();
 
                         $eligible_subjects = [];
 
@@ -369,11 +369,11 @@ class ApiSmExamController extends Controller
                             if (in_array($subject_id, $eligible_subjects)) {
                                 $exam = new SmExam();
                                 $exam->exam_type_id = $exam_type_id;
-                                $exam->class_id = $request->class_ids;
-                                $exam->section_id = $section->section_id;
+                                $exam->age_group_id = $request->age_group_ids;
+                                $exam->mgender_id = $section->mgender_id;
                                 $exam->subject_id = $subject_id;
                                 $exam->exam_mark = $request->exam_marks;
-                                $exam->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+                                $exam->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
                                 $exam->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
 
                                 $exam->save();
@@ -391,13 +391,13 @@ class ApiSmExamController extends Controller
 
                                     $newSetupExam = new SmExamSetup();
                                     $newSetupExam->exam_id = $exam->id;
-                                    $newSetupExam->class_id = $request->class_ids;
-                                    $newSetupExam->section_id = $section->section_id;
+                                    $newSetupExam->age_group_id = $request->age_group_ids;
+                                    $newSetupExam->mgender_id = $section->mgender_id;
                                     $newSetupExam->subject_id = $subject_id;
                                     $newSetupExam->exam_term_id = $exam_type_id;
                                     $newSetupExam->exam_title = $ex_title;
                                     $newSetupExam->exam_mark = $ex_mark;
-                                    $newSetupExam->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+                                    $newSetupExam->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
                                     $newSetupExam->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
                                     $result = $newSetupExam->save();
                                 }
@@ -419,9 +419,9 @@ class ApiSmExamController extends Controller
     {
 
         if ($request->assigned_id == "") {
-            $check_date = SmExamSchedule::where('class_id', $request->class_id)->where('section_id', $request->section_id)->where('exam_term_id', $request->exam_term_id)->where('date', date('Y-m-d', strtotime($request->date)))->where('exam_period_id', $request->exam_period_id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $check_date = SmExamSchedule::where('age_group_id', $request->age_group_id)->where('mgender_id', $request->mgender_id)->where('exam_term_id', $request->exam_term_id)->where('date', date('Y-m-d', strtotime($request->date)))->where('exam_period_id', $request->exam_period_id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
         } else {
-            $check_date = SmExamSchedule::where('id', '!=', $request->assigned_id)->where('class_id', $request->class_id)->where('section_id', $request->section_id)->where('exam_term_id', $request->exam_term_id)->where('date', date('Y-m-d', strtotime($request->date)))->where('exam_period_id', $request->exam_period_id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $check_date = SmExamSchedule::where('id', '!=', $request->assigned_id)->where('age_group_id', $request->age_group_id)->where('mgender_id', $request->mgender_id)->where('exam_term_id', $request->exam_term_id)->where('date', date('Y-m-d', strtotime($request->date)))->where('exam_period_id', $request->exam_period_id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
         }
 
         $holiday_check = SmHoliday::where('from_date', '<=', date('Y-m-d', strtotime($request->date)))->where('to_date', '>=', date('Y-m-d', strtotime($request->date)))->first();
@@ -434,16 +434,16 @@ class ApiSmExamController extends Controller
             $to_date = '';
         }
     }
-    public function saas_NewExamSchedule(Request $request, $school_id)
+    public function saas_NewExamSchedule(Request $request, $church_id)
     {
 
         if ($request->assigned_id == "") {
-            $check_date = SmExamSchedule::where('class_id', $request->class_id)->where('section_id', $request->section_id)->where('exam_term_id', $request->exam_term_id)->where('date', date('Y-m-d', strtotime($request->date)))->where('exam_period_id', $request->exam_period_id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+            $check_date = SmExamSchedule::where('age_group_id', $request->age_group_id)->where('mgender_id', $request->mgender_id)->where('exam_term_id', $request->exam_term_id)->where('date', date('Y-m-d', strtotime($request->date)))->where('exam_period_id', $request->exam_period_id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
         } else {
-            $check_date = SmExamSchedule::where('id', '!=', $request->assigned_id)->where('class_id', $request->class_id)->where('section_id', $request->section_id)->where('exam_term_id', $request->exam_term_id)->where('date', date('Y-m-d', strtotime($request->date)))->where('exam_period_id', $request->exam_period_id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+            $check_date = SmExamSchedule::where('id', '!=', $request->assigned_id)->where('age_group_id', $request->age_group_id)->where('mgender_id', $request->mgender_id)->where('exam_term_id', $request->exam_term_id)->where('date', date('Y-m-d', strtotime($request->date)))->where('exam_period_id', $request->exam_period_id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
         }
 
-        $holiday_check = SmHoliday::where('from_date', '<=', date('Y-m-d', strtotime($request->date)))->where('to_date', '>=', date('Y-m-d', strtotime($request->date)))->where('school_id', $school_id)->first();
+        $holiday_check = SmHoliday::where('from_date', '<=', date('Y-m-d', strtotime($request->date)))->where('to_date', '>=', date('Y-m-d', strtotime($request->date)))->where('church_id', $church_id)->first();
 
         if ($holiday_check != "") {
             $from_date = date('jS M, Y', strtotime($holiday_check->from_date));
@@ -458,21 +458,21 @@ class ApiSmExamController extends Controller
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $data = [];
-            $student_id = SmStudent::where('user_id', $user_id)->value('id');
-            $record = StudentRecord::where('student_id', $student_id)->where('id', $record_id)->first();
+            $member_id = SmStudent::where('user_id', $user_id)->value('id');
+            $record = StudentRecord::where('member_id', $member_id)->where('id', $record_id)->first();
 
             $student_exams = DB::table('sm_online_exams')
-                ->where('class_id', $record->class_id)
-                ->where('section_id', $record->section_id)
-                ->where('school_id', $record->school_id)
+                ->where('age_group_id', $record->age_group_id)
+                ->where('mgender_id', $record->mgender_id)
+                ->where('church_id', $record->church_id)
                 ->select('sm_online_exams.title as exam_name', 'sm_online_exams.id as exam_id')
                 ->get();
 
             $exam_result = DB::table('sm_student_take_online_exams')
                 ->join('sm_online_exams', 'sm_online_exams.id', '=', 'online_exam_id')
                 ->join('sm_subjects', 'sm_online_exams.subject_id', '=', 'sm_subjects.id')
-                ->where('sm_student_take_online_exams.student_id', $record->student_id)
-                ->where('sm_student_take_online_exams.school_id', $record->school_id)
+                ->where('sm_student_take_online_exams.member_id', $record->member_id)
+                ->where('sm_student_take_online_exams.church_id', $record->church_id)
                 ->where('sm_online_exams.id', $exam_id)
                 ->where('sm_online_exams.status', '=', 1)
                 ->select(
@@ -510,24 +510,24 @@ class ApiSmExamController extends Controller
             return ApiBaseMethod::sendResponse($data, null);
         }
     }
-    public function saas_examResultApi(Request $request, $school_id, $user_id, $exam_id, $record_id)
+    public function saas_examResultApi(Request $request, $church_id, $user_id, $exam_id, $record_id)
     {
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $data = [];
-            $student_id = SmStudent::where('user_id', $user_id)->where('school_id', $school_id)->value('id');
-            $record = StudentRecord::where('student_id', $student_id)->where('id', $record_id)->first();
+            $member_id = SmStudent::where('user_id', $user_id)->where('church_id', $church_id)->value('id');
+            $record = StudentRecord::where('member_id', $member_id)->where('id', $record_id)->first();
             $student_exams = DB::table('sm_online_exams')
-                ->where('class_id', @$record->class_id)
-                ->where('section_id', @$record->section_id)
-                ->where('school_id', @$record->school_id)
+                ->where('age_group_id', @$record->age_group_id)
+                ->where('mgender_id', @$record->mgender_id)
+                ->where('church_id', @$record->church_id)
                 ->select('sm_online_exams.title as exam_name', 'sm_online_exams.id as exam_id')
-                ->where('school_id', $school_id)->get();
+                ->where('church_id', $church_id)->get();
 
             $exam_result = DB::table('sm_student_take_online_exams')
                 ->join('sm_online_exams', 'sm_online_exams.id', '=', 'online_exam_id')
                 ->join('sm_subjects', 'sm_online_exams.subject_id', '=', 'sm_subjects.id')
-                ->where('sm_student_take_online_exams.student_id', @$record->student_id)
-                ->where('sm_student_take_online_exams.school_id', @$record->school_id)
+                ->where('sm_student_take_online_exams.member_id', @$record->member_id)
+                ->where('sm_student_take_online_exams.church_id', @$record->church_id)
                 ->where('sm_online_exams.id', $exam_id)
                 ->where('sm_online_exams.status', '=', 1)
                 ->select(
@@ -538,7 +538,7 @@ class ApiSmExamController extends Controller
                     'sm_online_exams.percentage as pass_mark_percentage',
                     'sm_student_take_online_exams.total_marks'
                 )
-                ->where('sm_student_take_online_exams.school_id', $school_id)->get();
+                ->where('sm_student_take_online_exams.church_id', $church_id)->get();
             $gradeArray = [];
             foreach ($exam_result as $row) {
 
@@ -547,7 +547,7 @@ class ApiSmExamController extends Controller
                     ->where('percent_from', '<=', $mark)
                     ->where('percent_upto', '>=', $mark)
                     ->select('grade_name')
-                    ->where('school_id', $school_id)->first();
+                    ->where('church_id', $church_id)->first();
                 $gradeArray[] = array(
                     "grade" => $grades->grade_name,
                     "exam_id" => $row->exam_id,
@@ -574,19 +574,19 @@ class ApiSmExamController extends Controller
 
                 $data = [];
 
-                $student_id = SmStudent::where('user_id', $user_id)->value('id');
-                $record = StudentRecord::where('student_id', $student_id)->where('id', $record_id)->first();
+                $member_id = SmStudent::where('user_id', $user_id)->value('id');
+                $record = StudentRecord::where('member_id', $member_id)->where('id', $record_id)->first();
                 $time_zone_setup = SmGeneralSettings::join('sm_time_zones', 'sm_time_zones.id', '=', 'sm_general_settings.time_zone_id')
-                    ->where('school_id', $record->school_id)->first();
+                    ->where('church_id', $record->church_id)->first();
                 date_default_timezone_set($time_zone_setup->time_zone);
                 $now = date('g:i:s');
                 $today = date('Y-m-d');
 
                 $online_exams = SmOnlineExam::where('active_status', 1)
-                    ->where('academic_id', SmAcademicYear::API_ACADEMIC_YEAR($record->school_id))
-                    ->where('status', 1)->where('class_id', $record->class_id)
-                    ->where('section_id', $record->section_id)
-                    ->where('school_id', $record->school_id)
+                    ->where('church_year_id', SmAcademicYear::API_church_year($record->church_id))
+                    ->where('status', 1)->where('age_group_id', $record->age_group_id)
+                    ->where('mgender_id', $record->mgender_id)
+                    ->where('church_id', $record->church_id)
                     ->get();
 
                 foreach ($online_exams as $online_exam) {
@@ -614,12 +614,12 @@ class ApiSmExamController extends Controller
                 }
 
                 $online_exams = SmOnlineExam::where('sm_online_exams.active_status', 1)
-                    ->where('sm_online_exams.academic_id', SmAcademicYear::API_ACADEMIC_YEAR($record->school_id))
+                    ->where('sm_online_exams.church_year_id', SmAcademicYear::API_church_year($record->church_id))
                     ->join('sm_subjects', 'sm_subjects.id', '=', 'sm_online_exams.subject_id')
 
-                    ->where('class_id', $record->class_id)
-                    ->where('section_id', $record->section_id)
-                    ->where('sm_online_exams.school_id', $record->school_id)
+                    ->where('age_group_id', $record->age_group_id)
+                    ->where('mgender_id', $record->mgender_id)
+                    ->where('sm_online_exams.church_id', $record->church_id)
                     ->select('sm_online_exams.id as exam_id', 'sm_online_exams.title as exam_title', 'sm_subjects.subject_name', 'sm_online_exams.date', 'sm_online_exams.status as onlineExamStatus', 'sm_online_exams.is_taken as onlineExamTakeStatus', 'is_running', 'is_waiting', 'is_closed')
                     ->get();
                 $examStatus = '0 = Pending , 1 Published';
@@ -634,24 +634,24 @@ class ApiSmExamController extends Controller
         }
     }
 
-    public function saas_studentOnlineExamApi(Request $request, $school_id, $user_id, $record_id)
+    public function saas_studentOnlineExamApi(Request $request, $church_id, $user_id, $record_id)
     {
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
 
-            $student_id = SmStudent::withOutGlobalScope(StatusAcademicSchoolScope::class)->where('user_id', $user_id)->value('id');
-            $record = StudentRecord::where('student_id', $student_id)->where('id', $record_id)->first();
+            $member_id = SmStudent::withOutGlobalScope(StatusAcademicSchoolScope::class)->where('user_id', $user_id)->value('id');
+            $record = StudentRecord::where('member_id', $member_id)->where('id', $record_id)->first();
             $time_zone_setup = SmGeneralSettings::join('sm_time_zones', 'sm_time_zones.id', '=', 'sm_general_settings.time_zone_id')
-                ->where('school_id', $record->school_id)->first();
+                ->where('church_id', $record->church_id)->first();
             date_default_timezone_set($time_zone_setup->time_zone);
             $now = date('g:i:s');
             $today = date('Y-m-d');
 
             $online_exams = SmOnlineExam::withOutGlobalScope(StatusAcademicSchoolScope::class)->where('active_status', 1)
-                ->where('academic_id', SmAcademicYear::API_ACADEMIC_YEAR($record->school_id))
-                ->where('status', 1)->where('class_id', $record->class_id)
-                ->where('section_id', $record->section_id)
-                ->where('school_id', $record->school_id)
+                ->where('church_year_id', SmAcademicYear::API_church_year($record->church_id))
+                ->where('status', 1)->where('age_group_id', $record->age_group_id)
+                ->where('mgender_id', $record->mgender_id)
+                ->where('church_id', $record->church_id)
                 ->get();
 
             foreach ($online_exams as $online_exam) {
@@ -679,12 +679,12 @@ class ApiSmExamController extends Controller
             }
 
             $online_exams = SmOnlineExam::withOutGlobalScope(StatusAcademicSchoolScope::class)->where('sm_online_exams.active_status', 1)
-                ->where('sm_online_exams.academic_id', SmAcademicYear::API_ACADEMIC_YEAR($record->school_id))
+                ->where('sm_online_exams.church_year_id', SmAcademicYear::API_church_year($record->church_id))
                 ->join('sm_subjects', 'sm_subjects.id', '=', 'sm_online_exams.subject_id')
 
-                ->where('class_id', $record->class_id)
-                ->where('section_id', $record->section_id)
-                ->where('sm_online_exams.school_id', $record->school_id)
+                ->where('age_group_id', $record->age_group_id)
+                ->where('mgender_id', $record->mgender_id)
+                ->where('sm_online_exams.church_id', $record->church_id)
                 ->select('sm_online_exams.id as exam_id', 'sm_online_exams.title as exam_title', 'sm_subjects.subject_name', 'sm_online_exams.date', 'sm_online_exams.status as onlineExamStatus', 'sm_online_exams.is_taken as onlineExamTakeStatus', 'is_running', 'is_waiting', 'is_closed')
                 ->get();
             $examStatus = '0 = Pending , 1 Published';
@@ -698,30 +698,30 @@ class ApiSmExamController extends Controller
     public function chooseExamApi(Request $request, $user_id, $record_id)
     {
         if (ApiBaseMethod::checkUrl($request->fullUrl())) { 
-            $student_id = SmStudent::where('user_id', $user_id)->value('id');
-            $record = StudentRecord::where('student_id', $student_id)->where('id', $record_id)->first();
+            $member_id = SmStudent::where('user_id', $user_id)->value('id');
+            $record = StudentRecord::where('member_id', $member_id)->where('id', $record_id)->first();
 
             $student_exams = DB::table('sm_online_exams')
-                ->where('class_id', $record->class_id)
-                ->where('section_id', $record->section_id)
-                ->where('school_id', $record->school_id)
+                ->where('age_group_id', $record->age_group_id)
+                ->where('mgender_id', $record->mgender_id)
+                ->where('church_id', $record->church_id)
                 ->select('sm_online_exams.title as exam_name', 'id as exam_id')
                 ->get();
             return ApiBaseMethod::sendResponse($student_exams, null);
         }
     }
-    public function saas_chooseExamApi(Request $request, $school_id, $user_id, $record_id)
+    public function saas_chooseExamApi(Request $request, $church_id, $user_id, $record_id)
     {
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
-            $student_id = SmStudent::where('user_id', $user_id)->value('id');
-            $record = StudentRecord::where('student_id', $student_id)->where('id', $record_id)->first();
+            $member_id = SmStudent::where('user_id', $user_id)->value('id');
+            $record = StudentRecord::where('member_id', $member_id)->where('id', $record_id)->first();
 
             $student_exams = DB::table('sm_online_exams')
-                ->where('class_id', @$record->class_id)
-                ->where('section_id', @$record->section_id)
-                ->where('school_id', @$record->school_id)
+                ->where('age_group_id', @$record->age_group_id)
+                ->where('mgender_id', @$record->mgender_id)
+                ->where('church_id', @$record->church_id)
                 ->select('sm_online_exams.title as exam_name', 'id as exam_id')
-                ->where('school_id', $school_id)
+                ->where('church_id', $church_id)
                 ->get();
             return ApiBaseMethod::sendResponse($student_exams, null);
         }

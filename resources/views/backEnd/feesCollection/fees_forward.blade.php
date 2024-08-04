@@ -40,7 +40,7 @@ else{ $currency = '$'; }
                                     <select class="niceSelect w-100 bb form-control{{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                         <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                         @foreach($classes as $class)
-                                        <option value="{{$class->id}}"  {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{$class->class_name}}</option>
+                                        <option value="{{$class->id}}"  {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{$class->age_group_name}}</option>
                                         @endforeach
                                     </select>
                                      @if ($errors->has('class'))
@@ -96,8 +96,8 @@ else{ $currency = '$'; }
                                             </tr>
                                         @endif
                                             <tr>
-                                                <th width="15%">@lang('student.student_name')</th>
-                                                <th width="15%">@lang('student.admission_no')</th>
+                                                <th width="15%">@lang('student.member_name')</th>
+                                                <th width="15%">@lang('student.registration_no')</th>
                                                 <th width="15%">@lang('student.roll_no')</th>
                                                 <th width="15%">@lang('student.father_name')</th>
                                                 <th width="15%">@lang('fees.balance') ({{generalSetting()->currency_symbol}})</th>
@@ -107,14 +107,14 @@ else{ $currency = '$'; }
                                     <tbody>
                                         @foreach($students as $student)
                                             <tr>
-                                                <td>{{$student->studentDetail->full_name}} <input type="hidden" name="id[]" value="{{isset($update) && @$student->studentDetail->forwardBalance ? $student->studentDetail->forwardBalance->id: $student->student_id}}"></td>
-                                                <td>{{$student->studentDetail->admission_no}}</td>
+                                                <td>{{$student->studentDetail->full_name}} <input type="hidden" name="id[]" value="{{isset($update) && @$student->studentDetail->forwardBalance ? $student->studentDetail->forwardBalance->id: $student->member_id}}"></td>
+                                                <td>{{$student->studentDetail->registration_no}}</td>
                                                 <td>{{$student->studentDetail->roll_no}}</td>
             
                                                 <td>{{$student->studentDetail->parents !=""?$student->studentDetail->parents->fathers_name:""}}</td>
                                                 <td>
                                                     <div class="input-effect">
-                                                        <input oninput="numberCheckWithDot(this)" type="text" class="primary-input form-control" cols="0" rows="1" name="balance[{{isset($update)? $student->studentDetail->forwardBalance->id:$student->student_id}}]" maxlength="8" value="{{isset($update)?
+                                                        <input oninput="numberCheckWithDot(this)" type="text" class="primary-input form-control" cols="0" rows="1" name="balance[{{isset($update)? $student->studentDetail->forwardBalance->id:$student->member_id}}]" maxlength="8" value="{{isset($update)?
                                                         $student->studentDetail->forwardBalance->balance: ''}}">
                                                         <label>@lang('fees.balance') <span></span></label>
                                                         <span class="focus-border"></span>
@@ -125,7 +125,7 @@ else{ $currency = '$'; }
                                                 </td>
                                                 <td>
                                                     <div class="input-effect">
-                                                        <input type="text" class="primary-input form-control" cols="0" rows="1" name="notes[{{isset($update)? $student->studentDetail->forwardBalance->id:$student->student_id}}]" value="{{isset($update)?
+                                                        <input type="text" class="primary-input form-control" cols="0" rows="1" name="notes[{{isset($update)? $student->studentDetail->forwardBalance->id:$student->member_id}}]" value="{{isset($update)?
                                                         $student->studentDetail->forwardBalance->notes: 'Fees Carry Forward'}}">
                                                         <label>@lang('fees.short_note')<span></span></label>
                                                         <span class="focus-border"></span>

@@ -24,7 +24,7 @@ class PreloaderSettingController extends Controller
             Toastr::error(trans('Prohibited in demo mode.'), trans('common.failed'));
             return redirect()->back();
         }
-        $setting = SmGeneralSettings::where('school_id', auth()->user()->school_id)->first();
+        $setting = SmGeneralSettings::where('church_id', auth()->user()->church_id)->first();
         $setting->preloader_status = $request->preloader_status;
         $setting->preloader_style = $request->preloader_style;
         $setting->preloader_type = $request->preloader_type;

@@ -27,8 +27,8 @@ class SmFeesTypeController extends Controller
     {
 
         try{
-            $fees_types = SmFeesType::with('fessGroup')->where('school_id', Auth::user()->school_id)->get();
-            $fees_groups = SmFeesGroup::where('school_id', Auth::user()->school_id)->get();
+            $fees_types = SmFeesType::with('fessGroup')->where('church_id', Auth::user()->church_id)->get();
+            $fees_groups = SmFeesGroup::where('church_id', Auth::user()->church_id)->get();
 
             return view('backEnd.feesCollection.fees_type', compact('fees_types','fees_groups'));
         }catch (\Exception $e) {
@@ -50,8 +50,8 @@ class SmFeesTypeController extends Controller
             $fees_type->name = $request->name;
             $fees_type->fees_group_id = $request->fees_group;
             $fees_type->description = $request->description;
-            $fees_type->school_id = Auth::user()->school_id;
-            $fees_type->academic_id = getAcademicId();
+            $fees_type->church_id = Auth::user()->church_id;
+            $fees_type->church_year_id = getAcademicId();
             $result = $fees_type->save();
 
             Toastr::success('Operation successful', 'Success');
@@ -65,9 +65,9 @@ class SmFeesTypeController extends Controller
     public function edit(Request $request, $id)
     {
         try{
-            $fees_type = SmFeesType::where('school_id', Auth::user()->school_id)->find($id);
-            $fees_types = SmFeesType::where('school_id', Auth::user()->school_id)->get();
-            $fees_groups = SmFeesGroup::where('school_id', Auth::user()->school_id)->get();
+            $fees_type = SmFeesType::where('church_id', Auth::user()->church_id)->find($id);
+            $fees_types = SmFeesType::where('church_id', Auth::user()->church_id)->get();
+            $fees_groups = SmFeesGroup::where('church_id', Auth::user()->church_id)->get();
 
             return view('backEnd.feesCollection.fees_type', compact('fees_type', 'fees_types','fees_groups'));
         }catch (\Exception $e) {

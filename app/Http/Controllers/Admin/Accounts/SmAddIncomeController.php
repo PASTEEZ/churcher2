@@ -51,11 +51,11 @@ class SmAddIncomeController extends Controller
             $add_income->amount = $request->amount;
             $add_income->file = fileUpload($request->file,$destination);
             $add_income->description = $request->description;
-            $add_income->school_id = Auth::user()->school_id;
+            $add_income->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $add_income->un_academic_id = getAcademicId();
+                $add_income->un_church_year_id = getAcademicId();
             }else{
-                $add_income->academic_id = getAcademicId();
+                $add_income->church_year_id = getAcademicId();
             }
             $add_income->save();
 
@@ -71,7 +71,7 @@ class SmAddIncomeController extends Controller
                 $bank_statement->item_sell_id= $add_income->id;
                 $bank_statement->payment_date= date('Y-m-d',strtotime($request->date));
                 $bank_statement->bank_id= $request->accounts;
-                $bank_statement->school_id= Auth::user()->school_id;
+                $bank_statement->church_id= Auth::user()->church_id;
                 $bank_statement->payment_method= $request->payment_method;
                 $bank_statement->save();
 
@@ -120,11 +120,11 @@ class SmAddIncomeController extends Controller
             $add_income->amount = $request->amount;
             $add_income->file = fileUpdate($add_income->file,$request->file,$destination);
             $add_income->description = $request->description;
-            $add_income->school_id = Auth::user()->school_id;
+            $add_income->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $add_income->un_academic_id = getAcademicId();
+                $add_income->un_church_year_id = getAcademicId();
             }else{
-                $add_income->academic_id = getAcademicId();
+                $add_income->church_year_id = getAcademicId();
             }
             $add_income->save();
 
@@ -141,7 +141,7 @@ class SmAddIncomeController extends Controller
                 $bank_statement->item_sell_id= $add_income->id;
                 $bank_statement->payment_date= date('Y-m-d',strtotime($request->date));
                 $bank_statement->bank_id= $request->accounts;
-                $bank_statement->school_id= Auth::user()->school_id;
+                $bank_statement->church_id= Auth::user()->church_id;
                 $bank_statement->payment_method= $request->payment_method;
                 $bank_statement->save();
 

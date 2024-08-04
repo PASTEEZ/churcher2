@@ -20,10 +20,10 @@ class CreateStudentAttendanceBulksTable extends Migration
             // $table->string('out_time')->nullable();
             $table->string('attendance_type')->nullable();
             $table->string('note')->nullable();
-            $table->integer('student_id')->nullable();
-            $table->integer('class_id')->nullable();
-            $table->integer('section_id')->nullable();
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
+            $table->integer('member_id')->nullable();
+            $table->integer('age_group_id')->nullable();
+            $table->integer('mgender_id')->nullable();
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
             $table->timestamps();
         });
     }

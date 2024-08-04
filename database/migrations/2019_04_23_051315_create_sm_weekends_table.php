@@ -21,12 +21,12 @@ class CreateSmWeekendsTable extends Migration
             $table->integer('is_weekend')->nullable();
             $table->integer('active_status')->default(1);
 
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
             $table->string('created_at')->nullable();
             $table->string('updated_at')->nullable();
-            $table->integer('academic_id')->nullable()->default(1)->unsigned();
-            $table->foreign('academic_id')->references('id')->on('sm_academic_years')->onDelete('set null');
+            $table->integer('church_year_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_year_id')->references('id')->on('sm_academic_years')->onDelete('set null');
             // $table->timestamps();
         });
 

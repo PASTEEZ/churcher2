@@ -31,7 +31,7 @@ class SmStudentCertificate extends Model
                 $student = SmStudent::find($user_id);
                 $studentRecord = '';
                 if ($student) {
-                    $studentRecord = StudentRecord::where('student_id', $student->id)->where('school_id', auth()->user()->school_id)->first();
+                    $studentRecord = StudentRecord::where('member_id', $student->id)->where('church_id', auth()->user()->church_id)->first();
                 }
                 
 
@@ -40,10 +40,10 @@ class SmStudentCertificate extends Model
                 $body = str_replace('[present_address]', @$student->current_address, $body);
                 $body = str_replace('[guardian]', @$student->parents->guardians_name, $body);
                 $body = str_replace('[created_at]', @$student->created_at, $body);
-                $body = str_replace('[admission_no]', @$student->admission_no, $body);
+                $body = str_replace('[registration_no]', @$student->registration_no, $body);
                 $body = str_replace('[roll_no]', @$studentRecord->roll_no, $body);
-                $body = str_replace('[class]', @$studentRecord->class->class_name, $body);
-                $body = str_replace('[section]', @$studentRecord->section->section_name, $body);
+                $body = str_replace('[class]', @$studentRecord->class->age_group_name, $body);
+                $body = str_replace('[section]', @$studentRecord->section->mgender_name, $body);
                 $body = str_replace('[gender] ', @$student->gender->base_setup_name, $body);
                 $body = str_replace('[admission_date]', @$student->admission_date, $body);
                 $body = str_replace('[category]', @$student->category->category_name, $body);
@@ -72,10 +72,10 @@ class SmStudentCertificate extends Model
                 $body = str_replace('[profile_image]', @$parent->guardians_photo, $body);
             }elseif($role == "Lms"){
                 if(moduleStatusCheck('Lms')== TRUE){
-                    $purchaseLog = CoursePurchaseLog::where('student_id',$user_id)->first();
-                    $body = str_replace('[student_name]', @$purchaseLog->student->full_name, $body);
+                    $purchaseLog = CoursePurchaseLog::where('member_id',$user_id)->first();
+                    $body = str_replace('[member_name]', @$purchaseLog->student->full_name, $body);
                     $body = str_replace('[course_name]', @$purchaseLog->course->course_title, $body);
-                    $complete_date = LessonComplete::where('course_id',$purchaseLog->course_id)->where('student_id',$purchaseLog->student_id)->latest()->first('created_at')->created_at;
+                    $complete_date = LessonComplete::where('course_id',$purchaseLog->course_id)->where('member_id',$purchaseLog->member_id)->latest()->first('created_at')->created_at;
                     if($complete_date){
                         $complete_date = dateConvert($complete_date);
                     }else{

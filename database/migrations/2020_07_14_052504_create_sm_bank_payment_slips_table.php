@@ -32,27 +32,27 @@ class CreateSmBankPaymentSlipsTable extends Migration
             $table->integer('fees_type_id')->nullable()->unsigned();
             $table->foreign('fees_type_id')->references('id')->on('sm_fees_types')->onDelete('restrict');
 
-            $table->integer('student_id')->nullable()->unsigned();
-            $table->foreign('student_id')->references('id')->on('sm_students')->onDelete('cascade');
+            $table->integer('member_id')->nullable()->unsigned();
+            $table->foreign('member_id')->references('id')->on('sm_students')->onDelete('cascade');
 
-            $table->integer('class_id')->unsigned();
-            $table->foreign('class_id')->references('id')->on('sm_classes')->onDelete('cascade');
+            $table->integer('age_group_id')->unsigned();
+            $table->foreign('age_group_id')->references('id')->on('sm_classes')->onDelete('cascade');
 
             $table->integer('assign_id')->nullable()->unsigned();
             $table->foreign('assign_id')->references('id')->on('sm_fees_assigns')->onDelete('cascade');
 
-            $table->integer('section_id')->unsigned();
-            $table->foreign('section_id')->references('id')->on('sm_sections')->onDelete('cascade');
+            $table->integer('mgender_id')->unsigned();
+            $table->foreign('mgender_id')->references('id')->on('sm_sections')->onDelete('cascade');
 
             $table->integer('created_by')->nullable()->default(1)->unsigned();
 
             $table->integer('updated_by')->nullable()->default(1)->unsigned();
 
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('restrict');
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('restrict');
 
-            $table->integer('academic_id')->nullable()->default(1)->unsigned();
-            $table->foreign('academic_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
+            $table->integer('church_year_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_year_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
             $table->timestamps();
         });
     }

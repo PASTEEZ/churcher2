@@ -13,9 +13,9 @@ class SmStaffAttendancesTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run($school_id, $academic_id)
+    public function run($church_id, $church_year_id)
     {
-        $staffs = SmStaff::where('school_id',$school_id)->get(['id','user_id']);
+        $staffs = SmStaff::where('church_id',$church_id)->get(['id','user_id']);
         $days = cal_days_in_month(CAL_GREGORIAN, date('m'), date('Y'));
         $status = ['P','L','A'];
         for ($i = 1; $i <= $days; $i++) {
@@ -30,8 +30,8 @@ class SmStaffAttendancesTableSeeder extends Seeder
                 $sa->attendence_type = array_rand($status);
                 $sa->notes = 'Sample Attendance for Staff';
                 $sa->attendence_date = $date;
-                $sa->school_id = $school_id;
-                $sa->academic_id = $academic_id;
+                $sa->church_id = $church_id;
+                $sa->church_year_id = $church_year_id;
                 $sa->save();
             }
         }

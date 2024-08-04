@@ -68,19 +68,19 @@ class CustomSmsSettingController extends Controller
 
         Session::put('Custom_sms', 'active');
         $editData = CustomSmsSetting::where('gateway_id',$id)->first();
-        $sms_services['Twilio'] = SmSmsGateway::where('gateway_name','Twilio')->where('school_id',Auth::user()->school_id)->firstOrCreate();
-        $sms_services['Msg91'] = SmSmsGateway::where('gateway_name','Msg91')->where('school_id',Auth::user()->school_id)->firstOrCreate();
-        $sms_services['TextLocal'] = SmSmsGateway::where('gateway_name','TextLocal')->where('school_id',Auth::user()->school_id)->firstOrCreate();
-        $sms_services['AfricaTalking'] = SmSmsGateway::where('gateway_name','AfricaTalking')->where('school_id',Auth::user()->school_id)->firstOrCreate();
-        $sms_services['Mobile SMS'] = SmSmsGateway::where('gateway_name','Mobile SMS')->where('school_id',Auth::user()->school_id)->firstOrCreate();
+        $sms_services['Twilio'] = SmSmsGateway::where('gateway_name','Twilio')->where('church_id',Auth::user()->church_id)->firstOrCreate();
+        $sms_services['Msg91'] = SmSmsGateway::where('gateway_name','Msg91')->where('church_id',Auth::user()->church_id)->firstOrCreate();
+        $sms_services['TextLocal'] = SmSmsGateway::where('gateway_name','TextLocal')->where('church_id',Auth::user()->church_id)->firstOrCreate();
+        $sms_services['AfricaTalking'] = SmSmsGateway::where('gateway_name','AfricaTalking')->where('church_id',Auth::user()->church_id)->firstOrCreate();
+        $sms_services['Mobile SMS'] = SmSmsGateway::where('gateway_name','Mobile SMS')->where('church_id',Auth::user()->church_id)->firstOrCreate();
         if(moduleStatusCheck('HimalayaSms')){
-            $sms_services['HimalayaSms'] = SmSmsGateway::where('gateway_name','HimalayaSms')->where('school_id',Auth::user()->school_id)->first();
-            $all_sms_services= SmSmsGateway::where('school_id',Auth::user()->school_id)->get();
+            $sms_services['HimalayaSms'] = SmSmsGateway::where('gateway_name','HimalayaSms')->where('church_id',Auth::user()->church_id)->first();
+            $all_sms_services= SmSmsGateway::where('church_id',Auth::user()->church_id)->get();
         }
         elseif( ! moduleStatusCheck('HimalayaSms')){
-            $all_sms_services= SmSmsGateway::where('gateway_name', '!=','HimalayaSms')->where('school_id',Auth::user()->school_id)->get();
+            $all_sms_services= SmSmsGateway::where('gateway_name', '!=','HimalayaSms')->where('church_id',Auth::user()->church_id)->get();
         }
-        $active_sms_service = SmSmsGateway::where('school_id',Auth::user()->school_id)->where('active_status', 1)->first();
+        $active_sms_service = SmSmsGateway::where('church_id',Auth::user()->church_id)->where('active_status', 1)->first();
 
 
         return view('backEnd.systemSettings.smsSettings', compact('sms_services', 'active_sms_service','all_sms_services','editData'));

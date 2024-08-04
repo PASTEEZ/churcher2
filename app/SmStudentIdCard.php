@@ -30,13 +30,13 @@ class SmStudentIdCard extends Model
     }
 
     public function scopeStatus($query){
-        return $query->where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id);
+        return $query->where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id);
     }
 
     public static function studentName($parent_id){
         $studentInfos = SmStudent::where('parent_id',$parent_id)
                    
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->get(['full_name','student_photo']);
         return $studentInfos;
     }

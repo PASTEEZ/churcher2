@@ -25,9 +25,9 @@ class SmStudentCategoryRequest extends FormRequest
      */
     public function rules()
     {
-        $school_id=auth()->user()->school_id;
+        $church_id=auth()->user()->church_id;
         return [
-            'category' => ['required', Rule::unique('sm_student_categories', 'category_name')->where('school_id', $school_id)->ignore($this->id) ],
+            'category' => ['required', Rule::unique('sm_student_categories', 'category_name')->where('church_id', $church_id)->ignore($this->id) ],
         ];
     }
 

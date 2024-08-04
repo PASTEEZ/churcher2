@@ -3,8 +3,8 @@
 @lang('reports.previous_record') 
 @endsection
 @section('mainContent')
-<input type="text" hidden value="{{ @$clas->class_name }}" id="cls">
-<input type="text" hidden value="{{ @$sec->section_name }}" id="sec">
+<input type="text" hidden value="{{ @$clas->age_group_name }}" id="cls">
+<input type="text" hidden value="{{ @$sec->mgender_name }}" id="sec">
 <section class="sms-breadcrumb mb-40 white-box">
     <div class="container-fluid">
         <div class="row justify-content-between">
@@ -36,7 +36,7 @@
 
                               <div class="col-lg-4 col-md-4 sm_mb_20 sm2_mb_20">
                                     <select class="niceSelect w-100 bb promote_session form-control{{ $errors->has('promote_session') ? ' is-invalid' : '' }}" name="promote_session" id="promote_session">
-                                        <option data-display="@lang('common.select_academic_year') *" value="">@lang('common.select_academic_year') *</option>
+                                        <option data-display="@lang('common.select_church_year') *" value="">@lang('common.select_church_year') *</option>
                                         @foreach(academicYears() as $session)
                                             <option value="{{$session->id}}" {{isset($year)? ($session->id == $year? 'selected':''):''}}>{{$session->year}} - [ {{$session->title }}]</option>
                                         @endforeach
@@ -107,7 +107,7 @@
                         <table id="table_id_tt" class="display school-table" cellspacing="0" width="100%">
                             <thead>                               
                                 <tr>
-                                    <th>@lang('student.admission_no')</th>
+                                    <th>@lang('student.registration_no')</th>
                                     <th>@lang('student.roll_no')</th>
                                     <th>@lang('common.name')</th>
                                     <th>@lang('common.class')</th>
@@ -128,7 +128,7 @@
                                     <td>{{$data->admission_number}}</td>
                                     <td>{{$data->previous_roll_number }}</td>
                                     <td>{{$studentInfo->full_name}}</td>
-                                    <td>{{$class->class_name}} ( {{$section->section_name}} )</td>
+                                    <td>{{$class->age_group_name}} ( {{$section->mgender_name}} )</td>
                                     <td>{{@$data->student->parents->fathers_name }}</td>
                                     <td >{{ dateConvert(@$data->student->date_of_birth)}}</td>
                                     <td>{{@$data->student->gender->base_setup_name }}</td>

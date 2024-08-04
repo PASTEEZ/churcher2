@@ -62,8 +62,8 @@
                                             @php $h = 0; @endphp
                                         @foreach($classes as $class)
                                             <div class="input-effect">
-                                                <input type="checkbox" id="classes_{{@@$class->id}}" class="common-checkbox" name="class_ids[]" value="{{@@$class->id}}" {{ (is_array(old('class_ids')) and in_array(@@$class->id, old('class_ids'))) ? ' checked' : '' }}>
-                                                <label for="classes_{{@@$class->id}}">{{@@$class->class_name}}</label>
+                                                <input type="checkbox" id="classes_{{@@$class->id}}" class="common-checkbox" name="age_group_ids[]" value="{{@@$class->id}}" {{ (is_array(old('age_group_ids')) and in_array(@@$class->id, old('age_group_ids'))) ? ' checked' : '' }}>
+                                                <label for="classes_{{@@$class->id}}">{{@@$class->age_group_name}}</label>
                                             </div>
                                             @php $h++; @endphp
                                         @endforeach
@@ -71,9 +71,9 @@
                                     </div>
                                     <div class="col-lg-12">
 
-                                        @if($errors->has('class_ids'))
+                                        @if($errors->has('age_group_ids'))
                                             <span class="text-danger validate-textarea-checkbox" role="alert">
-                                                <strong>{{ $errors->first('class_ids') }}</strong>
+                                                <strong>{{ $errors->first('age_group_ids') }}</strong>
                                             </span>
                                         @endif
 
@@ -85,16 +85,16 @@
                                             <label>@lang('common.select_section')</label>
                                         @foreach($sections as $section)
                                             <div class="input-effect">
-                                                <input type="checkbox" id="sections_{{@$section->id}}" class="common-checkbox" name="section_ids[]" value="{{@$section->id}}">
-                                                <label for="sections_{{@$section->id}}">{{@$section->section_name}}</label>
+                                                <input type="checkbox" id="sections_{{@$section->id}}" class="common-checkbox" name="mgender_ids[]" value="{{@$section->id}}">
+                                                <label for="sections_{{@$section->id}}">{{@$section->mgender_name}}</label>
                                             </div>
                                         @endforeach
                                     </div>
                                     <div class="col-lg-12">
 
-                                        @if($errors->has('section_ids'))
+                                        @if($errors->has('mgender_ids'))
                                             <span class="text-danger validate-textarea-checkbox" role="alert">
-                                                <strong>{{ $errors->first('section_ids') }}</strong>
+                                                <strong>{{ $errors->first('mgender_ids') }}</strong>
                                             </span>
                                         @endif
                                     </div>
@@ -144,7 +144,7 @@
                                         <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                             <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                             @foreach($classes as $class)
-                                                <option value="{{@ @$class->id}}" {{isset($exam)? ($class->id == $exam->class_id? 'selected':''): (old('class') == $class->id? 'selected':'')}}>{{@ @$class->class_name}}</option>
+                                                <option value="{{@ @$class->id}}" {{isset($exam)? ($class->id == $exam->age_group_id? 'selected':''): (old('class') == $class->id? 'selected':'')}}>{{@ @$class->age_group_name}}</option>
 
                                             @endforeach
                                         </select>
@@ -162,7 +162,7 @@
                                             <option data-display="@lang('common.select_section') *" value="">@lang('common.select_section') *</option>
                                             @if(isset($exam))
                                                 @foreach($sections as $section)
-                                                    <option value="{{ @$section->id}}" {{ @$exam->section_id == @$section->id? 'selected': ''}}>{{ @$section->section_name}}</option>
+                                                    <option value="{{ @$section->id}}" {{ @$exam->mgender_id == @$section->id? 'selected': ''}}>{{ @$section->mgender_name}}</option>
                                                 @endforeach
                                             @endif
                                         </select>

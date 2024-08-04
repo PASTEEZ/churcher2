@@ -268,7 +268,7 @@ return [
 
 "student_category" => "Catégorie d'étudiant",
 
-"promote_academic_year" => "Promouvoir l'année universitaire",
+"promote_church_year" => "Promouvoir l'année universitaire",
 
 "select_current_class" => "Sélectionner la classe en cours",
 
@@ -486,7 +486,7 @@ return [
 
 "date_of_birth" => "Date de naissance",
 
-"student_id_card" => "Carte d'identité de l'étudiant",
+"member_id_card" => "Carte d'identité de l'étudiant",
 
 "mother" => "Mère",
 
@@ -496,7 +496,7 @@ return [
 
 "class_section" => "Classe (sec.)",
 
-"admission_no" => "Droits d'entrée Non",
+"registration_no" => "Droits d'entrée Non",
 
 "first_name" => "Prénom",
 
@@ -524,7 +524,7 @@ return [
 
 "export_to_pdf" => "Exporter vers PDF",
 
-"student_name" => "Nom de l'étudiant",
+"member_name" => "Nom de l'étudiant",
 
 "title" => "Titre",
 
@@ -592,13 +592,13 @@ return [
 
 "email_address" => "Adresse électronique",
 
-"academic_year" => "Année universitaire",
+"church_year" => "Année universitaire",
 
 "select_class" => "Sélectionner une classe",
 
 "select_subject" => "Sélectionner le sujet",
 
-"select_academic_year" => "Sélectionner une année universitaire",
+"select_church_year" => "Sélectionner une année universitaire",
 
 "info" => "Infos",
 

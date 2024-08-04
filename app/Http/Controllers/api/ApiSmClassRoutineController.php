@@ -28,7 +28,7 @@ class ApiSmClassRoutineController extends Controller
         $validator = Validator::make($input, [
             'class' => 'required',
             'section' => 'required',
-            // 'school_id' => 'required',
+            // 'church_id' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -38,23 +38,23 @@ class ApiSmClassRoutineController extends Controller
         }
 
         try {
-            $class_id = $request->class;
-            $section_id = $request->section;
-            $school_id = auth()->user()->school_id;
+            $age_group_id = $request->class;
+            $mgender_id = $request->section;
+            $church_id = auth()->user()->church_id;
 
-            $sm_weekends = SmWeekend::with('classRoutine')->where('school_id', $school_id)
+            $sm_weekends = SmWeekend::with('classRoutine')->where('church_id', $church_id)
                 ->orderBy('order', 'ASC')
                 ->where('active_status', 1)
                 ->get(['id', 'name', 'order', 'is_weekend']);
 
             // return $sm_weekends;
-            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())
-                ->where('school_id', $school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', getAcademicId())
+                ->where('church_id', $church_id)->get();
 
-            $subjects = SmAssignSubject::where('class_id', $class_id)
-                ->where('section_id', $section_id)
-                ->where('school_id', $school_id)
-                ->groupBy(['class_id', 'section_id', 'subject_id'])
+            $subjects = SmAssignSubject::where('age_group_id', $age_group_id)
+                ->where('mgender_id', $mgender_id)
+                ->where('church_id', $church_id)
+                ->groupBy(['age_group_id', 'mgender_id', 'subject_id'])
                 ->get()->map(function ($value) {
                 return [
                     'id' => $value->subject->id,
@@ -67,16 +67,16 @@ class ApiSmClassRoutineController extends Controller
             // remove code unnecessary
 
             $rooms = SmClassRoom::where('active_status', 1) /* ->where('capacity','>=',$stds) */
-                ->where('school_id', $school_id)
+                ->where('church_id', $church_id)
                 ->get();
 
-            $teachers = SmStaff::where('role_id', 4)->where('school_id', $school_id)->get(['id', 'full_name', 'user_id', 'school_id']);
+            $teachers = SmStaff::where('role_id', 4)->where('church_id', $church_id)->get(['id', 'full_name', 'user_id', 'church_id']);
 
-            if (!$class_id) {
+            if (!$age_group_id) {
                 Session::put('session_day_id', null);
             }
 
-            return response()->json(compact('classes', 'teachers', 'rooms', 'subjects', 'class_id', 'section_id', 'sm_weekends'));
+            return response()->json(compact('classes', 'teachers', 'rooms', 'subjects', 'age_group_id', 'mgender_id', 'sm_weekends'));
         } catch (\Exception$e) {
 
             //  return ApiBaseMethod::sendError('Error.', $e->getMessage());
@@ -86,8 +86,8 @@ class ApiSmClassRoutineController extends Controller
     }
     // {
     //     "day": "1",
-    //     "class_id": "1",
-    //     "section_id": "1",
+    //     "age_group_id": "1",
+    //     "mgender_id": "1",
     //     "routine": {
     //                 "1": {
     //                 "subject": "1",
@@ -114,16 +114,16 @@ class ApiSmClassRoutineController extends Controller
             // return response()->json($request->all());
             // change this method code for update class routine ->abu Nayem
             $request->validate([
-                'class_id' => 'required',
-                'section_id' => 'required',
+                'age_group_id' => 'required',
+                'mgender_id' => 'required',
                 'day' => 'required',
             ]);
 
-            $school_id = auth()->user()->school_id;
+            $church_id = auth()->user()->church_id;
 
-            SmClassRoutineUpdate::where('day', $request->day)->where('class_id', $request->class_id)
-                ->where('section_id', $request->section_id)->where('academic_id', getAcademicId())
-                ->where('school_id', $school_id)
+            SmClassRoutineUpdate::where('day', $request->day)->where('age_group_id', $request->age_group_id)
+                ->where('mgender_id', $request->mgender_id)->where('church_year_id', getAcademicId())
+                ->where('church_id', $church_id)
                 ->delete();
 
             foreach ($request->routine as $key => $routine_data) {
@@ -134,14 +134,14 @@ class ApiSmClassRoutineController extends Controller
 
                 foreach ($days as $day) {
                     $exist_class_routine = SmClassRoutineUpdate::where('day', $day)
-                        ->where('class_id', $request->class_id)
-                        ->where('section_id', $request->section_id)
+                        ->where('age_group_id', $request->age_group_id)
+                        ->where('mgender_id', $request->mgender_id)
                         ->where('start_time', date('H:i:s', strtotime(gv($routine_data, 'start_time'))))
                         ->where('end_time', date('H:i:s', strtotime(gv($routine_data, 'end_time'))))
                         ->where('subject_id', gv($routine_data, 'subject'))
                         ->where('teacher_id', gv($routine_data, 'teacher_id'))
-                        ->where('academic_id', getAcademicId())
-                        ->where('school_id', $school_id)
+                        ->where('church_year_id', getAcademicId())
+                        ->where('church_id', $church_id)
                         ->first();
 
                     if ($exist_class_routine) {
@@ -149,10 +149,10 @@ class ApiSmClassRoutineController extends Controller
                     }
 
                     $class_routine_time = SmClassRoutineUpdate::where('day', $day)
-                        ->where('class_id', $request->class_id)
-                        ->where('section_id', $request->section_id)
-                        ->where('academic_id', getAcademicId())
-                        ->where('school_id', $school_id)
+                        ->where('age_group_id', $request->age_group_id)
+                        ->where('mgender_id', $request->mgender_id)
+                        ->where('church_year_id', getAcademicId())
+                        ->where('church_id', $church_id)
                         ->first();
                     $timeInterval = [];
                     $startTimeToInteger = null;
@@ -169,8 +169,8 @@ class ApiSmClassRoutineController extends Controller
                     }
 
                     $class_routine = new SmClassRoutineUpdate();
-                    $class_routine->class_id = $request->class_id;
-                    $class_routine->section_id = $request->section_id;
+                    $class_routine->age_group_id = $request->age_group_id;
+                    $class_routine->mgender_id = $request->mgender_id;
                     $class_routine->subject_id = gv($routine_data, 'subject');
                     $class_routine->teacher_id = gv($routine_data, 'teacher_id');
                     $class_routine->room_id = gv($routine_data, 'room');
@@ -178,8 +178,8 @@ class ApiSmClassRoutineController extends Controller
                     $class_routine->end_time = date('H:i:s', strtotime(gv($routine_data, 'end_time')));
                     $class_routine->is_break = gv($routine_data, 'is_break');
                     $class_routine->day = $day;
-                    $class_routine->school_id = $school_id;
-                    $class_routine->academic_id = getAcademicId();
+                    $class_routine->church_id = $church_id;
+                    $class_routine->church_year_id = getAcademicId();
                     $class_routine->save();
                 }
             }
@@ -198,8 +198,8 @@ class ApiSmClassRoutineController extends Controller
         $input = $request->all();
         $validator = Validator::make($input, [
             'day_id' => 'required',
-            'class_id' => 'required',
-            'section_id' => 'required',
+            'age_group_id' => 'required',
+            'mgender_id' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -209,15 +209,15 @@ class ApiSmClassRoutineController extends Controller
         }
 
         $day_id = $request->day_id;
-        $class_id = $request->class_id;
-        $section_id = $request->section_id;
-        $school_id = auth()->user()->school_id;
-        $class_routines = SmClassRoutineUpdate::where('day', $day_id)->where('class_id', $class_id)->where('section_id', $section_id)->orderBy('start_time', 'ASC')->where('academic_id', getAcademicId())->where('school_id', $school_id)->get();
+        $age_group_id = $request->age_group_id;
+        $mgender_id = $request->mgender_id;
+        $church_id = auth()->user()->church_id;
+        $class_routines = SmClassRoutineUpdate::where('day', $day_id)->where('age_group_id', $age_group_id)->where('mgender_id', $mgender_id)->orderBy('start_time', 'ASC')->where('church_year_id', getAcademicId())->where('church_id', $church_id)->get();
 
-        $subjects = SmAssignSubject::where('class_id', $class_id)
-            ->where('section_id', $section_id)
-            ->where('school_id', $school_id)
-            ->groupBy(['class_id', 'section_id', 'subject_id'])
+        $subjects = SmAssignSubject::where('age_group_id', $age_group_id)
+            ->where('mgender_id', $mgender_id)
+            ->where('church_id', $church_id)
+            ->groupBy(['age_group_id', 'mgender_id', 'subject_id'])
             ->get()->map(function ($value) {
             return [
                 'id' => $value->subject->id,
@@ -227,17 +227,17 @@ class ApiSmClassRoutineController extends Controller
             ];
         });
 
-        $stds = SmStudent::where('class_id', $class_id)->where('section_id', $section_id)
-            ->where('academic_id', getAcademicId())->where('school_id', $school_id)->count();
+        $stds = SmStudent::where('age_group_id', $age_group_id)->where('mgender_id', $mgender_id)
+            ->where('church_year_id', getAcademicId())->where('church_id', $church_id)->count();
         $rooms = SmClassRoom::where('active_status', 1)->where('capacity', '>=', $stds)
-            ->where('school_id', $school_id)
+            ->where('church_id', $church_id)
             ->get();
-        $teachers = SmStaff::where('role_id', 4)->where('school_id', $school_id)->get(['id', 'full_name', 'user_id', 'school_id']);
-        $sm_weekends = SmWeekend::where('school_id', $school_id)
+        $teachers = SmStaff::where('role_id', 4)->where('church_id', $church_id)->get(['id', 'full_name', 'user_id', 'church_id']);
+        $sm_weekends = SmWeekend::where('church_id', $church_id)
             ->orderBy('order', 'ASC')
             ->where('active_status', 1)
             ->get(['id', 'name', 'order', 'is_weekend']);
-        return response()->json(compact('day_id', 'class_routines', 'sm_weekends', 'subjects', 'rooms', 'teachers', 'section_id', 'class_id'));
+        return response()->json(compact('day_id', 'class_routines', 'sm_weekends', 'subjects', 'rooms', 'teachers', 'mgender_id', 'age_group_id'));
     }
 
     public function studentClassRoutine(Request $request, $user_id, $record_id = null)
@@ -247,23 +247,23 @@ class ApiSmClassRoutineController extends Controller
                 ->where('user_id', $user_id)
                 ->first();
             $record = studentRecords(null, $student_detail->id)->where('id', $record_id)->first();
-            $class_id = $record->class_id;
-            $section_id = $record->section_id;
+            $age_group_id = $record->age_group_id;
+            $mgender_id = $record->mgender_id;
 
             //return $student_detail;
 
-            $school_id = auth()->user()->school_id;
+            $church_id = auth()->user()->church_id;
 
-            $class_routines = SmClassRoutineUpdate::with('weekend', 'classRoom', 'subject', 'teacherDetail', 'class', 'section')->where('class_id', $class_id)->where('section_id', $section_id)
-                ->where('school_id', $school_id)->get()->map(function ($value) {
+            $class_routines = SmClassRoutineUpdate::with('weekend', 'classRoom', 'subject', 'teacherDetail', 'class', 'section')->where('age_group_id', $age_group_id)->where('mgender_id', $mgender_id)
+                ->where('church_id', $church_id)->get()->map(function ($value) {
                 return [
                     'id' => $value->id,
                     'day' => $value->weekend ? $value->weekend->name : '',
                     'room' => $value->classRoom ? $value->classRoom->room_no : '',
                     'subject' => $value->subject ? $value->subject->subject_name : '',
                     'teacher' => $value->teacherDetail ? $value->teacherDetail->full_name : '',
-                    'class' => $value->class ? $value->class->class_name : '',
-                    'section' => $value->section ? $value->section->section_name : '',
+                    'class' => $value->class ? $value->class->age_group_name : '',
+                    'section' => $value->section ? $value->section->mgender_name : '',
                     'start_time' => date('h:i A', strtotime($value->start_time)),
                     'end_time' => date('h:i A', strtotime($value->end_time)),
                     'break' => $value->is_break ? 'Yes' : 'No',
@@ -279,7 +279,7 @@ class ApiSmClassRoutineController extends Controller
 
         }
     }
-    public function teacherClassRoutine($user_id, $school_id = null)
+    public function teacherClassRoutine($user_id, $church_id = null)
     {
         try {
 
@@ -291,17 +291,17 @@ class ApiSmClassRoutineController extends Controller
             }
             $teacher_id = $staff_detail->id;
 
-            $school_id = $school_id !=null ? $school_id : auth()->user()->school_id;
+            $church_id = $church_id !=null ? $church_id : auth()->user()->church_id;
 
-            $class_routines = SmClassRoutineUpdate::with('weekend', 'classRoom', 'subject', 'teacherDetail', 'class', 'section')->where('teacher_id', $teacher_id)->where('school_id', $school_id)->get()->map(function ($value) {
+            $class_routines = SmClassRoutineUpdate::with('weekend', 'classRoom', 'subject', 'teacherDetail', 'class', 'section')->where('teacher_id', $teacher_id)->where('church_id', $church_id)->get()->map(function ($value) {
                 return [
                     'id' => $value->id,
                     'day' => $value->weekend ? $value->weekend->name : '',
                     'room' => $value->classRoom ? $value->classRoom->room_no : '',
                     'subject' => $value->subject ? $value->subject->subject_name : '',
                     'teacher' => $value->teacherDetail ? $value->teacherDetail->full_name : '',
-                    'class' => $value->class ? $value->class->class_name : '',
-                    'section' => $value->section ? $value->section->section_name : '',
+                    'class' => $value->class ? $value->class->age_group_name : '',
+                    'section' => $value->section ? $value->section->mgender_name : '',
                     'start_time' => date('h:i A', strtotime($value->start_time)),
                     'end_time' => date('h:i A', strtotime($value->end_time)),
                     'break' => $value->is_break ? 'Yes' : 'No',
@@ -317,9 +317,9 @@ class ApiSmClassRoutineController extends Controller
 
         }
     }
-    public function saasTeacherClassRoutine($user_id, $school_id)
+    public function saasTeacherClassRoutine($user_id, $church_id)
     {
-        $this->teacherClassRoutine($user_id, $school_id);
+        $this->teacherClassRoutine($user_id, $church_id);
     }
     public function teacherClassRoutineReportSearch(Request $request)
     {
@@ -344,7 +344,7 @@ class ApiSmClassRoutineController extends Controller
             $validator = Validator::make($input, [
                 'class' => 'required',
                 'section' => 'required',
-                // 'school_id' => 'required',
+                // 'church_id' => 'required',
             ]);
 
             if ($validator->fails()) {
@@ -352,20 +352,20 @@ class ApiSmClassRoutineController extends Controller
                     return ApiBaseMethod::sendError('Validation Error.', $validator->errors());
                 }
             }
-            $class_id = $request->class;
-            $section_id = $request->section;
-            $school_id = auth()->user()->school_id;
+            $age_group_id = $request->class;
+            $mgender_id = $request->section;
+            $church_id = auth()->user()->church_id;
 
-            $class_routines = SmClassRoutineUpdate::with('weekend', 'classRoom', 'subject', 'teacherDetail', 'class', 'section')->where('class_id', $class_id)->where('section_id', $section_id)
-                ->where('school_id', $school_id)->get()->map(function ($value) {
+            $class_routines = SmClassRoutineUpdate::with('weekend', 'classRoom', 'subject', 'teacherDetail', 'class', 'section')->where('age_group_id', $age_group_id)->where('mgender_id', $mgender_id)
+                ->where('church_id', $church_id)->get()->map(function ($value) {
                 return [
                     'id' => $value->id,
                     'day' => $value->weekend ? $value->weekend->name : '',
                     'room' => $value->classRoom ? $value->classRoom->room_no : '',
                     'subject' => $value->subject ? $value->subject->subject_name : '',
                     'teacher' => $value->teacherDetail ? $value->teacherDetail->full_name : '',
-                    'class' => $value->class ? $value->class->class_name : '',
-                    'section' => $value->section ? $value->section->section_name : '',
+                    'class' => $value->class ? $value->class->age_group_name : '',
+                    'section' => $value->section ? $value->section->mgender_name : '',
                     'start_time' => date('h:i A', strtotime($value->start_time)),
                     'end_time' => date('h:i A', strtotime($value->end_time)),
                     'break' => $value->is_break ? 'Yes' : 'No',
@@ -379,30 +379,30 @@ class ApiSmClassRoutineController extends Controller
     }
     public function teacherList()
     {
-        $teachers = SmStaff::where('role_id', 4)->where('school_id', auth()->user()->school_id)->get(['id', 'full_name', 'user_id', 'school_id']);
+        $teachers = SmStaff::where('role_id', 4)->where('church_id', auth()->user()->church_id)->get(['id', 'full_name', 'user_id', 'church_id']);
         return response()->json(['teachers' => $teachers]);
     }
 
 
-    public function sassClassRoutine(Request $request, $school_id, $user_id = null, $record_id = null)
+    public function sassClassRoutine(Request $request, $church_id, $user_id = null, $record_id = null)
     {
 
 
-        $student_detail = SmStudent::select('id', 'full_name')->where('user_id', $user_id)->where('school_id', $school_id)->first();
-        $record = studentRecords(null, $student_detail->id, $school_id)->where('id', $record_id)->first();
-        $class_id = $record->class_id;
-        $section_id = $record->section_id;
+        $student_detail = SmStudent::select('id', 'full_name')->where('user_id', $user_id)->where('church_id', $church_id)->first();
+        $record = studentRecords(null, $student_detail->id, $church_id)->where('id', $record_id)->first();
+        $age_group_id = $record->age_group_id;
+        $mgender_id = $record->mgender_id;
 
-        $class_routines = SmClassRoutineUpdate::with('weekend', 'classRoom', 'subject', 'teacherDetail', 'class', 'section')->where('class_id', $class_id)->where('section_id', $section_id)
-        ->where('school_id', $school_id)->get()->map(function ($value) {
+        $class_routines = SmClassRoutineUpdate::with('weekend', 'classRoom', 'subject', 'teacherDetail', 'class', 'section')->where('age_group_id', $age_group_id)->where('mgender_id', $mgender_id)
+        ->where('church_id', $church_id)->get()->map(function ($value) {
             return [
                 'id' => $value->id,
                 'day' => $value->weekend ? $value->weekend->name : '',
                 'room' => $value->classRoom ? $value->classRoom->room_no : '',
                 'subject' => $value->subject ? $value->subject->subject_name : '',
                 'teacher' => $value->teacherDetail ? $value->teacherDetail->full_name : '',
-                'class' => $value->class ? $value->class->class_name : '',
-                'section' => $value->section ? $value->section->section_name : '',
+                'class' => $value->class ? $value->class->age_group_name : '',
+                'section' => $value->section ? $value->section->mgender_name : '',
                 'start_time' => date('h:i A', strtotime($value->start_time)),
                 'end_time' => date('h:i A', strtotime($value->end_time)),
                 'break' => $value->is_break ? 'Yes' : 'No',
@@ -433,17 +433,17 @@ class ApiSmClassRoutineController extends Controller
             }
             $teacher_id = $staff_detail->id;
 
-            $school_id = auth()->user()->school_id;
+            $church_id = auth()->user()->church_id;
 
-            $class_routines = SmClassRoutineUpdate::with('weekend', 'classRoom', 'subject', 'teacherDetail', 'class', 'section')->where('teacher_id', $teacher_id)->where('class_id', $class)->where('section_id', $section)->where('school_id', $school_id)->get()->map(function ($value) {
+            $class_routines = SmClassRoutineUpdate::with('weekend', 'classRoom', 'subject', 'teacherDetail', 'class', 'section')->where('teacher_id', $teacher_id)->where('age_group_id', $class)->where('mgender_id', $section)->where('church_id', $church_id)->get()->map(function ($value) {
                 return [
                     'id' => $value->id,
                     'day' => $value->weekend ? $value->weekend->name : '',
                     'room' => $value->classRoom ? $value->classRoom->room_no : '',
                     'subject' => $value->subject ? $value->subject->subject_name : '',
                     'teacher' => $value->teacherDetail ? $value->teacherDetail->full_name : '',
-                    'class' => $value->class ? $value->class->class_name : '',
-                    'section' => $value->section ? $value->section->section_name : '',
+                    'class' => $value->class ? $value->class->age_group_name : '',
+                    'section' => $value->section ? $value->section->mgender_name : '',
                     'start_time' => date('h:i A', strtotime($value->start_time)),
                     'end_time' => date('h:i A', strtotime($value->end_time)),
                     'break' => $value->is_break ? 'Yes' : 'No',
@@ -459,7 +459,7 @@ class ApiSmClassRoutineController extends Controller
 
         } 
     }
-    public function saas_sectionRoutine(Request $request, $school_id, $user_id, $class, $section)
+    public function saas_sectionRoutine(Request $request, $church_id, $user_id, $class, $section)
     {
         try {
 
@@ -471,17 +471,17 @@ class ApiSmClassRoutineController extends Controller
             }
             $teacher_id = $staff_detail->id;
 
-            $school_id = $school_id !=null ? $school_id : auth()->user()->school_id;
+            $church_id = $church_id !=null ? $church_id : auth()->user()->church_id;
 
-            $class_routines = SmClassRoutineUpdate::with('weekend', 'classRoom', 'subject', 'teacherDetail', 'class', 'section')->where('teacher_id', $teacher_id)->where('class_id', $class)->where('section_id', $section)->where('school_id', $school_id)->get()->map(function ($value) {
+            $class_routines = SmClassRoutineUpdate::with('weekend', 'classRoom', 'subject', 'teacherDetail', 'class', 'section')->where('teacher_id', $teacher_id)->where('age_group_id', $class)->where('mgender_id', $section)->where('church_id', $church_id)->get()->map(function ($value) {
                 return [
                     'id' => $value->id,
                     'day' => $value->weekend ? $value->weekend->name : '',
                     'room' => $value->classRoom ? $value->classRoom->room_no : '',
                     'subject' => $value->subject ? $value->subject->subject_name : '',
                     'teacher' => $value->teacherDetail ? $value->teacherDetail->full_name : '',
-                    'class' => $value->class ? $value->class->class_name : '',
-                    'section' => $value->section ? $value->section->section_name : '',
+                    'class' => $value->class ? $value->class->age_group_name : '',
+                    'section' => $value->section ? $value->section->mgender_name : '',
                     'start_time' => date('h:i A', strtotime($value->start_time)),
                     'end_time' => date('h:i A', strtotime($value->end_time)),
                     'break' => $value->is_break ? 'Yes' : 'No',

@@ -387,7 +387,7 @@ EOT;
         $classTemplate->setVar(
             [
                 'prologue'   => 'abstract ',
-                'class_name' => $className['className'],
+                'age_group_name' => $className['className'],
                 'trait_name' => $traitName,
             ],
         );
@@ -424,7 +424,7 @@ EOT;
         $classTemplate->setVar(
             [
                 'prologue'   => '',
-                'class_name' => $className['className'],
+                'age_group_name' => $className['className'],
                 'trait_name' => $traitName,
             ],
         );
@@ -567,7 +567,7 @@ EOT;
         $classTemplate->setVar(
             [
                 'namespace'  => $namespace,
-                'class_name' => $className,
+                'age_group_name' => $className,
                 'wsdl'       => $wsdlFile,
                 'options'    => $optionsBuffer,
                 'methods'    => $methodsBuffer,
@@ -991,7 +991,7 @@ EOT;
                     $additionalInterfaces,
                 ),
                 'clone'           => $cloneTrait,
-                'mock_class_name' => $_mockClassName['className'],
+                'mock_age_group_name' => $_mockClassName['className'],
                 'mocked_methods'  => $mockedMethods,
                 'method'          => $method,
             ],

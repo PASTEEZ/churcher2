@@ -29,11 +29,11 @@
                             <thead>
                             <td>
                                 <div class="logo_img">
-                                    <img  src="{{asset($generalSetting->logo)}}" alt="{{$generalSetting->school_name}}">
+                                    <img  src="{{asset($generalSetting->logo)}}" alt="{{$generalSetting->church_name}}">
                                 </div>
                             </td>
                             <td class="virtical_middle address_text">
-                                <p>{{$generalSetting->school_name}}</p>
+                                <p>{{$generalSetting->church_name}}</p>
                                 <p>{{$generalSetting->phone}}</p>
                                 <p>{{$generalSetting->email}}</p>
                                 <p>{{$generalSetting->address}}</p>
@@ -52,10 +52,10 @@
                                             <td>
                                                 <div class="addressleft_text">
                                                     <p><span>@lang('fees.fees_invoice_issued_to')</p>
-                                                    <p><span><strong>@lang('student.student_name') </span> <span class="nowrap">: {{@$invoiceInfo->studentInfo->full_name}}</span> </strong></p>
-                                                    <p><span>@lang('student.class_section')</span> <span>: {{@$invoiceInfo->recordDetail->class->class_name}} ({{@$invoiceInfo->recordDetail->section->section_name}})</span> </p>
+                                                    <p><span><strong>@lang('student.member_name') </span> <span class="nowrap">: {{@$invoiceInfo->studentInfo->full_name}}</span> </strong></p>
+                                                    <p><span>@lang('student.class_section')</span> <span>: {{@$invoiceInfo->recordDetail->class->age_group_name}} ({{@$invoiceInfo->recordDetail->section->mgender_name}})</span> </p>
                                                     <p><span>@lang('student.roll_no')</span> <span>: {{@$invoiceInfo->studentInfo->roll_no}}</span> </p>
-                                                    <p><span>@lang('student.admission_no')</span> <span>: {{@$invoiceInfo->studentInfo->admission_no}}</span> </p>
+                                                    <p><span>@lang('student.registration_no')</span> <span>: {{@$invoiceInfo->studentInfo->registration_no}}</span> </p>
                                                 </div>
                                             </td>
                                         </tr>

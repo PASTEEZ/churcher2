@@ -27,11 +27,11 @@ class CreateSmEmailSettingsTable extends Migration
             $table->string('mail_password')->nullable();
             $table->string('mail_encryption')->nullable();
 
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
             
-            $table->integer('academic_id')->nullable()->unsigned();
-            $table->foreign('academic_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
+            $table->integer('church_year_id')->nullable()->unsigned();
+            $table->foreign('church_year_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
             
             $table->tinyInteger('active_status')->default(1);
 
@@ -49,7 +49,7 @@ class CreateSmEmailSettingsTable extends Migration
                 'mail_password'=>'123456',
                 'mail_encryption'=>'tls',
                 'active_status'=>'0',
-                'academic_id' => 1
+                'church_year_id' => 1
             ]
         ]);
 
@@ -65,7 +65,7 @@ class CreateSmEmailSettingsTable extends Migration
                 'mail_password'=>'',
                 'mail_encryption'=>'',
                 'active_status'=>'1',
-                'academic_id' => 1
+                'church_year_id' => 1
             ]
         ]);
     }

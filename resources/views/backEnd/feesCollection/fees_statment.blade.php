@@ -38,7 +38,7 @@
                                     <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                         <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                         @foreach($classes as $class)
-                                        <option value="{{$class->id}}" {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{$class->class_name}}</option>
+                                        <option value="{{$class->id}}" {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{$class->age_group_name}}</option>
                                         @endforeach
                                     </select>
                                     @if ($errors->has('class'))
@@ -172,7 +172,7 @@
                                         <div class="col-lg-6 col-md-6">
                                             <div class="name">
                                                 @if($student->class !="" && $student->section !="")
-                                                {{$student->class->class_name .'('.$student->section->section_name.')'}}
+                                                {{$student->class->age_group_name .'('.$student->section->mgender_name.')'}}
                                                 @endif
                                             </div>
                                         </div>
@@ -182,12 +182,12 @@
                                     <div class="row">
                                         <div class="col-lg-6 col-md-6">
                                             <div class="value text-left">
-                                                @lang('student.admission_no')
+                                                @lang('student.registration_no')
                                             </div>
                                         </div>
                                         <div class="col-lg-6 col-md-6">
                                             <div class="name">
-                                                {{$student->admission_no}}
+                                                {{$student->registration_no}}
                                             </div>
                                         </div>
                                     </div>
@@ -258,10 +258,10 @@
                             $grand_total += $fees_assigned->feesGroupMaster->amount;
                             $discount_amount = $fees_assigned->applied_discount;
                             $total_discount += $discount_amount;
-                            $student_id = $fees_assigned->student_id;
-                            $paid = App\SmFeesAssign::discountSum($fees_assigned->student_id, $fees_assigned->feesGroupMaster->feesTypes->id, 'amount', $fees_assigned->record_id);
+                            $member_id = $fees_assigned->member_id;
+                            $paid = App\SmFeesAssign::discountSum($fees_assigned->member_id, $fees_assigned->feesGroupMaster->feesTypes->id, 'amount', $fees_assigned->record_id);
                             $total_grand_paid += $paid;
-                            $fine = App\SmFeesAssign::discountSum($fees_assigned->student_id, $fees_assigned->feesGroupMaster->feesTypes->id, 'fine', $fees_assigned->record_id);
+                            $fine = App\SmFeesAssign::discountSum($fees_assigned->member_id, $fees_assigned->feesGroupMaster->feesTypes->id, 'fine', $fees_assigned->record_id);
                             $total_fine += $fine;
                             $total_paid = $discount_amount + $paid;
                         @endphp
@@ -309,7 +309,7 @@
                             </td>
                         </tr>
                             @php
-                                $payments = App\SmFeesAssign::feesPayment($fees_assigned->feesGroupMaster->feesTypes->id, $fees_assigned->student_id, $fees_assigned->record_id);
+                                $payments = App\SmFeesAssign::feesPayment($fees_assigned->feesGroupMaster->feesTypes->id, $fees_assigned->member_id, $fees_assigned->record_id);
                                 $i = 0;
                             @endphp
                             @foreach($payments as $payment)

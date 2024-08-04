@@ -27,7 +27,7 @@ class ApiSmRouteController extends Controller
  
             
         try{
-            $routes = SmRoute::where('school_id',1)->get();
+            $routes = SmRoute::where('church_id',1)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($routes, null);
@@ -81,7 +81,7 @@ class ApiSmRouteController extends Controller
             $route = new SmRoute();
             $route->title = $request->title;
             $route->far = $request->far;
-            $route->school_id = $creator_info->school_id;
+            $route->church_id = $creator_info->church_id;
             $result = $route->save();
     
                 if ($result) {

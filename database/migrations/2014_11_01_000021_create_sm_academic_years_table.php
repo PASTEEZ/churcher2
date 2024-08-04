@@ -21,14 +21,14 @@ class CreateSmAcademicYearsTable extends Migration
             $table->string('title', 200);
             $table->date('starting_date');
             $table->date('ending_date');
-            $table->string('copy_with_academic_year')->nullable();
+            $table->string('copy_with_church_year')->nullable();
             $table->tinyInteger('active_status')->default(1);
             $table->string('created_at')->nullable();
             $table->string('updated_at')->nullable();
             $table->integer('created_by')->nullable()->default(1)->unsigned();
             $table->integer('updated_by')->nullable()->default(1)->unsigned();
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
         });
 
         $year = date('Y');

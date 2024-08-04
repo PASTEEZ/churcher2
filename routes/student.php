@@ -21,7 +21,7 @@ Route::group(['middleware' => ['XSS', 'subdomain']], function () {
         Route::get('member-payments', ['as' => 'student_fees', 'uses' => 'Student\SmFeesController@studentFees'])->middleware('userRolePermission:20');
         
         Route::post('studentPayByPaypal', 'SmCollectFeesByPaymentGateway@payByPaypal')->name('studentPayByPaypal');
-        // Route::get('fees-payment-stripe/{fees_type}/{student_id}/{amount}', 'Student\SmFeesController@feesPaymentStripe');
+        // Route::get('fees-payment-stripe/{fees_type}/{member_id}/{amount}', 'Student\SmFeesController@feesPaymentStripe');
         // Route::post('fees-payment-stripe-store', 'Student\SmFeesController@feesPaymentStripeStore');
         
         // Online Exam
@@ -37,7 +37,7 @@ Route::group(['middleware' => ['XSS', 'subdomain']], function () {
         Route::get('student-view-online-exam-question/{id}', 'Student\SmOnlineExamController@viewOnlineExam')->name('student-online-exam-question-view');
        
         // Class Timetable
-        Route::get('member-class-routine', ['as' => 'student_class_routine', 'uses' => 'Student\SmStudentPanelController@classRoutine'])->middleware('userRolePermission:22');
+        Route::get('member-class-routine', ['as' => 'member_group_routine', 'uses' => 'Student\SmStudentPanelController@classRoutine'])->middleware('userRolePermission:22');
 
         // Student Attendance
         Route::get('member-my-attendance', ['as' => 'student_my_attendance', 'uses' => 'Student\SmStudentPanelController@studentMyAttendance'])->middleware('userRolePermission:35');
@@ -52,11 +52,11 @@ Route::group(['middleware' => ['XSS', 'subdomain']], function () {
         Route::any('student-exam-schedule-search', ['as' => 'student_exam_schedule_search', 'uses' => 'Student\SmStudentPanelController@studentExamScheduleSearch']);
         Route::any('student-exam-schedule/print', ['as' => 'exam_schedule_print', 'uses' => 'SmExamRoutineController@examSchedulePrint']);
         //abunayem
-        Route::get('member-routine-print/{class_id}/{section_id}/{exam_period_id}', 'SmExamRoutineController@examRoutinePrint')->name('student-routine-print');
+        Route::get('member-routine-print/{age_group_id}/{mgender_id}/{exam_period_id}', 'SmExamRoutineController@examRoutinePrint')->name('student-routine-print');
 
         //student Homework
         Route::get('student-homework', ['as' => 'student_homework', 'uses' => 'Student\SmStudentPanelController@studentHomework'])->middleware('userRolePermission:23');
-        Route::get('student-homework-view/{class_id}/{section_id}/{homework}', ['as' => 'student_homework_view', 'uses' => 'Student\SmStudentPanelController@studentHomeworkView']);
+        Route::get('student-homework-view/{age_group_id}/{mgender_id}/{homework}', ['as' => 'student_homework_view', 'uses' => 'Student\SmStudentPanelController@studentHomeworkView']);
 
         Route::get('university/student/homework-view/{sem_label_id}/{homework}', ['as' => 'student.un_student_homework_view', 'uses' => 'Student\SmStudentPanelController@unStudentHomeworkView']);
 
@@ -116,16 +116,16 @@ Route::group(['middleware' => ['XSS', 'subdomain']], function () {
         })->name('download-student-leave-document');
     });
 });
-Route::get('download-uploaded-content/{id}/{student_id}', 'Student\SmStudentPanelController@downloadHomeWorkContent')->name('download-uploaded-content');
+Route::get('download-uploaded-content/{id}/{member_id}', 'Student\SmStudentPanelController@downloadHomeWorkContent')->name('download-uploaded-content');
 
 
-Route::get('fees-payment-stripe/{fees_type}/{student_id}/{amount}/{assign_id}/{record_id}', 'Student\SmFeesController@feesPaymentStripe')->name('fees-payment-stripe');
+Route::get('fees-payment-stripe/{fees_type}/{member_id}/{amount}/{assign_id}/{record_id}', 'Student\SmFeesController@feesPaymentStripe')->name('fees-payment-stripe');
 
 Route::get('stripe-fees-payment-stripe/{installment_id}', 'Student\SmFeesController@directFeesPaymentStripe')->name('directFeesPaymentStripe');
 
 Route::post('fees-payment-stripe-store', 'Student\SmFeesController@feesPaymentStripeStore')->name('fees-payment-stripe-store');
 //student bank cheque payment
-Route::get('payment-generate-modal-child/{amount}/{student_id}/{type}/{assign_id}/{record_id}', 'Student\SmFeesController@feesGenerateModalChild')->name('fees-generate-modal-child');
+Route::get('payment-generate-modal-child/{amount}/{member_id}/{type}/{assign_id}/{record_id}', 'Student\SmFeesController@feesGenerateModalChild')->name('fees-generate-modal-child');
 Route::post('child-bank-slip-store', 'Student\SmFeesController@childBankSlipStore')->name('child-bank-slip-store');
 Route::get('fees-generate-modal-child-view/{id}/{type_id}', 'Student\SmFeesController@feesGenerateModalBankView')->name('fees-generate-modal-child-view');
 Route::post('child-bank-slip-delete', 'Student\SmFeesController@childBankSlipDelete');

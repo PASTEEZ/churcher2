@@ -17,11 +17,11 @@ class AddExamMarkTemplateToSmsTemplate extends Migration
     public function up()
     {
         $allTempletes = [
-            ['sms', 'exam_mark_student', '', 'Hi [student_name] , You are in class [class_name] ([section_name]), Your exam type [exam_type], [subject_marks]. School Name- [school_name]', '', '[student_name], [class_name], [section_name], [exam_type], [subject_names], [total_mark], [school_name], [subject_marks]'],
-            ['sms', 'exam_mark_parent', '', 'Hello, [parent_name], your child [student_name] of class [class_name] ([section_name]) exam type [exam_type], [subject_marks]. School Name- [school_name], Thank You.', '', '[parent_name], [student_name], [class_name], [section_name], [exam_type], [subject_names], [total_mark], [school_name], [subject_marks]'],
+            ['sms', 'exam_mark_student', '', 'Hi [member_name] , You are in class [age_group_name] ([mgender_name]), Your exam type [exam_type], [subject_marks]. School Name- [church_name]', '', '[member_name], [age_group_name], [mgender_name], [exam_type], [subject_names], [total_mark], [church_name], [subject_marks]'],
+            ['sms', 'exam_mark_parent', '', 'Hello, [parent_name], your child [member_name] of class [age_group_name] ([mgender_name]) exam type [exam_type], [subject_marks]. School Name- [church_name], Thank You.', '', '[parent_name], [member_name], [age_group_name], [mgender_name], [exam_type], [subject_names], [total_mark], [church_name], [subject_marks]'],
         ];
 
-        $schools = SmSchool::get(['id', 'school_name']);
+        $schools = SmSchool::get(['id', 'church_name']);
         foreach ($schools as $school) {
             foreach ($allTempletes as $allTemplete) {
                 if (!SmsTemplate::where('purpose', $allTemplete[1])->first()) {
@@ -32,7 +32,7 @@ class AddExamMarkTemplateToSmsTemplate extends Migration
                     $storeTemplete->body = $allTemplete[3];
                     $storeTemplete->module = $allTemplete[4];
                     $storeTemplete->variable = $allTemplete[5];
-                    $storeTemplete->school_id = $school->id;
+                    $storeTemplete->church_id = $school->id;
                     $storeTemplete->save();
                 }
             }

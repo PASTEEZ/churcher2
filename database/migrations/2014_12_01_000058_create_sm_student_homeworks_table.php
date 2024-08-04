@@ -25,8 +25,8 @@ class CreateSmStudentHomeworksTable extends Migration
             $table->integer('evaluated_by')->nullable()->unsigned();
             $table->foreign('evaluated_by')->references('id')->on('users')->onDelete('cascade');
 
-            $table->integer('student_id')->nullable()->unsigned();
-            $table->foreign('student_id')->references('id')->on('sm_students')->onDelete('cascade');
+            $table->integer('member_id')->nullable()->unsigned();
+            $table->foreign('member_id')->references('id')->on('sm_students')->onDelete('cascade');
 
             $table->integer('subject_id')->nullable()->unsigned();
             $table->foreign('subject_id')->references('id')->on('sm_subjects')->onDelete('cascade');
@@ -35,15 +35,15 @@ class CreateSmStudentHomeworksTable extends Migration
 
             $table->integer('updated_by')->nullable()->default(1)->unsigned();
 
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
             
-            $table->integer('academic_id')->nullable()->default(1)->unsigned();
-            $table->foreign('academic_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
+            $table->integer('church_year_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_year_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
         });
 
         //  Schema::table('sm_student_homeworks', function($table) {
-        //      $table->foreign('student_id')->references('id')->on('sm_students');
+        //      $table->foreign('member_id')->references('id')->on('sm_students');
         //      $table->foreign('subject_id')->references('id')->on('sm_subjects');
 
         // });

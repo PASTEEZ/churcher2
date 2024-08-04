@@ -47,9 +47,9 @@ class SmFeesReportController extends Controller
 
             if(moduleStatusCheck('University')){
                 $records = StudentRecord::query();
-                $records->where('school_id',auth()->user()->school_id);
+                $records->where('church_id',auth()->user()->church_id);
                 $records = universityFilter( $records,$request);
-                $student_records = $records->whereHas('student')->with('student')->get()->unique('student_id');
+                $student_records = $records->whereHas('student')->with('student')->get()->unique('member_id');
                 if($student_records){
                     return view('backEnd.feesCollection.balance_fees_report', compact('student_records'));
                 }else{
@@ -58,12 +58,12 @@ class SmFeesReportController extends Controller
                 }
                 
             }
-            $student_ids = SmStudentReportController::classSectionStudent($request);
-            $students = SmStudent::with('parents', 'feesAssign', 'feesAssign.feesGroupMaster', 'feesAssign.feesPayments', 'feesPayment')->whereIn('id', $student_ids)->get();
+            $member_ids = SmStudentReportController::classSectionStudent($request);
+            $students = SmStudent::with('parents', 'feesAssign', 'feesAssign.feesGroupMaster', 'feesAssign.feesPayments', 'feesPayment')->whereIn('id', $member_ids)->get();
             $balance_students = [];
 
             $data = [];
-            $fees_masters = SmFeesMaster::where('active_status', 1)->where('school_id', Auth::user()->school_id)->get();
+            $fees_masters = SmFeesMaster::where('active_status', 1)->where('church_id', Auth::user()->church_id)->get();
             foreach ($students as $key => $student) {
                 $total_balance = 0;
                 $total_discount = 0;
@@ -109,12 +109,12 @@ class SmFeesReportController extends Controller
 
          
             // return $master_ids;
-            $class_id = $request->class;
-            $section_id = $request->section;
+            $age_group_id = $request->class;
+            $mgender_id = $request->section;
             $classes = SmClass::get();
             //  return $balance_students;
             $clas = $classes->find($request->class);
-            return view('backEnd.feesCollection.balance_fees_report', compact('classes', 'balance_students', 'class_id', 'clas', 'data', 'section_id'));
+            return view('backEnd.feesCollection.balance_fees_report', compact('classes', 'balance_students', 'age_group_id', 'clas', 'data', 'mgender_id'));
 
          
         } catch (\Exception $e) {

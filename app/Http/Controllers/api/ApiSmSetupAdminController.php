@@ -207,7 +207,7 @@ class ApiSmSetupAdminController extends Controller
 
         
         try{
-// $id_key='class_id';
+// $id_key='age_group_id';
 
         // $tables=tableList::getTableList($id_key);
 

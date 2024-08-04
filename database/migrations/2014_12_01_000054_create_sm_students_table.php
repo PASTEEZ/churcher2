@@ -15,7 +15,7 @@ class CreateSmStudentsTable extends Migration
     {
         Schema::create('sm_students', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('admission_no')->nullable();
+            $table->integer('registration_no')->nullable();
             $table->integer('roll_no')->nullable();
             $table->string('first_name', 200)->nullable();
             $table->string('last_name', 200)->nullable();
@@ -79,11 +79,11 @@ class CreateSmStudentsTable extends Migration
             $table->integer('student_group_id')->nullable()->unsigned();
             $table->foreign('student_group_id')->references('id')->on('sm_student_groups')->onDelete('set null');
 
-            $table->integer('class_id')->nullable()->unsigned();
-            $table->foreign('class_id')->references('id')->on('sm_classes')->onDelete('set null');
+            $table->integer('age_group_id')->nullable()->unsigned();
+            $table->foreign('age_group_id')->references('id')->on('sm_classes')->onDelete('set null');
 
-            $table->integer('section_id')->nullable()->unsigned();
-            $table->foreign('section_id')->references('id')->on('sm_sections')->onDelete('set null');
+            $table->integer('mgender_id')->nullable()->unsigned();
+            $table->foreign('mgender_id')->references('id')->on('sm_sections')->onDelete('set null');
 
             $table->integer('session_id')->nullable()->unsigned();
             $table->foreign('session_id')->references('id')->on('sm_academic_years')->onDelete('set null');
@@ -101,11 +101,11 @@ class CreateSmStudentsTable extends Migration
             $table->foreign('gender_id')->references('id')->on('sm_base_setups')->onDelete('set null');
 
 
-            $table->integer('school_id')->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_id')->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
             
-            $table->integer('academic_id')->nullable()->unsigned();
-            $table->foreign('academic_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
+            $table->integer('church_year_id')->nullable()->unsigned();
+            $table->foreign('church_year_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
         });
     }
 
@@ -125,15 +125,15 @@ class CreateSmStudentsTable extends Migration
             $table->dropForeign(['room_id']);
             $table->dropForeign(['student_category_id']);
             $table->dropForeign(['student_group_id']);
-            $table->dropForeign(['class_id']);
-            $table->dropForeign(['section_id']);
+            $table->dropForeign(['age_group_id']);
+            $table->dropForeign(['mgender_id']);
             $table->dropForeign(['session_id']);
             $table->dropForeign(['parent_id']);
             $table->dropForeign(['user_id']);
             $table->dropForeign(['role_id']);
             $table->dropForeign(['gender_id']);
-            $table->dropForeign(['school_id']);
-            $table->dropForeign(['academic_id']);
+            $table->dropForeign(['church_id']);
+            $table->dropForeign(['church_year_id']);
         });
         Schema::dropIfExists('sm_students');
     }

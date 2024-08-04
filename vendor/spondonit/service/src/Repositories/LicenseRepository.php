@@ -61,8 +61,8 @@ class LicenseRepository
 
         $name = gv($params, 'name');
         $e = Storage::exists('.account_email') ? Storage::get('.account_email') : null;
-        $module_class_name = config('spondonit.module_manager_model');
-        $moduel_class = new $module_class_name;
+        $module_age_group_name = config('spondonit.module_manager_model');
+        $moduel_class = new $module_age_group_name;
         $s = $moduel_class->where('name', $name)->first();
 
         if ($s) {

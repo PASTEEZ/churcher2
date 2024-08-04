@@ -13,7 +13,7 @@ class SmFeesPayment extends Model
     protected $guarded = ['id'];
     public function studentInfo()
     {
-        return $this->belongsTo('App\SmStudent', 'student_id', 'id');
+        return $this->belongsTo('App\SmStudent', 'member_id', 'id');
     }
 
     public function feesType()

@@ -80,7 +80,7 @@ class LanguageController extends Controller
     public function importLang(string $lang)
     {
         $backuplangs = SmBackup::whereNotNull('lang_type')
-                        ->where('school_id', auth()->user()->school_id)->get();
+                        ->where('church_id', auth()->user()->church_id)->get();
         $language =  SmLanguage::where('language_universal', $lang)->first();                
         return view('backEnd.systemSettings.language_import',compact('backuplangs', 'language'));
     }

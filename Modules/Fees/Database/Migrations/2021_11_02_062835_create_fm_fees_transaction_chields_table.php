@@ -23,8 +23,8 @@ class CreateFmFeesTransactionChieldsTable extends Migration
             $table->string('note')->nullable();
             $table->unsignedBigInteger('fees_transaction_id')->nullable()->unsigned();
             $table->foreign('fees_transaction_id')->references('id')->on('fm_fees_transactions')->onDelete('cascade');
-            $table->integer('school_id')->nullable();
-            $table->integer('academic_id')->nullable();
+            $table->integer('church_id')->nullable();
+            $table->integer('church_year_id')->nullable();
             $table->timestamps();
         });
     }

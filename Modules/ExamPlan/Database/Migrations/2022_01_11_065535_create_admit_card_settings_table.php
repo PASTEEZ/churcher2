@@ -25,11 +25,11 @@ class CreateAdmitCardSettingsTable extends Migration
         Schema::create('admit_card_settings', function (Blueprint $table) {
             $table->id();
             $table->boolean('student_photo')->nullable();
-            $table->boolean('student_name')->nullable();
-            $table->boolean('admission_no')->nullable();
+            $table->boolean('member_name')->nullable();
+            $table->boolean('registration_no')->nullable();
             $table->boolean('class_section')->nullable();
             $table->boolean('exam_name')->nullable();
-            $table->boolean('academic_year')->nullable();
+            $table->boolean('church_year')->nullable();
             $table->boolean('principal_signature')->nullable();
             $table->boolean('class_teacher_signature')->nullable();
             $table->boolean('gaurdian_name')->nullable();
@@ -40,8 +40,8 @@ class CreateAdmitCardSettingsTable extends Migration
             $table->boolean('parent_notification')->nullable();
             $table->string('principal_signature_photo')->nullable();
             $table->string('teacher_signature_photo')->nullable();
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->integer('academic_id')->nullable()->default(1)->unsigned();
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->integer('church_year_id')->nullable()->default(1)->unsigned();
             $table->integer('admit_layout')->default(1);
             $table->string('admit_sub_title')->nullable();
             $table->text('description')->nullable();
@@ -59,11 +59,11 @@ class CreateAdmitCardSettingsTable extends Migration
             if(!$setting){
                 $setting = new AdmitCardSetting();
                 $setting->student_photo = 1; 
-                $setting->student_name = 1;
-                $setting->admission_no = 1;
+                $setting->member_name = 1;
+                $setting->registration_no = 1;
                 $setting->class_section = 1;
                 $setting->exam_name = 1;
-                $setting->academic_year = 1;
+                $setting->church_year = 1;
                 $setting->principal_signature = 1;
                 $setting->class_teacher_signature = 1;
                 $setting->school_address =1;
@@ -116,7 +116,7 @@ class CreateAdmitCardSettingsTable extends Migration
                 $examPlan->active_status = $data[9];
                 $examPlan->created_by = $data[10];
                 $examPlan->updated_by = $data[11];
-                $examPlan->school_id = $data[12];
+                $examPlan->church_id = $data[12];
                 $examPlan->created_at = $data[13];
                 $examPlan->updated_at = $data[14];       
                 $examPlan->save();
@@ -157,14 +157,14 @@ class CreateAdmitCardSettingsTable extends Migration
                 $examPlan->active_status = $value[8];
                 $examPlan->created_by = $value[9];
                 $examPlan->updated_by = $value[10];
-                $examPlan->school_id = $value[11];
+                $examPlan->church_id = $value[11];
                 $examPlan->created_at = $value[12];
                 $examPlan->updated_at = $value[13];       
                 $examPlan->save();
             }
             $schools = \App\SmSchool::all();
             foreach($schools as $school){
-                $schoolModule = SchoolModule::where('school_id', $school->id)->first();
+                $schoolModule = SchoolModule::where('church_id', $school->id)->first();
                 if ($school->id != 1 && $schoolModule) {
                     $plan =['ExamPlan'];               
                     if ($schoolModule->modules) {                

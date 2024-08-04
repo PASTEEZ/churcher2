@@ -39,8 +39,8 @@ class CreateUsersTable extends Migration
             $table->integer('updated_by')->nullable()->default(1);
             $table->integer('access_status')->nullable()->default(1);
 
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
             
             $table->integer('role_id')->nullable()->unsigned();
             $table->foreign('role_id')->references('id')->on('infix_roles')->onDelete('cascade');
@@ -63,7 +63,7 @@ class CreateUsersTable extends Migration
             $user            = new User();
             $user->created_by   = 1;
             $user->updated_by   = 1;
-            $user->school_id   = 1;
+            $user->church_id   = 1;
             $user->role_id   = 1;
             $user->full_name = 'admin';
             $user->email     = 'admin@infixedu.com';

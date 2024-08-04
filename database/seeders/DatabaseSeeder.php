@@ -83,7 +83,7 @@ class DatabaseSeeder extends Seeder
        
         foreach ($schools as $school) {
             $params = [];
-            $params['school_id'] = $school->id;
+            $params['church_id'] = $school->id;
 
             $this->callWith(SmVisitorsTableSeeder::class, array_merge($params, ['count' => 10]));
 
@@ -109,11 +109,11 @@ class DatabaseSeeder extends Seeder
             $this->callWith(SmFrontendPermissionTableSeeder::class, array_merge($params, ['count' => 2]));
 
 
-            $academicYears = SmAcademicYear::where('school_id', $school->id)->get();
+            $academicYears = SmAcademicYear::where('church_id', $school->id)->get();
 
 
             foreach ($academicYears as $academicYear) {
-                $params['academic_id'] = $academicYear->id;
+                $params['church_year_id'] = $academicYear->id;
                 $this->callWith(SmStudentGroupTableSeeder::class, array_merge($params, ['count' => 6]));
                 $this->callWith(SmSectionsTableSeeder::class, array_merge($params, ['count' => 5]));
 

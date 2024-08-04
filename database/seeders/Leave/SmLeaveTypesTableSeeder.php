@@ -18,15 +18,15 @@ class SmLeaveTypesTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run($school_id, $academic_id, $count=4)
+    public function run($church_id, $church_year_id, $count=4)
     {
         $school_academic= [
-            'school_id'=>$school_id,
-            'academic_id'=>$academic_id,
+            'church_id'=>$church_id,
+            'church_year_id'=>$church_year_id,
         ];
         $roles =InfixRole::get();
-        $staffs = SmStaff::where('school_id', $school_id)->get(['id', 'full_name']);
-        SmLeaveType::factory()->times($count)->create($school_academic)->each(function ($leaveTypes) use ($roles, $school_id, $academic_id, $staffs) {
+        $staffs = SmStaff::where('church_id', $church_id)->get(['id', 'full_name']);
+        SmLeaveType::factory()->times($count)->create($school_academic)->each(function ($leaveTypes) use ($roles, $church_id, $church_year_id, $staffs) {
             foreach ($roles as $key => $value) {
                 $users = User::where('role_id', $value->id)->get();
                 foreach ($users as $user) {
@@ -35,8 +35,8 @@ class SmLeaveTypesTableSeeder extends Seeder
                     $store->user_id = $user->id;
                     $store->type_id = $leaveTypes->id;
                     $store->days = $leaveTypes->total_days;
-                    $store->school_id = $school_id;
-                    $store->academic_id = $academic_id;
+                    $store->church_id = $church_id;
+                    $store->church_year_id = $church_year_id;
                     $store->save();
                 }
             }
@@ -54,8 +54,8 @@ class SmLeaveTypesTableSeeder extends Seeder
                 $storeRequest->note = 'Seeder Leave';
                 $storeRequest->file = "public/uploads/leave_request/sample.pdf";
                 $storeRequest->approve_status = "P";
-                $storeRequest->school_id = $school_id;
-                $storeRequest->academic_id = $academic_id;
+                $storeRequest->church_id = $church_id;
+                $storeRequest->church_year_id = $church_year_id;
                 // $storeRequest->save();
             }
 

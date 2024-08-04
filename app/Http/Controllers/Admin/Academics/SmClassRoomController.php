@@ -25,7 +25,7 @@ class SmClassRoomController extends Controller
     {
 
         try {
-            $class_rooms = SmClassRoom::where('active_status', 1)->where('school_id',Auth::user()->school_id)->get();
+            $class_rooms = SmClassRoom::where('active_status', 1)->where('church_id',Auth::user()->church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($class_rooms, null);
@@ -50,11 +50,11 @@ class SmClassRoomController extends Controller
             $class_room = new SmClassRoom();
             $class_room->room_no = $request->room_no;
             $class_room->capacity = $request->capacity;
-            $class_room->school_id = Auth::user()->school_id;
+            $class_room->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $class_room->un_academic_id = getAcademicId();
+                $class_room->un_church_year_id = getAcademicId();
             }else{
-                $class_room->academic_id = getAcademicId();
+                $class_room->church_year_id = getAcademicId();
             }
             $result = $class_room->save();
 
@@ -77,7 +77,7 @@ class SmClassRoomController extends Controller
     {
         try {
             $class_room = SmClassRoom::find($id);
-            $class_rooms = SmClassRoom::where('active_status', 1)->where('school_id',Auth::user()->school_id)->get();
+            $class_rooms = SmClassRoom::where('active_status', 1)->where('church_id',Auth::user()->church_id)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
                 $data['class_room'] = $class_room->toArray();

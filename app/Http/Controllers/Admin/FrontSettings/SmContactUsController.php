@@ -19,9 +19,9 @@ class SmContactUsController extends Controller
     public function index()
     {
         try {
-            $module_links = InfixPermissionAssign::where('role_id', Auth::user()->role_id)->where('school_id', Auth::user()->school_id)->pluck('module_id')->toArray();
+            $module_links = InfixPermissionAssign::where('role_id', Auth::user()->role_id)->where('church_id', Auth::user()->church_id)->pluck('module_id')->toArray();
 
-            $contact_us = SmContactPage::where('school_id', app('school')->id)->first();
+            $contact_us = SmContactPage::where('church_id', app('school')->id)->first();
             return view('backEnd.frontSettings.contact_us', compact('contact_us', 'module_links'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -33,7 +33,7 @@ class SmContactUsController extends Controller
     {
 
         try {
-            $contact_us = SmContactPage::where('school_id', app('school')->id)->first();
+            $contact_us = SmContactPage::where('church_id', app('school')->id)->first();
             $update = "";
 
             return view('backEnd.frontSettings.contact_us', compact('contact_us', 'update'));
@@ -51,10 +51,10 @@ class SmContactUsController extends Controller
           
             $destination='public/uploads/contactPage/';
             $fileName=fileUpload($request->image, $destination);
-            $contact = SmContactPage::where('school_id', app('school')->id)->first();
+            $contact = SmContactPage::where('church_id', app('school')->id)->first();
             if ($contact == "") {
                 $contact = new SmContactPage();
-                $contact->school_id = app('school')->id;   
+                $contact->church_id = app('school')->id;   
             }
             $contact->title = $request->title;
             $contact->description = $request->description;
@@ -70,7 +70,7 @@ class SmContactUsController extends Controller
             $contact->latitude = $request->latitude;
             $contact->longitude = $request->longitude;
             $contact->zoom_level = $request->zoom_level;
-            $contact->school_id = Auth::user()->school_id;
+            $contact->church_id = Auth::user()->church_id;
             $contact->google_map_address = $request->google_map_address;
                     
             $contact->image = $fileName;

@@ -18,15 +18,15 @@ class SmSeatPlan extends Model
     	return $this->belongsTo('App\SmSubject', 'subject_id', 'id');
     }
     public function section(){
-    	return $this->belongsTo('App\SmSection', 'section_id', 'id');
+    	return $this->belongsTo('App\SmSection', 'mgender_id', 'id');
     }
     public function class(){
-    	return $this->belongsTo('App\SmClass', 'class_id', 'id');
+    	return $this->belongsTo('App\SmClass', 'age_group_id', 'id');
     }
 
     public static function total_student($class, $section){
         try {
-            return SmStudent::where('class_id', $class)->where('section_id', $section)->count();
+            return SmStudent::where('age_group_id', $class)->where('mgender_id', $section)->count();
         } catch (\Exception $e) {
             $data=[];
             return $data;

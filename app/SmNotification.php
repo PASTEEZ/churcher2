@@ -16,9 +16,9 @@ class SmNotification extends Model
         if ($user) {
             return SmNotification::where('user_id', $user->id)->where('is_read', 0)
                 ->orderBy('id', 'DESC')
-                ->where('school_id', $user->school_id)
+                ->where('church_id', $user->church_id)
                 ->where(function($q){
-                    $q->where('academic_id', getAcademicId())->orWhereNull('academic_id');
+                    $q->where('church_year_id', getAcademicId())->orWhereNull('church_year_id');
                 })
                 ->get();
         }

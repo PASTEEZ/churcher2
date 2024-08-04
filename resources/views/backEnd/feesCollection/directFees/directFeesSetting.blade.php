@@ -94,7 +94,7 @@
                                     </div>
                                     {{ Form::model($feesInvoice, ['class' => 'bg-white p-4 rounded', 'route' => ['directFees.feesInvoiceUpdate'], 'method' => 'post']) }}
                                     <div class="row">
-                                          <input type="hidden" name="school_id" value="{{auth()->user()->school_id}}">
+                                          <input type="hidden" name="church_id" value="{{auth()->user()->church_id}}">
                                             <div class="col-lg-6 d-flex relation-button justify-content-between mb-3 justify-content-between mt-25">
                                                 <div class="input-effect">
                                                     {{ Form::text('prefix', null, ['autocomplete' => 'off', 'class' => 'primary-input form-control'.  ($errors->has('prefix') ? ' is-invalid' : '')]) }}
@@ -192,7 +192,7 @@
                                             $data = json_decode($paymentReminder->notification_types);
                                         @endphp
                                         <div class="row">
-                                          <input type="hidden" name="school_id" value="{{auth()->user()->school_id}}">
+                                          <input type="hidden" name="church_id" value="{{auth()->user()->church_id}}">
                                             <div class="col-lg-6 d-flex relation-button justify-content-between mb-3 justify-content-between mt-25">
                                                 <div class="input-effect">
                                                     {{ Form::text('due_date_before', null, ['autocomplete' => 'off', 'class' => 'primary-input form-control'. ($errors->has('due_date_before') ? ' is-invalid' : '')]) }}

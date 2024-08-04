@@ -29,11 +29,11 @@ class CreateSmFeesGroupsTable extends Migration
 
             $table->integer('updated_by')->nullable()->default(1)->unsigned();
 
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
 
-            $table->integer('academic_id')->nullable()->default(1)->unsigned();
-            $table->foreign('academic_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
+            $table->integer('church_year_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_year_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
         });
 
         // DB::table('sm_fees_groups')->insert([
@@ -42,7 +42,7 @@ class CreateSmFeesGroupsTable extends Migration
         //         'type' => 'System',
         //         'created_by' => 1,
         //         'created_by' => 1,
-        //         'school_id' => 1,
+        //         'church_id' => 1,
         //         'description' => 'System Automatic created. This fees will come from transport section',
         //     ],
         //     [
@@ -50,7 +50,7 @@ class CreateSmFeesGroupsTable extends Migration
         //         'type' => 'System',
         //         'created_by' => 1,
         //         'created_by' => 1,
-        //         'school_id' => 1,
+        //         'church_id' => 1,
         //         'description' => 'System Automatic created. This fees will come from dormitory section',
         //     ]
         // ]);

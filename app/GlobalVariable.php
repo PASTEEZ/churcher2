@@ -12,7 +12,7 @@ class GlobalVariable{
         try {
             $module_links = [];
             
-            $permissions = InfixPermissionAssign::where('role_id', Auth::user()->role_id)->where('school_id', Auth::user()->school_id)->get();
+            $permissions = InfixPermissionAssign::where('role_id', Auth::user()->role_id)->where('church_id', Auth::user()->church_id)->get();
 
             foreach ($permissions as $permission) {
                 $module_links[] = $permission->module_id;

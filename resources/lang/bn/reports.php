@@ -138,7 +138,7 @@ return [
     "out_of" => "বাহিরে",
     "relation_with_guardian" => "গার্ডিয়ানের সাথে সম্পর্ক",
     "birth_certificate_number" => "বার্থ সার্টিফিকেট সংখ্যা",
-    "academic_year" => "শিক্ষাগত বছর",
+    "church_year" => "শিক্ষাগত বছর",
     "select_teacher" => "শিক্ষক নির্বাচন করুন",
     "select_exam" => "এক্সাম নির্বাচন করুন",
     "select_student" => "ছাত্র নির্বাচন করুন",

@@ -48,7 +48,7 @@ class JyMemberRecord extends Model
 	 * @var array
 	 */
 	protected $fillable = [
-		'admission_no',
+		'registration_no',
         'first_name',
       
 

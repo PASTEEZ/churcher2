@@ -28,15 +28,15 @@ class SmSectionController extends Controller
         try {
             $sections = SmSection::query();
             if(moduleStatusCheck('University')){
-            $data = $sections->where('un_academic_id',getAcademicId());
+            $data = $sections->where('un_church_year_id',getAcademicId());
             }else{
-                $data = $sections->where('academic_id',getAcademicId());
+                $data = $sections->where('church_year_id',getAcademicId());
             }
-            $sections = $data->where('school_id',auth()->user()->school_id)->get();
+            $sections = $data->where('church_id',auth()->user()->church_id)->get();
 
             $unAcademics = null;
             if (moduleStatusCheck('University')) {
-                $unAcademics = UnAcademicYear::where('school_id', auth()->user()->school_id)->get()
+                $unAcademics = UnAcademicYear::where('church_id', auth()->user()->church_id)->get()
                 ->pluck('name', 'id')
                 ->prepend(__('university::un.select_academic'), ' *')
                 ->toArray();
@@ -51,8 +51,8 @@ class SmSectionController extends Controller
     public function store(SectionRequest $request)
     {
        
-        $academic_year=academicYears();
-        if ($academic_year==null) {
+        $church_year=academicYears();
+        if ($church_year==null) {
             Toastr::warning('Create Church yearfirst', 'Warning');
             return redirect()->back();
         }
@@ -69,13 +69,13 @@ class SmSectionController extends Controller
 
         try {
             $section = new SmSection();
-            $section->section_name = $request->name;
+            $section->mgender_name = $request->name;
             $section->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
-            $section->school_id = Auth::user()->school_id;
+            $section->church_id = Auth::user()->church_id;
             $section->created_at=auth()->user()->id;
-            $section->academic_id = !moduleStatusCheck('University') ? getAcademicId() : null;
+            $section->church_year_id = !moduleStatusCheck('University') ? getAcademicId() : null;
             if (moduleStatusCheck('University')) {
-                $section->un_academic_id = getAcademicId();
+                $section->un_church_year_id = getAcademicId();
             }
             $result = $section->save();
 
@@ -101,21 +101,21 @@ class SmSectionController extends Controller
     {
 
         try {
-            $section = SmSection::where('id',$id)->where('school_id',auth()->user()->school_id)->first();
+            $section = SmSection::where('id',$id)->where('church_id',auth()->user()->church_id)->first();
             if(is_null($section)){
                 Toastr::error('Operation Failed', 'Failed');
                 return redirect()->back();
             }
             $sections = SmSection::query();
             if(moduleStatusCheck('University')){
-            $data = $sections->where('un_academic_id',getAcademicId());
+            $data = $sections->where('un_church_year_id',getAcademicId());
             }else{
-                $data = $sections->whereNull('un_academic_id')->where('academic_id',getAcademicId());
+                $data = $sections->whereNull('un_church_year_id')->where('church_year_id',getAcademicId());
             }
-            $sections = $data->where('school_id',auth()->user()->school_id)->get();
+            $sections = $data->where('church_id',auth()->user()->church_id)->get();
             $unAcademics = null;
             if (moduleStatusCheck('University')) {
-                $unAcademics = UnAcademicYear::where('school_id', auth()->user()->school_id)->get()
+                $unAcademics = UnAcademicYear::where('church_id', auth()->user()->church_id)->get()
                 ->pluck('name', 'id')
                 ->prepend(__('university::un.select_academic'), ' *')
                 ->toArray();
@@ -148,7 +148,7 @@ class SmSectionController extends Controller
         try {
           
             $section = SmSection::find($request->id);
-            $section->section_name = $request->name;
+            $section->mgender_name = $request->name;
             $result = $section->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -168,7 +168,7 @@ class SmSectionController extends Controller
     public function delete(Request $request, $id)
     {
         try {
-            $tables = SmClassSection::where('section_id', $id)->first();
+            $tables = SmClassSection::where('mgender_id', $id)->first();
                 if ($tables == null) {
                           SmSection::destroy($request->id);
                           Toastr::success('Operation successful', 'Success');

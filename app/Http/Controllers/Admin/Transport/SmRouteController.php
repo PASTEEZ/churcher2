@@ -33,11 +33,11 @@ class SmRouteController extends Controller
             $route = new SmRoute();
             $route->title = $request->title;
             $route->far = $request->far;
-            $route->school_id = Auth::user()->school_id;
+            $route->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $route->un_academic_id = getAcademicId();
+                $route->un_church_year_id = getAcademicId();
             }else{
-                $route->academic_id = getAcademicId();
+                $route->church_year_id = getAcademicId();
             }
             $route->save();
 
@@ -53,7 +53,7 @@ class SmRouteController extends Controller
     {
         try {
             $route = SmRoute::find($id);
-            $routes = SmRoute::where('school_id', Auth::user()->school_id)->get();
+            $routes = SmRoute::where('church_id', Auth::user()->church_id)->get();
             return view('backEnd.transport.route', compact('route', 'routes'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -68,7 +68,7 @@ class SmRouteController extends Controller
             $route->title = $request->title;
             $route->far = $request->far;
             if(moduleStatusCheck('University')){
-                $route->un_academic_id = getAcademicId();
+                $route->un_church_year_id = getAcademicId();
             }
             $route->save();
 

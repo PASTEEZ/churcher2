@@ -214,7 +214,7 @@ return [
 
 "topic" => "Tema",
 
-"select_academic_year" => "Seleccionar Año Académico",
+"select_church_year" => "Seleccionar Año Académico",
 
 "calendar" => "Calendario",
 

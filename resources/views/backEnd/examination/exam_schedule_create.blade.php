@@ -72,7 +72,7 @@
                                         <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                             <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                             @foreach($classes as $class)
-                                            <option value="{{@$class->id}}" {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{@$class->class_name}}</option>
+                                            <option value="{{@$class->id}}" {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{@$class->age_group_name}}</option>
                                             @endforeach
                                         </select>
                                         @if ($errors->has('class'))
@@ -125,8 +125,8 @@
 
             {{ Form::open(['class' => 'form-horizontal', 'files' => true, 'route' => 'exam_schedule_store', 'method' => 'POST', 'enctype' => 'multipart/form-data', 'id' => 'exam_schedule_store']) }} 
                 @if(!moduleStatusCheck('University'))
-                    <input type="hidden" name="class_id" id="class_id" value="{{ @$class_id}}">
-                    <input type="hidden" name="section_id" id="section_id" value="{{ @$section_id}}">
+                    <input type="hidden" name="age_group_id" id="age_group_id" value="{{ @$age_group_id}}">
+                    <input type="hidden" name="mgender_id" id="mgender_id" value="{{ @$mgender_id}}">
                 @endif
                 <input type="hidden" name="exam_id" id="exam_id" value="{{ @$exam_id}}"> 
 
@@ -144,22 +144,22 @@
                             </thead>
                             <tbody>
                                 @php
-                                $section_id_all = $section_id;
+                                $mgender_id_all = $mgender_id;
                                 @endphp
                                 @foreach($assign_subjects as $assign_subject)
                                     <tr>
                                         <td>{{@$assign_subject->subject !=""?@$assign_subject->subject->subject_name:""}}</td>
-                                        <td>{{@$assign_subject->class !=""? @$assign_subject->class->class_name:""}}({{@$assign_subject->section !=""?@$assign_subject->section->section_name:""}})</td>
+                                        <td>{{@$assign_subject->class !=""? @$assign_subject->class->age_group_name:""}}({{@$assign_subject->section !=""?@$assign_subject->section->mgender_name:""}})</td>
                                             @foreach($exam_periods as $exam_period)
                                                 @php
-                                                    $assigned_routine = App\SmExamSchedule::assignedRoutine($class_id, $assign_subject->section_id, $exam_id, $assign_subject->subject_id, $exam_period->id);
+                                                    $assigned_routine = App\SmExamSchedule::assignedRoutine($age_group_id, $assign_subject->mgender_id, $exam_id, $assign_subject->subject_id, $exam_period->id);
                                                 @endphp
                                             <td>
                                                 @if(@$assigned_routine == "")
                                                     @if(@$assigned_routine_subject == "")
                                                         @if(userPermission(219))
                                                         <div class="col-lg-6">
-                                                            <a href="{{route('add-exam-routine-modal', [$assign_subject->subject_id, $exam_period->id, $class_id, $assign_subject->section_id, $exam_id,$section_id_all])}}" class="primary-btn small tr-bg icon-only mr-10 modalLink" data-modal-size="modal-md" title="@lang('exam.create_exam_routine')">
+                                                            <a href="{{route('add-exam-routine-modal', [$assign_subject->subject_id, $exam_period->id, $age_group_id, $assign_subject->mgender_id, $exam_id,$mgender_id_all])}}" class="primary-btn small tr-bg icon-only mr-10 modalLink" data-modal-size="modal-md" title="@lang('exam.create_exam_routine')">
                                                                 <span class="ti-plus" id="addClassRoutine"></span>
                                                             </a>
                                                         </div>
@@ -174,10 +174,10 @@
                                                             {{@$assigned_routine->date != ""? dateConvert($assigned_routine->date):''}}
                                                         </span>
                                                         </br>
-                                                        <a href="{{route('edit-exam-routine-modal', [$assign_subject->subject_id, $exam_period->id, $class_id, $assign_subject->section_id, $exam_id, $assigned_routine->id,$section_id_all])}}" class="modalLink" data-modal-size="modal-md" title="@lang('common.edit_exam_routine')">
+                                                        <a href="{{route('edit-exam-routine-modal', [$assign_subject->subject_id, $exam_period->id, $age_group_id, $assign_subject->mgender_id, $exam_id, $assigned_routine->id,$mgender_id_all])}}" class="modalLink" data-modal-size="modal-md" title="@lang('common.edit_exam_routine')">
                                                             <span class="ti-pencil-alt" id="addClassRoutine"></span>
                                                         </a>
-                                                        <a href="{{route('delete-exam-routine-modal', [$assigned_routine->id,$section_id_all])}}" class="modalLink" data-modal-size="modal-md" title="@lang('common.delete_exam_routine')">
+                                                        <a href="{{route('delete-exam-routine-modal', [$assigned_routine->id,$mgender_id_all])}}" class="modalLink" data-modal-size="modal-md" title="@lang('common.delete_exam_routine')">
                                                             <span class="ti-trash" id="addClassRoutine"></span>
                                                         </a>
                                                     </div>

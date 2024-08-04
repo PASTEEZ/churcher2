@@ -108,15 +108,15 @@
                                                                     @else 
                                                                     <div class="row mt-25">
                                                                         <div class="col-lg-12">
-                                                                            <select class="w-100 bb niceSelect form-control {{ $errors->has('class_id') ? ' is-invalid' : '' }}" id="classSelectStudentHomeWork" name="class_id">
+                                                                            <select class="w-100 bb niceSelect form-control {{ $errors->has('age_group_id') ? ' is-invalid' : '' }}" id="classSelectStudentHomeWork" name="age_group_id">
                                                                                 <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                                                                 @foreach($classes as $class)
-                                                                                <option value="{{@$class->id}}">{{@$class->class_name}}</option>
+                                                                                <option value="{{@$class->id}}">{{@$class->age_group_name}}</option>
                                                                                 @endforeach
                                                                             </select>
-                                                                            @if ($errors->has('class_id'))
+                                                                            @if ($errors->has('age_group_id'))
                                                                                 <span class="invalid-feedback invalid-select" role="alert">
-                                                                                    <strong>{{ $errors->first('class_id') }}</strong>
+                                                                                    <strong>{{ $errors->first('age_group_id') }}</strong>
                                                                                 </span>
                                                                             @endif
                                                                         </div>
@@ -145,16 +145,16 @@
                                                                     <div class="row mt-25">
                                                                         <div class="col-lg-12 " id="selectSectionsDiv" style="margin-top: -25px;">
                                                                             <label for="checkbox" class="mb-2 mt-20">@lang('common.section') *</label>
-                                                                                <select multiple id="selectSectionss" name="section_ids[]" style="width:300px">
+                                                                                <select multiple id="selectSectionss" name="mgender_ids[]" style="width:300px">
                                                                                   
                                                                                 </select>
                                                                                 <div class="">
                                                                                 <input type="checkbox" id="checkbox_section" class="common-checkbox homework-section">
                                                                                 <label for="checkbox_section" class="mt-3">@lang('homework.select_all')</label>
                                                                                 </div>
-                                                                                @if ($errors->has('section_id'))
+                                                                                @if ($errors->has('mgender_id'))
                                                                                     <span class="invalid-feedback invalid-select" role="alert" style="display:block">
-                                                                                        <strong style="top:-25px">{{ $errors->first('section_id') }}</strong>
+                                                                                        <strong style="top:-25px">{{ $errors->first('mgender_id') }}</strong>
                                                                                     </span>
                                                                                 @endif
                                                                         </div>
@@ -178,7 +178,7 @@
                                                 </div>
                                             @endforeach
                                             <div class="input-effect">
-                                                <input type="checkbox" id="all_exams" class="common-checkbox" name="all_exams[]" value="0" {{ (is_array(old('class_ids')) and in_array($class->id, old('class_ids'))) ? ' checked' : '' }}>
+                                                <input type="checkbox" id="all_exams" class="common-checkbox" name="all_exams[]" value="0" {{ (is_array(old('age_group_ids')) and in_array($class->id, old('age_group_ids'))) ? ' checked' : '' }}>
                                                 <label for="all_exams">@lang('exam.all_select')</label>
                                             </div>
                                         </div>
@@ -212,7 +212,7 @@
                                                 </div>
                                             @endforeach
                                             <div class="input-effect">
-                                                <input type="checkbox" id="all_exams" class="common-checkbox" name="all_exams[]" value="0" {{ (is_array(old('class_ids')) and in_array($class->id, old('class_ids'))) ? ' checked' : '' }}>
+                                                <input type="checkbox" id="all_exams" class="common-checkbox" name="all_exams[]" value="0" {{ (is_array(old('age_group_ids')) and in_array($class->id, old('age_group_ids'))) ? ' checked' : '' }}>
                                                 <label for="all_exams">@lang('exam.all_select')</label>
                                             </div>
                                         </div>
@@ -226,15 +226,15 @@
                                     </div>
                                     <div class="row mt-25">
                                         <div class="col-lg-12">
-                                            <select class="w-100 bb niceSelect form-control {{ $errors->has('class_ids') ? ' is-invalid' : '' }}" id="exam_class" name="class_ids">
+                                            <select class="w-100 bb niceSelect form-control {{ $errors->has('age_group_ids') ? ' is-invalid' : '' }}" id="exam_class" name="age_group_ids">
                                                 <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                                 @foreach($classes as $class)
-                                                <option value="{{@$class->id}}">{{@$class->class_name}}</option>
+                                                <option value="{{@$class->id}}">{{@$class->age_group_name}}</option>
                                                 @endforeach
                                             </select>
-                                            @if ($errors->has('class_ids'))
+                                            @if ($errors->has('age_group_ids'))
                                                 <span class="invalid-feedback invalid-select" role="alert">
-                                                    <strong>{{ $errors->first('class_ids') }}</strong>
+                                                    <strong>{{ $errors->first('age_group_ids') }}</strong>
                                                 </span>
                                             @endif
                                         </div>
@@ -478,7 +478,7 @@
                                     @if(moduleStatusCheck('University'))
                                         <th>@lang('common.session')</th>
                                         <th>@lang('university::un.faculty_department')</th>
-                                        <th>@lang('common.academic_year')</th>
+                                        <th>@lang('common.church_year')</th>
                                         <th>@lang('university::un.semester')</th>
                                     @else
                                         <th>@lang('common.class')</th>
@@ -503,8 +503,8 @@
                                                 <td>{{$exam->academicYearDetails->name}}</td>
                                                 <td>{{$exam->semesterDetails->name}}</td>
                                             @else
-                                                <td>{{$exam->class !=""?$exam->class->class_name:""}}</td>
-                                                <td>{{$exam->section !=""?$exam->section->section_name:""}}</td>
+                                                <td>{{$exam->class !=""?$exam->class->age_group_name:""}}</td>
+                                                <td>{{$exam->section !=""?$exam->section->mgender_name:""}}</td>
                                                
                                             @endif
                                         <td>{{$exam->subject !=""?$exam->subject->subject_name:""}}</td>

@@ -133,10 +133,10 @@ class SmStudentPanelController extends Controller
             $previousMonthDetails['date'] = $previous_date;
             $previousMonthDetails['day'] = $days2;
             $previousMonthDetails['week_name'] = date('D', strtotime($previous_date));
-            $attendances = SmStudentAttendance::where('student_id', $student_detail->id)
+            $attendances = SmStudentAttendance::where('member_id', $student_detail->id)
                 ->where('attendance_date', 'like', '%' . $request->year . '-' . $month . '%')
                 ->select('attendance_type', 'attendance_date')
-                ->where('school_id', Auth::user()->school_id)->get();
+                ->where('church_id', Auth::user()->church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data['attendances'] = $attendances;
@@ -185,9 +185,9 @@ class SmStudentPanelController extends Controller
 
             $days = cal_days_in_month(CAL_GREGORIAN, $request->month, $request->year);
             $records = studentRecords(null, $student_detail->id)->with('studentAttendance')->get();
-            $academic_years = SmAcademicYear::where('active_status', '=', 1)->where('school_id', Auth::user()->school_id)->get();
+            $church_years = SmAcademicYear::where('active_status', '=', 1)->where('church_id', Auth::user()->church_id)->get();
 
-            return view('backEnd.studentPanel.student_attendance', compact( 'days', 'year', 'month', 'current_day', 'student_detail', 'academic_years','records'));
+            return view('backEnd.studentPanel.student_attendance', compact( 'days', 'year', 'month', 'current_day', 'student_detail', 'church_years','records'));
         } catch (\Exception $e) {
 
             Toastr::error('Operation Failed', 'Failed');
@@ -202,7 +202,7 @@ class SmStudentPanelController extends Controller
             $student_detail = SmStudent::where('user_id', $login_id)->first();
             $current_day = date('d');
             $days = cal_days_in_month(CAL_GREGORIAN, $month, $year);
-            $attendances = SmStudentAttendance::where('student_record_id',$id)->where('student_id', $student_detail->id)->where('academic_id', getAcademicId())->where('attendance_date', 'like', $year . '-' . $month . '%')->where('school_id', Auth::user()->school_id)->get();
+            $attendances = SmStudentAttendance::where('student_record_id',$id)->where('member_id', $student_detail->id)->where('church_year_id', getAcademicId())->where('attendance_date', 'like', $year . '-' . $month . '%')->where('church_id', Auth::user()->church_id)->get();
             $customPaper = array(0, 0, 700.00, 1000.80);
             $pdf = PDF::loadView(
                 'backEnd.studentPanel.my_attendance_print',
@@ -240,13 +240,13 @@ class SmStudentPanelController extends Controller
 
             $student_detail = SmStudent::where('user_id', $user_id)->first();
             $student =$student_detail ;
-            $data['bank_info'] = SmPaymentMethhod::where('method', 'Bank')->where('school_id', Auth::user()->school_id)->first();
-            $data['cheque_info'] = SmPaymentMethhod::where('method', 'Cheque')->where('school_id', Auth::user()->school_id)->first();
+            $data['bank_info'] = SmPaymentMethhod::where('method', 'Bank')->where('church_id', Auth::user()->church_id)->first();
+            $data['cheque_info'] = SmPaymentMethhod::where('method', 'Cheque')->where('church_id', Auth::user()->church_id)->first();
             $records = studentRecords(null, $student_detail->id)->get();
 
-            $optional_subject_setup = SmClassOptionalSubject::where('class_id', '=', $student_detail->class_id)->first();
+            $optional_subject_setup = SmClassOptionalSubject::where('age_group_id', '=', $student_detail->age_group_id)->first();
 
-            $student_optional_subject = SmOptionalSubjectAssign::where('student_id', $student_detail->id)
+            $student_optional_subject = SmOptionalSubjectAssign::where('member_id', $student_detail->id)
                 ->where('session_id', '=', $student_detail->session_id)
                 ->first();
 
@@ -255,98 +255,98 @@ class SmStudentPanelController extends Controller
                 ->first();
 
             $siblings = SmStudent::where('parent_id', $student_detail->parent_id)
-                ->where('school_id', Auth::user()->school_id)->where('id', '!=', $student_detail->id)->whereNotNull('parent_id')
+                ->where('church_id', Auth::user()->church_id)->where('id', '!=', $student_detail->id)->whereNotNull('parent_id')
                 ->get();
             
-            $fees_assigneds = SmFeesAssign::where('student_id', $student_detail->id)
+            $fees_assigneds = SmFeesAssign::where('member_id', $student_detail->id)
                 ->where('record_id', $records->pluck('id')->toArray())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
-            $fees_discounts = SmFeesAssignDiscount::where('student_id', $student_detail->id)
+            $fees_discounts = SmFeesAssignDiscount::where('member_id', $student_detail->id)
                 ->where('record_id', $records->pluck('id')->toArray())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             $documents = SmStudentDocument::where('student_staff_id', $student_detail->id)
                 ->where('type', 'stu')
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
-            $timelines = SmStudentTimeline::where('staff_student_id', $student_detail->id)
+            $timelines = SmStudentTimeline::where('staff_member_id', $student_detail->id)
                 ->where('type', 'stu')
                 ->where('visible_to_student', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
-            $exams = SmExamSchedule::where('class_id', $student_detail->class_id)
-                ->where('section_id', $student_detail->section_id)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+            $exams = SmExamSchedule::where('age_group_id', $student_detail->age_group_id)
+                ->where('mgender_id', $student_detail->mgender_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             $grades = SmMarksGrade::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             $maxgpa = SmMarksGrade::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->max('gpa');
 
             $failgpa = SmMarksGrade::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->min('gpa');
 
             $failgpaname = SmMarksGrade::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->where('gpa', $failgpa)
                 ->first();
 
-            $exam_terms = SmExamType::with('examSettings')->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+            $exam_terms = SmExamType::with('examSettings')->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             $leave_details = SmLeaveRequest::where('staff_id', Auth::user()->id)
                 ->where('role_id', Auth::user()->role_id)
                 ->where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
             if(moduleStatusCheck('OnlineExam')){
                 $result_views = InfixStudentTakeOnlineExam::where('active_status', 1)
                 ->where('status', 2)
-                ->where('academic_id', getAcademicId())
-                ->where('student_id', @Auth::user()->student->id)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('member_id', @Auth::user()->student->id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
             }else{
                 $result_views = SmStudentTakeOnlineExam::where('active_status', 1)
                 ->where('status', 2)
-                ->where('academic_id', getAcademicId())
-                ->where('student_id', @Auth::user()->student->id)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('member_id', @Auth::user()->student->id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
             }
              
 
 
             $paymentMethods = SmPaymentMethhod::whereNotIn('method', ["Cash", "Wallet"])
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             $bankAccounts = SmBankAccount::where('active_status', 1)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             if (moduleStatusCheck('Wallet')) {
                 $walletAmounts = WalletTransaction::where('user_id', Auth::user()->id)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->get();
 
             } else {
@@ -362,7 +362,7 @@ class SmStudentPanelController extends Controller
                 $custom_field_values = null;
             }
 
-            $academic_year = SmAcademicYear::find($student_detail->session_id);
+            $church_year = SmAcademicYear::find($student_detail->session_id);
 
             $custom_field_data = $student_detail->custom_field;
 
@@ -380,20 +380,20 @@ class SmStudentPanelController extends Controller
                 $lastRecord = studentRecords(null, $student_detail->id)
                 ->where('is_default', 1)
                 ->orderBy('id', 'DESC')->first();
-                $labelIds = StudentRecord::where('student_id', $student_detail->id)
-                        ->where('school_id', auth()->user()->school_id)
+                $labelIds = StudentRecord::where('member_id', $student_detail->id)
+                        ->where('church_id', auth()->user()->church_id)
                         ->pluck('un_semester_label_id')->toArray();
                 $next_semester_label = UnSemesterLabel::whereNotIn('id', $labelIds)
                     ->where('id', '!=', $lastRecord->un_semester_label_id)
                     ->first();
 
-                $next_subjects = UnAssignSubject::where('school_id', auth()->user()->school_id)
+                $next_subjects = UnAssignSubject::where('church_id', auth()->user()->church_id)
                     ->where('un_semester_label_id', $lastRecord->un_semester_label_id)
                     ->get();
 
                 $departmentSubjects = $lastRecord->withOutPreSubject;
-                $unSettings = UniversitySetting::where('school_id', auth()->user()->school_id)
-                            ->where('un_academic_id', getAcademicId())
+                $unSettings = UniversitySetting::where('church_id', auth()->user()->church_id)
+                            ->where('un_church_year_id', getAcademicId())
                             ->first();
 
                 $lastRecordCreatedDate = $student_detail->lastRecord->value('created_at')->format('Y-m-d');
@@ -411,10 +411,10 @@ class SmStudentPanelController extends Controller
             }
             $payment_gateway = SmPaymentMethhod::first();
             if(moduleStatusCheck('University')){
-                $student_id = $student_detail->id;
-                $studentDetails = SmStudent::find($student_id);
-                $studentRecordDetails = StudentRecord::where('student_id',$student_id);
-                $studentRecords = $studentRecordDetails->groupBy('un_academic_id')->get();
+                $member_id = $student_detail->id;
+                $studentDetails = SmStudent::find($member_id);
+                $studentRecordDetails = StudentRecord::where('member_id',$member_id);
+                $studentRecords = $studentRecordDetails->groupBy('un_church_year_id')->get();
                 $print =1;
                 return view('backEnd.studentPanel.my_profile',
                 compact(
@@ -424,7 +424,7 @@ class SmStudentPanelController extends Controller
                     'next_semester_label',
                     'canChoose',
                     'driver',
-                    'academic_year',
+                    'church_year',
                     'student_detail',
                     'fees_assigneds',
                     'fees_discounts',
@@ -462,7 +462,7 @@ class SmStudentPanelController extends Controller
                     'next_semester_label',
                     'canChoose',
                     'driver',
-                    'academic_year',
+                    'church_year',
                     'student_detail',
                     'fees_assigneds',
                     'fees_discounts',
@@ -517,7 +517,7 @@ class SmStudentPanelController extends Controller
             $student_file_destination = 'public/uploads/student/';
             $student = SmStudent::find($request->id);
            
-            $academic_year = $request->session ? SmAcademicYear::find($request->session) : '';
+            $church_year = $request->session ? SmAcademicYear::find($request->session) : '';
             DB::beginTransaction();
            
             if ($student) {
@@ -610,7 +610,7 @@ class SmStudentPanelController extends Controller
                     }
                    
                     if ($request->filled('session')) {
-                        $parent->created_at = $academic_year->year . '-01-01 12:00:00';
+                        $parent->created_at = $church_year->year . '-01-01 12:00:00';
                     }
                     $parent->save();
                     $parent->toArray();
@@ -628,16 +628,16 @@ class SmStudentPanelController extends Controller
                         $student->parent_id = $parent->id;
                 }
                 if ($request->filled('class')) {
-                    $student->class_id = $request->class;
+                    $student->age_group_id = $request->class;
                 }
                 if ($request->filled('section')) {
-                    $student->section_id = $request->section;
+                    $student->mgender_id = $request->section;
                 }
                 if ($request->filled('session')) {
                     $student->session_id = $request->session;
                 }
                 if ($request->filled('admission_number')) {
-                    $student->admission_no = $request->admission_number;
+                    $student->registration_no = $request->admission_number;
                 }
                 $student->user_id = $user_stu->id;
                 if ($request->filled('roll_number')) {
@@ -778,8 +778,8 @@ class SmStudentPanelController extends Controller
 
 
                 if ($request->filled('session')) {
-                    $student->created_at = $academic_year->year . '-01-01 12:00:00';
-                    $student->academic_id = $academic_year->id;
+                    $student->created_at = $church_year->year . '-01-01 12:00:00';
+                    $student->church_year_id = $church_year->id;
                 }
 
 
@@ -863,26 +863,26 @@ class SmStudentPanelController extends Controller
         try {
             $student = SmStudent::find($id);
 
-            $classes = SmClass::where('active_status', '=', '1')->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $classes = SmClass::where('active_status', '=', '1')->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
             $religions = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '2')->get();
             $blood_groups = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '3')->get();
             $genders = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '1')->get();
-            $route_lists = SmRoute::where('active_status', '=', '1')->where('school_id', Auth::user()->school_id)->get();
-            $vehicles = SmVehicle::where('active_status', '=', '1')->where('school_id', Auth::user()->school_id)->get();
-            $dormitory_lists = SmDormitoryList::where('active_status', '=', '1')->where('school_id', Auth::user()->school_id)->get();
-            $driver_lists = SmStaff::where([['active_status', '=', '1'], ['role_id', 9]])->where('school_id', Auth::user()->school_id)->get();
-            $categories = SmStudentCategory::where('school_id', Auth::user()->school_id)->get();
-            $groups = SmStudentGroup::where('school_id', Auth::user()->school_id)->get();
-            $sessions = SmAcademicYear::where('active_status', '=', '1')->where('school_id', Auth::user()->school_id)->get();
-            $siblings = SmStudent::where('parent_id', $student->parent_id)->where('school_id', Auth::user()->school_id)->get();
+            $route_lists = SmRoute::where('active_status', '=', '1')->where('church_id', Auth::user()->church_id)->get();
+            $vehicles = SmVehicle::where('active_status', '=', '1')->where('church_id', Auth::user()->church_id)->get();
+            $dormitory_lists = SmDormitoryList::where('active_status', '=', '1')->where('church_id', Auth::user()->church_id)->get();
+            $driver_lists = SmStaff::where([['active_status', '=', '1'], ['role_id', 9]])->where('church_id', Auth::user()->church_id)->get();
+            $categories = SmStudentCategory::where('church_id', Auth::user()->church_id)->get();
+            $groups = SmStudentGroup::where('church_id', Auth::user()->church_id)->get();
+            $sessions = SmAcademicYear::where('active_status', '=', '1')->where('church_id', Auth::user()->church_id)->get();
+            $siblings = SmStudent::where('parent_id', $student->parent_id)->where('church_id', Auth::user()->church_id)->get();
             $lead_city= [];
             $sources= [];
             if (moduleStatusCheck('Lead')==true) {
-                    $lead_city = \Modules\Lead\Entities\LeadCity::where('school_id', auth()->user()->school_id)->get(['id', 'city_name']);
-                    $sources = \Modules\Lead\Entities\Source::where('school_id', auth()->user()->school_id)->get(['id', 'source_name']);
+                    $lead_city = \Modules\Lead\Entities\LeadCity::where('church_id', auth()->user()->church_id)->get(['id', 'city_name']);
+                    $sources = \Modules\Lead\Entities\Source::where('church_id', auth()->user()->church_id)->get(['id', 'source_name']);
             }
-            $fields = SmStudentRegistrationField::where('school_id', auth()->user()->school_id)
+            $fields = SmStudentRegistrationField::where('church_id', auth()->user()->church_id)
             ->when(auth()->user()->role_id == 2, function ($query) {
                 $query->where('student_edit', 1);
             })
@@ -916,35 +916,35 @@ class SmStudentPanelController extends Controller
 
             $student_detail = SmStudent::withOutGlobalScope(ActiveStatusSchoolScope::class)->where('user_id', $user_id)->first();
             // record data
-            $class_ids = $student_detail->studentRecords->pluck('class_id')->unique()->toArray();        
-            $section_ids = $student_detail->studentRecords->pluck('section_id')->unique()->toArray();
+            $age_group_ids = $student_detail->studentRecords->pluck('age_group_id')->unique()->toArray();        
+            $mgender_ids = $student_detail->studentRecords->pluck('mgender_id')->unique()->toArray();
             // end
             $driver = SmVehicle::where('sm_vehicles.id', '=', $student_detail->vechile_id)
                 ->join('sm_staffs', 'sm_staffs.id', '=', 'sm_vehicles.driver_id')
                 ->first();
-            $siblings = SmStudent::where('parent_id', $student_detail->parent_id)->where('school_id', Auth::user()->school_id)->get();
-            $fees_assigneds = SmFeesAssign::where('student_id', $student_detail->id)->where('school_id', Auth::user()->school_id)->get();
-            $fees_discounts = SmFeesAssignDiscount::where('student_id', $student_detail->id)->where('school_id', Auth::user()->school_id)->get();
-            $documents = SmStudentDocument::where('student_staff_id', $student_detail->id)->where('type', 'stu')->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-            $timelines = SmStudentTimeline::where('staff_student_id', $student_detail->id)->where('type', 'stu')->where('visible_to_student', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-            $exams = SmExamSchedule::whereIn('class_id', $class_ids)
-            ->whereIn('section_id', $section_ids)
-            ->where('academic_id', getAcademicId())
-            ->where('school_id', Auth::user()->school_id)
+            $siblings = SmStudent::where('parent_id', $student_detail->parent_id)->where('church_id', Auth::user()->church_id)->get();
+            $fees_assigneds = SmFeesAssign::where('member_id', $student_detail->id)->where('church_id', Auth::user()->church_id)->get();
+            $fees_discounts = SmFeesAssignDiscount::where('member_id', $student_detail->id)->where('church_id', Auth::user()->church_id)->get();
+            $documents = SmStudentDocument::where('student_staff_id', $student_detail->id)->where('type', 'stu')->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+            $timelines = SmStudentTimeline::where('staff_member_id', $student_detail->id)->where('type', 'stu')->where('visible_to_student', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+            $exams = SmExamSchedule::whereIn('age_group_id', $age_group_ids)
+            ->whereIn('mgender_id', $mgender_ids)
+            ->where('church_year_id', getAcademicId())
+            ->where('church_id', Auth::user()->church_id)
             ->get();
-            $grades = SmMarksGrade::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $grades = SmMarksGrade::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
-            $totalSubjects = SmAssignSubject::whereIn('class_id', $class_ids)
-            ->whereIn('section_id', $section_ids)
-            ->where('academic_id', getAcademicId())
-            ->where('school_id', Auth::user()->school_id)
+            $totalSubjects = SmAssignSubject::whereIn('age_group_id', $age_group_ids)
+            ->whereIn('mgender_id', $mgender_ids)
+            ->where('church_year_id', getAcademicId())
+            ->where('church_id', Auth::user()->church_id)
             ->get();
             $totalNotices = SmNoticeBoard::where('active_status', 1)->where('inform_to', 'LIKE', '%2%')
                 ->orderBy('id', 'DESC')
-                ->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+                ->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
             $time_zone_setup = SmGeneralSettings::join('sm_time_zones', 'sm_time_zones.id', '=', 'sm_general_settings.time_zone_id')
-                ->where('school_id', Auth::user()->school_id)->first();
+                ->where('church_id', Auth::user()->church_id)->first();
             date_default_timezone_set($time_zone_setup->time_zone);
 
 
@@ -952,46 +952,46 @@ class SmStudentPanelController extends Controller
 
             if (moduleStatusCheck('OnlineExam') == true) {
                 $online_exams = InfixOnlineExam::where('active_status', 1)->where('status', 1
-                )->whereIn('class_id', $class_ids)->whereIn('section_id', $section_ids)
+                )->whereIn('age_group_id', $age_group_ids)->whereIn('mgender_id', $mgender_ids)
                     
-                    ->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+                    ->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
             } else {
                 $online_exams = SmOnlineExam::where('active_status', 1)->where('status', 1
-                )->whereIn('class_id', $class_ids)->whereIn('section_id', $section_ids)
-                    ->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+                )->whereIn('age_group_id', $age_group_ids)->whereIn('mgender_id', $mgender_ids)
+                    ->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
             }
 
             $teachers = SmAssignSubject::select('teacher_id')
-            ->whereIn('class_id', $class_ids)
-            ->whereIn('section_id', $section_ids)
-            ->distinct('teacher_id')->where('academic_id', getAcademicId())
-            ->where('school_id', Auth::user()->school_id)->get();
+            ->whereIn('age_group_id', $age_group_ids)
+            ->whereIn('mgender_id', $mgender_ids)
+            ->distinct('teacher_id')->where('church_year_id', getAcademicId())
+            ->where('church_id', Auth::user()->church_id)->get();
 
-            $issueBooks = SmBookIssue::where('member_id', $student_detail->user_id)->where('issue_status', 'I')->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $issueBooks = SmBookIssue::where('member_id', $student_detail->user_id)->where('issue_status', 'I')->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
-            $homeworkLists = SmHomework::whereIn('class_id', $class_ids)
-                ->whereIn('section_id', $section_ids)
+            $homeworkLists = SmHomework::whereIn('age_group_id', $age_group_ids)
+                ->whereIn('mgender_id', $mgender_ids)
                 ->where('evaluation_date', '=', null)
                 ->where('submission_date', '>', $now)
-                ->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)
                 ->get();
             $month = date('m');
             $year = date('Y');
             // return $year;
 
-            $attendances = SmStudentAttendance::where('student_id', $student_detail->id)
+            $attendances = SmStudentAttendance::where('member_id', $student_detail->id)
                 ->where('attendance_date', 'like', $year . '-' . $month . '%')
-                ->where('attendance_type', '=', 'P')->where('school_id', Auth::user()->school_id)->get();
+                ->where('attendance_type', '=', 'P')->where('church_id', Auth::user()->church_id)->get();
             // return $attendances;
 
             $holidays = SmHoliday::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             $events = SmEvent::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->where(function ($q) {
                     $q->where('for_whom', 'All')->orWhere('for_whom', 'Student');
                 })
@@ -1023,7 +1023,7 @@ class SmStudentPanelController extends Controller
             $student_detail = SmStudent::where('user_id', $id)->first();
             $documents = SmStudentDocument::where('student_staff_id', $student_detail->id)->where('type', 'stu')
                 ->select('title', 'file')
-                ->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+                ->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -1053,21 +1053,21 @@ class SmStudentPanelController extends Controller
             }
             $student_detail = SmStudent::where('user_id', $user_id)->first();
         
-            $class_times = SmClassTime::where('type', 'class')->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $class_times = SmClassTime::where('type', 'class')->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
             $sm_weekends = SmWeekend::orderBy('order', 'ASC')
                         ->where('active_status', 1)
-                        ->where('school_id', Auth::user()->school_id)
+                        ->where('church_id', Auth::user()->church_id)
                         ->get();
 
             if(moduleStatusCheck('University')){
-                $records = StudentRecord::where('student_id',$student_detail->id)->where('un_academic_id',getAcademicId())->get();
+                $records = StudentRecord::where('member_id',$student_detail->id)->where('un_church_year_id',getAcademicId())->get();
             }else{
-                $records = StudentRecord::where('student_id',$student_detail->id)->where('academic_id',getAcademicId())->get();
+                $records = StudentRecord::where('member_id',$student_detail->id)->where('church_year_id',getAcademicId())->get();
             }
-            $class_id = $student_detail->class_id;
-            $section_id = $student_detail->section_id;
+            $age_group_id = $student_detail->age_group_id;
+            $mgender_id = $student_detail->mgender_id;
            
-            return view('backEnd.studentPanel.class_routine', compact('class_times', 'class_id', 'section_id', 'sm_weekends','records'));
+            return view('backEnd.studentPanel.class_routine', compact('class_times', 'age_group_id', 'mgender_id', 'sm_weekends','records'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -1078,47 +1078,47 @@ class SmStudentPanelController extends Controller
     {
         try {
             $student_detail = Auth::user()->student;
-            $optional_subject_setup = SmClassOptionalSubject::where('class_id', '=', $student_detail->class_id)->first();
-            $records = StudentRecord::where('student_id' ,$student_detail->id)->where('academic_id',getAcademicId())->get();
-            $student_optional_subject = SmOptionalSubjectAssign::where('student_id', $student_detail->id)
+            $optional_subject_setup = SmClassOptionalSubject::where('age_group_id', '=', $student_detail->age_group_id)->first();
+            $records = StudentRecord::where('member_id' ,$student_detail->id)->where('church_year_id',getAcademicId())->get();
+            $student_optional_subject = SmOptionalSubjectAssign::where('member_id', $student_detail->id)
                 ->where('session_id', '=', $student_detail->session_id)
                 ->first();
 
-            $exams = SmExamSchedule::where('class_id', $student_detail->class_id)
-                ->where('section_id', $student_detail->section_id)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+            $exams = SmExamSchedule::where('age_group_id', $student_detail->age_group_id)
+                ->where('mgender_id', $student_detail->mgender_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             $grades = SmMarksGrade::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             $failgpa = SmMarksGrade::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->min('gpa');
 
             $failgpaname = SmMarksGrade::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->where('gpa', $failgpa)
                 ->first();
             $maxgpa = SmMarksGrade::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->max('gpa');
 
-            $exam_terms = SmExamType::where('school_id', Auth::user()->school_id)
-                ->where('academic_id', getAcademicId())
+            $exam_terms = SmExamType::where('church_id', Auth::user()->church_id)
+                ->where('church_year_id', getAcademicId())
                 ->get();
 
             if(moduleStatusCheck('University')){
-                $student_id = $student_detail->id;
-                $studentDetails = SmStudent::find($student_id);
-                $studentRecordDetails = StudentRecord::where('student_id',$student_id);
-                $studentRecords = StudentRecord::where('student_id',$student_id)->groupBy('un_academic_id')->get();
+                $member_id = $student_detail->id;
+                $studentDetails = SmStudent::find($member_id);
+                $studentRecordDetails = StudentRecord::where('member_id',$member_id);
+                $studentRecords = StudentRecord::where('member_id',$member_id)->groupBy('un_church_year_id')->get();
                 return view('backEnd.studentPanel.student_result', compact('student_detail', 'exams', 'grades', 'exam_terms', 'failgpaname', 'optional_subject_setup', 'student_optional_subject', 'maxgpa', 'records','studentDetails','studentRecordDetails','studentRecords'));
             }else{
                 return view('backEnd.studentPanel.student_result', compact('student_detail', 'exams', 'grades', 'exam_terms', 'failgpaname', 'optional_subject_setup', 'student_optional_subject', 'maxgpa', 'records'));
@@ -1151,47 +1151,47 @@ class SmStudentPanelController extends Controller
             $student_detail = Auth::user()->student;
             $records = studentRecords(null, $student_detail->id)->get();
             $smExam = SmExam::findOrFail($request->exam);
-            $assign_subjects = SmAssignSubject::where('class_id', $smExam->class_id)->where('section_id', $smExam->section_id)
-                ->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $assign_subjects = SmAssignSubject::where('age_group_id', $smExam->age_group_id)->where('mgender_id', $smExam->mgender_id)
+                ->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
             if ($assign_subjects->count() == 0) {
                 Toastr::error('No Subject Assigned.', 'Failed');
                 return redirect('student-exam-schedule');
             }
 
-            $exams = SmExam::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-            $class_id = $smExam->class_id;
-            $section_id = $smExam->section_id;
+            $exams = SmExam::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+            $age_group_id = $smExam->age_group_id;
+            $mgender_id = $smExam->mgender_id;
             $exam_id = $smExam->id;
             $exam_type_id = $smExam->exam_type_id;
-            $exam_periods = SmClassTime::where('type', 'exam')->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $exam_periods = SmClassTime::where('type', 'exam')->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
             $exam_schedule_subjects = "";
             $assign_subject_check = "";
 
-            $exam_routines = SmExamSchedule::where('class_id', $class_id)
-                ->where('section_id', $section_id)
+            $exam_routines = SmExamSchedule::where('age_group_id', $age_group_id)
+                ->where('mgender_id', $mgender_id)
                 ->where('exam_term_id', $exam_type_id)->orderBy('date', 'ASC')->get();
 
-            return view('backEnd.studentPanel.exam_schedule', compact('exams', 'assign_subjects', 'class_id', 'section_id', 'exam_id', 'exam_schedule_subjects', 'assign_subject_check','exam_type_id', 'exam_periods', 'exam_routines','records'));
+            return view('backEnd.studentPanel.exam_schedule', compact('exams', 'assign_subjects', 'age_group_id', 'mgender_id', 'exam_id', 'exam_schedule_subjects', 'assign_subject_check','exam_type_id', 'exam_periods', 'exam_routines','records'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
         }
     }
 
-    public function examRoutinePrint($class_id, $section_id, $exam_term_id)
+    public function examRoutinePrint($age_group_id, $mgender_id, $exam_term_id)
     {
 
         try {
 
             $exam_type_id = $exam_term_id;
             $exam_type = SmExamType::find($exam_type_id)->title;
-            $academic_id = SmExamType::find($exam_type_id)->academic_id;
-            $academic_year = SmAcademicYear::find($academic_id);
-            $class_name = SmClass::find($class_id)->class_name;
-            $section_name = SmSection::find($section_id)->section_name;
+            $church_year_id = SmExamType::find($exam_type_id)->church_year_id;
+            $church_year = SmAcademicYear::find($church_year_id);
+            $age_group_name = SmClass::find($age_group_id)->age_group_name;
+            $mgender_name = SmSection::find($mgender_id)->mgender_name;
 
-            $exam_schedules = SmExamSchedule::where('class_id', $class_id)->where('section_id', $section_id)
+            $exam_schedules = SmExamSchedule::where('age_group_id', $age_group_id)->where('mgender_id', $mgender_id)
                 ->where('exam_term_id', $exam_type_id)->orderBy('date', 'ASC')->get();
 
             $pdf = PDF::loadView(
@@ -1199,9 +1199,9 @@ class SmStudentPanelController extends Controller
                 [
                     'exam_schedules' => $exam_schedules,
                     'exam_type' => $exam_type,
-                    'class_name' => $class_name,
-                    'academic_year' => $academic_year,
-                    'section_name' => $section_name,
+                    'age_group_name' => $age_group_name,
+                    'church_year' => $church_year,
+                    'mgender_name' => $mgender_name,
 
                 ]
             )->setPaper('A4', 'landscape');
@@ -1218,17 +1218,17 @@ class SmStudentPanelController extends Controller
         try {
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $student_detail = SmStudent::where('user_id', $id)->first();
-                // $assign_subjects = SmAssignSubject::where('class_id', $student_detail->class_id)->where('section_id', $student_detail->section_id)->where('academic_id', getAcademicId())->where('school_id',Auth::user()->school_id)->get();
+                // $assign_subjects = SmAssignSubject::where('age_group_id', $student_detail->age_group_id)->where('mgender_id', $student_detail->mgender_id)->where('church_year_id', getAcademicId())->where('church_id',Auth::user()->church_id)->get();
                 $exam_schedule = DB::table('sm_exam_schedules')
-                    ->join('sm_students', 'sm_students.class_id', '=', 'sm_exam_schedules.class_id')
+                    ->join('sm_students', 'sm_students.age_group_id', '=', 'sm_exam_schedules.age_group_id')
                     ->join('sm_exam_types', 'sm_exam_types.id', '=', 'sm_exam_schedules.exam_term_id')
                     ->join('sm_exam_schedule_subjects', 'sm_exam_schedule_subjects.exam_schedule_id', '=', 'sm_exam_schedules.id')
                     ->join('sm_subjects', 'sm_subjects.id', '=', 'sm_exam_schedules.subject_id')
-                    ->select('sm_subjects.subject_name', 'sm_exam_schedule_subjects.start_time', 'sm_exam_schedule_subjects.end_time', 'sm_exam_schedule_subjects.date', 'sm_exam_schedule_subjects.room', 'sm_exam_schedules.class_id', 'sm_exam_schedules.section_id')
-                    //->where('sm_students.class_id', '=', 'sm_exam_schedules.class_id')
+                    ->select('sm_subjects.subject_name', 'sm_exam_schedule_subjects.start_time', 'sm_exam_schedule_subjects.end_time', 'sm_exam_schedule_subjects.date', 'sm_exam_schedule_subjects.room', 'sm_exam_schedules.age_group_id', 'sm_exam_schedules.mgender_id')
+                    //->where('sm_students.age_group_id', '=', 'sm_exam_schedules.age_group_id')
 
-                    ->where('sm_exam_schedules.section_id', '=', $student_detail->section_id)
-                    ->where('sm_exam_schedulesacademic_id', getAcademicId())->where('sm_exam_schedules.school_id', Auth::user()->school_id)->get();
+                    ->where('sm_exam_schedules.mgender_id', '=', $student_detail->mgender_id)
+                    ->where('sm_exam_scheduleschurch_year_id', getAcademicId())->where('sm_exam_schedules.church_id', Auth::user()->church_id)->get();
                 return ApiBaseMethod::sendResponse($exam_schedule, null);
             }
         } catch (\Exception $e) {
@@ -1242,9 +1242,9 @@ class SmStudentPanelController extends Controller
         try {
             $user = Auth::user();
             $student_detail = SmStudent::where('user_id', $user->id)->first();
-            $class = SmClass::find($student_detail->class_id);
-            $section = SmSection::find($student_detail->section_id);
-            $assign_subjects = SmExamScheduleSubject::where('exam_schedule_id', $id)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $class = SmClass::find($student_detail->age_group_id);
+            $section = SmSection::find($student_detail->mgender_id);
+            $assign_subjects = SmExamScheduleSubject::where('exam_schedule_id', $id)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
             return view('backEnd.examination.view_exam_schedule_modal', compact('class', 'section', 'assign_subjects'));
         } catch (\Exception $e) {
@@ -1256,10 +1256,10 @@ class SmStudentPanelController extends Controller
     public function studentMyAttendance()
     {
         try {
-            $academic_years = SmAcademicYear::where('active_status', '=', 1)->where('school_id', Auth::user()->school_id)->get();
+            $church_years = SmAcademicYear::where('active_status', '=', 1)->where('church_id', Auth::user()->church_id)->get();
 
-            // return $academic_years;
-            return view('backEnd.studentPanel.student_attendance', compact('academic_years'));
+            // return $church_years;
+            return view('backEnd.studentPanel.student_attendance', compact('church_years'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -1274,9 +1274,9 @@ class SmStudentPanelController extends Controller
             $student_detail = SmStudent::where('user_id', $user->id)->first();
            
             if(moduleStatusCheck('University')){
-                $records = StudentRecord::where('student_id',$student_detail->id)->where('un_academic_id',getAcademicId())->get();
+                $records = StudentRecord::where('member_id',$student_detail->id)->where('un_church_year_id',getAcademicId())->get();
             }else{
-                $records = StudentRecord::where('student_id',$student_detail->id)->where('academic_id',getAcademicId())->get();
+                $records = StudentRecord::where('member_id',$student_detail->id)->where('church_year_id',getAcademicId())->get();
             }
 
             if(moduleStatusCheck('University')){
@@ -1290,10 +1290,10 @@ class SmStudentPanelController extends Controller
         }
     }
 
-    public function studentHomeworkView($class_id, $section_id, $homework_id)
+    public function studentHomeworkView($age_group_id, $mgender_id, $homework_id)
     {
         try {
-            $homeworkDetails = SmHomework::where('class_id', '=', $class_id)->where('section_id', '=', $section_id)->where('id', '=', $homework_id)->first();
+            $homeworkDetails = SmHomework::where('age_group_id', '=', $age_group_id)->where('mgender_id', '=', $mgender_id)->where('id', '=', $homework_id)->first();
             return view('backEnd.studentPanel.studentHomeworkView', compact('homeworkDetails', 'homework_id'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -1340,7 +1340,7 @@ class SmStudentPanelController extends Controller
             //    return $homework_id;
             $user = Auth::user();
             $student_detail = SmStudent::where('user_id', $user->id)->first();
-            $contents = SmUploadHomeworkContent::where('student_id', $student_detail->id)->where('homework_id', $homework_id)->get();
+            $contents = SmUploadHomeworkContent::where('member_id', $student_detail->id)->where('homework_id', $homework_id)->get();
             foreach ($contents as $key => $content) {
                 if ($content->file != "") {
                     if (file_exists($content->file)) {
@@ -1387,10 +1387,10 @@ class SmStudentPanelController extends Controller
             $all_filename = json_encode($data);
             $content = new SmUploadHomeworkContent();
             $content->file = $all_filename;
-            $content->student_id = $student_detail->id;
+            $content->member_id = $student_detail->id;
             $content->homework_id = $request->id;
-            $content->school_id = Auth::user()->school_id;
-            $content->academic_id = getAcademicId();
+            $content->church_id = Auth::user()->church_id;
+            $content->church_year_id = getAcademicId();
             $content->save();
 
             $homework_info = SmHomeWork::find($request->id);
@@ -1401,8 +1401,8 @@ class SmStudentPanelController extends Controller
             $notification->role_id = $teacher_info->role_id;
             $notification->date = date('Y-m-d');
             $notification->message = Auth::user()->student->full_name . ' ' . app('translator')->get('homework.submitted_homework');
-            $notification->school_id = Auth::user()->school_id;
-            $notification->academic_id = getAcademicId();
+            $notification->church_id = Auth::user()->church_id;
+            $notification->church_year_id = getAcademicId();
             $notification->save();
 
             try {
@@ -1427,7 +1427,7 @@ class SmStudentPanelController extends Controller
     public function uploadContentView(Request $request, $id)
     {
         try {
-            $ContentDetails = SmTeacherUploadContent::where('id', $id)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->first();
+            $ContentDetails = SmTeacherUploadContent::where('id', $id)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->first();
             return view('backEnd.studentPanel.uploadContentDetails', compact('ContentDetails'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -1441,9 +1441,9 @@ class SmStudentPanelController extends Controller
             $user = Auth::user();
             $student_detail = SmStudent::where('user_id', $user->id)->first();
             if(moduleStatusCheck('University')){
-                $records = StudentRecord::where('student_id',$student_detail->id)->where('un_academic_id',getAcademicId())->get();
+                $records = StudentRecord::where('member_id',$student_detail->id)->where('un_church_year_id',getAcademicId())->get();
             }else{
-                $records = StudentRecord::where('student_id',$student_detail->id)->where('academic_id',getAcademicId())->get();
+                $records = StudentRecord::where('member_id',$student_detail->id)->where('church_year_id',getAcademicId())->get();
             }
 
             $uploadContents = SmTeacherUploadContent::where('course_id', '=', null)
@@ -1452,10 +1452,10 @@ class SmStudentPanelController extends Controller
             ->where('content_type', 'as')
                 ->where(function ($query) use ($student_detail) {
                     $query->where('available_for_all_classes', 1)
-                        ->orWhere([['class', $student_detail->class_id], ['section', $student_detail->section_id]]);
+                        ->orWhere([['class', $student_detail->age_group_id], ['section', $student_detail->mgender_id]]);
                 })
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
             if (Auth()->user()->role_id != 1) {
                 if ($user->role_id == 2) {
@@ -1467,9 +1467,9 @@ class SmStudentPanelController extends Controller
                 ->where('chapter_id', '=', null)
                 ->where('lesson_id', '=', null)
                 ->where('content_type', 'as')
-                ->where('class', $student_detail->class_id)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('class', $student_detail->age_group_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             return view('backEnd.studentPanel.assignmentList', compact('uploadContents', 'uploadContents2','records'));
@@ -1487,8 +1487,8 @@ class SmStudentPanelController extends Controller
                 ->select('content_title', 'upload_date', 'description', 'upload_file')
                 ->where(function ($query) use ($student_detail) {
                     $query->where('available_for_all_classes', 1)
-                        ->orWhere([['class', $student_detail->class_id], ['section', $student_detail->section_id]]);
-                })->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+                        ->orWhere([['class', $student_detail->age_group_id], ['section', $student_detail->mgender_id]]);
+                })->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -1512,8 +1512,8 @@ class SmStudentPanelController extends Controller
             $uploadContents = SmTeacherUploadContent::where('content_type', 'st')
                 ->where(function ($query) use ($student_detail) {
                     $query->where('available_for_all_classes', 1)
-                        ->orWhere([['class', $student_detail->class_id], ['section', $student_detail->section_id]]);
-                })->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+                        ->orWhere([['class', $student_detail->age_group_id], ['section', $student_detail->mgender_id]]);
+                })->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
             return view('backEnd.studentPanel.studyMetarialList', compact('uploadContents'));
         } catch (\Exception $e) {
@@ -1528,21 +1528,21 @@ class SmStudentPanelController extends Controller
             $user = Auth::user();
             $student_detail = SmStudent::where('user_id', $user->id)->first();
             if(moduleStatusCheck('University')){
-                $records = StudentRecord::where('student_id',$student_detail->id)->where('un_academic_id',getAcademicId())->get();
+                $records = StudentRecord::where('member_id',$student_detail->id)->where('un_church_year_id',getAcademicId())->get();
             }else{
-                $records = StudentRecord::where('student_id',$student_detail->id)->where('academic_id',getAcademicId())->get();
+                $records = StudentRecord::where('member_id',$student_detail->id)->where('church_year_id',getAcademicId())->get();
             }
 
             $uploadContents = SmTeacherUploadContent::where('content_type', 'sy')
                 ->where(function ($query) use ($student_detail) {
                     $query->where('available_for_all_classes', 1)
-                        ->orWhere([['class', $student_detail->class_id], ['section', $student_detail->section_id]]);
-                })->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+                        ->orWhere([['class', $student_detail->age_group_id], ['section', $student_detail->mgender_id]]);
+                })->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
             $uploadContents2 = SmTeacherUploadContent::where('content_type', 'ot')
-                ->where('class', $student_detail->class_id)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('class', $student_detail->age_group_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             return view('backEnd.studentPanel.studentSyllabus', compact('uploadContents', 'uploadContents2','records'));
@@ -1560,19 +1560,19 @@ class SmStudentPanelController extends Controller
             $uploadContents = SmTeacherUploadContent::where('content_type', 'ot')
                 ->where(function ($query) use ($student_detail) {
                     $query->where('available_for_all_classes', 1)
-                        ->orWhere([['class', $student_detail->class_id], ['section', $student_detail->section_id]]);
-                })->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+                        ->orWhere([['class', $student_detail->age_group_id], ['section', $student_detail->mgender_id]]);
+                })->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
             $uploadContents2 = SmTeacherUploadContent::where('content_type', 'ot')
-                ->where('class', $student_detail->class_id)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('class', $student_detail->age_group_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
                 
                 if(moduleStatusCheck('University')){
-                    $records = StudentRecord::where('student_id',$student_detail->id)->where('un_academic_id',getAcademicId())->get();
+                    $records = StudentRecord::where('member_id',$student_detail->id)->where('un_church_year_id',getAcademicId())->get();
                 }else{
-                    $records = StudentRecord::where('student_id',$student_detail->id)->where('academic_id',getAcademicId())->get();
+                    $records = StudentRecord::where('member_id',$student_detail->id)->where('church_year_id',getAcademicId())->get();
                 }
 
             return view('backEnd.studentPanel.othersDownload', compact('uploadContents', 'uploadContents2', 'records'));
@@ -1588,9 +1588,9 @@ class SmStudentPanelController extends Controller
         try {
             $user = Auth::user();
             if(moduleStatusCheck('University')){
-                $records = StudentRecord::where('student_id',$user->student->id)->where('un_academic_id',getAcademicId())->get();
+                $records = StudentRecord::where('member_id',$user->student->id)->where('un_church_year_id',getAcademicId())->get();
             }else{
-                $records = StudentRecord::where('student_id',$user->student->id)->where('academic_id',getAcademicId())->get();
+                $records = StudentRecord::where('member_id',$user->student->id)->where('church_year_id',getAcademicId())->get();
             }
             return view('backEnd.studentPanel.student_subject', compact('records'));
         } catch (\Exception $e) {
@@ -1608,9 +1608,9 @@ class SmStudentPanelController extends Controller
                 ->leftjoin('sm_subjects', 'sm_subjects.id', '=', 'sm_assign_subjects.subject_id')
                 ->leftjoin('sm_staffs', 'sm_staffs.id', '=', 'sm_assign_subjects.teacher_id')
                 ->select('sm_subjects.subject_name', 'sm_subjects.subject_code', 'sm_subjects.subject_type', 'sm_staffs.full_name as teacher_name')
-                ->where('sm_assign_subjects.class_id', '=', $student->class_id)
-                ->where('sm_assign_subjects.section_id', '=', $student->section_id)
-                ->where('sm_assign_subjects.academic_id', getAcademicId())->where('sm_assign_subjects.school_id', Auth::user()->school_id)->get();
+                ->where('sm_assign_subjects.age_group_id', '=', $student->age_group_id)
+                ->where('sm_assign_subjects.mgender_id', '=', $student->mgender_id)
+                ->where('sm_assign_subjects.church_year_id', getAcademicId())->where('sm_assign_subjects.church_id', Auth::user()->church_id)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
                 $data['student_subjects'] = $assignSubjects->toArray();
@@ -1629,12 +1629,12 @@ class SmStudentPanelController extends Controller
             $user = Auth::user();
             $student_detail = SmStudent::where('user_id', $user->id)->first();
 
-            // $routes = SmAssignVehicle::where('active_status', 1)->where('school_id',Auth::user()->school_id)->get();
+            // $routes = SmAssignVehicle::where('active_status', 1)->where('church_id',Auth::user()->church_id)->get();
             $routes = SmAssignVehicle::join('sm_vehicles', 'sm_assign_vehicles.vehicle_id', 'sm_vehicles.id')
                 ->join('sm_students', 'sm_vehicles.id', 'sm_students.vechile_id')
                 ->where('sm_assign_vehicles.active_status', 1)
                 ->where('sm_students.user_id', Auth::user()->id)
-                ->where('sm_assign_vehicles.school_id', Auth::user()->school_id)
+                ->where('sm_assign_vehicles.church_id', Auth::user()->church_id)
                 ->get();
 
             return view('backEnd.studentPanel.student_transport', compact('routes', 'student_detail'));
@@ -1661,14 +1661,14 @@ class SmStudentPanelController extends Controller
         try {
             $user = Auth::user();
             $student_detail = SmStudent::where('user_id', $user->id)->first();
-            // $room_lists = SmRoomList::where('school_id',Auth::user()->school_id)->get();
+            // $room_lists = SmRoomList::where('church_id',Auth::user()->church_id)->get();
             // $room_lists = SmRoomList::join('sm_students','sm_students.room_id','sm_room_lists.id')
-            // ->where('sm_room_lists.active_status', 1)->where('sm_room_lists.id', $student_detail->room_id)->where('sm_room_lists.school_id',Auth::user()->school_id)->get();
-            $room_lists = SmRoomList::where('active_status', 1)->where('id', $student_detail->room_id)->where('school_id', Auth::user()->school_id)->get();
+            // ->where('sm_room_lists.active_status', 1)->where('sm_room_lists.id', $student_detail->room_id)->where('sm_room_lists.church_id',Auth::user()->church_id)->get();
+            $room_lists = SmRoomList::where('active_status', 1)->where('id', $student_detail->room_id)->where('church_id', Auth::user()->church_id)->get();
 
             $room_lists = $room_lists->groupBy('dormitory_id');
-            $room_types = SmRoomType::where('active_status', 1)->where('school_id', Auth::user()->school_id)->get();
-            $dormitory_lists = SmDormitoryList::where('active_status', 1)->where('school_id', Auth::user()->school_id)->get();
+            $room_types = SmRoomType::where('active_status', 1)->where('church_id', Auth::user()->church_id)->get();
+            $dormitory_lists = SmDormitoryList::where('active_status', 1)->where('church_id', Auth::user()->church_id)->get();
             return view('backEnd.studentPanel.student_dormitory', compact('room_lists', 'room_types', 'dormitory_lists', 'student_detail'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -1681,7 +1681,7 @@ class SmStudentPanelController extends Controller
         try {
             $books = SmBook::where('active_status', 1)
                 ->orderBy('id', 'DESC')
-                ->where('school_id', Auth::user()->school_id)->get();
+                ->where('church_id', Auth::user()->church_id)->get();
             return view('backEnd.studentPanel.studentBookList', compact('books'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -1694,8 +1694,8 @@ class SmStudentPanelController extends Controller
         try {
             $user = Auth::user();
             $student_detail = SmStudent::where('user_id', $user->id)->first();
-            // $books = SmBook::select('id', 'book_title')->where('active_status', 1)->where('school_id',Auth::user()->school_id)->get();
-            // $subjects = SmSubject::select('id', 'subject_name')->where('active_status', 1)->where('school_id',Auth::user()->school_id)->get();
+            // $books = SmBook::select('id', 'book_title')->where('active_status', 1)->where('church_id',Auth::user()->church_id)->get();
+            // $subjects = SmSubject::select('id', 'subject_name')->where('active_status', 1)->where('church_id',Auth::user()->church_id)->get();
             $library_member = SmLibraryMember::where('member_type', 2)->where('student_staff_id', $student_detail->user_id)->first();
             if (empty($library_member)) {
                 Toastr::error('You are not library member ! Please contact with librarian', 'Failed');
@@ -1706,7 +1706,7 @@ class SmStudentPanelController extends Controller
                 ->leftjoin('sm_books', 'sm_books.id', 'sm_book_issues.book_id')
                 ->leftjoin('library_subjects', 'library_subjects.id', 'sm_books.book_subject_id')
                 ->where('sm_book_issues.issue_status', 'I')
-                ->where('sm_book_issues.school_id', Auth::user()->school_id)
+                ->where('sm_book_issues.church_id', Auth::user()->church_id)
                 ->get();
 
             return view('backEnd.studentPanel.studentBookIssue', compact('issueBooks'));
@@ -1722,7 +1722,7 @@ class SmStudentPanelController extends Controller
             $data = [];
             $allNotices = SmNoticeBoard::where('active_status', 1)->where('inform_to', 'LIKE', '%2%')
                 ->orderBy('id', 'DESC')
-                ->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+                ->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data['allNotices'] = $allNotices->toArray();
                 return ApiBaseMethod::sendResponse($data, null);
@@ -1756,15 +1756,15 @@ class SmStudentPanelController extends Controller
                 ->leftjoin('sm_staffs', 'sm_staffs.id', '=', 'sm_assign_subjects.teacher_id')
                 //->select('sm_subjects.subject_name', 'sm_subjects.subject_code', 'sm_subjects.subject_type', 'sm_staffs.full_name')
                 ->select('sm_staffs.full_name', 'sm_staffs.email', 'sm_staffs.mobile')
-                ->where('sm_assign_subjects.class_id', '=', $student->class_id)
-                ->where('sm_assign_subjects.section_id', '=', $student->section_id)
-                ->where('sm_assign_subjects.school_id', Auth::user()->school_id)->get();
+                ->where('sm_assign_subjects.age_group_id', '=', $student->age_group_id)
+                ->where('sm_assign_subjects.mgender_id', '=', $student->mgender_id)
+                ->where('sm_assign_subjects.church_id', Auth::user()->church_id)->get();
 
             $class_teacher = DB::table('sm_class_teachers')
                 ->join('sm_assign_class_teachers', 'sm_assign_class_teachers.id', '=', 'sm_class_teachers.assign_class_teacher_id')
                 ->join('sm_staffs', 'sm_class_teachers.teacher_id', '=', 'sm_staffs.id')
-                ->where('sm_assign_class_teachers.class_id', '=', $student->class_id)
-                ->where('sm_assign_class_teachers.section_id', '=', $student->section_id)
+                ->where('sm_assign_class_teachers.age_group_id', '=', $student->age_group_id)
+                ->where('sm_assign_class_teachers.mgender_id', '=', $student->mgender_id)
                 ->where('sm_assign_class_teachers.active_status', '=', 1)
                 ->select('full_name')
                 ->first();
@@ -1795,7 +1795,7 @@ class SmStudentPanelController extends Controller
             $issueBooks = DB::table('sm_book_issues')
                 ->leftjoin('sm_books', 'sm_books.id', '=', 'sm_book_issues.book_id')
                 ->where('sm_book_issues.member_id', '=', $student->user_id)
-                ->where('sm_book_issues.school_id', Auth::user()->school_id)->get();
+                ->where('sm_book_issues.church_id', Auth::user()->church_id)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
                 $data['issueBooks'] = $issueBooks->toArray();
@@ -1813,7 +1813,7 @@ class SmStudentPanelController extends Controller
                 $studentDormitory = DB::table('sm_room_lists')
                     ->join('sm_dormitory_lists', 'sm_room_lists.dormitory_id', '=', 'sm_dormitory_lists.id')
                     ->join('sm_room_types', 'sm_room_lists.room_type_id', '=', 'sm_room_types.id')
-                    ->select('sm_dormitory_lists.dormitory_name', 'sm_room_lists.name as room_number', 'sm_room_lists.number_of_bed', 'sm_room_lists.cost_per_bed', 'sm_room_lists.active_status')->where('sm_room_lists.school_id', Auth::user()->school_id)->get();
+                    ->select('sm_dormitory_lists.dormitory_name', 'sm_room_lists.name as room_number', 'sm_room_lists.number_of_bed', 'sm_room_lists.cost_per_bed', 'sm_room_lists.active_status')->where('sm_room_lists.church_id', Auth::user()->church_id)->get();
 
                 return ApiBaseMethod::sendResponse($studentDormitory, null);
             }
@@ -1826,14 +1826,14 @@ class SmStudentPanelController extends Controller
     {
         try {
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
-                //$timelines = SmStudentTimeline::where('staff_student_id', $id)->first();
+                //$timelines = SmStudentTimeline::where('staff_member_id', $id)->first();
                 $timelines = DB::table('sm_student_timelines')
-                    ->leftjoin('sm_students', 'sm_students.id', '=', 'sm_student_timelines.staff_student_id')
+                    ->leftjoin('sm_students', 'sm_students.id', '=', 'sm_student_timelines.staff_member_id')
                     ->where('sm_student_timelines.type', '=', 'stu')
                     ->where('sm_student_timelines.active_status', '=', 1)
                     ->where('sm_students.user_id', '=', $id)
                     ->select('title', 'date', 'description', 'file', 'sm_student_timelines.active_status')
-                    ->where('sm_student_timelines.academic_id', getAcademicId())->where('sm_students.school_id', Auth::user()->school_id)->get();
+                    ->where('sm_student_timelines.church_year_id', getAcademicId())->where('sm_students.church_id', Auth::user()->church_id)->get();
                 return ApiBaseMethod::sendResponse($timelines, null);
             }
         } catch (\Exception $e) {
@@ -1850,11 +1850,11 @@ class SmStudentPanelController extends Controller
                 // return  $student;
                 $exam_List = DB::table('sm_exam_types')
                     ->join('sm_exams', 'sm_exams.exam_type_id', '=', 'sm_exam_types.id')
-                    ->where('sm_exams.class_id', '=', $student->class_id)
-                    ->where('sm_exams.section_id', '=', $student->section_id)
+                    ->where('sm_exams.age_group_id', '=', $student->age_group_id)
+                    ->where('sm_exams.mgender_id', '=', $student->mgender_id)
                     ->distinct()
                     ->select('sm_exam_types.id as exam_id', 'sm_exam_types.title as exam_name')
-                    ->where('sm_exam_types.school_id', Auth::user()->school_id)->get();
+                    ->where('sm_exam_types.church_id', Auth::user()->church_id)->get();
                 return ApiBaseMethod::sendResponse($exam_List, null);
             }
         } catch (\Exception $e) {
@@ -1874,12 +1874,12 @@ class SmStudentPanelController extends Controller
                     ->join('sm_class_rooms', 'sm_class_rooms.id', '=', 'sm_exam_schedules.room_id')
                     ->join('sm_class_times', 'sm_class_times.id', '=', 'sm_exam_schedules.exam_period_id')
                     ->where('sm_exam_schedules.exam_term_id', '=', $exam_id)
-                    ->where('sm_exam_schedules.school_id', '=', $student->school_id)
-                    ->where('sm_exam_schedules.class_id', '=', $student->class_id)
-                    ->where('sm_exam_schedules.section_id', '=', $student->section_id)
+                    ->where('sm_exam_schedules.church_id', '=', $student->church_id)
+                    ->where('sm_exam_schedules.age_group_id', '=', $student->age_group_id)
+                    ->where('sm_exam_schedules.mgender_id', '=', $student->mgender_id)
                     ->where('sm_exam_schedules.active_status', '=', 1)
                     ->select('sm_exam_types.id', 'sm_exam_types.title as exam_name', 'sm_subjects.subject_name', 'date', 'sm_class_rooms.room_no', 'sm_class_times.start_time', 'sm_class_times.end_time')
-                    ->where('sm_exam_schedules.school_id', Auth::user()->school_id)->get();
+                    ->where('sm_exam_schedules.church_id', Auth::user()->church_id)->get();
                 return ApiBaseMethod::sendResponse($exam_schedule, null);
             }
         } catch (\Exception $e) {
@@ -1899,12 +1899,12 @@ class SmStudentPanelController extends Controller
                     ->join('sm_exams', 'sm_exams.id', '=', 'sm_exam_types.id')
                     ->join('sm_subjects', 'sm_subjects.id', '=', 'sm_result_stores.subject_id')
                     ->where('sm_exams.id', '=', $exam_id)
-                    ->where('sm_result_stores.school_id', '=', $student->school_id)
-                    ->where('sm_result_stores.class_id', '=', $student->class_id)
-                    ->where('sm_result_stores.section_id', '=', $student->section_id)
-                    ->where('sm_result_stores.student_id', '=', $student->id)
+                    ->where('sm_result_stores.church_id', '=', $student->church_id)
+                    ->where('sm_result_stores.age_group_id', '=', $student->age_group_id)
+                    ->where('sm_result_stores.mgender_id', '=', $student->mgender_id)
+                    ->where('sm_result_stores.member_id', '=', $student->id)
                     ->select('sm_exams.id', 'sm_exam_types.title as exam_name', 'sm_subjects.subject_name', 'sm_result_stores.total_marks as obtained_marks', 'sm_exams.exam_mark as total_marks', 'sm_result_stores.total_gpa_grade as grade')
-                    ->where('sm_exams.school_id', Auth::user()->school_id)->get();
+                    ->where('sm_exams.church_id', Auth::user()->church_id)->get();
 
                 $data['exam_result'] = $exam_result->toArray();
                 $data['pass_marks'] = 0;
@@ -1946,14 +1946,14 @@ class SmStudentPanelController extends Controller
             $user = Auth::user();
 
             if ($user) {
-                $my_leaves = SmLeaveDefine::where('role_id', $user->role_id)->where('user_id', $user->id)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-                $apply_leaves = SmLeaveRequest::where('staff_id', $user->id)->where('role_id', $user->role_id)->where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+                $my_leaves = SmLeaveDefine::where('role_id', $user->role_id)->where('user_id', $user->id)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+                $apply_leaves = SmLeaveRequest::where('staff_id', $user->id)->where('role_id', $user->role_id)->where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
                 // return $apply_leaves;
-                $leave_types = SmLeaveDefine::where('role_id', $user->role_id)->where('user_id', $user->id)->where('active_status', 1)->where('school_id', Auth::user()->school_id)->get();
+                $leave_types = SmLeaveDefine::where('role_id', $user->role_id)->where('user_id', $user->id)->where('active_status', 1)->where('church_id', Auth::user()->church_id)->get();
             } else {
-                $my_leaves = SmLeaveDefine::where('role_id', $request->role_id)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-                $apply_leaves = SmLeaveRequest::where('role_id', $request->role_id)->where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-                $leave_types = SmLeaveDefine::where('role_id', $request->role_id)->where('active_status', 1)->where('school_id', Auth::user()->school_id)->get();
+                $my_leaves = SmLeaveDefine::where('role_id', $request->role_id)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+                $apply_leaves = SmLeaveRequest::where('role_id', $request->role_id)->where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+                $leave_types = SmLeaveDefine::where('role_id', $request->role_id)->where('active_status', 1)->where('church_id', Auth::user()->church_id)->get();
             }
 
             return view('backEnd.student_leave.apply_leave', compact('apply_leaves', 'leave_types', 'my_leaves'));
@@ -2009,8 +2009,8 @@ class SmStudentPanelController extends Controller
             $apply_leave->approve_status = 'P';
             $apply_leave->reason = $request->reason;
             $apply_leave->file = $fileName;
-            $apply_leave->academic_id = getAcademicId();
-            $apply_leave->school_id = Auth::user()->school_id;
+            $apply_leave->church_year_id = getAcademicId();
+            $apply_leave->church_id = Auth::user()->church_id;
             $result = $apply_leave->save();
 
             if ($result) {
@@ -2029,10 +2029,10 @@ class SmStudentPanelController extends Controller
     public function pendingLeave(Request $request)
     {
         try {
-            $apply_leaves = SmLeaveRequest::with('leaveDefine', 'student')->where([['active_status', 1], ['approve_status', 'P']])->where('academic_id', getAcademicId())->where('school_id',Auth::user()->school_id)->get();
-            $leave_types = SmLeaveType::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id',Auth::user()->school_id)->get();
+            $apply_leaves = SmLeaveRequest::with('leaveDefine', 'student')->where([['active_status', 1], ['approve_status', 'P']])->where('church_year_id', getAcademicId())->where('church_id',Auth::user()->church_id)->get();
+            $leave_types = SmLeaveType::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id',Auth::user()->church_id)->get();
             $roles = InfixRole::where('id', 2)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
             $pendingRequest = SmLeaveRequest::where('sm_leave_requests.active_status', 1)
                 ->select('sm_leave_requests.id', 'full_name', 'apply_date', 'leave_from', 'leave_to', 'reason', 'file', 'sm_leave_types.type', 'approve_status')
@@ -2040,7 +2040,7 @@ class SmStudentPanelController extends Controller
                 ->join('sm_staffs', 'sm_leave_requests.staff_id', '=', 'sm_staffs.id')
                 ->leftjoin('sm_leave_types', 'sm_leave_requests.type_id', '=', 'sm_leave_types.id')
                 ->where('sm_leave_requests.approve_status', '=', 'P')
-                ->where('sm_leave_requests.academic_id', getAcademicId())->where('sm_leave_requests.school_id', Auth::user()->school_id)->get();
+                ->where('sm_leave_requests.church_year_id', getAcademicId())->where('sm_leave_requests.church_id', Auth::user()->church_id)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
                 $data['pending_request'] = $pendingRequest->toArray();
@@ -2058,13 +2058,13 @@ class SmStudentPanelController extends Controller
         try {
             $user = Auth::user();
             if ($user) {
-                $my_leaves = SmLeaveDefine::where('role_id', $user->role_id)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-                $apply_leaves = SmLeaveRequest::where('role_id', $user->role_id)->where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-                $leave_types = SmLeaveDefine::where('role_id', $user->role_id)->where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+                $my_leaves = SmLeaveDefine::where('role_id', $user->role_id)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+                $apply_leaves = SmLeaveRequest::where('role_id', $user->role_id)->where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+                $leave_types = SmLeaveDefine::where('role_id', $user->role_id)->where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
             } else {
-                $my_leaves = SmLeaveDefine::where('role_id', $request->role_id)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-                $apply_leaves = SmLeaveRequest::where('role_id', $request->role_id)->where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-                $leave_types = SmLeaveDefine::where('role_id', $request->role_id)->where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+                $my_leaves = SmLeaveDefine::where('role_id', $request->role_id)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+                $apply_leaves = SmLeaveRequest::where('role_id', $request->role_id)->where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+                $leave_types = SmLeaveDefine::where('role_id', $request->role_id)->where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
             }
             $apply_leave = SmLeaveRequest::find($id);
             return view('backEnd.student_leave.apply_leave', compact('apply_leave', 'apply_leaves', 'leave_types', 'my_leaves'));
@@ -2194,14 +2194,14 @@ class SmStudentPanelController extends Controller
             return redirect()->back();
         }
     }
-    public function downloadHomeWorkContent($id, $student_id)
+    public function downloadHomeWorkContent($id, $member_id)
     {
         try {
-            $student = SmStudent::where('id', $student_id)->first();
+            $student = SmStudent::where('id', $member_id)->first();
             if (Auth::user()->role_id == 2) {
-                $student = SmStudent::where('user_id', $student_id)->first();
+                $student = SmStudent::where('user_id', $member_id)->first();
             }
-            $hwContent = SmUploadHomeworkContent::where('student_id', $student->id)->where('homework_id', $id)->get();
+            $hwContent = SmUploadHomeworkContent::where('member_id', $student->id)->where('homework_id', $id)->get();
             // $file_array= json_decode($hwContent->file, true);
             // $files = $file_array;
             // $zipname = 'Homework_Content_'.time().'.zip';

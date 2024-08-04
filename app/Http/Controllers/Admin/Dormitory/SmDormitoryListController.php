@@ -38,11 +38,11 @@ class SmDormitoryListController extends Controller
             $dormitory_list->address = $request->address;
             $dormitory_list->intake = $request->intake;
             $dormitory_list->description = $request->description;
-            $dormitory_list->school_id = Auth::user()->school_id;
+            $dormitory_list->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $dormitory_list->un_academic_id = getAcademicId();
+                $dormitory_list->un_church_year_id = getAcademicId();
             }else{
-                $dormitory_list->academic_id = getAcademicId();
+                $dormitory_list->church_year_id = getAcademicId();
             }
             $dormitory_list->save();
 
@@ -76,7 +76,7 @@ class SmDormitoryListController extends Controller
             $dormitory_list->intake = $request->intake;
             $dormitory_list->description = $request->description;
             if(moduleStatusCheck('University')){
-                $dormitory_list->un_academic_id = getAcademicId();
+                $dormitory_list->un_church_year_id = getAcademicId();
             }
             $dormitory_list->save();
 

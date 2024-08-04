@@ -122,7 +122,7 @@ $total_balance = 0;
                                                 @if(moduleStatusCheck('University'))
                                                     {{@$student->unDepartment->name}}
                                                 @else 
-                                                     {{@$student->class->class_name .'('.@$student->section->section_name.')';}}
+                                                     {{@$student->class->age_group_name .'('.@$student->section->mgender_name.')';}}
                                                 
                                                 @endif 
                                             </div>
@@ -133,12 +133,12 @@ $total_balance = 0;
                                     <div class="row">
                                         <div class="col-lg-6 col-md-6">
                                             <div class="value text-left">
-                                                @lang('student.admission_no')
+                                                @lang('student.registration_no')
                                             </div>
                                         </div>
                                         <div class="col-lg-6 col-md-6">
                                             <div class="name">
-                                                {{@$student->studentDetail->admission_no}}
+                                                {{@$student->studentDetail->registration_no}}
                                             </div>
                                         </div>
                                     </div>
@@ -166,7 +166,7 @@ $total_balance = 0;
     </div>
 </section>
 <input type="hidden" id="url" value="{{URL::to('/')}}">
-<input type="hidden" id="student_id" value="{{@$student->id}}">
+<input type="hidden" id="member_id" value="{{@$student->id}}">
 <section class="">
     <div class="container-fluid p-0">
         <div class="row">
@@ -820,10 +820,10 @@ $total_balance = 0;
                             $grand_total += $fees_assigned->feesGroupMaster->amount;
                             $discount_amount = $fees_assigned->applied_discount;
                             $total_discount += $discount_amount;
-                            $student_id = $fees_assigned->student_id;
-                            $paid = App\SmFeesAssign::discountSum($fees_assigned->student_id, $fees_assigned->feesGroupMaster->feesTypes->id, 'amount' ,$fees_assigned->record_id);
+                            $member_id = $fees_assigned->member_id;
+                            $paid = App\SmFeesAssign::discountSum($fees_assigned->member_id, $fees_assigned->feesGroupMaster->feesTypes->id, 'amount' ,$fees_assigned->record_id);
                             $total_grand_paid += $paid;
-                            $fine = App\SmFeesAssign::discountSum($fees_assigned->student_id, $fees_assigned->feesGroupMaster->feesTypes->id, 'fine', $fees_assigned->record_id);
+                            $fine = App\SmFeesAssign::discountSum($fees_assigned->member_id, $fees_assigned->feesGroupMaster->feesTypes->id, 'fine', $fees_assigned->record_id);
                             $total_fine += $fine;
                             $total_paid = $discount_amount + $paid;
                         @endphp
@@ -879,7 +879,7 @@ $total_balance = 0;
                                             @if($balance_amount != 0) 
                                                 <a class="dropdown-item modalLink" data-modal-size="modal-lg" 
                                                 title="{{@$fees_assigned->feesGroupMaster->feesGroups->name.': '. $fees_assigned->feesGroupMaster->feesTypes->name}}"  
-                                                href="{{route('fees-generate-modal', [$balance_amount, $fees_assigned->student_id, $fees_assigned->feesGroupMaster->fees_type_id,$fees_assigned->fees_master_id,$fees_assigned->id,$fees_assigned->record_id])}}" >@lang('fees.add_fees') </a>
+                                                href="{{route('fees-generate-modal', [$balance_amount, $fees_assigned->member_id, $fees_assigned->feesGroupMaster->fees_type_id,$fees_assigned->fees_master_id,$fees_assigned->id,$fees_assigned->record_id])}}" >@lang('fees.add_fees') </a>
                                             @else
                                                 <a class="dropdown-item"  target="_blank">Payment Done</a>
                                             @endif
@@ -889,7 +889,7 @@ $total_balance = 0;
                             </td>
                         </tr>
                             @php
-                                $payments = App\SmFeesAssign::feesPayment($fees_assigned->feesGroupMaster->feesTypes->id, $fees_assigned->student_id, $fees_assigned->record_id);
+                                $payments = App\SmFeesAssign::feesPayment($fees_assigned->feesGroupMaster->feesTypes->id, $fees_assigned->member_id, $fees_assigned->record_id);
                                 $i = 0;
                             @endphp
                             @foreach($payments as $payment)

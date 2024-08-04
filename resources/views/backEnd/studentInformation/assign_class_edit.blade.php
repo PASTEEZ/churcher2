@@ -1,5 +1,5 @@
 {{ Form::open(['class' => 'form-horizontal', 'files' => true, 'route' => 'student.record.update', 'method' => 'POST']) }}
-<input type="hidden" name="student_id" value="{{ $student_detail->id }}">
+<input type="hidden" name="member_id" value="{{ $student_detail->id }}">
 <input type="hidden" name="record_id" value="{{ $record->id }}">
 <div class="row">
     @php  $setting = app('school_info');   @endphp
@@ -13,9 +13,9 @@
     <div class="col-lg-12">
         <div class="input-effect" id="academic-div">
             <select class="niceSelect1 w-100 bb form-control{{ $errors->has('session') ? ' is-invalid' : '' }}"
-                name="session" id="edit_academic_year">
-                <option data-display="@lang('common.academic_year') *" value="">
-                    @lang('common.academic_year') *</option>
+                name="session" id="edit_church_year">
+                <option data-display="@lang('common.church_year') *" value="">
+                    @lang('common.church_year') *</option>
                 @foreach ($sessions as $session)
                     <option value="{{ $session->id }}" {{ $record->session_id == $session->id ? 'selected' : '' }}>
                         {{ $session->year }}[{{ $session->title }}]</option>
@@ -35,8 +35,8 @@
                 name="class" id="edit_classSelectStudent">
                 <option data-display="@lang('common.class') *" value="">@lang('common.class') *</option>
                 @foreach ($record->classes as $class)
-                    <option value="{{ $class->id }}" {{ $record->class_id == $class->id ? 'selected' : '' }}>
-                        {{ $class->class_name }}
+                    <option value="{{ $class->id }}" {{ $record->age_group_id == $class->id ? 'selected' : '' }}>
+                        {{ $class->age_group_name }}
                     </option>
                 @endforeach
 
@@ -58,11 +58,11 @@
                 name="section" id="edit_sectionSelectStudent">
                 <option data-display="@lang('common.section') *" value="">@lang('common.section') *
                 </option>
-                @if ($record->session_id && $record->class_id)
+                @if ($record->session_id && $record->age_group_id)
                     @foreach ($record->class->classSection as $section)
                         <option value="{{ $section->sectionName->id }}"
-                            {{ $record->section_id == $section->sectionName->id ? 'selected' : '' }}>
-                            {{ $section->sectionName->section_name }}</option>
+                            {{ $record->mgender_id == $section->sectionName->id ? 'selected' : '' }}>
+                            {{ $section->sectionName->mgender_name }}</option>
                     @endforeach
                 @endif
             </select>
@@ -129,7 +129,7 @@
         $(".niceSelect1").niceSelect();
     }
     // $(document).ready(function() {
-        $(document).on("change",'#edit_academic_year',function() {
+        $(document).on("change",'#edit_church_year',function() {
             // alert($(this).val());
                 var url = $("#url").val();
                 var i = 0;
@@ -161,7 +161,7 @@
                                 $("#edit_classSelectStudent").append(
                                     $("<option>", {
                                         value: className.id,
-                                        text: className.class_name,
+                                        text: className.age_group_name,
                                     })
                                 );
                             });
@@ -214,7 +214,7 @@
                                 $("#edit_sectionSelectStudent").append(
                                     $("<option>", {
                                         value: section.id,
-                                        text: section.section_name,
+                                        text: section.mgender_name,
                                     })
                                 );
                                 

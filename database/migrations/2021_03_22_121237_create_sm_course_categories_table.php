@@ -17,7 +17,7 @@ class CreateSmCourseCategoriesTable extends Migration
             $table->increments('id');
             $table->string('category_name')->nullable();
             $table->text('category_image')->nullable();
-            $table->unsignedBigInteger('school_id')->default(1)->unsigned();
+            $table->unsignedBigInteger('church_id')->default(1)->unsigned();
             $table->timestamps();
         });
     }

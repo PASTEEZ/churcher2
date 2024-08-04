@@ -44,11 +44,11 @@ class SmVisitorController extends Controller
             $visitor->out_time = $request->out_time;
             $visitor->file = $fileName;
             $visitor->created_by=auth()->user()->id;
-            $visitor->school_id = Auth::user()->school_id;
+            $visitor->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $visitor->un_academic_id = getAcademicId();
+                $visitor->un_church_year_id = getAcademicId();
             }else{
-                $visitor->academic_id = getAcademicId();
+                $visitor->church_year_id = getAcademicId();
             }
             $visitor->save();
 
@@ -87,7 +87,7 @@ class SmVisitorController extends Controller
             $visitor->out_time = $request->out_time;          
             $visitor->file = fileUpdate($visitor->file,$request->file,$destination);   
             if(moduleStatusCheck('University')){
-                $visitor->un_academic_id = getAcademicId();
+                $visitor->un_church_year_id = getAcademicId();
             }  
             $visitor->save();
 

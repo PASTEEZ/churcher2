@@ -10,6 +10,6 @@ class SmOnlineExamMark extends Model
     use HasFactory;
     public function studentInfo()
     {
-        return $this->belongsTo('App\SmStudent', 'student_id', 'id');
+        return $this->belongsTo('App\SmStudent', 'member_id', 'id');
     }
 }

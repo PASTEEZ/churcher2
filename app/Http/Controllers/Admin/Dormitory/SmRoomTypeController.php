@@ -34,11 +34,11 @@ class SmRoomTypeController extends Controller
             $room_type = new SmRoomType();
             $room_type->type = $request->type;
             $room_type->description = $request->description;
-            $room_type->school_id = Auth::user()->school_id;
+            $room_type->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $room_type->un_academic_id = getAcademicId();
+                $room_type->un_church_year_id = getAcademicId();
             }else{
-                $room_type->academic_id = getAcademicId();
+                $room_type->church_year_id = getAcademicId();
             }
             $room_type->save();
 
@@ -54,7 +54,7 @@ class SmRoomTypeController extends Controller
     {
         try {
             $room_type = SmRoomType::find($id);
-            $room_types = SmRoomType::where('school_id', Auth::user()->school_id)->get();
+            $room_types = SmRoomType::where('church_id', Auth::user()->church_id)->get();
             return view('backEnd.dormitory.room_type', compact('room_types', 'room_type'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -69,7 +69,7 @@ class SmRoomTypeController extends Controller
             $room_type->type = $request->type;
             $room_type->description = $request->description;
             if(moduleStatusCheck('University')){
-                $room_type->un_academic_id = getAcademicId();
+                $room_type->un_church_year_id = getAcademicId();
             }
             $room_type->save();
 

@@ -29,11 +29,11 @@ class SmStudentAjaxController extends Controller
     public function ajaxSectionSibling(Request $request)
     {
         try {
-            $sectionIds = SmClassSection::where('class_id', '=', $request->id)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $sectionIds = SmClassSection::where('age_group_id', '=', $request->id)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
             $sibling_sections = [];
             foreach ($sectionIds as $sectionId) {
-                $sibling_sections[] = SmSection::find($sectionId->section_id);
+                $sibling_sections[] = SmSection::find($sectionId->mgender_id);
             }
             return response()->json([$sibling_sections]);
         } catch (\Exception $e) {
@@ -74,13 +74,13 @@ class SmStudentAjaxController extends Controller
     public function ajaxGetVehicle(Request $request)
     {
         try {
-            $school_id = 1;
+            $church_id = 1;
             if(Auth::check()){
-                $school_id = Auth::user()->school_id;
+                $church_id = Auth::user()->church_id;
             } else if(app()->bound('school')){
-                $school_id = app('school')->id;
+                $church_id = app('school')->id;
             }
-            $vehicle_detail = SmAssignVehicle::where('route_id', $request->id)->where('school_id', $school_id)->first();
+            $vehicle_detail = SmAssignVehicle::where('route_id', $request->id)->where('church_id', $church_id)->first();
             $vehicles = explode(',', $vehicle_detail->vehicle_id);
             $vehicle_info = SmVehicle::whereIn('id', $vehicles)->get();
            
@@ -103,14 +103,14 @@ class SmStudentAjaxController extends Controller
     public function ajaxRoomDetails(Request $request)
     {
         try {
-            $school_id = 1;
+            $church_id = 1;
             if(Auth::check()){
-                $school_id = Auth::user()->school_id;
+                $church_id = Auth::user()->church_id;
             } else if(app()->bound('school')){
-                $school_id = app('school')->id;
+                $church_id = app('school')->id;
             }
 
-            $room_details = SmRoomList::where('dormitory_id', '=', $request->id)->where('school_id', $school_id)->get();
+            $room_details = SmRoomList::where('dormitory_id', '=', $request->id)->where('church_id', $church_id)->get();
             $rest_rooms = [];
             foreach ($room_details as $room_detail) {
                 $count_room = SmStudent::where('room_id', $room_detail->id)->count();
@@ -128,9 +128,9 @@ class SmStudentAjaxController extends Controller
     {
 
         try {
-            $max_roll = SmStudent::where('class_id', $request->class)
-                        ->where('section_id', $request->section)
-                        ->where('school_id', Auth::user()->school_id)
+            $max_roll = SmStudent::where('age_group_id', $request->class)
+                        ->where('mgender_id', $request->section)
+                        ->where('church_id', Auth::user()->church_id)
                         ->max('roll_no');
             // return $max_roll;
             if ($max_roll == "") {
@@ -147,10 +147,10 @@ class SmStudentAjaxController extends Controller
     public function ajaxGetRollIdCheck(Request $request)
     {
         try {
-            $roll_no = SmStudent::where('class_id', $request->class)
-                    ->where('section_id', $request->section)
+            $roll_no = SmStudent::where('age_group_id', $request->class)
+                    ->where('mgender_id', $request->section)
                     ->where('roll_no', $request->roll_no)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->get();
             return response()->json($roll_no);
         } catch (\Exception $e) {
@@ -167,9 +167,9 @@ class SmStudentAjaxController extends Controller
                 $subjects->where('teacher_id', Auth::user()->staff->id) ;
             }
             if ($request->id !="all_class") {
-                $subjects->where('class_id', '=', $request->id);
+                $subjects->where('age_group_id', '=', $request->id);
             } else {
-                $subjects->groupBy('class_id');
+                $subjects->groupBy('age_group_id');
             }
             $subjectIds=$subjects->groupBy('subject_id')->get()->pluck(['subject_id'])->toArray();
             
@@ -185,22 +185,22 @@ class SmStudentAjaxController extends Controller
     
     public function ajaxStudentPromoteSection(Request $request)
     {
-        // $sectionIds = SmClassSection::where('class_id', '=', $request->id)->get();
+        // $sectionIds = SmClassSection::where('age_group_id', '=', $request->id)->get();
         if (teacherAccess()) {
-            $sectionIds = SmAssignSubject::where('class_id', '=', $request->id)
+            $sectionIds = SmAssignSubject::where('age_group_id', '=', $request->id)
             ->where('teacher_id', Auth::user()->staff->id)
-            ->where('school_id', Auth::user()->school_id)
-            ->where('academic_id', getAcademicId())
-            ->groupby(['class_id','section_id'])
+            ->where('church_id', Auth::user()->church_id)
+            ->where('church_year_id', getAcademicId())
+            ->groupby(['age_group_id','mgender_id'])
             ->withoutGlobalScope(StatusAcademicSchoolScope::class)
             ->get();
         } else {
-            $sectionIds = SmClassSection::where('class_id', '=', $request->id)
-            ->where('school_id', Auth::user()->school_id)->withoutGlobalScope(StatusAcademicSchoolScope::class)->get();
+            $sectionIds = SmClassSection::where('age_group_id', '=', $request->id)
+            ->where('church_id', Auth::user()->church_id)->withoutGlobalScope(StatusAcademicSchoolScope::class)->get();
         }
         $promote_sections = [];
         foreach ($sectionIds as $sectionId) {
-            $promote_sections[] = SmSection::where('id', $sectionId->section_id)->withoutGlobalScope(StatusAcademicSchoolScope::class)->first(['id','section_name']);
+            $promote_sections[] = SmSection::where('id', $sectionId->mgender_id)->withoutGlobalScope(StatusAcademicSchoolScope::class)->first(['id','mgender_name']);
         }
 
         return response()->json([$promote_sections]);
@@ -217,8 +217,8 @@ class SmStudentAjaxController extends Controller
     public function ajaxSelectStudent(Request $request)
     {
        
-        $student_ids = SmStudentReportController::classSectionStudent($request);
-        $students = SmStudent::whereIn('id', $student_ids)->where('active_status', 1)->where('school_id', Auth::user()->school_id)->get()->map(function($student){
+        $member_ids = SmStudentReportController::classSectionStudent($request);
+        $students = SmStudent::whereIn('id', $member_ids)->where('active_status', 1)->where('church_id', Auth::user()->church_id)->get()->map(function($student){
             return [
                 'id' => $student->id,
                 'full_name' => $student->first_name. ' '. $student->last_name,
@@ -229,8 +229,8 @@ class SmStudentAjaxController extends Controller
     }
     public function ajaxPromoteYear(Request $request)
     {
-        $classes = SmClass::where('academic_id', $request->year)
-                ->where('school_id',Auth::user()->school_id)
+        $classes = SmClass::where('church_year_id', $request->year)
+                ->where('church_id',Auth::user()->church_id)
                 ->withOutGlobalScope(StatusAcademicSchoolScope::class)
                 ->get();
 
@@ -242,25 +242,25 @@ class SmStudentAjaxController extends Controller
         try {
             $class = SmClass::withOutGlobalScope(StatusAcademicSchoolScope::class)->find($request->id);
             if (teacherAccess()) {
-                $sectionIds = SmAssignSubject::withOutGlobalScope(StatusAcademicSchoolScope::class)->where('class_id', '=', $request->id)
+                $sectionIds = SmAssignSubject::withOutGlobalScope(StatusAcademicSchoolScope::class)->where('age_group_id', '=', $request->id)
                             ->where('teacher_id',Auth::user()->staff->id)               
-                            ->where('school_id', Auth::user()->school_id)
+                            ->where('church_id', Auth::user()->church_id)
                             ->when($class, function ($q) use ($class) {
-                                $q->where('academic_id', $class->academic_id);
+                                $q->where('church_year_id', $class->church_year_id);
                             })
-                            ->groupby(['class_id','section_id'])
+                            ->groupby(['age_group_id','mgender_id'])
                             ->get();
             } else {
-                $sectionIds = SmClassSection::withOutGlobalScope(StatusAcademicSchoolScope::class)->where('class_id', '=', $request->id) 
+                $sectionIds = SmClassSection::withOutGlobalScope(StatusAcademicSchoolScope::class)->where('age_group_id', '=', $request->id) 
                                     ->when($class, function ($q) use ($class) {
-                                        $q->where('academic_id', $class->academic_id);
+                                        $q->where('church_year_id', $class->church_year_id);
                                     })              
-                            ->where('school_id', Auth::user()->school_id)
+                            ->where('church_id', Auth::user()->church_id)
                             ->get();
             }
             $sections = [];
             foreach ($sectionIds as $sectionId) {
-                $section = SmSection::withOutGlobalScope(StatusAcademicSchoolScope::class)->where('id',$sectionId->section_id)->select('id','section_name')->first();
+                $section = SmSection::withOutGlobalScope(StatusAcademicSchoolScope::class)->where('id',$sectionId->mgender_id)->select('id','mgender_name')->first();
                 if($section){
                     $sections[] = $section;
                 }
@@ -275,22 +275,22 @@ class SmStudentAjaxController extends Controller
     public function ajaxSubjectSection(Request $request)
     {
         if (teacherAccess()) {
-            $sectionIds = SmAssignSubject::where('class_id', '=', $request->class_id)
+            $sectionIds = SmAssignSubject::where('age_group_id', '=', $request->age_group_id)
             ->where('subject_id', '=', $request->subject_id)
             ->where('teacher_id',Auth::user()->staff->id)               
-            ->where('school_id', Auth::user()->school_id)
-            ->groupby(['class_id','section_id'])
+            ->where('church_id', Auth::user()->church_id)
+            ->groupby(['age_group_id','mgender_id'])
             ->get();
         } else {
-            $sectionIds = SmAssignSubject::where('class_id', '=', $request->class_id)
+            $sectionIds = SmAssignSubject::where('age_group_id', '=', $request->age_group_id)
             ->where('subject_id', '=', $request->subject_id)               
-            ->where('school_id', Auth::user()->school_id)
-            ->groupby(['class_id','section_id'])
+            ->where('church_id', Auth::user()->church_id)
+            ->groupby(['age_group_id','mgender_id'])
             ->get();
         }
         $promote_sections = [];
         foreach ($sectionIds as $sectionId) {
-            $promote_sections[] = SmSection::where('id',$sectionId->section_id)->first(['id','section_name']);
+            $promote_sections[] = SmSection::where('id',$sectionId->mgender_id)->first(['id','mgender_name']);
         }
 
         return response()->json([$promote_sections]);

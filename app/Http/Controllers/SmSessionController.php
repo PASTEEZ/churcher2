@@ -26,7 +26,7 @@ class SmSessionController extends Controller
     {
 
         try{
-            $sessions = SmSession::where('active_status', 1)->where('school_id',Auth::user()->school_id)->get();
+            $sessions = SmSession::where('active_status', 1)->where('church_id',Auth::user()->church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($sessions, null);
@@ -58,7 +58,7 @@ class SmSessionController extends Controller
         try{
             $session = new SmSession();
             $session->session = $request->session;
-            $session->school_id = Auth::user()->school_id;
+            $session->church_id = Auth::user()->church_id;
             $result = $session->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -92,7 +92,7 @@ class SmSessionController extends Controller
     {
         try{
             $session = SmSession::find($id);
-            $sessions = SmSession::where('school_id',Auth::user()->school_id)->get();
+            $sessions = SmSession::where('church_id',Auth::user()->church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];

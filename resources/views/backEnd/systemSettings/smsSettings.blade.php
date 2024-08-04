@@ -361,7 +361,7 @@
                                     <div class="row">
                                         <div class="col-lg-12 ">
                                             <div class="input-effect">
-                                                <select class="niceSelect w-100 bb form-control{{ $errors->has('academic_year') ? ' is-invalid' : '' }}"
+                                                <select class="niceSelect w-100 bb form-control{{ $errors->has('church_year') ? ' is-invalid' : '' }}"
                                                     name="textlocal_type">
                                                     <option  value="com" {{isset($sms_services)? (@$sms_services['TextLocal']->type == 'com' ? 'selected':'') : 'selected'}}> com </option>
                                                     <option  value="in" {{isset($sms_services)? (@$sms_services['TextLocal']->type == 'in' ? 'selected':'') : ''}}> in </option>

@@ -257,7 +257,7 @@ final class ResourceOperations
             'cubrid_get',
             'cubrid_get_autocommit',
             'cubrid_get_charset',
-            'cubrid_get_class_name',
+            'cubrid_get_age_group_name',
             'cubrid_get_db_parameter',
             'cubrid_get_query_timeout',
             'cubrid_get_server_info',

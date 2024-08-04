@@ -26,11 +26,11 @@ class MenuManageController extends Controller
     {
        
         $user = Auth::user();
-        $assign_module_ids = InfixPermissionAssign::where('school_id', Auth::user()->school_id)
+        $assign_module_ids = InfixPermissionAssign::where('church_id', Auth::user()->church_id)
             ->where('role_id', $user->role_id)
             ->get('module_id');
 
-        $permission_all_ids = InfixPermissionAssign::where('school_id', Auth::user()->school_id)
+        $permission_all_ids = InfixPermissionAssign::where('church_id', Auth::user()->church_id)
             ->where('role_id', $user->role_id)->get();
 
         $permission_ids = [];
@@ -280,7 +280,7 @@ class MenuManageController extends Controller
                 }
                 $sidebar->role_id = auth()->user()->role_id;
                 $sidebar->user_id = auth()->user()->id;
-                $sidebar->school_id = auth()->user()->school_id;
+                $sidebar->church_id = auth()->user()->church_id;
                 $sidebar->active_status = $status;
                 $sidebar->parent_position_no = $key;
                 $sidebar->child_position_no = $key;

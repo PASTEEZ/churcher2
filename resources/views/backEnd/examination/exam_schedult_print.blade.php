@@ -20,20 +20,20 @@
 @php 
     $generalSetting= generalSetting();
     if(!empty($generalSetting)){
-        $school_name =$generalSetting->school_name;
+        $church_name =$generalSetting->church_name;
         $site_title =$generalSetting->site_title;
-        $school_code =$generalSetting->school_code;
+        $church_code =$generalSetting->church_code;
         $address =$generalSetting->address;
         $phone =$generalSetting->phone; 
     } 
     $exam=App\SmExamType::find(@$exam_id);
-    $class=App\SmClass::find(@$class_id);
+    $class=App\SmClass::find(@$age_group_id);
     
-    if($section_id==0){
+    if($mgender_id==0){
         $section='All Sections';
     }else{
-        $section=App\SmSection::find(@$section_id);
-        $section=$section->section_name;
+        $section=App\SmSection::find(@$mgender_id);
+        $section=$section->mgender_name;
     }
 @endphp
 <div class="container-fluid" id="pdf">
@@ -44,15 +44,15 @@
                                 <img class="logo-img" src="{{ url('/')}}/{{@generalSetting()->logo }}" alt=""> 
                             </td>
                             <td> 
-                                <h3 style="font-size:22px !important" class="text-white"> {{isset(generalSetting()->school_name)?generalSetting()->school_name:'Infix School Management ERP'}} </h3> 
+                                <h3 style="font-size:22px !important" class="text-white"> {{isset(generalSetting()->church_name)?generalSetting()->church_name:'Infix School Management ERP'}} </h3> 
                                 <p style="font-size:18px !important" class="text-white mb-0"> {{isset(generalSetting()->address)?generalSetting()->address:'Infix School Address'}} </p> 
                                 <p style="font-size:15px !important" class="text-white mb-0"> @lang('exam.exam_schedule') </p> 
                           </td>
                             <td style="text-aligh:center"> 
                                 <p style="font-size:14px !important; border-bottom:1px solid gray;" align="left" class="text-white">@lang('exam.exam') :  {{ @$exam->title}} </p> 
-                                <p style="font-size:14px !important; border-bottom:1px solid gray" align="left" class="text-white">@lang('common.class'): {{ @$class->class_name}} </p> 
+                                <p style="font-size:14px !important; border-bottom:1px solid gray" align="left" class="text-white">@lang('common.class'): {{ @$class->age_group_name}} </p> 
                                 <p style="font-size:14px !important; border-bottom:1px solid gray" align="left" class="text-white">@lang('common.section'): {{ @$section}} </p> 
-                                <p style="font-size:14px !important; border-bottom:1px solid gray" align="left" class="text-white">@lang('common.academic_year'): {{ @$academic_year->title}} ({{ @$academic_year->year}}) </p> 
+                                <p style="font-size:14px !important; border-bottom:1px solid gray" align="left" class="text-white">@lang('common.church_year'): {{ @$church_year->title}} ({{ @$church_year->year}}) </p> 
                                
                           </td>
                         </tr>
@@ -64,7 +64,7 @@
                          
                         <tr>
                             <th width="10%">@lang('common.subject')</th>
-                            @if($section_id==0)
+                            @if($mgender_id==0)
                             <th width="10%">@lang('common.class_Sec')</th>
                             @endif
                             @foreach($exam_periods as $exam_period)
@@ -74,13 +74,13 @@
                         @foreach($assign_subjects as $assign_subject)
                         <tr>
                             <td >{{ @$assign_subject->subject !=""?@$assign_subject->subject->subject_name:""}}</td>
-                            @if($section_id==0)
-                            <td>{{$assign_subject->class->class_name.'('.$assign_subject->section->section_name.')'}}</td>
+                            @if($mgender_id==0)
+                            <td>{{$assign_subject->class->age_group_name.'('.$assign_subject->section->mgender_name.')'}}</td>
                             @endif
                             @foreach($exam_periods as $exam_period)
                                 @php
-                                $assigned_routine = App\SmExamSchedule::assignedRoutine($class_id, $assign_subject->section_id, $exam_id, $assign_subject->subject_id, $exam_period->id);
-                                    // $assigned_routine = getScheduleSubject($class_id, $section_id, $exam_id, $exam_period->id, $exam_date);
+                                $assigned_routine = App\SmExamSchedule::assignedRoutine($age_group_id, $assign_subject->mgender_id, $exam_id, $assign_subject->subject_id, $exam_period->id);
+                                    // $assigned_routine = getScheduleSubject($age_group_id, $mgender_id, $exam_id, $exam_period->id, $exam_date);
                                 @endphp
                             <td nowrap>
                                 @if(@$assigned_routine == "")

@@ -45,11 +45,11 @@ class SmLessonController extends Controller
                     'un_session_id' => 'required',
                     'un_faculty_id' => 'sometimes|nullable',
                     'un_department_id' => 'required',
-                    'un_academic_id' => 'required',
+                    'un_church_year_id' => 'required',
                     'un_semester_id' => 'required',
                     'un_semester_label_id' => 'required',
                     'un_subject_id' => 'required',
-                    'un_section_id' => 'sometimes|nullable',
+                    'un_mgender_id' => 'sometimes|nullable',
                 ],
             );
         } else {
@@ -63,32 +63,32 @@ class SmLessonController extends Controller
 
         DB::beginTransaction();
         try {
-            $sections = SmAssignSubject::where('class_id', $request->class)
+            $sections = SmAssignSubject::where('age_group_id', $request->class)
                 ->where('subject_id', $request->subject)
                 ->get();
             if (moduleStatusCheck('University')) {
-                if ($request->un_section_id) {
+                if ($request->un_mgender_id) {
                     $sections = UnSubject::where('un_department_id', $request->un_department_id)
-                    ->where('school_id', auth()->user()->school_id)
+                    ->where('church_id', auth()->user()->church_id)
                     ->get();
                 } else {
-                    $sections = $request->un_section_id;
+                    $sections = $request->un_mgender_id;
                 }
             }
             foreach ($sections as $section) {
                 foreach ($request->lesson as $lesson) {
                     $smLesson = new SmLesson;
                     $smLesson->lesson_title = $lesson;
-                    $smLesson->class_id = $request->class;
+                    $smLesson->age_group_id = $request->class;
                     $smLesson->subject_id = $request->subject;
-                    $smLesson->section_id = $section->section_id;
-                    $smLesson->school_id = auth()->user()->school_id;
+                    $smLesson->mgender_id = $section->mgender_id;
+                    $smLesson->church_id = auth()->user()->church_id;
                     $smLesson->user_id = auth()->user()->id;
                     if (moduleStatusCheck('University')) {
                         $common = App::make(UnCommonRepositoryInterface::class);
                         $common->storeUniversityData($smLesson, $request);
                     }else{
-                        $smLesson->academic_id = getAcademicId();
+                        $smLesson->church_year_id = getAcademicId();
                     }
                     $smLesson->save();
                 }
@@ -103,12 +103,12 @@ class SmLessonController extends Controller
         }
     }
 
-    public function editLesson($class_id, $section_id, $subject_id)
+    public function editLesson($age_group_id, $mgender_id, $subject_id)
     {
         try {
             $data = $this->loadLesson();
-            $data['lesson'] = SmLesson::where([['class_id', $class_id], ['section_id', $section_id], ['subject_id', $subject_id]])->first();
-            $data['lesson_detail'] = SmLesson::where([['class_id', $class_id], ['section_id', $section_id], ['subject_id', $subject_id]])->get();
+            $data['lesson'] = SmLesson::where([['age_group_id', $age_group_id], ['mgender_id', $mgender_id], ['subject_id', $subject_id]])->first();
+            $data['lesson_detail'] = SmLesson::where([['age_group_id', $age_group_id], ['mgender_id', $mgender_id], ['subject_id', $subject_id]])->get();
             return view('lesson::lesson.edit_lesson', $data);
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -116,7 +116,7 @@ class SmLessonController extends Controller
         }
     }
 
-    public function editLessonForUniVersity($session_id, $faculty_id = null, $department_id, $academic_id, $semester_id, $semester_label_id, $subject_id)
+    public function editLessonForUniVersity($session_id, $faculty_id = null, $department_id, $church_year_id, $semester_id, $semester_label_id, $subject_id)
     {
         try {
             $data = $this->loadLesson();
@@ -126,8 +126,8 @@ class SmLessonController extends Controller
                 $query->where('un_faculty_id', $faculty_id);
             })->when($department_id, function ($query) use ($department_id) {
                 $query->where('un_department_id', $department_id);
-            })->when($academic_id, function ($query) use ($academic_id) {
-                $query->where('un_academic_id', $academic_id);
+            })->when($church_year_id, function ($query) use ($church_year_id) {
+                $query->where('un_church_year_id', $church_year_id);
             })->when($semester_id, function ($query) use ($semester_id) {
                 $query->where('un_semester_id', $semester_id);
             })->when($semester_label_id, function ($query) use ($semester_label_id) {
@@ -154,8 +154,8 @@ class SmLessonController extends Controller
                 $lessonDetail = SmLesson::find($request->lesson_detail_id[$i]);
                 $lesson_title = $request->lesson[$i];
                 $lessonDetail->lesson_title = $lesson_title;
-                $lessonDetail->school_id = Auth::user()->school_id;
-                $lessonDetail->academic_id = getAcademicId();
+                $lessonDetail->church_id = Auth::user()->church_id;
+                $lessonDetail->church_year_id = getAcademicId();
                 $lessonDetail->user_id = Auth::user()->id;
                 $lessonDetail->save();
             }
@@ -170,7 +170,7 @@ class SmLessonController extends Controller
     public function deleteLesson($id)
     {
         $lesson = SmLesson::find($id);
-        $lesson_detail = SmLesson::where([['class_id', $lesson->class_id], ['section_id', $lesson->section_id], ['subject_id', $lesson->subject_id]])->get();
+        $lesson_detail = SmLesson::where([['age_group_id', $lesson->age_group_id], ['mgender_id', $lesson->mgender_id], ['subject_id', $lesson->subject_id]])->get();
         foreach ($lesson_detail as $lesson_data) {
             SmLesson::destroy($lesson_data->id);
         }
@@ -240,33 +240,33 @@ class SmLessonController extends Controller
         ->where('teacher_id', $teacher_info->id)->get();
 
         $data['subjects'] = SmSubject::where('active_status', 1)
-        ->where('academic_id', getAcademicId())
-        ->where('school_id', Auth::user()->school_id)->get();
+        ->where('church_year_id', getAcademicId())
+        ->where('church_id', Auth::user()->church_id)->get();
         $data['sections'] = SmSection::where('active_status', 1)
-        ->where('academic_id', getAcademicId())
-        ->where('school_id', Auth::user()->school_id)->get();
+        ->where('church_year_id', getAcademicId())
+        ->where('church_id', Auth::user()->church_id)->get();
 
         if (Auth::user()->role_id == 4) {
             $data['lessons'] = SmLesson::with('lessons', 'class', 'section', 'subject')
             ->whereIn('subject_id', $subjects)->statusCheck()
-            ->groupBy(['class_id', 'section_id', 'subject_id'])->get();
+            ->groupBy(['age_group_id', 'mgender_id', 'subject_id'])->get();
         } else {
             $data['lessons'] = SmLesson::with('lessons', 'class', 'section', 'subject')
                 ->statusCheck()
-                ->groupBy(['class_id', 'section_id', 'subject_id'])->get();
+                ->groupBy(['age_group_id', 'mgender_id', 'subject_id'])->get();
         }
         if (!teacherAccess()) {
             $data['classes'] = SmClass::where('active_status', 1)
-            ->where('academic_id', getAcademicId())
-            ->where('school_id', Auth::user()->school_id)->get();
+            ->where('church_year_id', getAcademicId())
+            ->where('church_id', Auth::user()->church_id)->get();
         } else {
             $data['classes'] = SmAssignSubject::where('teacher_id', $teacher_info->id)
-                ->join('sm_classes', 'sm_classes.id', 'sm_assign_subjects.class_id')
-                ->where('sm_assign_subjects.academic_id', getAcademicId())
+                ->join('sm_classes', 'sm_classes.id', 'sm_assign_subjects.age_group_id')
+                ->where('sm_assign_subjects.church_year_id', getAcademicId())
                 ->where('sm_assign_subjects.active_status', 1)
-                ->groupBy('class_id')
-                ->where('sm_assign_subjects.school_id', Auth::user()->school_id)
-                ->select('sm_classes.id', 'class_name')
+                ->groupBy('age_group_id')
+                ->where('sm_assign_subjects.church_id', Auth::user()->church_id)
+                ->select('sm_classes.id', 'age_group_name')
                 ->get();
         }
         return $data;

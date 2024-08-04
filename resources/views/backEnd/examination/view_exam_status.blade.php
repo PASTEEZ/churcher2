@@ -39,14 +39,14 @@
                         <tbody>
                            @foreach($view_exams as $view_exam)
                             <tr>
-                                <td width="85%">{{$view_exam->class !=""?$view_exam->class->class_name:" "}} ({{$view_exam->section !=""?$view_exam->section->section_name:""}})</td>
+                                <td width="85%">{{$view_exam->class !=""?$view_exam->class->age_group_name:" "}} ({{$view_exam->section !=""?$view_exam->section->mgender_name:""}})</td>
                                 <td width="15%">
                                     <div class="dropdown">
                                         <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
                                                 @lang('common.select')
                                         </button>
                                         <div class="dropdown-menu dropdown-menu-right">
-                                            <a class="dropdown-item modalLink" title="Exam {{$exam->name}}" data-modal-size="large-modal" href="{{route('view_exam_schedule', [$view_exam->class_id,$view_exam->section_id, $view_exam->id])}}">@lang('common.view')</a>
+                                            <a class="dropdown-item modalLink" title="Exam {{$exam->name}}" data-modal-size="large-modal" href="{{route('view_exam_schedule', [$view_exam->age_group_id,$view_exam->mgender_id, $view_exam->id])}}">@lang('common.view')</a>
                                         </div>
                                     </div>
                                 </td>

@@ -13,7 +13,7 @@ class SmSubjectAttendance extends Model
 
     public function student()
     {
-        return $this->belongsTo('App\SmStudent', 'student_id', 'id');
+        return $this->belongsTo('App\SmStudent', 'member_id', 'id');
     }
 
     public function recordDetail(){
@@ -28,7 +28,7 @@ class SmSubjectAttendance extends Model
         $subjectLists = [];
         $subjects = SmSubjectAttendance::where('attendance_type','A')
                     ->where('student_record_id', $recored_id)
-                    ->where('school_id', $schoolId)
+                    ->where('church_id', $schoolId)
                     ->where('attendance_date', date('Y-m-d'))
                     ->where('notify', 0)
                     ->get();

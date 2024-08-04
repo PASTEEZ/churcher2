@@ -40,7 +40,7 @@
                             <div class="row">
                                 <div class="col-lg-3">
                                     <select class="niceSelect w-100 bb form-control{{ $errors->has('current_session') ? ' is-invalid' : '' }}" name="current_session" id="current_session">
-                                        <option data-display="@lang('student.select_academic_year') *" value="">@lang('student.select_academic_year') *</option>
+                                        <option data-display="@lang('student.select_church_year') *" value="">@lang('student.select_church_year') *</option>
                                         @foreach($sessions as $session)
                                         <option value="{{$session->id}}" {{isset($current_session)? ($current_session == $session->id? 'selected':''):''}}>{{$session->year}}  [{{@$session->title}}]  </option>
                                         @endforeach
@@ -56,7 +56,7 @@
                                     <select class="niceSelect w-100 bb form-control{{ $errors->has('current_class') ? ' is-invalid' : '' }}" id="c_select_class" name="current_class">
                                         <option data-display="@lang('student.select_current_class') *" value="">@lang('student.select_current_class') *</option>
                                         @foreach($classes as $class)
-                                        <option value="{{$class->id}}" {{isset($current_class)? ($current_class == $class->id? 'selected':''):''}}>{{$class->class_name}}</option>
+                                        <option value="{{$class->id}}" {{isset($current_class)? ($current_class == $class->id? 'selected':''):''}}>{{$class->age_group_name}}</option>
                                         @endforeach
                                     </select>
                                      @if ($errors->has('current_class'))
@@ -151,7 +151,7 @@
                                     </tr>
                                     @endif
                                     <tr>
-                                        <th>@lang('student.admission_no')</th>
+                                        <th>@lang('student.registration_no')</th>
                                         <th>@lang('common.class')/@lang('common.section')</th>
                                         <th>@lang('common.name')</th>
                                         <th>@lang('student.current_result')</th>
@@ -169,20 +169,20 @@
                                        
                                   @endphp
                                     <tr>
-                                        <td>{{$student['admission_no']}}</td>
-                                        <input type="hidden" name="id[]" value="{{$student['student_id']}}">
+                                        <td>{{$student['registration_no']}}</td>
+                                        <input type="hidden" name="id[]" value="{{$student['member_id']}}">
                                       
-                                            <td>{{@$student['class_name']}}</td>
+                                            <td>{{@$student['age_group_name']}}</td>
                                        
                                        
                                         <td>{{@$student['full_name']}}</td>
                                      
                                         <td>
                                             @if (@$student['result']!='F')
-                                            <input type="text" hidden name="result[{{$student['student_id']}}]" value="P">
+                                            <input type="text" hidden name="result[{{$student['member_id']}}]" value="P">
                                                  @lang('student.pass')
                                             @else             
-                                                <input type="text" hidden name="result[{{$student['student_id']}}]" value="F">                              
+                                                <input type="text" hidden name="result[{{$student['member_id']}}]" value="F">                              
                                                 @lang('student.fail') 
                                             
                                             @endif         
@@ -195,7 +195,7 @@
                                             <div class="row mt-30">
                                                 <div class="col-lg-3">
                                                     <select class="niceSelect w-100 bb promote_session form-control{{ $errors->has('promote_session') ? ' is-invalid' : '' }}" name="promote_session" id="promote_session">
-                                                        <option data-display="@lang('common.select_academic_year') *" value="">@lang('common.select_academic_year') *</option>
+                                                        <option data-display="@lang('common.select_church_year') *" value="">@lang('common.select_church_year') *</option>
                                                         @foreach($Upsessions as $session)
                                                             {{-- {{$session->year}} --}}
                                                         @if (@$current_session != $session->id)

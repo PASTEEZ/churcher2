@@ -15,30 +15,30 @@ class ApiSmStudentController extends Controller
     public function searchStudent(Request $request)
     {
 
-        $class_id = $request->class;
-        $section_id = $request->section;
+        $age_group_id = $request->class;
+        $mgender_id = $request->section;
         $name = $request->name;
         $roll_no = $request->roll_no;
 
-        $student_ids = StudentRecord::when($request->academic_year, function ($query) use ($request) {
-            $query->where('academic_id', $request->academic_year);
+        $member_ids = StudentRecord::when($request->church_year, function ($query) use ($request) {
+            $query->where('church_year_id', $request->church_year);
         })
             ->when($request->class, function ($query) use ($request) {
-                $query->where('class_id', $request->class);
+                $query->where('age_group_id', $request->class);
             })
             ->when($request->section, function ($query) use ($request) {
-                $query->where('section_id', $request->section);
+                $query->where('mgender_id', $request->section);
             })
             ->when($request->roll_no, function ($query) use ($request) {
                 $query->where('roll_no', $request->roll_no);
             })
-            ->when(!$request->academic_year, function ($query) use ($request) {
-                $query->where('academic_id', getAcademicId());
+            ->when(!$request->church_year, function ($query) use ($request) {
+                $query->where('church_year_id', getAcademicId());
             })
-            ->where('school_id', auth()->user()->school_id)
-            ->groupBy('student_id')->pluck('student_id')->toArray();
+            ->where('church_id', auth()->user()->church_id)
+            ->groupBy('member_id')->pluck('member_id')->toArray();
 
-        $studentDetails = SmStudent::whereIn('id', $student_ids)
+        $studentDetails = SmStudent::whereIn('id', $member_ids)
             ->when($request->name, function ($q) use ($request) {
                 $q->where('full_name', 'like', '%' . $request->name . '%');
             })->get();
@@ -49,16 +49,16 @@ class ApiSmStudentController extends Controller
 
             $class_sec = [];
             foreach ($student->studentRecords as $classSec) {
-                $class_sec[] = $classSec->class->class_name . '(' . $classSec->section->section_name . '), ';
+                $class_sec[] = $classSec->class->age_group_name . '(' . $classSec->section->mgender_name . '), ';
             }
             if ($request->class) {
                 $sections = [];
-                $class = $student->recordClass ? $student->recordClass->class->class_name : '';
+                $class = $student->recordClass ? $student->recordClass->class->age_group_name : '';
                 if ($request->section) {
-                    $sections = $student->recordSection != "" ? $student->recordSection->section->section_name : "";
+                    $sections = $student->recordSection != "" ? $student->recordSection->section->mgender_name : "";
                 } else {
                     foreach ($student->recordClasses as $section) {
-                        $sections[] = $section->section->section_name;
+                        $sections[] = $section->section->mgender_name;
                     }
 
                 }
@@ -87,27 +87,27 @@ class ApiSmStudentController extends Controller
             return ApiBaseMethod::sendResponse($data, $msg);
         }
     }
-    public function saas_searchStudent(Request $request, $school_id)
+    public function saas_searchStudent(Request $request, $church_id)
     {
-        $student_ids = StudentRecord::when($request->academic_year, function ($query) use ($request) {
-            $query->where('academic_id', $request->academic_year);
+        $member_ids = StudentRecord::when($request->church_year, function ($query) use ($request) {
+            $query->where('church_year_id', $request->church_year);
         })
             ->when($request->class, function ($query) use ($request) {
-                $query->where('class_id', $request->class);
+                $query->where('age_group_id', $request->class);
             })
             ->when($request->section, function ($query) use ($request) {
-                $query->where('section_id', $request->section);
+                $query->where('mgender_id', $request->section);
             })
             ->when($request->roll_no, function ($query) use ($request) {
                 $query->where('roll_no', $request->roll_no);
             })
-            ->when(!$request->academic_year, function ($query) use ($request) {
-                $query->where('academic_id', getAcademicId());
+            ->when(!$request->church_year, function ($query) use ($request) {
+                $query->where('church_year_id', getAcademicId());
             })
-            ->where('school_id', $school_id)
-            ->groupBy('student_id')->pluck('student_id')->toArray();
+            ->where('church_id', $church_id)
+            ->groupBy('member_id')->pluck('member_id')->toArray();
 
-        $studentDetails = SmStudent::whereIn('id', $student_ids)
+        $studentDetails = SmStudent::whereIn('id', $member_ids)
             ->when($request->name, function ($q) use ($request) {
                 $q->where('full_name', 'like', '%' . $request->name . '%');
             })->withOutGlobalScope(SchoolScope::class)->get();
@@ -116,16 +116,16 @@ class ApiSmStudentController extends Controller
         foreach ($studentDetails as $student) {
             $class_sec = [];
             foreach ($student->studentRecords as $classSec) {
-                $class_sec[] = $classSec->class->class_name . '(' . $classSec->section->section_name . '), ';
+                $class_sec[] = $classSec->class->age_group_name . '(' . $classSec->section->mgender_name . '), ';
             }
             if ($request->class) {
                 $sections = [];
-                $class = $student->recordClass ? $student->recordClass->class->class_name : '';
+                $class = $student->recordClass ? $student->recordClass->class->age_group_name : '';
                 if ($request->section) {
-                    $sections = $student->recordSection != "" ? $student->recordSection->section->section_name : "";
+                    $sections = $student->recordSection != "" ? $student->recordSection->section->mgender_name : "";
                 } else {
                     foreach ($student->recordClasses as $section) {
-                        $sections[] = $section->section->section_name;
+                        $sections[] = $section->section->mgender_name;
                     }
 
                 }

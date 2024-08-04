@@ -33,7 +33,7 @@
                 <table id="table_id" class="display school-table school-table-style" cellspacing="0" width="100%">
                     <thead>
                         <tr>
-                            <th>@lang('student.admission_no')</th>
+                            <th>@lang('student.registration_no')</th>
                             <th>@lang('student.student')</th>
                             <th>@lang('common.class_Sec')</th>
                             <th>@lang('exam.exam')</th>
@@ -47,10 +47,10 @@
                 
                             @foreach($students as $student)
                             <tr>
-                                <td>{{$student->admission_no}}</td>
+                                <td>{{$student->registration_no}}</td>
                                 <td>{{$student->full_name}}</td>
                                 <td>
-                                    {{@$online_exam_question->class->class_name}} ({{@$online_exam_question->section->section_name}})
+                                    {{@$online_exam_question->class->age_group_name}} ({{@$online_exam_question->section->mgender_name}})
                                 </td>
                                 <td>{{$online_exam_question->title}}</td>
                                 <td>{{$online_exam_question->subject!=""?$online_exam_question->subject->subject_name:""}}</td>

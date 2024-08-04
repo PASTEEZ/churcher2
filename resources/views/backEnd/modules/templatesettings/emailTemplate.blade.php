@@ -178,7 +178,7 @@
                                         <div class="row mt-25">
                                             <div class="col-lg-12 mb-20">
                                                 <label> <strong>@lang('communicate.varriables') :</strong>  </label>
-                                                <span class="text-primary">[name] [email] [admission_number] [school_name]</span>
+                                                <span class="text-primary">[name] [email] [admission_number] [church_name]</span>
 
                                             </div>
                                             
@@ -201,7 +201,7 @@
                                         <div class="row mt-25">
                                             <div class="col-lg-12 mb-20">
                                                 <label> <strong>@lang('communicate.varriables') :</strong>  </label>        
-                                                <span class="text-primary">[student_name] [email] [admission_number] [password] [father_name] [school_name]</span>      
+                                                <span class="text-primary">[member_name] [email] [admission_number] [password] [father_name] [church_name]</span>      
                                             </div>
                                             <div class="col-lg-12">
                                                 <div class="input-effect">
@@ -223,7 +223,7 @@
                                         <div class="row mt-25">
                                             <div class="col-lg-12 mb-20">
                                                 <label> <strong>@lang('communicate.varriables') :</strong>  </label>
-                                                <span class="text-primary">[name]  [father_name] [email] [admission_number] [password] [student_name] [school_name]</span>
+                                                <span class="text-primary">[name]  [father_name] [email] [admission_number] [password] [member_name] [church_name]</span>
         
                                             </div>
                                             
@@ -246,7 +246,7 @@
                                         <div class="row mt-25">
                                             <div class="col-lg-12 mb-20">
                                                 <label> <strong>@lang('communicate.varriables') :</strong>  </label>
-                                                <span class="text-primary">[name] [username] [password] [school_name]</span>
+                                                <span class="text-primary">[name] [username] [password] [church_name]</span>
         
                                             </div>
                                             
@@ -270,7 +270,7 @@
                                         <div class="row mt-25">
                                             <div class="col-lg-12 mb-20">
                                                 <label> <strong>@lang('communicate.varriables') :</strong>  </label>
-                                                <span class="text-primary">[name] [admission_number] [guardian_name] [class] [section] [school_name]</span>
+                                                <span class="text-primary">[name] [admission_number] [guardian_name] [class] [section] [church_name]</span>
         
                                             </div>
                                             
@@ -295,7 +295,7 @@
                                         <div class="row mt-25">
                                             <div class="col-lg-12 mb-20">
                                                 <label> <strong>@lang('communicate.varriables') :</strong>  </label>
-                                                <span class="text-primary">[name] [student_name] [school_name]</span>
+                                                <span class="text-primary">[name] [member_name] [church_name]</span>
         
                                             </div>
                                             
@@ -320,7 +320,7 @@
                                         <div class="row mt-25">
                                             <div class="col-lg-12 mb-20">
                                                 <label> <strong>@lang('communicate.varriables') :</strong>  </label>
-                                                <span class="text-primary">[name] [username] [password] [school_name]</span>
+                                                <span class="text-primary">[name] [username] [password] [church_name]</span>
 
         
                                             </div>
@@ -346,7 +346,7 @@
                                         <div class="row mt-25">
                                             <div class="col-lg-12 mb-20">
                                                 <label> <strong>@lang('communicate.varriables') :</strong>  </label>
-                                                <span class="text-primary">[student_name] [parent_name] [due_amount] [fees_name] [due_date] [school_name]</span>
+                                                <span class="text-primary">[member_name] [parent_name] [due_amount] [fees_name] [due_date] [church_name]</span>
 
         
                                             </div>
@@ -372,7 +372,7 @@
                                         <div class="row mt-25">
                                             <div class="col-lg-12 mb-20">
                                                 <label> <strong>@lang('communicate.varriables') :</strong>  </label>
-                                                <span class="text-primary">[student_name] [parent_name] [note] [date]</span>
+                                                <span class="text-primary">[member_name] [parent_name] [note] [date]</span>
 
         
                                             </div>
@@ -398,7 +398,7 @@
                                         <div class="row mt-25">
                                             <div class="col-lg-12 mb-20">
                                                 <label> <strong>@lang('communicate.varriables') :</strong>  </label>
-                                                <span class="text-primary">[student_name] [note] [date]</span>
+                                                <span class="text-primary">[member_name] [note] [date]</span>
 
         
                                             </div>

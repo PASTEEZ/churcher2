@@ -152,7 +152,7 @@ CREATE TABLE `chat_invitation_types` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `invitation_id` bigint(20) UNSIGNED NOT NULL,
   `type` enum('one-to-one','group','class-teacher') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'one-to-one',
-  `section_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `mgender_id` bigint(20) UNSIGNED DEFAULT NULL,
   `class_teacher_id` bigint(20) UNSIGNED DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -203,14 +203,14 @@ CREATE TABLE `continents` (
   `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `school_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `continents`
 --
 
-INSERT INTO `continents` (`id`, `code`, `name`, `created_at`, `updated_at`, `school_id`) VALUES
+INSERT INTO `continents` (`id`, `code`, `name`, `created_at`, `updated_at`, `church_id`) VALUES
 (1, 'AF', 'Africa', NULL, NULL, 1),
 (2, 'AN', 'Antarctica', NULL, NULL, 1),
 (3, 'AS', 'Asia', NULL, NULL, 1),
@@ -233,7 +233,7 @@ CREATE TABLE `continets` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -254,15 +254,15 @@ CREATE TABLE `countries` (
   `languages` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `countries`
 --
 
-INSERT INTO `countries` (`id`, `code`, `name`, `native`, `phone`, `continent`, `capital`, `currency`, `languages`, `created_at`, `updated_at`, `school_id`, `academic_id`) VALUES
+INSERT INTO `countries` (`id`, `code`, `name`, `native`, `phone`, `continent`, `capital`, `currency`, `languages`, `created_at`, `updated_at`, `church_id`, `church_year_id`) VALUES
 (1, 'AD', 'Andorra', 'Andorra', '376', 'EU', 'Andorra la Vella', 'EUR', 'ca', NULL, NULL, 1, 1),
 (2, 'AE', 'United Arab Emirates', 'دولة الإمارات العربية المتحدة', '971', 'AS', 'Abu Dhabi', 'AED', 'ar', NULL, NULL, 1, 1),
 (3, 'AF', 'Afghanistan', 'افغانستان', '93', 'AS', 'Kabul', 'AFN', 'ps,uz,tk', NULL, NULL, 1, 1),
@@ -524,9 +524,9 @@ CREATE TABLE `custom_result_settings` (
   `id` int(10) UNSIGNED NOT NULL,
   `exam_type_id` int(11) NOT NULL,
   `exam_percentage` double(8,2) NOT NULL,
-  `academic_year` int(11) NOT NULL,
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year` int(11) NOT NULL,
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -549,7 +549,7 @@ CREATE TABLE `infix_module_infos` (
   `active_status` tinyint(4) NOT NULL DEFAULT '1',
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT NULL,
+  `church_id` int(10) UNSIGNED DEFAULT NULL,
   `type` int(11) DEFAULT NULL COMMENT '1 for module, 2 for module link, 3 for module links crud',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -559,7 +559,7 @@ CREATE TABLE `infix_module_infos` (
 -- Dumping data for table `infix_module_infos`
 --
 
-INSERT INTO `infix_module_infos` (`id`, `module_id`, `parent_id`, `name`, `is_saas`, `route`, `lang_name`, `icon_class`, `active_status`, `created_by`, `updated_by`, `school_id`, `type`, `created_at`, `updated_at`) VALUES
+INSERT INTO `infix_module_infos` (`id`, `module_id`, `parent_id`, `name`, `is_saas`, `route`, `lang_name`, `icon_class`, `active_status`, `created_by`, `updated_by`, `church_id`, `type`, `created_at`, `updated_at`) VALUES
 (1, 1, 0, 'Dashboard', 0, '', 'dashboard', 'flaticon-speedometer', 1, 1, 1, 1, 1, '2019-07-24 20:21:21', '2019-07-24 22:24:22'),
 (2, 1, 1, '➡ Number of Student', 0, '', '', '', 1, 1, 1, 1, 3, '2019-07-24 20:21:21', '2019-07-24 22:24:22'),
 (3, 1, 1, '➡ Number of Teacher', 0, '', '', '', 1, 1, 1, 1, 3, '2019-07-24 20:21:21', '2019-07-24 22:24:22'),
@@ -604,7 +604,7 @@ INSERT INTO `infix_module_infos` (`id`, `module_id`, `parent_id`, `name`, `is_sa
 (42, 2, 41, 'Add', 0, '', '', '', 1, 1, 1, 1, 3, '2019-07-24 20:21:21', '2019-07-24 22:24:22'),
 (43, 2, 41, 'Edit', 0, '', '', '', 1, 1, 1, 1, 3, '2019-07-24 20:21:21', '2019-07-24 22:24:22'),
 (44, 2, 41, 'Delete', 0, '', '', '', 1, 1, 1, 1, 3, '2019-07-24 20:21:21', '2019-07-24 22:24:22'),
-(45, 2, 11, 'Student ID Card', 0, 'student-id-card', 'student_id_card', '', 1, 1, 1, 1, 2, '2019-07-24 20:21:21', '2019-07-24 22:24:22'),
+(45, 2, 11, 'Student ID Card', 0, 'student-id-card', 'member_id_card', '', 1, 1, 1, 1, 2, '2019-07-24 20:21:21', '2019-07-24 22:24:22'),
 (46, 2, 45, 'Add', 0, '', '', '', 1, 1, 1, 1, 3, '2019-07-24 20:21:21', '2019-07-24 22:24:22'),
 (47, 2, 45, 'Edit', 0, '', '', '', 1, 1, 1, 1, 3, '2019-07-24 20:21:21', '2019-07-24 22:24:22'),
 (48, 2, 45, 'Delete', 0, '', '', '', 1, 1, 1, 1, 3, '2019-07-24 20:21:21', '2019-07-24 22:24:22'),
@@ -980,7 +980,7 @@ INSERT INTO `infix_module_infos` (`id`, `module_id`, `parent_id`, `name`, `is_sa
 (429, 18, 428, 'Add', 0, '', '', '', 1, 1, 1, 1, 3, '2019-07-24 20:21:21', '2019-07-24 22:24:22'),
 (430, 18, 428, 'Edit', 0, '', '', '', 1, 1, 1, 1, 3, '2019-07-24 20:21:21', '2019-07-24 22:24:22'),
 (431, 18, 428, 'Delete', 0, '', '', '', 1, 1, 1, 1, 3, '2019-07-24 20:21:21', '2019-07-24 22:24:22'),
-(432, 18, 398, 'Academic Year', 0, 'academic-year', 'academic_year', '', 1, 1, 1, 1, 2, '2019-07-24 20:21:21', '2019-07-24 22:24:22'),
+(432, 18, 398, 'Academic Year', 0, 'academic-year', 'church_year', '', 1, 1, 1, 1, 2, '2019-07-24 20:21:21', '2019-07-24 22:24:22'),
 (433, 18, 432, 'Add', 0, '', '', '', 1, 1, 1, 1, 3, '2019-07-24 20:21:21', '2019-07-24 22:24:22'),
 (434, 18, 432, 'Edit', 0, '', '', '', 1, 1, 1, 1, 3, '2019-07-24 20:21:21', '2019-07-24 22:24:22'),
 (435, 18, 432, 'Delete', 0, '', '', '', 1, 1, 1, 1, 3, '2019-07-24 20:21:21', '2019-07-24 22:24:22'),
@@ -1012,7 +1012,7 @@ INSERT INTO `infix_module_infos` (`id`, `module_id`, `parent_id`, `name`, `is_sa
 (461, 18, 456, 'Full Project', 0, '', '', '', 1, 1, 1, 1, 3, '2019-07-24 20:21:21', '2019-07-24 22:24:22'),
 (462, 18, 456, 'Database', 0, '', '', '', 1, 1, 1, 1, 3, '2019-07-24 20:21:21', '2019-07-24 22:24:22'),
 (463, 18, 398, 'Header Option', 0, 'button-disable-enable', 'header', '', 1, 1, 1, 1, 2, '2019-07-24 20:21:21', '2019-07-24 22:24:22');
-INSERT INTO `infix_module_infos` (`id`, `module_id`, `parent_id`, `name`, `is_saas`, `route`, `lang_name`, `icon_class`, `active_status`, `created_by`, `updated_by`, `school_id`, `type`, `created_at`, `updated_at`) VALUES
+INSERT INTO `infix_module_infos` (`id`, `module_id`, `parent_id`, `name`, `is_saas`, `route`, `lang_name`, `icon_class`, `active_status`, `created_by`, `updated_by`, `church_id`, `type`, `created_at`, `updated_at`) VALUES
 (464, 18, 463, 'Custom URL Update', 0, '', '', '', 1, 1, 1, 1, 3, '2019-07-24 20:21:21', '2019-07-24 22:24:22'),
 (465, 18, 463, 'Website On', 0, '', '', '', 1, 1, 1, 1, 3, '2019-07-24 20:21:21', '2019-07-24 22:24:22'),
 (466, 18, 463, 'Website Off', 0, '', '', '', 1, 1, 1, 1, 3, '2019-07-24 20:21:21', '2019-07-24 22:24:22'),
@@ -1290,7 +1290,7 @@ CREATE TABLE `infix_module_student_parent_infos` (
   `active_status` tinyint(4) NOT NULL DEFAULT '1',
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
+  `church_id` int(10) UNSIGNED DEFAULT '1',
   `type` int(11) DEFAULT NULL COMMENT '1 for module, 2 for module link, 3 for module options',
   `user_type` int(11) DEFAULT NULL COMMENT '1 for student, 2 for parent',
   `created_at` timestamp NULL DEFAULT NULL,
@@ -1301,7 +1301,7 @@ CREATE TABLE `infix_module_student_parent_infos` (
 -- Dumping data for table `infix_module_student_parent_infos`
 --
 
-INSERT INTO `infix_module_student_parent_infos` (`id`, `module_id`, `parent_id`, `name`, `route`, `lang_name`, `icon_class`, `active_status`, `created_by`, `updated_by`, `school_id`, `type`, `user_type`, `created_at`, `updated_at`) VALUES
+INSERT INTO `infix_module_student_parent_infos` (`id`, `module_id`, `parent_id`, `name`, `route`, `lang_name`, `icon_class`, `active_status`, `created_by`, `updated_by`, `church_id`, `type`, `user_type`, `created_at`, `updated_at`) VALUES
 (1, 1, 0, 'Dashboard Menu', 'student-dashboard', 'dashboard', 'flaticon-resume', 1, 1, 1, 1, 1, 1, '2019-07-24 20:21:21', '2019-07-24 22:24:22'),
 (2, 1, 1, 'Subject', '', '', '', 1, 1, 1, 1, 3, 1, '2019-07-24 20:21:21', '2019-07-24 22:24:22'),
 (3, 1, 1, 'Notice', '', '', '', 1, 1, 1, 1, 3, 1, '2019-07-24 20:21:21', '2019-07-24 22:24:22'),
@@ -1429,14 +1429,14 @@ CREATE TABLE `infix_permission_assigns` (
   `saas_schools` text COLLATE utf8mb4_unicode_ci,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `infix_permission_assigns`
 --
 
-INSERT INTO `infix_permission_assigns` (`id`, `active_status`, `created_at`, `updated_at`, `module_id`, `module_info`, `role_id`, `saas_schools`, `created_by`, `updated_by`, `school_id`) VALUES
+INSERT INTO `infix_permission_assigns` (`id`, `active_status`, `created_at`, `updated_at`, `module_id`, `module_info`, `role_id`, `saas_schools`, `created_by`, `updated_by`, `church_id`) VALUES
 (1, 1, '2021-04-20 05:49:01', '2021-04-20 05:49:01', 1, 'Dashboard', 5, NULL, 1, 1, 1),
 (2, 1, '2021-04-20 05:49:01', '2021-04-20 05:49:01', 2, '➡ Number of Student', 5, NULL, 1, 1, 1),
 (3, 1, '2021-04-20 05:49:01', '2021-04-20 05:49:01', 3, '➡ Number of Teacher', 5, NULL, 1, 1, 1),
@@ -1997,7 +1997,7 @@ INSERT INTO `infix_permission_assigns` (`id`, `active_status`, `created_at`, `up
 (558, 1, '2021-04-20 05:49:51', '2021-04-20 05:49:51', 286, 'Communicate', 4, NULL, 1, 1, 1),
 (559, 1, '2021-04-20 05:49:52', '2021-04-20 05:49:52', 287, 'Notice Board', 4, NULL, 1, 1, 1),
 (560, 1, '2021-04-20 05:49:52', '2021-04-20 05:49:52', 288, 'Add', 4, NULL, 1, 1, 1);
-INSERT INTO `infix_permission_assigns` (`id`, `active_status`, `created_at`, `updated_at`, `module_id`, `module_info`, `role_id`, `saas_schools`, `created_by`, `updated_by`, `school_id`) VALUES
+INSERT INTO `infix_permission_assigns` (`id`, `active_status`, `created_at`, `updated_at`, `module_id`, `module_info`, `role_id`, `saas_schools`, `created_by`, `updated_by`, `church_id`) VALUES
 (561, 1, '2021-04-20 05:49:52', '2021-04-20 05:49:52', 289, 'Edit', 4, NULL, 1, 1, 1),
 (562, 1, '2021-04-20 05:49:52', '2021-04-20 05:49:52', 290, 'Delete', 4, NULL, 1, 1, 1),
 (563, 1, '2021-04-20 05:49:52', '2021-04-20 05:49:52', 291, 'Send Email / SMS ', 4, NULL, 1, 1, 1),
@@ -2536,7 +2536,7 @@ CREATE TABLE `infix_roles` (
   `updated_by` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `school_id` int(10) UNSIGNED DEFAULT '1',
+  `church_id` int(10) UNSIGNED DEFAULT '1',
   `is_saas` int(10) UNSIGNED DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -2544,7 +2544,7 @@ CREATE TABLE `infix_roles` (
 -- Dumping data for table `infix_roles`
 --
 
-INSERT INTO `infix_roles` (`id`, `name`, `type`, `active_status`, `created_by`, `updated_by`, `created_at`, `updated_at`, `school_id`, `is_saas`) VALUES
+INSERT INTO `infix_roles` (`id`, `name`, `type`, `active_status`, `created_by`, `updated_by`, `created_at`, `updated_at`, `church_id`, `is_saas`) VALUES
 (1, 'Super admin', 'System', 1, '1', '1', '2021-04-20 05:30:04', NULL, 1, 0),
 (2, 'Student', 'System', 1, '1', '1', '2021-04-20 05:30:04', NULL, 1, 0),
 (3, 'Parents', 'System', 1, '1', '1', '2021-04-20 05:30:04', NULL, 1, 0),
@@ -2585,14 +2585,14 @@ CREATE TABLE `languages` (
   `rtl` tinyint(4) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `school_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `languages`
 --
 
-INSERT INTO `languages` (`id`, `code`, `name`, `native`, `rtl`, `created_at`, `updated_at`, `school_id`) VALUES
+INSERT INTO `languages` (`id`, `code`, `name`, `native`, `rtl`, `created_at`, `updated_at`, `church_id`) VALUES
 (1, 'af', 'Afrikaans', 'Afrikaans', 0, NULL, NULL, 1),
 (2, 'am', 'Amharic', 'አማርኛ', 0, NULL, NULL, 1),
 (3, 'ar', 'Arabic', 'العربية', 1, NULL, NULL, 1),
@@ -2742,12 +2742,12 @@ CREATE TABLE `lesson_planners` (
   `teacher_id` int(10) UNSIGNED DEFAULT NULL,
   `class_period_id` int(10) UNSIGNED DEFAULT NULL,
   `subject_id` int(10) UNSIGNED DEFAULT NULL,
-  `class_id` int(10) UNSIGNED DEFAULT NULL,
-  `section_id` int(10) UNSIGNED DEFAULT NULL,
+  `age_group_id` int(10) UNSIGNED DEFAULT NULL,
+  `mgender_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -2767,8 +2767,8 @@ CREATE TABLE `library_subjects` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -2788,8 +2788,8 @@ CREATE TABLE `menu_manages` (
   `child_active_status` tinyint(4) NOT NULL DEFAULT '1',
   `role_id` int(10) UNSIGNED DEFAULT NULL,
   `user_id` int(10) UNSIGNED DEFAULT NULL,
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1',
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -2947,7 +2947,7 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (134, '2019_02_11_093834_create_sm_user_logs_table', 1),
 (135, '2019_02_12_064024_create_sm_email_settings_table', 1),
 (136, '2019_02_16_082050_create_sm_student_certificates_table', 1),
-(137, '2019_02_17_124203_create_sm_student_id_cards_table', 1),
+(137, '2019_02_17_124203_create_sm_member_id_cards_table', 1),
 (138, '2019_02_24_124115_create_sm_to_dos_table', 1),
 (139, '2019_03_13_075602_create_sm_admission_queries_table', 1),
 (140, '2019_03_14_075324_create_sm_admission_query_followups_table', 1),
@@ -3152,12 +3152,12 @@ CREATE TABLE `oauth_refresh_tokens` (
 CREATE TABLE `online_exam_student_answer_markings` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `online_exam_id` int(11) DEFAULT NULL,
-  `student_id` int(11) DEFAULT NULL,
+  `member_id` int(11) DEFAULT NULL,
   `question_id` int(11) DEFAULT NULL,
   `user_answer` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `answer_status` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `obtain_marks` int(11) DEFAULT NULL,
-  `school_id` int(11) DEFAULT NULL,
+  `church_id` int(11) DEFAULT NULL,
   `marked_by` int(11) NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -3190,14 +3190,14 @@ CREATE TABLE `roles` (
   `updated_by` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `school_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `roles`
 --
 
-INSERT INTO `roles` (`id`, `name`, `type`, `active_status`, `created_by`, `updated_by`, `created_at`, `updated_at`, `school_id`) VALUES
+INSERT INTO `roles` (`id`, `name`, `type`, `active_status`, `created_by`, `updated_by`, `created_at`, `updated_at`, `church_id`) VALUES
 (1, 'Super admin', 'System', 1, '1', '1', '2021-04-20 05:30:06', NULL, 1),
 (2, 'Student', 'System', 1, '1', '1', '2021-04-20 05:30:06', NULL, 1),
 (3, 'Parents', 'System', 1, '1', '1', '2021-04-20 05:30:06', NULL, 1),
@@ -3228,7 +3228,7 @@ CREATE TABLE `sidebars` (
   `infix_module_id` int(10) UNSIGNED DEFAULT NULL,
   `role_id` int(10) UNSIGNED DEFAULT NULL,
   `user_id` int(10) UNSIGNED DEFAULT NULL,
-  `school_id` int(10) UNSIGNED DEFAULT '1',
+  `church_id` int(10) UNSIGNED DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -3298,7 +3298,7 @@ CREATE TABLE `sms_templates` (
 --
 
 INSERT INTO `sms_templates` (`id`, `admission_pro`, `student_admit`, `login_disable`, `exam_schedule`, `exam_publish`, `due_fees`, `collect_fees`, `stu_promote`, `attendance_sms`, `absent`, `late_sms`, `er_checkout`, `st_checkout`, `st_credentials`, `staff_credentials`, `holiday`, `leave_app`, `approve_sms`, `birth_st`, `birth_staff`, `cheque_bounce`, `l_issue_b`, `re_issue_book`, `sms_text`, `reject_bank_payment_parent`, `reject_bank_payment_student`, `student_approve_message_sms`, `student_approve_message_sms_status`, `student_registration_message_sms`, `student_registration_message_sms_status`, `student_admission_message_sms`, `student_admission_message_sms_status`, `exam_schedule_message_sms`, `exam_schedule_message_sms_status`, `dues_fees_message_sms`, `dues_fees_message_sms_status`, `student_absent_notification_sms`, `student_absent_notification_sms_status`, `password_reset_message`, `student_login_credential_message`, `guardian_login_credential_message`, `student_registration_message`, `guardian_registration_message`, `staff_login_credential_message`, `send_email_message`, `dues_payment_message`, `email_footer_text`, `active_status`, `created_at`, `updated_at`) VALUES
-(1, 'Dear parent |ParentName|, your child |StudentName| admission is in process.', 'Dear parent |ParentName|, your child |StudentName| admission is completed You can login to your account using username:|Username| Password:|Password|', 'hello world', 'hello world', 'hello world', 'Fee Due Reminder for your child |StudentName|. \r\n                                Dear Parent |ParentName|, please find the below fee summary.\r\n                                Fee: Rs.|Fee|, Back dues \r\n                                Adjustment: Rs.|Adjustment|, \r\n                                Total: Rs.|Total|, \r\n                                Paid: Rs.|Paid|, \r\n                                Balance: Rs.|Balance|. \r\n                                Please ignore in case already paid.', 'Fee Due Reminder for your child |StudentName|. \r\n                                Dear Parent |ParentName|, please find the below fee summary.\r\n                                Fee: Rs.|Fee|, Back dues \r\n                                Adjustment: Rs.|Adjustment|, \r\n                                Total: Rs.|Total|, \r\n                                Paid: Rs.|Paid|, \r\n                                Balance: Rs.|Balance|. \r\n                                Please ignore in case already paid.', 'Hi [student_name] , Welcome to [school_name]. Congratulations ! You have promoted in the next class.', 'Dear Parent |ParentName|, your child |StudentName| came to the school at |time|', 'Dear parent |ParentName|, your child |StudentName| is absent to the school on |AttendanceDate|', 'Dear parent |ParentName|, your child |StudentName| is late to the school on |AttendanceDate|', 'Dear parent |ParentName|, your child |StudentName| is checkout  at |time| to the school on |AttendanceDate|', 'Dear Parent |ParentName|, your child |StudentName| left the school at |time|', 'Dear parent |ParentName|, your child |StudentName| login details: username:|Username| Password:|Password|', 'Dear staff |StaffName| your login details: username:|Username| Password:|Password|', 'This is to update you that |HolidayDate| is holiday due to |HolidayName|', 'Dear staff |StaffName|, Thank you for your leave application. Please wait for approval. Thanks ', 'Dear staff |StaffName|, Thank you for your leave application. Your leave approved. Thanks ', 'Dear parent |ParentName|, Warm wishes to your child  |StudentName| on behalf of his/her birthday', 'Dear staff |StaffName|, Warm wishes to your birthday. Happy Birthday. Thanks', 'Dear parent |ParentName|, the Cheque with no :|ChequeNo| for Rs.|FeePaid| received towards fee payment for your child :|StudentName| with receipt number:|ReceiptNo| has been Bounced', 'Dear parent |ParentName|, Library book  is issued to your child |StudentName| studying in class: |ClassName| , section: |SectionName| with roll no:|RollNo| On |IssueDate| .Please find the details , Book Title: |BookTitle|, Book No: |BookNo|, Due Date: |DueDate|', 'Dear parent |ParentName|, Library book  is returned by your child |StudentName| studying in class: |ClassName| , section: |SectionName| with roll no:|RollNo| On |ReturnDate| .Please find the details , Book Title: |BookTitle|, Book No: |BookNo|, Issue Date: |IssueDate|, Due Date: |DueDate|', 'hello world', 'Dear parent [parent_name], your child [student_name] fees rejected . Reject Note [note] [date]. ', 'Dear student [student_name], fees rejected . Reject Note [note] at [date] . ', 'Hi [student_name] , Welcome to [school_name]. Congratulations ! You have registered successfully. Please login using this username [username] and password [password]. Thanks.', '1', 'Hi [student_name] , Welcome to [school_name]. Congratulations ! You have registered successfully. Please login using this username [username] and password [password]. Thanks.', '1', 'Hi [student_name] , Welcome to [school_name]. Congratulations ! You have registered successfully. Please login using this username [username] and password [password]. Thanks.', '1', 'Hi [student_name] , Welcome to [school_name]. Congratulations ! You have registered successfully. Please login using this username [username] and password [password]. Thanks.', '1', 'Hi [student_name], You fees due amount [dues_amount] for [fees_name] on [date]. Thanks', '1', 'Hi [parent_name], Your child [student_name] absent for [number_of_subject] subjects. Those are [subject_list] on [date]. Thanks', '1', 'Hi [name], Tap the button below to reset your account password. If you didnt request a new password, you can safely delete this email.', 'Hi [student_name] , Welcome to [school_name]. Congratulations ! You have registered successfully. Please login using this username [username] and password [password]. Thanks.', 'Hi [father_name]  , Welcome to [school_name]. Congratulations ! You have registered successfully. Please login using this username [username] and password [password]. Thanks.', 'Hi [student_name] , Welcome to [school_name]. Congratulations ! You have registered successfully. Please login using this username [username] and password [password]. Thanks.', 'Hi [father_name]  , Welcome to [school_name]. Congratulations ! You have registered successfully. Please login using this username [username] and password [password]. Thanks.', 'Hi [father_name]  , Welcome to [school_name]. Congratulations ! You have registered successfully. Please login using this username [username] and password [password]. Thanks.', 'Hi [father_name]  , Welcome to [school_name]. Congratulations ! You have registered successfully. Please login using this username [username] and password [password]. Thanks.', 'Hi [student_name], You fees due amount [due_amount] for [fees_name] on [date]. Thanks', 'Copyright &copy; 2020 All rights reserved | This template is made by Codethemes', 1, NULL, NULL);
+(1, 'Dear parent |ParentName|, your child |StudentName| admission is in process.', 'Dear parent |ParentName|, your child |StudentName| admission is completed You can login to your account using username:|Username| Password:|Password|', 'hello world', 'hello world', 'hello world', 'Fee Due Reminder for your child |StudentName|. \r\n                                Dear Parent |ParentName|, please find the below fee summary.\r\n                                Fee: Rs.|Fee|, Back dues \r\n                                Adjustment: Rs.|Adjustment|, \r\n                                Total: Rs.|Total|, \r\n                                Paid: Rs.|Paid|, \r\n                                Balance: Rs.|Balance|. \r\n                                Please ignore in case already paid.', 'Fee Due Reminder for your child |StudentName|. \r\n                                Dear Parent |ParentName|, please find the below fee summary.\r\n                                Fee: Rs.|Fee|, Back dues \r\n                                Adjustment: Rs.|Adjustment|, \r\n                                Total: Rs.|Total|, \r\n                                Paid: Rs.|Paid|, \r\n                                Balance: Rs.|Balance|. \r\n                                Please ignore in case already paid.', 'Hi [member_name] , Welcome to [church_name]. Congratulations ! You have promoted in the next class.', 'Dear Parent |ParentName|, your child |StudentName| came to the school at |time|', 'Dear parent |ParentName|, your child |StudentName| is absent to the school on |AttendanceDate|', 'Dear parent |ParentName|, your child |StudentName| is late to the school on |AttendanceDate|', 'Dear parent |ParentName|, your child |StudentName| is checkout  at |time| to the school on |AttendanceDate|', 'Dear Parent |ParentName|, your child |StudentName| left the school at |time|', 'Dear parent |ParentName|, your child |StudentName| login details: username:|Username| Password:|Password|', 'Dear staff |StaffName| your login details: username:|Username| Password:|Password|', 'This is to update you that |HolidayDate| is holiday due to |HolidayName|', 'Dear staff |StaffName|, Thank you for your leave application. Please wait for approval. Thanks ', 'Dear staff |StaffName|, Thank you for your leave application. Your leave approved. Thanks ', 'Dear parent |ParentName|, Warm wishes to your child  |StudentName| on behalf of his/her birthday', 'Dear staff |StaffName|, Warm wishes to your birthday. Happy Birthday. Thanks', 'Dear parent |ParentName|, the Cheque with no :|ChequeNo| for Rs.|FeePaid| received towards fee payment for your child :|StudentName| with receipt number:|ReceiptNo| has been Bounced', 'Dear parent |ParentName|, Library book  is issued to your child |StudentName| studying in class: |ClassName| , section: |SectionName| with roll no:|RollNo| On |IssueDate| .Please find the details , Book Title: |BookTitle|, Book No: |BookNo|, Due Date: |DueDate|', 'Dear parent |ParentName|, Library book  is returned by your child |StudentName| studying in class: |ClassName| , section: |SectionName| with roll no:|RollNo| On |ReturnDate| .Please find the details , Book Title: |BookTitle|, Book No: |BookNo|, Issue Date: |IssueDate|, Due Date: |DueDate|', 'hello world', 'Dear parent [parent_name], your child [member_name] fees rejected . Reject Note [note] [date]. ', 'Dear student [member_name], fees rejected . Reject Note [note] at [date] . ', 'Hi [member_name] , Welcome to [church_name]. Congratulations ! You have registered successfully. Please login using this username [username] and password [password]. Thanks.', '1', 'Hi [member_name] , Welcome to [church_name]. Congratulations ! You have registered successfully. Please login using this username [username] and password [password]. Thanks.', '1', 'Hi [member_name] , Welcome to [church_name]. Congratulations ! You have registered successfully. Please login using this username [username] and password [password]. Thanks.', '1', 'Hi [member_name] , Welcome to [church_name]. Congratulations ! You have registered successfully. Please login using this username [username] and password [password]. Thanks.', '1', 'Hi [member_name], You fees due amount [dues_amount] for [fees_name] on [date]. Thanks', '1', 'Hi [parent_name], Your child [member_name] absent for [number_of_subject] subjects. Those are [subject_list] on [date]. Thanks', '1', 'Hi [name], Tap the button below to reset your account password. If you didnt request a new password, you can safely delete this email.', 'Hi [member_name] , Welcome to [church_name]. Congratulations ! You have registered successfully. Please login using this username [username] and password [password]. Thanks.', 'Hi [father_name]  , Welcome to [church_name]. Congratulations ! You have registered successfully. Please login using this username [username] and password [password]. Thanks.', 'Hi [member_name] , Welcome to [church_name]. Congratulations ! You have registered successfully. Please login using this username [username] and password [password]. Thanks.', 'Hi [father_name]  , Welcome to [church_name]. Congratulations ! You have registered successfully. Please login using this username [username] and password [password]. Thanks.', 'Hi [father_name]  , Welcome to [church_name]. Congratulations ! You have registered successfully. Please login using this username [username] and password [password]. Thanks.', 'Hi [father_name]  , Welcome to [church_name]. Congratulations ! You have registered successfully. Please login using this username [username] and password [password]. Thanks.', 'Hi [member_name], You fees due amount [due_amount] for [fees_name] on [date]. Thanks', 'Copyright &copy; 2020 All rights reserved | This template is made by Codethemes', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -3321,14 +3321,14 @@ CREATE TABLE `sm_about_pages` (
   `active_status` tinyint(4) NOT NULL DEFAULT '1',
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `sm_about_pages`
 --
 
-INSERT INTO `sm_about_pages` (`id`, `created_at`, `updated_at`, `title`, `description`, `main_title`, `main_description`, `image`, `main_image`, `button_text`, `button_url`, `active_status`, `created_by`, `updated_by`, `school_id`) VALUES
+INSERT INTO `sm_about_pages` (`id`, `created_at`, `updated_at`, `title`, `description`, `main_title`, `main_description`, `image`, `main_image`, `button_text`, `button_url`, `active_status`, `created_by`, `updated_by`, `church_id`) VALUES
 (1, NULL, NULL, 'About Infix', 'Lisus consequat sapien metus dis urna, facilisi. Nonummy rutrum eu lacinia platea a, ipsum parturient, orci tristique. Nisi diam natoque.', 'Under Graduate Education', 'INFIX has all in one place. You’ll find everything what you are looking into education management system software. We care! User will never bothered in our real eye catchy user friendly UI & UX  Interface design. You know! Smart Idea always comes to well planners. And Our INFIX is Smart for its Well Documentation. Explore in new support world! It’s now faster & quicker. You’ll find us on Support Ticket, Email, Skype, WhatsApp.', 'public/uploads/about_page/about.jpg', 'public/uploads/about_page/about-img.jpg', 'Learn More About Us', 'about', 1, 1, 1, 1);
 
 -- --------------------------------------------------------
@@ -3343,20 +3343,20 @@ CREATE TABLE `sm_academic_years` (
   `title` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
   `starting_date` date NOT NULL,
   `ending_date` date NOT NULL,
-  `copy_with_academic_year` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `copy_with_church_year` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `active_status` tinyint(4) NOT NULL DEFAULT '1',
   `created_at` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `updated_at` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `sm_academic_years`
 --
 
-INSERT INTO `sm_academic_years` (`id`, `year`, `title`, `starting_date`, `ending_date`, `copy_with_academic_year`, `active_status`, `created_at`, `updated_at`, `created_by`, `updated_by`, `school_id`) VALUES
+INSERT INTO `sm_academic_years` (`id`, `year`, `title`, `starting_date`, `ending_date`, `copy_with_church_year`, `active_status`, `created_at`, `updated_at`, `created_by`, `updated_by`, `church_id`) VALUES
 (1, '2021', 'Jan-Dec', '2021-01-01', '2021-12-30', NULL, 1, '2021-01-01 00:00:00', '2021-01-01 00:00:00', 1, 1, 1);
 
 -- --------------------------------------------------------
@@ -3382,8 +3382,8 @@ CREATE TABLE `sm_add_expenses` (
   `payment_method_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -3410,8 +3410,8 @@ CREATE TABLE `sm_add_incomes` (
   `payment_method_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -3452,8 +3452,8 @@ CREATE TABLE `sm_admission_queries` (
   `class` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -3473,8 +3473,8 @@ CREATE TABLE `sm_admission_query_followups` (
   `admission_query_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -3495,8 +3495,8 @@ CREATE TABLE `sm_amount_transfers` (
   `active_status` tinyint(4) DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -3510,12 +3510,12 @@ CREATE TABLE `sm_assign_class_teachers` (
   `active_status` tinyint(4) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `class_id` int(10) UNSIGNED DEFAULT NULL,
-  `section_id` int(10) UNSIGNED DEFAULT NULL,
+  `age_group_id` int(10) UNSIGNED DEFAULT NULL,
+  `mgender_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -3530,13 +3530,13 @@ CREATE TABLE `sm_assign_subjects` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `teacher_id` int(10) UNSIGNED DEFAULT NULL,
-  `class_id` int(10) UNSIGNED DEFAULT NULL,
-  `section_id` int(10) UNSIGNED DEFAULT NULL,
+  `age_group_id` int(10) UNSIGNED DEFAULT NULL,
+  `mgender_id` int(10) UNSIGNED DEFAULT NULL,
   `subject_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -3554,8 +3554,8 @@ CREATE TABLE `sm_assign_vehicles` (
   `route_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -3571,7 +3571,7 @@ CREATE TABLE `sm_background_settings` (
   `image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `color` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `is_default` int(11) NOT NULL DEFAULT '0',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
+  `church_id` int(10) UNSIGNED DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -3580,7 +3580,7 @@ CREATE TABLE `sm_background_settings` (
 -- Dumping data for table `sm_background_settings`
 --
 
-INSERT INTO `sm_background_settings` (`id`, `title`, `type`, `image`, `color`, `is_default`, `school_id`, `created_at`, `updated_at`) VALUES
+INSERT INTO `sm_background_settings` (`id`, `title`, `type`, `image`, `color`, `is_default`, `church_id`, `created_at`, `updated_at`) VALUES
 (1, 'Dashboard Background', 'image', 'public/backEnd/img/body-bg.jpg', '', 1, 1, NULL, NULL),
 (2, 'Login Background', 'image', 'public/backEnd/img/login-bg.jpg', '', 0, 1, NULL, NULL);
 
@@ -3600,8 +3600,8 @@ CREATE TABLE `sm_backups` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -3624,8 +3624,8 @@ CREATE TABLE `sm_bank_accounts` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -3646,13 +3646,13 @@ CREATE TABLE `sm_bank_payment_slips` (
   `reason` text COLLATE utf8mb4_unicode_ci,
   `fees_discount_id` int(10) UNSIGNED DEFAULT NULL,
   `fees_type_id` int(10) UNSIGNED DEFAULT NULL,
-  `student_id` int(10) UNSIGNED DEFAULT NULL,
-  `class_id` int(10) UNSIGNED NOT NULL,
-  `section_id` int(10) UNSIGNED NOT NULL,
+  `member_id` int(10) UNSIGNED DEFAULT NULL,
+  `age_group_id` int(10) UNSIGNED NOT NULL,
+  `mgender_id` int(10) UNSIGNED NOT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1',
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -3677,8 +3677,8 @@ CREATE TABLE `sm_bank_statements` (
   `item_sell_id` int(11) DEFAULT NULL,
   `payment_date` date DEFAULT NULL,
   `active_status` tinyint(4) NOT NULL DEFAULT '1',
-  `school_id` int(11) DEFAULT '1',
-  `academic_id` int(11) DEFAULT '1',
+  `church_id` int(11) DEFAULT '1',
+  `church_year_id` int(11) DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -3697,14 +3697,14 @@ CREATE TABLE `sm_base_groups` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `sm_base_groups`
 --
 
-INSERT INTO `sm_base_groups` (`id`, `name`, `active_status`, `created_at`, `updated_at`, `created_by`, `updated_by`, `school_id`) VALUES
+INSERT INTO `sm_base_groups` (`id`, `name`, `active_status`, `created_at`, `updated_at`, `created_by`, `updated_by`, `church_id`) VALUES
 (1, 'Gender', 1, '2021-04-20 05:30:30', NULL, 1, 1, 1),
 (2, 'Religion', 1, '2021-04-20 05:30:30', NULL, 1, 1, 1),
 (3, 'Blood Group', 1, '2021-04-20 05:30:30', NULL, 1, 1, 1);
@@ -3724,14 +3724,14 @@ CREATE TABLE `sm_base_setups` (
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
   `base_group_id` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `sm_base_setups`
 --
 
-INSERT INTO `sm_base_setups` (`id`, `base_setup_name`, `active_status`, `created_at`, `updated_at`, `created_by`, `updated_by`, `base_group_id`, `school_id`) VALUES
+INSERT INTO `sm_base_setups` (`id`, `base_setup_name`, `active_status`, `created_at`, `updated_at`, `created_by`, `updated_by`, `base_group_id`, `church_id`) VALUES
 (1, 'Male', 1, '2021-04-20 05:30:36', NULL, 1, 1, 1, 1),
 (2, 'Female', 1, '2021-04-20 05:30:36', NULL, 1, 1, 1, 1),
 (3, 'Others', 1, '2021-04-20 05:30:36', NULL, 1, 1, 1, 1),
@@ -3774,8 +3774,8 @@ CREATE TABLE `sm_books` (
   `book_category_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -3789,8 +3789,8 @@ CREATE TABLE `sm_book_categories` (
   `category_name` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -3813,8 +3813,8 @@ CREATE TABLE `sm_book_issues` (
   `member_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -3832,15 +3832,15 @@ CREATE TABLE `sm_chart_of_accounts` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `sm_chart_of_accounts`
 --
 
-INSERT INTO `sm_chart_of_accounts` (`id`, `head`, `type`, `active_status`, `created_at`, `updated_at`, `created_by`, `updated_by`, `school_id`, `academic_id`) VALUES
+INSERT INTO `sm_chart_of_accounts` (`id`, `head`, `type`, `active_status`, `created_at`, `updated_at`, `created_by`, `updated_by`, `church_id`, `church_year_id`) VALUES
 (1, 'Fees Collection', 'I', 1, '2021-04-20 05:31:11', '2021-04-20 05:31:11', 1, 1, 1, 1);
 
 -- --------------------------------------------------------
@@ -3851,14 +3851,14 @@ INSERT INTO `sm_chart_of_accounts` (`id`, `head`, `type`, `active_status`, `crea
 
 CREATE TABLE `sm_classes` (
   `id` int(10) UNSIGNED NOT NULL,
-  `class_name` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `age_group_name` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
   `active_status` tinyint(4) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -3869,12 +3869,12 @@ CREATE TABLE `sm_classes` (
 
 CREATE TABLE `sm_class_optional_subject` (
   `id` int(10) UNSIGNED NOT NULL,
-  `class_id` int(11) NOT NULL,
+  `age_group_id` int(11) NOT NULL,
   `gpa_above` double(8,2) NOT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1',
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -3894,8 +3894,8 @@ CREATE TABLE `sm_class_rooms` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -3937,13 +3937,13 @@ CREATE TABLE `sm_class_routines` (
   `active_status` tinyint(4) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `class_id` int(10) UNSIGNED DEFAULT NULL,
-  `section_id` int(10) UNSIGNED DEFAULT NULL,
+  `age_group_id` int(10) UNSIGNED DEFAULT NULL,
+  `mgender_id` int(10) UNSIGNED DEFAULT NULL,
   `subject_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -3962,12 +3962,12 @@ CREATE TABLE `sm_class_routine_updates` (
   `teacher_id` int(10) UNSIGNED DEFAULT NULL,
   `class_period_id` int(10) UNSIGNED DEFAULT NULL,
   `subject_id` int(10) UNSIGNED DEFAULT NULL,
-  `class_id` int(10) UNSIGNED DEFAULT NULL,
-  `section_id` int(10) UNSIGNED DEFAULT NULL,
+  `age_group_id` int(10) UNSIGNED DEFAULT NULL,
+  `mgender_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -3981,10 +3981,10 @@ CREATE TABLE `sm_class_sections` (
   `active_status` tinyint(4) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `class_id` int(10) UNSIGNED DEFAULT NULL,
-  `section_id` int(10) UNSIGNED DEFAULT NULL,
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `age_group_id` int(10) UNSIGNED DEFAULT NULL,
+  `mgender_id` int(10) UNSIGNED DEFAULT NULL,
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -4002,8 +4002,8 @@ CREATE TABLE `sm_class_teachers` (
   `assign_class_teacher_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -4021,8 +4021,8 @@ CREATE TABLE `sm_class_times` (
   `is_break` tinyint(4) DEFAULT NULL COMMENT '1 = tiffin time, 0 = class',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -4047,8 +4047,8 @@ CREATE TABLE `sm_complaints` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -4070,7 +4070,7 @@ CREATE TABLE `sm_contact_messages` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -4101,14 +4101,14 @@ CREATE TABLE `sm_contact_pages` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `sm_contact_pages`
 --
 
-INSERT INTO `sm_contact_pages` (`id`, `title`, `description`, `image`, `button_text`, `button_url`, `address`, `address_text`, `phone`, `phone_text`, `email`, `email_text`, `latitude`, `longitude`, `zoom_level`, `google_map_address`, `active_status`, `created_at`, `updated_at`, `created_by`, `updated_by`, `school_id`) VALUES
+INSERT INTO `sm_contact_pages` (`id`, `title`, `description`, `image`, `button_text`, `button_url`, `address`, `address_text`, `phone`, `phone_text`, `email`, `email_text`, `latitude`, `longitude`, `zoom_level`, `google_map_address`, `active_status`, `created_at`, `updated_at`, `created_by`, `updated_by`, `church_id`) VALUES
 (1, 'Contact Us', 'Have any questions? We’d love to hear from you! Here’s how to get in touch with us.', 'public/uploads/contactPage/contact.jpg', 'Learn More About Us', 'about', '56/8 Panthapath, Dhanmondi,Dhaka', 'Santa monica bullevard', '0184113625', 'Mon to Fri 9am to 6 pm', 'admin@infixedu.com', 'Send us your query anytime!', '23.707310', '90.415480', 15, 'Panthapath, Dhaka', 1, NULL, NULL, 1, 1, NULL);
 
 -- --------------------------------------------------------
@@ -4125,8 +4125,8 @@ CREATE TABLE `sm_content_types` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -4147,7 +4147,7 @@ CREATE TABLE `sm_countries` (
   `languages` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `school_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -4169,14 +4169,14 @@ CREATE TABLE `sm_courses` (
   `active_status` int(11) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `school_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `sm_courses`
 --
 
-INSERT INTO `sm_courses` (`id`, `title`, `image`, `category_id`, `overview`, `outline`, `prerequisites`, `resources`, `stats`, `active_status`, `created_at`, `updated_at`, `school_id`) VALUES
+INSERT INTO `sm_courses` (`id`, `title`, `image`, `category_id`, `overview`, `outline`, `prerequisites`, `resources`, `stats`, `active_status`, `created_at`, `updated_at`, `church_id`) VALUES
 (1, 'Dolore molestias corrupti neque qui cumque.', 'public/uploads/course/academic1.jpg', 0, 'Excepturi quasi nemo nihil est. Illum ullam temporibus qui numquam. Maxime ipsa facilis laudantium aspernatur iure. Omnis qui excepturi numquam ut. Iure deleniti laboriosam adipisci ad. Est at atque facere nihil enim non. Molestiae officiis dolor aut dolorum. Nulla corrupti quisquam veniam voluptatem aut voluptate unde illum. Tempora eum iste aut. Sequi voluptates provident aut minus. Nisi asperiores magnam voluptatem architecto. Necessitatibus quos dicta molestias eos soluta voluptas. Nesciunt architecto repudiandae vero nulla minima omnis fugiat sunt. Ea dolores aspernatur quos sed et ea. Sunt aperiam sed corporis eum vel repudiandae. Esse magnam accusantium tenetur assumenda. Voluptatum voluptatem dolorum reprehenderit quia quidem distinctio eos. Sed sed sapiente explicabo labore error minima illum. Voluptas cum sit repellat error dolor. Consequatur hic nihil optio doloremque. Id voluptatum aut accusamus eum minus eum fuga. Doloribus et iste qui quis iste perspiciatis. Quia id quaerat quidem deleniti. Fugiat qui minima iure tempore et vel. Qui sapiente non omnis ipsa. Necessitatibus ut voluptas minus rerum. Nesciunt possimus possimus et ut voluptate est. Sit porro veniam et ipsum quae dolor. Similique sequi doloremque dolores incidunt. Molestiae sit quam dolores voluptas et. Omnis corrupti delectus eaque illo fugiat necessitatibus. Ut inventore natus tenetur veritatis corporis ea quasi. Quia commodi sint consequatur officia eos. Itaque consequatur quo autem provident quibusdam et neque. Tempora nam ex deserunt atque similique eveniet alias. Dolores quibusdam voluptatem perferendis qui temporibus et. Enim repellendus beatae aliquid voluptatum. Deleniti iusto ut reiciendis maxime inventore corporis. Mollitia eum cum aut reprehenderit tempora totam numquam. Quae nesciunt repudiandae qui nihil laboriosam autem. Consequatur similique incidunt qui atque fugiat recusandae. Dicta dolor facere voluptatem corrupti.', 'Autem numquam ut quia sapiente et quibusdam in. Aut vel vitae at enim eos repudiandae sunt. Voluptatum consequatur qui molestiae voluptatem consequatur et quia. Laboriosam rerum sed dolores dicta laborum aut. Optio quam nemo est adipisci. Qui vel nihil debitis corrupti numquam. Eligendi non rerum omnis corporis vel dignissimos. Explicabo magnam est provident iste. Consequatur quia soluta eos eligendi. Debitis alias ea maiores autem. Laudantium fuga vel inventore occaecati. Labore beatae quia molestiae et qui. Sint qui esse quas tempore. Aliquam consequatur sint blanditiis dolore accusamus ipsam. Veritatis dolorem aliquam natus fuga qui qui harum. A ratione numquam possimus corporis dolores ut quia. Quia dolores aut sit sit dicta praesentium magnam harum. Delectus est quis occaecati eius expedita consequuntur enim. Qui delectus ea consequatur reprehenderit et officia dolorem. Eum libero voluptates vel consectetur quia eos in. Ullam vero et mollitia id quo. Repudiandae facilis dolor ipsam qui asperiores minus est. Dolorem ipsam omnis laudantium officiis natus consequuntur labore. Enim neque id eos praesentium accusamus est. Et aperiam a officiis optio. Esse ea ullam animi minima est aut. Voluptatibus quam facilis cum perferendis tempora ut vero. Voluptas illo sit aspernatur harum recusandae pariatur. Est sunt a tenetur natus itaque aut aliquid esse. Rem voluptas beatae libero impedit minima quidem. Blanditiis dolor quam enim aut rerum. Consequatur consectetur esse vero voluptatem deserunt. Accusamus delectus vitae quis. Totam velit et qui ipsum dolores sed. Esse fuga recusandae dolor laborum fugiat. Consequatur eum reprehenderit qui provident dolores voluptatem et. Est maxime ut voluptates quis quisquam in veniam. Doloribus ut consequatur aut assumenda. Atque quia mollitia dolorem deserunt voluptatem. Sint est animi exercitationem ipsum. Porro corrupti sequi nihil. Alias repellat quam fuga sunt rerum amet molestiae sunt.', 'Accusantium est tempora fugiat fugiat libero sed eius. Rerum molestias non aliquam. Est maiores quasi suscipit odio. Fugiat nihil dignissimos ipsum consectetur. Et nemo libero earum eligendi possimus et. Eos enim sequi earum unde. Voluptatem eligendi ipsa atque modi ea. Magnam molestias amet numquam animi voluptatibus qui consequatur. Fuga et quidem impedit quisquam occaecati dolore tenetur. Impedit reiciendis tempore et. Deleniti dolores necessitatibus et qui. Laboriosam nesciunt ipsa ea eaque architecto. Sit itaque ea rerum. Porro velit est eum similique ullam expedita cumque. Ut veritatis asperiores labore et omnis labore omnis. Cupiditate ut nostrum distinctio voluptatem quam occaecati est. Odit veritatis quisquam ipsam aut. Quia temporibus nesciunt minus natus necessitatibus. Exercitationem deleniti repellat quo. Culpa nemo veritatis hic alias enim. Nobis unde qui sunt excepturi magnam labore eum. Dignissimos enim velit autem dolore quis est et. Cupiditate laborum sequi omnis aut ex quo culpa. In numquam quas voluptates. Ad vitae distinctio nobis quas animi. Id aut alias eaque aliquid numquam. Delectus saepe et quaerat ex laudantium qui fugit. Veritatis adipisci nisi enim natus quasi officiis voluptas. Qui enim non in minus accusantium blanditiis odio. Dolor similique doloribus maxime et cupiditate in. Aspernatur cumque dignissimos ut tempora. Modi ipsa quo rerum. Fugiat id vero aut. Est fugit labore impedit exercitationem optio. Nemo quo saepe blanditiis reprehenderit nihil. Ut quaerat explicabo vitae id laudantium delectus. Sunt voluptate quo recusandae qui. Aliquid vitae in amet id qui. Odit repellat sed consequatur cumque consectetur dolor molestias. Aut rerum placeat fugit molestiae placeat sapiente atque. Accusantium sit cupiditate repellendus. Aliquid amet recusandae ea assumenda. Voluptatum consequuntur rem ut cum beatae nostrum. Similique nostrum ab eaque et quod laudantium.', 'Voluptatem tempore aut magnam non. Recusandae cum et deleniti. Ad velit sunt ratione qui ratione minima et. Delectus saepe facilis ut similique rerum beatae dolor. Quo sed quasi qui voluptate placeat excepturi illo ipsam. Dolorum ipsa et rerum ipsum qui. Iste maiores et earum et consequatur fugit et. Dolor rerum doloribus sequi numquam. Et optio qui ut odio quia qui molestiae. Dolores officia nesciunt sed est repellat. Fugit facilis molestias soluta id accusamus at similique. Est facilis reprehenderit laboriosam tempora. Consectetur exercitationem molestias repudiandae et voluptatibus consequuntur. Delectus et aperiam explicabo inventore beatae facilis sint. Odio aspernatur quia ut labore fuga beatae. Et ut sequi quasi ab voluptatem atque et. Recusandae rerum reiciendis impedit ut quia. Quia cupiditate dolorum iusto qui alias. Et provident labore expedita enim a aspernatur. Mollitia laborum non ea. Quis libero voluptatem recusandae nemo consequuntur enim et. Eveniet ut ad et sit fugiat. Voluptas repellendus error voluptatibus ullam nihil voluptatum nostrum ratione. Ipsa voluptatem quaerat minima quis ea qui voluptatum. Delectus nobis velit autem tempora magni. Ut aut culpa pariatur nesciunt non nostrum et ut. Ipsam enim reiciendis ut ea voluptas consequatur perspiciatis tempore. Beatae ut debitis debitis unde dolores. Earum assumenda voluptatem suscipit dolor eligendi. Reprehenderit quo quae consequatur harum maiores enim dolores. Consequatur nesciunt repudiandae dolorem asperiores itaque ut suscipit. Quisquam quo consectetur accusamus placeat officia fugit voluptas. Aut at vitae nostrum ut qui nam possimus quaerat. Distinctio voluptas ullam qui quae. Aut animi optio praesentium est quisquam dolores quo eaque. Iure similique et sit velit eius in. Repellat ex sequi enim voluptas accusantium libero. Beatae voluptas eos dolores consequatur ut delectus.', 'Ut libero in fugiat et quo qui est. Assumenda impedit et nemo quia. Est corporis quia ut quisquam molestiae velit. Aut fugit iure quis amet perferendis quidem dolor. Ex et voluptatem rerum sint molestias et. Assumenda ducimus blanditiis earum voluptatem voluptas. Et dolores voluptatem expedita quo. Eius quibusdam cumque ut tempora voluptatem facilis rerum. Id accusantium est tempora asperiores. Voluptatem in aut sed. Cumque nihil omnis dolor illo. Pariatur reprehenderit architecto accusantium nostrum aspernatur eos itaque animi. Omnis distinctio consequatur facilis. Officia esse tempore ut amet. Et autem fuga debitis ea iste nostrum est. Maxime dolores vitae officia. Et harum unde error aspernatur et. Soluta architecto qui harum enim veritatis deserunt atque. Id molestiae quod neque inventore provident quia tenetur. Praesentium et est voluptatem ut ut ab. Magni ea exercitationem est quaerat dignissimos aspernatur aut. Labore dicta et ducimus ut quisquam ipsa sunt minima. Molestiae a quisquam dolorem architecto. Illo sed cumque itaque consequatur. Voluptatem voluptates minus inventore laboriosam non et. Maiores ea sed quas ea cupiditate. Amet deleniti non labore non ipsum at. Omnis sed nemo consequatur maiores nobis deleniti praesentium. Sint placeat quo fugit et error. Doloribus id sunt aliquid harum officia. Pariatur exercitationem nostrum sequi nam facilis. Laudantium totam earum suscipit id tenetur. Doloribus libero saepe sequi dolores facilis nulla. Est maiores at nulla nulla sit sunt. Quia ex impedit amet nulla et et. Velit tenetur ut cum magnam maiores delectus quia ipsum. Quia doloribus unde corrupti ea ipsum sint. Fugiat cum delectus facere architecto sit. Recusandae et architecto doloremque quia sit sapiente tempora. Vero voluptatibus iusto nemo adipisci non. Doloremque ipsum asperiores aperiam fugiat qui sed dicta.', 1, '2021-04-20 05:46:49', NULL, 1),
 (2, 'Officia est et delectus laudantium aut.', 'public/uploads/course/academic3.jpg', 0, 'Alias quia suscipit aut. Eos iste quia quasi voluptatem dolores totam dolore. Deserunt et ducimus velit deserunt libero sint. Voluptatem veniam totam et quibusdam. Animi accusantium voluptatem reprehenderit consequuntur quaerat ratione. Dolores numquam et sunt excepturi. Culpa porro quis eaque est neque deleniti. Reiciendis tempora voluptatem cumque enim provident commodi. Officiis voluptatem laboriosam ipsa dolor quaerat esse. Blanditiis dolore autem ea eum qui fuga. Fugiat provident in expedita mollitia. Harum totam quam rem odit iste. Possimus est commodi suscipit in saepe maxime. Quis consequuntur ipsam cupiditate saepe commodi. Cupiditate eaque consequuntur amet a consectetur natus. Sed fugiat recusandae voluptas impedit voluptatem error. Dolorum quo quo soluta esse enim. Ut molestiae aut quidem delectus inventore distinctio nemo. Aut quia ex porro dolore et reprehenderit. Vero corrupti saepe sed ut illum laboriosam. Odio quae nostrum soluta molestiae. Voluptatem voluptatum illo est optio deserunt ut asperiores. Ea et veniam voluptas harum. Et et et neque veritatis cum ipsam. Qui culpa harum vel ut optio. Eius et praesentium ipsum. Quos blanditiis laborum debitis soluta. Nesciunt vel pariatur rerum. Aspernatur iste ea dicta modi voluptas iure. Voluptatibus rem voluptates fugit voluptas nesciunt itaque quia. Voluptas repudiandae maiores aut natus et nihil. Reiciendis accusantium eos dolorem laborum qui. Voluptates atque ut asperiores error cum quasi. Commodi autem eum iste quisquam sed culpa corporis nobis. Quae quo incidunt ipsum quia sapiente et. Inventore earum harum quia delectus vero et odio. Ipsam explicabo et facilis explicabo animi. Fugiat dicta in enim quas incidunt vel eum dolorum. Velit ex sint mollitia aliquid necessitatibus. Cum impedit voluptatum ut autem laborum laudantium. Odio qui ipsa et ut culpa. Occaecati doloremque voluptatem aut eaque autem eos velit. Dolorum totam et quia voluptatum non illo ad.', 'Eaque nemo ut quidem possimus fugiat quia quasi. Rerum doloribus magni possimus consequatur. Nisi vero suscipit temporibus maiores atque autem. Rerum minima et sint earum voluptatem. Totam quisquam et quod eligendi iusto. Possimus facilis soluta ea amet. Tempora iure qui itaque omnis fugit tempore quibusdam. Dolores esse voluptates suscipit maiores fuga magni facilis velit. Autem autem labore error consequatur. Et qui cum ipsum suscipit dolorem tempora sit tenetur. Dignissimos aut neque iusto vel qui omnis eos. Placeat cupiditate debitis ab nobis. Quia labore impedit minus aliquam et iste. Rerum impedit quo sint rerum. Explicabo aut molestiae dignissimos quam. Vel expedita temporibus est aliquam eos. Quasi quia voluptas ex inventore sed. Quia aut ut beatae nostrum necessitatibus quasi voluptates aut. Optio hic accusamus repellat. Voluptatum quae ut ut rerum modi et ea. Eligendi et reprehenderit et porro voluptatibus. Asperiores id minus natus qui. Velit porro nihil quia ea. Sequi delectus numquam ad sed qui nam. Perferendis at dolorem ratione aliquam sunt corrupti. Exercitationem harum ut aut iure quisquam est ex ut. Numquam repellat nisi fuga sunt est officia. Fugiat amet totam inventore nihil vel. Amet aut in qui voluptatum velit quasi. Commodi quaerat magni quas velit sunt omnis ad. Quam magni maxime reprehenderit repellat facilis facere assumenda alias. Quaerat sapiente id inventore qui. Beatae aspernatur itaque voluptatem. Sequi pariatur eos saepe quos in ut. Tempora voluptatem quia aut fuga quo. Sed illo quia fuga impedit alias officiis. Quis voluptatem voluptatem est nam itaque beatae exercitationem. Unde veritatis ratione doloribus facere. Sit quae minima quis est qui. Voluptatum voluptatum et velit harum facere. Dolores non similique libero occaecati. Repellat ducimus consequatur cum temporibus. Nihil dicta amet cupiditate. Consequatur blanditiis optio nemo perferendis voluptatum. Expedita occaecati veritatis hic quia magnam et. Nam rerum quia dolor.', 'Architecto mollitia voluptas est nobis. Eius tempore ea natus ut dolores ab quia. Iste velit et distinctio quia voluptas sunt. Voluptas facere ut dolor corporis qui. Aut aut suscipit perspiciatis sed animi voluptas non. Ea dolor natus harum qui soluta. Praesentium hic hic tenetur. Quia voluptatum iusto quia iste atque. Hic neque excepturi in similique mollitia ratione. Molestiae corporis libero eos eos impedit harum aliquid. In non et dolorem facere sit non assumenda. Molestias repellendus repellendus deleniti veritatis accusamus rerum odit. Incidunt dolorem quos corrupti ipsum a. Facilis enim incidunt nobis fuga est voluptatem. Quis nobis nemo qui sunt illum quaerat inventore. Et harum voluptates sunt repellat ratione blanditiis. Aut et voluptas ut nihil mollitia sapiente. Eum dicta ut optio quaerat. Eligendi tempore commodi labore quia. Voluptatum fugit doloremque quo eveniet. Blanditiis id voluptatem voluptatum dicta excepturi excepturi illo. Sunt quod facere ut. Voluptas possimus est molestiae praesentium enim exercitationem minima. Ut adipisci cumque et et quidem fugiat. Quas aspernatur ea rerum. Laboriosam ullam quis sed nostrum et aliquam. Molestiae et eos doloribus. Vel quaerat magni ad dolore cupiditate. Esse sint commodi impedit dolor consequuntur qui quaerat quaerat. Ipsa sunt ab itaque quia nesciunt asperiores. Repudiandae sint illum eos iusto consequatur qui mollitia. Est id numquam rerum consequatur quam. Possimus blanditiis voluptatem tempore voluptatum laborum libero eaque. Sint modi adipisci quibusdam consequatur aliquam. Ipsa dolorem corporis veniam blanditiis asperiores ullam. Quia doloribus omnis quidem consequatur doloremque. Harum quibusdam dolores aspernatur vitae rerum. Consequatur et numquam dolorum quisquam repudiandae dolores. Dolorum expedita nisi accusamus vel. Quas accusantium optio culpa repellendus. Beatae aut assumenda dolorum nulla qui. Et omnis minima atque dolor.', 'Iusto mollitia facilis ex. Est architecto odit libero eveniet provident qui. Vel deleniti eius libero sit magnam iusto. Impedit soluta est omnis ab blanditiis suscipit temporibus. Odio aut voluptas nam est numquam tenetur et. Aspernatur cum ut nulla aliquid officia. Dolore reprehenderit fuga voluptate officiis et incidunt facere ipsa. Eligendi esse sunt et perferendis doloribus magnam aut distinctio. Tenetur ut sapiente blanditiis rerum. Illo dolorum beatae enim quibusdam. Consectetur eveniet dolore assumenda nostrum rerum odio iusto quis. Sit vel fuga quas excepturi praesentium beatae corrupti. A dolores laboriosam quas impedit incidunt enim. Voluptate quis quidem soluta. Quisquam nulla aliquid sed quas tempora laborum. Qui quia natus delectus. Pariatur officiis non velit voluptatibus sapiente pariatur. Reprehenderit saepe quibusdam dolorum corporis minus nam. Et autem dolor harum eligendi. Culpa minima aliquam voluptatem reiciendis dolorem quisquam dolores expedita. Ipsa dolores odit rerum modi dolorem. Voluptates velit id quo laboriosam aut nulla et sit. Ut et omnis placeat. Quae quis fugit soluta et quos voluptatibus. Voluptas et rerum beatae cum qui. Tempore quia officia velit atque esse iure at. Molestias dolores minima autem explicabo aut sit. Iste quo ipsam vitae. Beatae id consequatur esse molestias. Ut explicabo officia nam quisquam. Perspiciatis facilis vitae incidunt quia ea officia. Omnis accusamus eius ipsa corporis qui. Eos facere enim minima et nulla recusandae minus. Voluptas illum fuga ipsa dolores. Doloribus magni totam voluptates natus voluptatem sint sunt. Officia quia aut repudiandae eveniet fuga quia. Non dolorem temporibus omnis magni. Qui dolore occaecati explicabo voluptas architecto accusamus dignissimos. Ut dolor qui explicabo dicta accusantium. Ut alias soluta quo fugiat commodi modi.', 'Rerum qui totam a qui. Dolorem ea id qui porro voluptatibus. Quia tenetur non est pariatur tenetur sit. In voluptatum quo molestiae. Sit neque voluptate adipisci quod. Provident neque temporibus sed in minima maiores itaque dolorum. Laborum tempore eius debitis. Excepturi excepturi dolores vitae laboriosam. Omnis non enim neque nulla dicta quae. Sed illum aut aliquid sunt. Blanditiis veritatis voluptas dolorem recusandae fugiat itaque. Fugiat reprehenderit deleniti ut et delectus rerum cumque. Et ullam dolorem consectetur sit. Consequatur rerum soluta nam et rerum fuga. Et pariatur veniam ipsa recusandae. Dolores molestiae soluta autem aut sit ducimus doloremque quasi. Animi debitis sed nostrum. Ut quasi cumque necessitatibus et sed et quasi. Hic dolorem omnis ex illo. Unde vitae aut vel laborum. Consequatur libero maxime cumque. Odit velit sunt ratione animi velit quidem. Sed saepe et quia veritatis. Maiores sapiente ea commodi facere perspiciatis. Et officia eius voluptas. Ipsa repellendus voluptatem consequatur provident. Id et autem dicta ut beatae minus et. Aut nisi suscipit ad consequatur eveniet nihil repudiandae. Totam temporibus quod suscipit reprehenderit. Libero esse ut sit officia aut. Consequatur et magnam amet accusantium. Modi et et expedita est. Quidem ut voluptatem eum labore ut asperiores. Blanditiis est et dolorem voluptatem corporis. Iure aut totam nemo. Et quo ab inventore. Accusantium omnis soluta laborum quam ut consequatur minus dolor. Ullam quis delectus suscipit facere consequatur. Eos dolores tempora illo ut. Est voluptate quia eum quis debitis facilis. Dolor explicabo eos omnis et quis officiis dicta. Quis omnis enim ex repellendus atque dolore. Sequi fugit rerum non et quis nulla. Quasi nemo sint a consequuntur labore dignissimos. Accusamus magnam deleniti facilis quas. Quo laboriosam sit quibusdam dolorum culpa. Voluptatem corporis officiis aut quo ipsum sint vitae. Officiis cum commodi doloribus unde ut excepturi quis accusamus.', 1, '2021-04-20 05:46:49', NULL, 1),
 (3, 'Sed tenetur quo magnam ut.', 'public/uploads/course/academic5.jpg', 0, 'Doloremque mollitia autem omnis dolorem eum rerum. Aut dolor ut vel. Dolor beatae explicabo magnam voluptatem ex ut quia sed. Eaque ad omnis sapiente necessitatibus et itaque quae. Nemo veniam est repellat ut amet consequatur. Sit vel ut qui consequatur commodi nisi sapiente debitis. At nostrum facilis aut ea omnis molestiae sit. Dolorem nobis omnis occaecati architecto. Est ducimus et minima eveniet. Reiciendis sit numquam officia illo quos dolorem. Dignissimos in autem natus libero consequatur eveniet sapiente. Minus animi aliquid et molestias qui iusto. Earum ea qui quia repellendus qui. Est voluptatibus vero repellat et ipsa autem tempore. Eum vero et ut saepe autem quia. Non dolor reiciendis alias voluptatum cupiditate nam sint. Quis sit nesciunt illo in. Sunt veritatis autem voluptatibus eos. Quo laborum quod non non quia vitae ut. At libero quod qui sit eveniet expedita architecto. Vitae et explicabo odit consequuntur. Consequuntur blanditiis sit eius et et ut. At dolor nihil sint. Pariatur sunt velit sed. Quasi explicabo tenetur consectetur rerum provident perferendis. Minus necessitatibus quo laudantium distinctio necessitatibus vero molestiae consequuntur. Deleniti odit ut expedita consequatur. Vitae porro iste accusamus. Praesentium sunt illo quasi et adipisci iure enim. Qui ipsa ut et laudantium ut eos. Praesentium ut non libero quo corporis et non. Omnis non sint eligendi quia maiores itaque quia pariatur. Dolor saepe nemo vel ut illo explicabo. Cumque voluptatem et illum. Consectetur eveniet eum quo doloribus sint. Fuga qui mollitia ut a in rerum reiciendis velit. Sed quaerat autem in atque et. Veniam quis ut laudantium nobis quidem. Unde quisquam sed sapiente delectus et dolorem. Ut maiores itaque eveniet illum hic quas. Dolor inventore fugiat atque voluptas. Dolor quasi ea et nostrum sequi aliquam. Deleniti ut aut ipsum iste maxime ut laudantium. Aliquam eveniet alias velit et magnam.', 'Et quibusdam dolor quis sed veniam explicabo consectetur. Voluptas voluptatem repudiandae illo repellendus suscipit recusandae. At quis vero maxime sapiente sit consectetur enim. Qui quaerat vel optio sit quas vel. Saepe nemo quis ut quae. Id aut ut maiores qui. Temporibus rerum non vitae ea nam consectetur vel. Labore aliquid non error sed. Est ipsam repudiandae autem voluptate iure necessitatibus autem. Earum rerum modi et cum iure aliquid nobis. Et perspiciatis temporibus perspiciatis nihil molestiae. Magnam impedit fugit voluptatem ab earum. Itaque sunt non sapiente dolorem et. Dolores in eaque sed illo tenetur. Odio consequatur maiores voluptatem tempora. Qui aut debitis repellat eveniet nihil nihil. Consequuntur optio reprehenderit iure. Nihil dignissimos repellendus aperiam eos eveniet sint. Tempora sit ratione doloremque harum. Ipsa consequatur tempora consequatur deleniti officiis ea ullam. Occaecati omnis praesentium suscipit suscipit aut dolorem omnis. Hic iure earum fugit. Unde dolorum at modi velit doloribus. Veniam vel eligendi cumque nihil. Sapiente soluta laborum velit fuga. Magnam laudantium omnis quasi fuga non. Tenetur laudantium debitis est consequatur est. Rem earum asperiores omnis voluptas quae fuga similique. Impedit dolore aut blanditiis. Sequi a ipsa sit repudiandae qui. Est cupiditate consequatur architecto odit minima. Ad quam error harum accusamus. Aut omnis doloremque labore repudiandae. Ea et beatae unde. Qui laudantium dolores aliquid inventore minima ipsa doloremque. Sint aut in qui delectus ut. Enim rerum saepe in consequatur eos fuga nostrum. Excepturi itaque accusantium vitae sed molestias et dolorem cumque. Fugit eius autem non incidunt doloribus dolor velit sunt. Quam ea aut ut aut. Voluptatum unde et voluptatem ab et. Voluptatibus soluta qui fugit at illum voluptatem perferendis. Aut et nostrum in temporibus ut vitae commodi.', 'Dolorem harum autem est perspiciatis et. Officia in sunt et et et quis eum. Vitae unde dolorem dolor et repudiandae. Exercitationem quos accusamus deleniti dolorem quia consequuntur dolorem doloremque. Voluptas autem sed facere unde reprehenderit culpa non. Officiis minus corrupti et dolore. Tenetur doloribus numquam tempore adipisci culpa. Adipisci officiis et quas amet. Sapiente similique nihil officiis rerum. Fuga nihil veritatis voluptatibus. Sint nulla minima vitae laudantium blanditiis dolores dolores voluptatibus. Consequuntur facere ab dolores aut ipsum sit magnam. Odit suscipit consectetur placeat ducimus aliquam nostrum quisquam. Maxime autem cupiditate adipisci commodi eveniet facere sed. Voluptas delectus nihil ab. Accusantium voluptas accusamus voluptates nemo commodi quis velit. Et nesciunt sequi nihil tempore autem vel. Unde minima eligendi quia. Vero ex eos in fugit nostrum nesciunt. Nesciunt perspiciatis omnis sed eum. Et qui modi itaque sit voluptates sunt at. Placeat animi quam voluptatem et in. Et similique voluptatem error fugiat unde. At expedita id sint et velit earum. Et rem quam est mollitia accusantium sed consectetur et. Consectetur architecto et necessitatibus omnis. Quia voluptatem repellat suscipit non minus. Omnis mollitia commodi saepe blanditiis dolorem. Aut aliquam voluptatum commodi. Nobis ea at aperiam modi laborum voluptatem quo. Aliquam deserunt qui voluptate numquam pariatur rem. Inventore dolorem qui vel. Quis beatae nemo quia non. Praesentium eligendi rerum voluptatibus sint. Asperiores repudiandae molestiae ipsum quasi sunt delectus. Maiores repudiandae deleniti exercitationem inventore iusto. Asperiores vel ea expedita hic. Nesciunt natus deserunt asperiores nemo hic placeat. Temporibus porro neque quia perferendis. Asperiores et reiciendis aliquid quia. Quis pariatur eos voluptas dolorum dolor.', 'Quibusdam vel error recusandae harum ut modi repellat. Vel corrupti tempore consequuntur quos modi repellat. Sunt aut neque quidem nulla nesciunt pariatur commodi voluptatem. Velit et dolores ducimus sit eligendi. Voluptatem eius error ut ab nemo nostrum. Ducimus reiciendis fugiat repudiandae aut esse ex quibusdam. Est molestiae quo dolor sapiente corporis fuga laborum. Itaque voluptates dolorem ut quod iste sit non. In mollitia quae consequatur. Deleniti adipisci sit reprehenderit repellat cupiditate quasi. Modi sed natus vitae eum repellat possimus similique quaerat. Pariatur neque voluptatem magni dolorem et repellendus. Eum quas autem est officia quibusdam sequi libero qui. Qui iure non perspiciatis ea quia sunt. Neque adipisci inventore reprehenderit exercitationem aut. Suscipit laborum facilis eaque officia dolorem provident. Commodi harum non eaque ea sed. Dolorum et est doloribus harum voluptate et. Sed iure commodi mollitia non exercitationem est. Error officiis officia sequi dolorum aut. Molestias repellat deserunt nostrum in maiores. Eum fugiat non ex. Rerum laboriosam velit consequuntur aut ex quo commodi similique. Ducimus maxime praesentium corrupti in eum et. Cum ut facere atque in quasi qui fugit. Beatae veritatis cum odit occaecati nulla mollitia architecto. Aut aut accusamus dolorum vitae dicta enim. Aliquid odio ducimus culpa quibusdam. Ex qui fugit facilis expedita est quidem. Soluta iusto ad hic animi corporis asperiores. Id illum et consequatur dolorum rerum et alias. Perspiciatis facilis ea voluptas nam cum. Fugit ut iusto sed distinctio. Accusamus sunt rerum eos commodi saepe. Laborum molestiae natus repudiandae eius aut consectetur vel id. Ratione eos similique sed animi eos consequatur. A velit asperiores veniam. Dolor modi doloribus explicabo et. Laborum eius in quia inventore quia. Libero vel harum rerum debitis quibusdam. Ratione iste et rerum similique praesentium magnam.', 'Distinctio impedit pariatur dignissimos impedit eaque quos laborum. Voluptatibus voluptatem nisi omnis officiis voluptate iusto. Fugiat et esse minima aliquam eos. Est maxime dolores tenetur quasi temporibus. Voluptatem recusandae quos aut nulla similique et aut. Veniam alias maiores voluptatem. Unde assumenda consectetur enim ipsum consectetur doloribus ipsa. Voluptatem eum voluptas quia ut excepturi. Sed dolorem illum quod quam iusto possimus. Omnis pariatur quis quae dolor quis doloremque optio omnis. Incidunt numquam expedita nostrum. Quasi qui ab a adipisci soluta dignissimos et velit. Repellat a soluta et molestias. Architecto mollitia sequi ea labore repudiandae. Dicta exercitationem blanditiis voluptatibus odit molestiae voluptatem ipsa est. Quod harum sapiente corporis quia. Molestiae a tenetur ipsa porro voluptatibus. Quas maxime tempore ullam cumque sunt. Sit nisi repudiandae laboriosam voluptas. Et ea amet accusamus unde et quis illum. Nobis voluptas occaecati sit et veritatis. Voluptates tempora dignissimos vel temporibus est repudiandae. Velit quia assumenda quaerat amet. Fugit temporibus aperiam qui et placeat. Et quis aut voluptatem aliquam illum delectus. Magni aliquam nulla odio quo fugit cum dignissimos nam. Quia molestiae provident enim delectus eum qui sed. Exercitationem incidunt ducimus iusto. Corrupti voluptas aut voluptate nostrum totam omnis. Similique sint sunt inventore architecto sed quia. Maxime velit optio quo animi deserunt harum. Repellat perferendis unde ea et et error sit. Non reprehenderit quaerat error et omnis doloribus et. Sint reprehenderit necessitatibus commodi praesentium et. Ea et sunt commodi rerum ab odio. Aliquam velit cum molestiae quis aperiam. Facilis dicta tempore molestias aut quia. Qui velit qui non voluptatem nostrum saepe. Explicabo eos quo dolores velit. Consequatur aliquam dolorem facilis omnis.', 1, '2021-04-20 05:46:49', NULL, 1);
@@ -4191,7 +4191,7 @@ CREATE TABLE `sm_course_categories` (
   `id` int(10) UNSIGNED NOT NULL,
   `category_name` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `category_image` text COLLATE utf8mb4_unicode_ci,
-  `school_id` bigint(20) UNSIGNED NOT NULL DEFAULT '1',
+  `church_id` bigint(20) UNSIGNED NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -4218,14 +4218,14 @@ CREATE TABLE `sm_course_pages` (
   `is_parent` tinyint(1) NOT NULL DEFAULT '1',
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `sm_course_pages`
 --
 
-INSERT INTO `sm_course_pages` (`id`, `created_at`, `updated_at`, `title`, `description`, `main_title`, `main_description`, `image`, `main_image`, `button_text`, `button_url`, `active_status`, `is_parent`, `created_by`, `updated_by`, `school_id`) VALUES
+INSERT INTO `sm_course_pages` (`id`, `created_at`, `updated_at`, `title`, `description`, `main_title`, `main_description`, `image`, `main_image`, `button_text`, `button_url`, `active_status`, `is_parent`, `created_by`, `updated_by`, `church_id`) VALUES
 (1, NULL, NULL, 'Course Infix', 'Lisus consequat sapien metus dis urna, facilisi. Nonummy rutrum eu lacinia platea a, ipsum parturient, orci tristique. Nisi diam natoque.', 'Under Graduate Education', 'INFIX has all in one place. You’ll find everything what you are looking into education management system software. We care! User will never bothered in our real eye catchy user friendly UI & UX  Interface design. You know! Smart Idea always comes to well planners. And Our INFIX is Smart for its Well Documentation. Explore in new support world! It’s now faster & quicker. You’ll find us on Support Ticket, Email, Skype, WhatsApp.', 'public/uploads/about_page/about.jpg', 'public/uploads/about_page/about-img.jpg', 'Learn More News ', 'news', 1, 1, 1, 1, 1),
 (2, NULL, NULL, 'Course Infix', 'Lisus consequat sapien metus dis urna, facilisi. Nonummy rutrum eu lacinia platea a, ipsum parturient, orci tristique. Nisi diam natoque.', NULL, NULL, 'public/uploads/about_page/about.jpg', NULL, 'Learn More News ', 'news', 1, 0, 1, 1, 1);
 
@@ -4242,15 +4242,15 @@ CREATE TABLE `sm_currencies` (
   `symbol` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `sm_currencies`
 --
 
-INSERT INTO `sm_currencies` (`id`, `name`, `code`, `symbol`, `created_at`, `updated_at`, `school_id`, `academic_id`) VALUES
+INSERT INTO `sm_currencies` (`id`, `name`, `code`, `symbol`, `created_at`, `updated_at`, `church_id`, `church_year_id`) VALUES
 (1, 'Leke', 'ALL', 'Lek', '2021-04-20 05:46:23', '2021-04-20 05:46:23', 1, 1),
 (2, 'Dollars', 'USD', '$', '2021-04-20 05:46:23', '2021-04-20 05:46:23', 1, 1),
 (3, 'Afghanis', 'AFN', '؋', '2021-04-20 05:46:23', '2021-04-20 05:46:23', 1, 1),
@@ -4440,8 +4440,8 @@ INSERT INTO `sm_custom_links` (`id`, `title1`, `title2`, `title3`, `title4`, `li
 
 CREATE TABLE `sm_custom_temporary_results` (
   `id` int(10) UNSIGNED NOT NULL,
-  `student_id` int(11) DEFAULT NULL,
-  `admission_no` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `member_id` int(11) DEFAULT NULL,
+  `registration_no` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `full_name` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `term1` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `gpa1` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -4451,8 +4451,8 @@ CREATE TABLE `sm_custom_temporary_results` (
   `gpa3` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `final_result` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `final_grade` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1',
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -4472,7 +4472,7 @@ CREATE TABLE `sm_dashboard_settings` (
   `role_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -4490,14 +4490,14 @@ CREATE TABLE `sm_date_formats` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `sm_date_formats`
 --
 
-INSERT INTO `sm_date_formats` (`id`, `format`, `normal_view`, `active_status`, `created_at`, `updated_at`, `created_by`, `updated_by`, `school_id`) VALUES
+INSERT INTO `sm_date_formats` (`id`, `format`, `normal_view`, `active_status`, `created_at`, `updated_at`, `created_by`, `updated_by`, `church_id`) VALUES
 (1, 'jS M, Y', '17th May, 2019', 1, '2021-04-20 05:36:12', '2021-04-20 05:36:12', 1, 1, 1),
 (2, 'Y-m-d', '2019-05-17', 1, '2021-04-20 05:36:13', '2021-04-20 05:36:13', 1, 1, 1),
 (3, 'Y-d-m', '2019-17-05', 1, '2021-04-20 05:36:13', '2021-04-20 05:36:13', 1, 1, 1),
@@ -4528,7 +4528,7 @@ CREATE TABLE `sm_designations` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
+  `church_id` int(10) UNSIGNED DEFAULT '1',
   `is_saas` int(10) UNSIGNED DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -4536,7 +4536,7 @@ CREATE TABLE `sm_designations` (
 -- Dumping data for table `sm_designations`
 --
 
-INSERT INTO `sm_designations` (`id`, `title`, `active_status`, `created_at`, `updated_at`, `created_by`, `updated_by`, `school_id`, `is_saas`) VALUES
+INSERT INTO `sm_designations` (`id`, `title`, `active_status`, `created_at`, `updated_at`, `created_by`, `updated_by`, `church_id`, `is_saas`) VALUES
 (1, 'Principal', 1, '2021-04-20 05:31:32', NULL, 1, 1, 1, 0);
 
 -- --------------------------------------------------------
@@ -4557,8 +4557,8 @@ CREATE TABLE `sm_dormitory_lists` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -4578,8 +4578,8 @@ CREATE TABLE `sm_email_settings` (
   `mail_username` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `mail_password` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `mail_encryption` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1',
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1',
   `active_status` tinyint(4) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -4589,7 +4589,7 @@ CREATE TABLE `sm_email_settings` (
 -- Dumping data for table `sm_email_settings`
 --
 
-INSERT INTO `sm_email_settings` (`id`, `email_engine_type`, `from_name`, `from_email`, `mail_driver`, `mail_host`, `mail_port`, `mail_username`, `mail_password`, `mail_encryption`, `school_id`, `academic_id`, `active_status`, `created_at`, `updated_at`) VALUES
+INSERT INTO `sm_email_settings` (`id`, `email_engine_type`, `from_name`, `from_email`, `mail_driver`, `mail_host`, `mail_port`, `mail_username`, `mail_password`, `mail_encryption`, `church_id`, `church_year_id`, `active_status`, `created_at`, `updated_at`) VALUES
 (1, 'smtp', 'System Admin', 'admin@infixedu.com', 'smtp', 'smtp.gmail.com', '587', 'spn5@spondonit.com', '123456', 'tls', 1, 1, 0, NULL, NULL),
 (2, 'php', 'System Admin', 'admin@infixedu.com', 'php', '', '', '', '', '', 1, 1, 1, NULL, NULL);
 
@@ -4611,8 +4611,8 @@ CREATE TABLE `sm_email_sms_logs` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -4635,15 +4635,15 @@ CREATE TABLE `sm_events` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `sm_events`
 --
 
-INSERT INTO `sm_events` (`id`, `event_title`, `for_whom`, `event_location`, `event_des`, `from_date`, `to_date`, `uplad_image_file`, `active_status`, `created_at`, `updated_at`, `created_by`, `updated_by`, `school_id`, `academic_id`) VALUES
+INSERT INTO `sm_events` (`id`, `event_title`, `for_whom`, `event_location`, `event_des`, `from_date`, `to_date`, `uplad_image_file`, `active_status`, `created_at`, `updated_at`, `created_by`, `updated_by`, `church_id`, `church_year_id`) VALUES
 (1, 'Biggest Robotics Competition in Campus', NULL, 'Main Campus', 'Amet enim curabitur urna. Faucibus tincidunt pellentesque varius blandit fermentum tristique vulputate sodales tempus est hendrerit est tincidunt ligula lorem tellus eu malesuada tortor, lacinia posuere. Conubia Egestas sed senectus.', '2019-06-12', '2019-06-21', 'public/uploads/events/event1.jpg', 1, NULL, NULL, 1, 1, 1, 1),
 (2, 'Great Science Fair in main campus', NULL, 'Main Campus', 'Magna odio in. Facilisi arcu nec augue lacus augue maecenas hendrerit euismod cras vulputate dignissim pellentesque sociis est. Ut congue Leo dignissim. Fermentum curabitur pede bibendum aptent, quam, ultrices Nam convallis sed condimentum. Adipiscing mollis lorem integer eget neque, vel.', '2019-06-12', '2019-06-21', 'public/uploads/events/event2.jpg', 1, NULL, NULL, 1, 1, 1, 1),
 (3, 'Seminar on Internet of Thing in Campus', NULL, 'Main Campus', 'Libero erat porta ridiculus semper mi eleifend. Nisl nulla. Tempus, rhoncus per. Varius. Pharetra nisi potenti ut ultrices sociosqu adipiscing at. Suscipit vulputate senectus. Nostra. Aliquam fringilla eleifend accumsan dui.', '2019-06-12', '2019-06-21', 'public/uploads/events/event3.jpg', 1, NULL, NULL, 1, 1, 1, 1),
@@ -4662,13 +4662,13 @@ CREATE TABLE `sm_exams` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `exam_type_id` int(10) UNSIGNED DEFAULT NULL,
-  `class_id` int(10) UNSIGNED DEFAULT NULL,
-  `section_id` int(10) UNSIGNED DEFAULT NULL,
+  `age_group_id` int(10) UNSIGNED DEFAULT NULL,
+  `mgender_id` int(10) UNSIGNED DEFAULT NULL,
   `subject_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -4684,12 +4684,12 @@ CREATE TABLE `sm_exam_attendances` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `subject_id` int(10) UNSIGNED DEFAULT NULL,
   `exam_id` int(10) UNSIGNED DEFAULT NULL,
-  `class_id` int(10) UNSIGNED DEFAULT NULL,
-  `section_id` int(10) UNSIGNED DEFAULT NULL,
+  `age_group_id` int(10) UNSIGNED DEFAULT NULL,
+  `mgender_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -4705,11 +4705,11 @@ CREATE TABLE `sm_exam_attendance_children` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `exam_attendance_id` int(10) UNSIGNED DEFAULT NULL,
-  `student_id` int(10) UNSIGNED DEFAULT NULL,
+  `member_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -4727,12 +4727,12 @@ CREATE TABLE `sm_exam_marks_registers` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `exam_id` int(10) UNSIGNED NOT NULL,
-  `student_id` int(10) UNSIGNED DEFAULT NULL,
+  `member_id` int(10) UNSIGNED DEFAULT NULL,
   `subject_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -4752,12 +4752,12 @@ CREATE TABLE `sm_exam_schedules` (
   `subject_id` int(10) UNSIGNED DEFAULT NULL,
   `exam_term_id` int(10) UNSIGNED DEFAULT NULL,
   `exam_id` int(10) UNSIGNED DEFAULT NULL,
-  `class_id` int(10) UNSIGNED DEFAULT NULL,
-  `section_id` int(10) UNSIGNED DEFAULT NULL,
+  `age_group_id` int(10) UNSIGNED DEFAULT NULL,
+  `mgender_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -4781,8 +4781,8 @@ CREATE TABLE `sm_exam_schedule_subjects` (
   `subject_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -4802,15 +4802,15 @@ CREATE TABLE `sm_exam_settings` (
   `active_status` tinyint(4) DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `sm_exam_settings`
 --
 
-INSERT INTO `sm_exam_settings` (`id`, `exam_type`, `title`, `publish_date`, `start_date`, `end_date`, `file`, `active_status`, `created_at`, `updated_at`, `school_id`, `academic_id`) VALUES
+INSERT INTO `sm_exam_settings` (`id`, `exam_type`, `title`, `publish_date`, `start_date`, `end_date`, `file`, `active_status`, `created_at`, `updated_at`, `church_id`, `church_year_id`) VALUES
 (1, 1, 'Exam Controller', '2021-04-20', '2021-04-20', '2021-04-20', 'public/uploads/exam/signature.png', 1, '2021-04-20 05:51:37', '2021-04-20 05:51:37', 1, 1);
 
 -- --------------------------------------------------------
@@ -4827,14 +4827,14 @@ CREATE TABLE `sm_exam_setups` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `exam_id` int(10) UNSIGNED DEFAULT NULL,
-  `class_id` int(10) UNSIGNED DEFAULT NULL,
+  `age_group_id` int(10) UNSIGNED DEFAULT NULL,
   `subject_id` int(10) UNSIGNED DEFAULT NULL,
-  `section_id` int(10) UNSIGNED DEFAULT NULL,
+  `mgender_id` int(10) UNSIGNED DEFAULT NULL,
   `exam_term_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -4852,8 +4852,8 @@ CREATE TABLE `sm_exam_types` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -4871,8 +4871,8 @@ CREATE TABLE `sm_expense_heads` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -4890,11 +4890,11 @@ CREATE TABLE `sm_fees_assigns` (
   `applied_discount` double(10,2) DEFAULT NULL,
   `fees_master_id` int(10) UNSIGNED DEFAULT NULL,
   `fees_discount_id` int(10) UNSIGNED DEFAULT NULL,
-  `student_id` int(10) UNSIGNED DEFAULT NULL,
+  `member_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -4908,7 +4908,7 @@ CREATE TABLE `sm_fees_assign_discounts` (
   `active_status` tinyint(4) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `student_id` int(10) UNSIGNED DEFAULT NULL,
+  `member_id` int(10) UNSIGNED DEFAULT NULL,
   `fees_discount_id` int(10) UNSIGNED DEFAULT NULL,
   `fees_type_id` int(10) UNSIGNED DEFAULT NULL,
   `fees_group_id` int(10) UNSIGNED DEFAULT NULL,
@@ -4916,8 +4916,8 @@ CREATE TABLE `sm_fees_assign_discounts` (
   `unapplied_amount` double DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -4932,11 +4932,11 @@ CREATE TABLE `sm_fees_carry_forwards` (
   `active_status` tinyint(4) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `student_id` int(10) UNSIGNED DEFAULT NULL,
+  `member_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -4957,8 +4957,8 @@ CREATE TABLE `sm_fees_discounts` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -4980,8 +4980,8 @@ CREATE TABLE `sm_fees_groups` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -5001,8 +5001,8 @@ CREATE TABLE `sm_fees_masters` (
   `fees_type_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -5027,11 +5027,11 @@ CREATE TABLE `sm_fees_payments` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `fees_discount_id` int(10) UNSIGNED DEFAULT NULL,
   `fees_type_id` int(10) UNSIGNED DEFAULT NULL,
-  `student_id` int(10) UNSIGNED DEFAULT NULL,
+  `member_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -5050,8 +5050,8 @@ CREATE TABLE `sm_fees_types` (
   `fees_group_id` int(10) UNSIGNED DEFAULT '1',
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -5098,9 +5098,9 @@ INSERT INTO `sm_frontend_persmissions` (`id`, `name`, `parent_id`, `is_published
 
 CREATE TABLE `sm_general_settings` (
   `id` int(10) UNSIGNED NOT NULL,
-  `school_name` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `church_name` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `site_title` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `school_code` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `church_code` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `address` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `phone` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `email` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -5140,7 +5140,7 @@ CREATE TABLE `sm_general_settings` (
   `language_id` int(10) UNSIGNED DEFAULT '1',
   `date_format_id` int(10) UNSIGNED DEFAULT '1',
   `ss_page_load` int(11) DEFAULT '3',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
+  `church_id` int(10) UNSIGNED DEFAULT '1',
   `software_version` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `email_driver` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'smtp',
   `Lesson` int(11) DEFAULT '1',
@@ -5158,14 +5158,14 @@ CREATE TABLE `sm_general_settings` (
   `Zoom` int(11) DEFAULT '0',
   `SaasSubscription` int(11) DEFAULT '0',
   `SaasRolePermission` int(11) DEFAULT '0',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `sm_general_settings`
 --
 
-INSERT INTO `sm_general_settings` (`id`, `school_name`, `site_title`, `school_code`, `address`, `phone`, `email`, `file_size`, `currency`, `currency_symbol`, `promotionSetting`, `logo`, `favicon`, `system_version`, `active_status`, `currency_code`, `language_name`, `session_year`, `system_purchase_code`, `system_activated_date`, `last_update`, `envato_user`, `envato_item_id`, `system_domain`, `copyright_text`, `api_url`, `website_btn`, `dashboard_btn`, `report_btn`, `style_btn`, `ltl_rtl_btn`, `lang_btn`, `website_url`, `ttl_rtl`, `phone_number_privacy`, `created_at`, `updated_at`, `week_start_id`, `time_zone_id`, `session_id`, `language_id`, `date_format_id`, `ss_page_load`, `school_id`, `software_version`, `email_driver`, `Lesson`, `Chat`, `FeesCollection`, `income_head_id`, `InfixBiometrics`, `ResultReports`, `TemplateSettings`, `MenuManage`, `RolePermission`, `RazorPay`, `Saas`, `ParentRegistration`, `Zoom`, `SaasSubscription`, `SaasRolePermission`, `academic_id`) VALUES
+INSERT INTO `sm_general_settings` (`id`, `church_name`, `site_title`, `church_code`, `address`, `phone`, `email`, `file_size`, `currency`, `currency_symbol`, `promotionSetting`, `logo`, `favicon`, `system_version`, `active_status`, `currency_code`, `language_name`, `session_year`, `system_purchase_code`, `system_activated_date`, `last_update`, `envato_user`, `envato_item_id`, `system_domain`, `copyright_text`, `api_url`, `website_btn`, `dashboard_btn`, `report_btn`, `style_btn`, `ltl_rtl_btn`, `lang_btn`, `website_url`, `ttl_rtl`, `phone_number_privacy`, `created_at`, `updated_at`, `week_start_id`, `time_zone_id`, `session_id`, `language_id`, `date_format_id`, `ss_page_load`, `church_id`, `software_version`, `email_driver`, `Lesson`, `Chat`, `FeesCollection`, `income_head_id`, `InfixBiometrics`, `ResultReports`, `TemplateSettings`, `MenuManage`, `RolePermission`, `RazorPay`, `Saas`, `ParentRegistration`, `Zoom`, `SaasSubscription`, `SaasRolePermission`, `church_year_id`) VALUES
 (1, 'Infix Edu', 'Infix Education software', '12345678', '89/2 Panthapath, Dhaka 1215, Bangladesh', '+8801841412141', 'info@spondonit.com', '102400', 'USD', '$', 0, 'public/uploads/settings/logo.png', 'public/uploads/settings/favicon.png', '6.0', 1, 'USD', 'en', '2020', NULL, '2021-04-20', '2021-04-20', NULL, NULL, 'http://localhost', 'Copyright &copy; 2020 All rights reserved | This application is made by Codethemes', 1, 1, 1, 1, 1, 1, 1, NULL, 2, 1, NULL, NULL, NULL, 51, 1, 1, 1, 3, 1, '6.0', 'smtp', 1, 1, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1);
 
 -- --------------------------------------------------------
@@ -5206,8 +5206,8 @@ CREATE TABLE `sm_holidays` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -5228,13 +5228,13 @@ CREATE TABLE `sm_homeworks` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `evaluated_by` int(10) UNSIGNED DEFAULT NULL,
-  `class_id` int(10) UNSIGNED DEFAULT NULL,
-  `section_id` int(10) UNSIGNED DEFAULT NULL,
+  `age_group_id` int(10) UNSIGNED DEFAULT NULL,
+  `mgender_id` int(10) UNSIGNED DEFAULT NULL,
   `subject_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -5251,12 +5251,12 @@ CREATE TABLE `sm_homework_students` (
   `active_status` tinyint(4) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `student_id` int(10) UNSIGNED DEFAULT NULL,
+  `member_id` int(10) UNSIGNED DEFAULT NULL,
   `homework_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -5299,8 +5299,8 @@ CREATE TABLE `sm_hourly_rates` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -5320,8 +5320,8 @@ CREATE TABLE `sm_hr_payroll_earn_deducs` (
   `payroll_generate_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -5351,8 +5351,8 @@ CREATE TABLE `sm_hr_payroll_generates` (
   `staff_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -5376,8 +5376,8 @@ CREATE TABLE `sm_hr_salary_templates` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -5394,7 +5394,7 @@ CREATE TABLE `sm_human_departments` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
+  `church_id` int(10) UNSIGNED DEFAULT '1',
   `is_saas` int(10) UNSIGNED DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -5402,7 +5402,7 @@ CREATE TABLE `sm_human_departments` (
 -- Dumping data for table `sm_human_departments`
 --
 
-INSERT INTO `sm_human_departments` (`id`, `name`, `active_status`, `created_at`, `updated_at`, `created_by`, `updated_by`, `school_id`, `is_saas`) VALUES
+INSERT INTO `sm_human_departments` (`id`, `name`, `active_status`, `created_at`, `updated_at`, `created_by`, `updated_by`, `church_id`, `is_saas`) VALUES
 (1, 'Admin', 1, '2021-04-20 05:31:35', NULL, 1, 1, 1, 0);
 
 -- --------------------------------------------------------
@@ -5420,8 +5420,8 @@ CREATE TABLE `sm_income_heads` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -5439,7 +5439,7 @@ CREATE TABLE `sm_instructions` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -5462,8 +5462,8 @@ CREATE TABLE `sm_inventory_payments` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -5480,8 +5480,8 @@ CREATE TABLE `sm_items` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `item_category_id` int(10) UNSIGNED DEFAULT NULL,
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -5495,8 +5495,8 @@ CREATE TABLE `sm_item_categories` (
   `category_name` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -5522,8 +5522,8 @@ CREATE TABLE `sm_item_issues` (
   `item_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -5551,8 +5551,8 @@ CREATE TABLE `sm_item_receives` (
   `store_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -5574,8 +5574,8 @@ CREATE TABLE `sm_item_receive_children` (
   `item_receive_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -5604,8 +5604,8 @@ CREATE TABLE `sm_item_sells` (
   `role_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -5627,8 +5627,8 @@ CREATE TABLE `sm_item_sell_children` (
   `item_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -5644,8 +5644,8 @@ CREATE TABLE `sm_item_stores` (
   `description` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -5665,14 +5665,14 @@ CREATE TABLE `sm_languages` (
   `lang_id` int(10) UNSIGNED DEFAULT '1',
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `sm_languages`
 --
 
-INSERT INTO `sm_languages` (`id`, `language_name`, `native`, `language_universal`, `active_status`, `created_at`, `updated_at`, `lang_id`, `created_by`, `updated_by`, `school_id`) VALUES
+INSERT INTO `sm_languages` (`id`, `language_name`, `native`, `language_universal`, `active_status`, `created_at`, `updated_at`, `lang_id`, `created_by`, `updated_by`, `church_id`) VALUES
 (1, 'English', 'English', 'en', 1, '2021-04-20 05:36:10', '2021-04-20 05:36:10', 19, 1, 1, 1),
 (2, 'Bengali', 'বাংলা', 'bn', 0, '2021-04-20 05:36:11', '2021-04-20 05:36:11', 9, 1, 1, 1),
 (3, 'Spanish', 'Español', 'es', 0, '2021-04-20 05:36:11', '2021-04-20 05:36:11', 20, 1, 1, 1),
@@ -5750,7 +5750,7 @@ INSERT INTO `sm_language_phrases` (`id`, `modules`, `default_phrases`, `en`, `es
 (46, '0', 'manager', 'Manager', 'manager', 'পরিচালনা', 'Manager', 1, '2021-04-20 05:44:43', '2021-04-20 05:44:43'),
 (47, '0', 'child', 'Child', 'Child', 'শিশু', 'Child', 1, '2021-04-20 05:44:43', '2021-04-20 05:44:43'),
 (48, '0', 'running', 'Running', 'Running', 'চলমান', 'Running', 1, '2021-04-20 05:44:43', '2021-04-20 05:44:43'),
-(49, '0', 'select_academic_year', 'Select Academic Year', 'Select Academic Year', 'একাডেমিক বছর নির্বাচন করুন', 'Select Academic Year', 1, '2021-04-20 05:44:43', '2021-04-20 05:44:43'),
+(49, '0', 'select_church_year', 'Select Academic Year', 'Select Academic Year', 'একাডেমিক বছর নির্বাচন করুন', 'Select Academic Year', 1, '2021-04-20 05:44:43', '2021-04-20 05:44:43'),
 (50, '0', 'PDF', 'PDF', 'PDF', 'পিডিএফ', 'PDF', 1, '2021-04-20 05:44:43', '2021-04-20 05:44:43'),
 (51, '0', 'biometrics', 'Biometrics', 'Biometrics', 'বায়োমেট্রিক্স', 'Biometrics', 1, '2021-04-20 05:44:43', '2021-04-20 05:44:43'),
 (52, '1', 'admin_section', 'Admin Section', 'Sección de Administración', 'প্রশাসন বিভাগ', 'Section Admin', 1, '2021-04-20 05:44:43', '2021-04-20 05:44:43'),
@@ -5841,7 +5841,7 @@ INSERT INTO `sm_language_phrases` (`id`, `modules`, `default_phrases`, `en`, `es
 (137, '1', 'date_of_birth', 'Date Of Birth', 'Fecha de nacimiento', 'জন্ম তারিখ', 'Date de naissance', 1, '2021-04-20 05:44:49', '2021-04-20 05:44:49'),
 (138, '1', 'gender', 'Gender', 'Género', 'লিঙ্গ', 'Le sexe', 1, '2021-04-20 05:44:49', '2021-04-20 05:44:49'),
 (139, '1', 'mobile', 'Mobile', 'Móvil', 'মুঠোফোন', 'Mobile', 1, '2021-04-20 05:44:49', '2021-04-20 05:44:49'),
-(140, '1', 'student_id_card', 'Student ID Card', 'Credencial de estudiante', 'শিক্ষার্থী আইডি কার্ড', 'Carde didentité détudiant', 1, '2021-04-20 05:44:49', '2021-04-20 05:44:49'),
+(140, '1', 'member_id_card', 'Student ID Card', 'Credencial de estudiante', 'শিক্ষার্থী আইডি কার্ড', 'Carde didentité détudiant', 1, '2021-04-20 05:44:49', '2021-04-20 05:44:49'),
 (141, '1', 'id_card_title', 'ID Card Title', 'Título de la tarjeta de identificación', 'আইডি কার্ডের শিরোনাম', 'Titre de la carte didentité', 1, '2021-04-20 05:44:49', '2021-04-20 05:44:49'),
 (142, '1', 'number', 'Number', 'Número', 'সংখ্যা', 'Nombre', 1, '2021-04-20 05:44:49', '2021-04-20 05:44:49'),
 (143, '1', 'mother', 'Mother', 'Madre', 'মা', 'Mère', 1, '2021-04-20 05:44:49', '2021-04-20 05:44:49'),
@@ -5860,7 +5860,7 @@ INSERT INTO `sm_language_phrases` (`id`, `modules`, `default_phrases`, `en`, `es
 (156, '1', 'certificate_body_len', 'Max Character lenght 500', 'Longitud máxima de caracteres 500', 'সর্বোচ্চ অক্ষর 500 দৈর্ঘ্য 500', 'Longueur maximum 500 caractères', 1, '2021-04-20 05:44:49', '2021-04-20 05:44:49'),
 (157, '1', 'class_section', 'Class (Sec.)', 'Clase (Sec.)', 'ক্লাস (সেকেন্ড)', 'Classe (Sec.)', 1, '2021-04-20 05:44:49', '2021-04-20 05:44:49'),
 (158, '1', 'are_you_sure_to_remove', 'Are you sure to remove this item?', '¿Estás seguro de eliminar este elemento?', 'আপনি কি এই আইটেমটি সরানোর বিষয়ে নিশ্চিত?', 'Êtes-vous sûr de vouloir supprimer cet article?', 1, '2021-04-20 05:44:49', '2021-04-20 05:44:49'),
-(159, '1', 'admission_no', 'Admission No', 'Admission No', 'ভর্তি নং', 'Admission No', 1, '2021-04-20 05:44:49', '2021-04-20 05:44:49'),
+(159, '1', 'registration_no', 'Admission No', 'Admission No', 'ভর্তি নং', 'Admission No', 1, '2021-04-20 05:44:49', '2021-04-20 05:44:49'),
 (160, '1', 'no', 'No', 'No', 'না', 'No', 1, '2021-04-20 05:44:49', '2021-04-20 05:44:49'),
 (161, '1', 'fill_marks', 'Fill Marks', 'Fill Marks', 'চিহ্ন পূরণ করুন', 'Fill Marks', 1, '2021-04-20 05:44:50', '2021-04-20 05:44:50'),
 (162, '1', 'main', 'Main', 'Main', 'প্রধান', 'Main', 1, '2021-04-20 05:44:50', '2021-04-20 05:44:50'),
@@ -5934,7 +5934,7 @@ INSERT INTO `sm_language_phrases` (`id`, `modules`, `default_phrases`, `en`, `es
 (230, '1', 'copy_table', 'Copy Table', 'Copy Table', 'টেবিল অনুলিপি করুন', 'Copy Table', 1, '2021-04-20 05:44:53', '2021-04-20 05:44:53'),
 (231, '1', 'visibility', 'Visibility', 'visibility', 'দৃষ্টিপাত', 'visibility', 1, '2021-04-20 05:44:53', '2021-04-20 05:44:53'),
 (232, '1', 'column_view', 'Column View', 'Column View', 'কলাম ভিউ', 'Column View', 1, '2021-04-20 05:44:53', '2021-04-20 05:44:53'),
-(233, '1', 'student_name', 'Student Name', 'Student Name', 'শিক্ষার্থীর নাম', 'Student Name', 1, '2021-04-20 05:44:53', '2021-04-20 05:44:53'),
+(233, '1', 'member_name', 'Student Name', 'Student Name', 'শিক্ষার্থীর নাম', 'Student Name', 1, '2021-04-20 05:44:53', '2021-04-20 05:44:53'),
 (234, '1', 'manu', 'Manu', 'Manu', 'ম্যানু', 'Manu', 1, '2021-04-20 05:44:53', '2021-04-20 05:44:53'),
 (235, '17', 'disabled_student', 'Disabled Student', 'Disabled Student', 'অক্ষম শিক্ষার্থী', 'Disabled Student', 1, '2021-04-20 05:44:53', '2021-04-20 05:44:53'),
 (236, '2', 'student_info', 'Student Info', 'Información del estudiante', 'শিক্ষার্থীদের তথ্য', 'Info étudiant', 1, '2021-04-20 05:44:53', '2021-04-20 05:44:53'),
@@ -6282,7 +6282,7 @@ INSERT INTO `sm_language_phrases` (`id`, `modules`, `default_phrases`, `en`, `es
 (577, '17', 'role', 'Role', 'Papel', 'ভূমিকা', 'Rôle', 1, '2021-04-20 05:45:14', '2021-04-20 05:45:14'),
 (578, '17', 'base_group', 'Base Group', 'Grupo base', 'বেস গ্রুপ', 'Groupe de base', 1, '2021-04-20 05:45:14', '2021-04-20 05:45:14'),
 (579, '17', 'base_setup', 'Base Setup', 'Configuración de la base', 'বেস সেটআপ', 'Configuration de base', 1, '2021-04-20 05:45:14', '2021-04-20 05:45:14'),
-(580, '17', 'academic_year', 'Academic Year', 'Año académico', 'শিক্ষাবর্ষ', 'Année académique', 1, '2021-04-20 05:45:14', '2021-04-20 05:45:14'),
+(580, '17', 'church_year', 'Academic Year', 'Año académico', 'শিক্ষাবর্ষ', 'Année académique', 1, '2021-04-20 05:45:14', '2021-04-20 05:45:14'),
 (581, '17', 'session', 'Academic Year', 'Academic Year', 'সেশন', 'Academic Year', 1, '2021-04-20 05:45:14', '2021-04-20 05:45:14'),
 (582, '17', 'holiday', 'Holiday', 'Vacaciones', 'ছুটির দিন', 'Vacances', 1, '2021-04-20 05:45:14', '2021-04-20 05:45:14'),
 (583, '17', 'sms_settings', 'Sms Settings', 'Configuración de SMS', 'এসএমএস সেটিংস', 'Paramètres Sms', 1, '2021-04-20 05:45:14', '2021-04-20 05:45:14'),
@@ -6296,8 +6296,8 @@ INSERT INTO `sm_language_phrases` (`id`, `modules`, `default_phrases`, `en`, `es
 (591, '17', 'change_logo', 'Change Logo', 'Cambiar Logo', 'লোগো পরিবর্তন করুন', 'Changer le logo', 1, '2021-04-20 05:45:14', '2021-04-20 05:45:14'),
 (592, '17', 'change_fav', 'Change Favicon', 'Cambiar Favicon', 'ফ্যাভিকন পরিবর্তন করুন', 'Changer de favicon', 1, '2021-04-20 05:45:14', '2021-04-20 05:45:14'),
 (593, '17', 'upload', 'Upload', 'Subir', 'আপলোড', 'Télécharger', 1, '2021-04-20 05:45:14', '2021-04-20 05:45:14'),
-(594, '17', 'school_name', 'School Name', 'Nombre de la escuela', 'স্কুলের নাম', 'Nom de lécole', 1, '2021-04-20 05:45:14', '2021-04-20 05:45:14'),
-(595, '17', 'school_code', 'School Code', 'Código escolar', 'স্কুল কোড', 'Code détablissement', 1, '2021-04-20 05:45:14', '2021-04-20 05:45:14'),
+(594, '17', 'church_name', 'School Name', 'Nombre de la escuela', 'স্কুলের নাম', 'Nom de lécole', 1, '2021-04-20 05:45:14', '2021-04-20 05:45:14'),
+(595, '17', 'church_code', 'School Code', 'Código escolar', 'স্কুল কোড', 'Code détablissement', 1, '2021-04-20 05:45:14', '2021-04-20 05:45:14'),
 (596, '17', 'language', 'Language', 'Idioma', 'ভাষা', 'La langue', 1, '2021-04-20 05:45:14', '2021-04-20 05:45:14'),
 (597, '17', 'date_format', 'Date Format', 'Formato de fecha', 'তারিখ বিন্যাস', 'Format de date', 1, '2021-04-20 05:45:14', '2021-04-20 05:45:14'),
 (598, '17', 'currency', 'Currency', 'Moneda', 'মুদ্রা', 'Devise', 1, '2021-04-20 05:45:14', '2021-04-20 05:45:14'),
@@ -7255,7 +7255,7 @@ INSERT INTO `sm_language_phrases` (`id`, `modules`, `default_phrases`, `en`, `es
 (1547, '18', 'date_of_class', 'Date of Class', 'Date of Class', 'ক্লাসের তারিখ', 'Date of Class', 1, '2021-04-20 05:46:09', '2021-04-20 05:46:09'),
 (1548, '18', 'time_of_class', 'Time of Class', 'Time of Class', 'ক্লাসের সময়', 'Time of Class', 1, '2021-04-20 05:46:09', '2021-04-20 05:46:09'),
 (1549, '18', 'duration_of_class', 'Duration of Class (Minutes)', 'Duration of Class (Minutes)', 'শ্রেণীর সময়কাল (মিনিট)', 'Duration of Class (Minutes)', 1, '2021-04-20 05:46:09', '2021-04-20 05:46:09'),
-(1550, '18', 'virtual_class_id', 'VClass ID', 'VClass ID', 'ভিস্লাস আইডি', 'VClass ID', 1, '2021-04-20 05:46:09', '2021-04-20 05:46:09'),
+(1550, '18', 'virtual_age_group_id', 'VClass ID', 'VClass ID', 'ভিস্লাস আইডি', 'VClass ID', 1, '2021-04-20 05:46:09', '2021-04-20 05:46:09'),
 (1551, '18', 'virtual_meeting', 'Virtual Meeting', 'Virtual Meeting', 'ভার্চুয়াল সভা', 'Virtual Meeting', 1, '2021-04-20 05:46:09', '2021-04-20 05:46:09'),
 (1552, '18', 'sms_template', 'Sms Template', 'Sms Template', 'এসএমএস টেম্পলেট', 'Sms Template', 1, '2021-04-20 05:46:09', '2021-04-20 05:46:09'),
 (1553, '18', 'liability', 'Liability', 'Liability', 'দায়', 'Liability', 1, '2021-04-20 05:46:09', '2021-04-20 05:46:09'),
@@ -7298,9 +7298,9 @@ INSERT INTO `sm_language_phrases` (`id`, `modules`, `default_phrases`, `en`, `es
 (1590, '18', 'signiture', 'Signiture', 'Signiture', 'স্বাক্ষর', 'Signiture', 1, '2021-04-20 05:46:11', '2021-04-20 05:46:11'),
 (1591, '18', 'import_attendance', 'Import Attendance', 'Import Attendance', 'আমদানি উপস্থিতি', 'Import Attendance', 1, '2021-04-20 05:46:11', '2021-04-20 05:46:11'),
 (1592, '18', 'cheque_details', 'Cheque Details', 'Cheque Details', 'বিশদ পরীক্ষা করুন', 'Cheque Details', 1, '2021-04-20 05:46:11', '2021-04-20 05:46:11'),
-(1593, '18', 'copy_with_academic_year', 'Copy With Academic Year', 'Copy With Academic Year', 'একাডেমিক বছর সহ অনুলিপি করুন', 'Copy With Academic Year', 1, '2021-04-20 05:46:11', '2021-04-20 05:46:11'),
+(1593, '18', 'copy_with_church_year', 'Copy With Academic Year', 'Copy With Academic Year', 'একাডেমিক বছর সহ অনুলিপি করুন', 'Copy With Academic Year', 1, '2021-04-20 05:46:11', '2021-04-20 05:46:11'),
 (1594, '18', 'delete_conformation', 'All the information related with this data will also delete permanently', 'All the information related with this data will also delete permanently', 'এর সাথে সম্পর্কিত সমস্ত তথ্যও স্থায়ীভাবে মুছে ফেলা হবে', 'All the information related with this data will also delete permanently', 1, '2021-04-20 05:46:11', '2021-04-20 05:46:11'),
-(1595, '18', 'academic_year_delete_confirmation', 'All the information related with this academic year will also delete permanently.', 'All the information related with this academic year will also delete permanently.', 'এই শিক্ষাবর্ষের সাথে সম্পর্কিত সমস্ত তথ্যও স্থায়ীভাবে মুছে ফেলা হবে', 'All the information related with this academic year will also delete permanently.', 1, '2021-04-20 05:46:11', '2021-04-20 05:46:11'),
+(1595, '18', 'church_year_delete_confirmation', 'All the information related with this academic year will also delete permanently.', 'All the information related with this academic year will also delete permanently.', 'এই শিক্ষাবর্ষের সাথে সম্পর্কিত সমস্ত তথ্যও স্থায়ীভাবে মুছে ফেলা হবে', 'All the information related with this academic year will also delete permanently.', 1, '2021-04-20 05:46:11', '2021-04-20 05:46:11'),
 (1596, '18', 'system_activation_date', 'System Activation Date', 'System Activation Date', 'সিস্টেম সক্রিয়করণের তারিখ', 'System Activation Date', 1, '2021-04-20 05:46:11', '2021-04-20 05:46:11'),
 (1597, '18', 'install_domain', 'Install Domain', 'Install Domain', 'ডোমেন ইনস্টল করুন', 'Install Domain', 1, '2021-04-20 05:46:11', '2021-04-20 05:46:11'),
 (1598, '18', 'purchase_code', 'Purchase code', 'Purchase code', 'ক্রয় কোড', 'Purchase code', 1, '2021-04-20 05:46:11', '2021-04-20 05:46:11'),
@@ -7352,8 +7352,8 @@ CREATE TABLE `sm_leave_deduction_infos` (
   `active_status` tinyint(4) DEFAULT '0',
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1',
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -7375,8 +7375,8 @@ CREATE TABLE `sm_leave_defines` (
   `type_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1',
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1',
   `total_days` int(10) UNSIGNED DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -7404,8 +7404,8 @@ CREATE TABLE `sm_leave_requests` (
   `type_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -7423,8 +7423,8 @@ CREATE TABLE `sm_leave_types` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -7437,11 +7437,11 @@ CREATE TABLE `sm_lessons` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `lesson_title` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `active_status` int(11) NOT NULL DEFAULT '1',
-  `class_id` int(10) UNSIGNED DEFAULT NULL,
-  `section_id` int(10) UNSIGNED DEFAULT NULL,
+  `age_group_id` int(10) UNSIGNED DEFAULT NULL,
+  `mgender_id` int(10) UNSIGNED DEFAULT NULL,
   `subject_id` int(10) UNSIGNED DEFAULT NULL,
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1',
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1',
   `user_id` int(11) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -7459,11 +7459,11 @@ CREATE TABLE `sm_lesson_details` (
   `lesson_title` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
   `active_status` int(11) NOT NULL DEFAULT '1',
-  `class_id` int(10) UNSIGNED DEFAULT NULL,
-  `section_id` int(10) UNSIGNED DEFAULT NULL,
+  `age_group_id` int(10) UNSIGNED DEFAULT NULL,
+  `mgender_id` int(10) UNSIGNED DEFAULT NULL,
   `subject_id` int(10) UNSIGNED DEFAULT NULL,
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1',
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -7477,13 +7477,13 @@ CREATE TABLE `sm_lesson_details` (
 CREATE TABLE `sm_lesson_topics` (
   `id` int(10) UNSIGNED NOT NULL,
   `lesson_id` int(11) NOT NULL,
-  `class_id` int(10) UNSIGNED DEFAULT NULL,
-  `section_id` int(10) UNSIGNED DEFAULT NULL,
+  `age_group_id` int(10) UNSIGNED DEFAULT NULL,
+  `mgender_id` int(10) UNSIGNED DEFAULT NULL,
   `subject_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1',
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1',
   `active_status` int(11) NOT NULL DEFAULT '1',
   `user_id` int(11) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -7506,8 +7506,8 @@ CREATE TABLE `sm_lesson_topic_details` (
   `topic_id` int(10) UNSIGNED DEFAULT '1',
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1',
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1',
   `user_id` int(11) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -7529,8 +7529,8 @@ CREATE TABLE `sm_library_members` (
   `student_staff_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -7553,15 +7553,15 @@ CREATE TABLE `sm_marks_grades` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `sm_marks_grades`
 --
 
-INSERT INTO `sm_marks_grades` (`id`, `grade_name`, `gpa`, `from`, `up`, `percent_from`, `percent_upto`, `description`, `active_status`, `created_at`, `updated_at`, `created_by`, `updated_by`, `school_id`, `academic_id`) VALUES
+INSERT INTO `sm_marks_grades` (`id`, `grade_name`, `gpa`, `from`, `up`, `percent_from`, `percent_upto`, `description`, `active_status`, `created_at`, `updated_at`, `created_by`, `updated_by`, `church_id`, `church_year_id`) VALUES
 (1, 'A+', '5.00', 5.00, 5.99, 80, 100, 'Outstanding !', 1, '2021-04-20 05:32:04', '2021-04-20 05:32:04', 1, 1, 1, 1),
 (2, 'A', '4.00', 4.00, 4.99, 70, 79, 'Very Good !', 1, '2021-04-20 05:32:04', '2021-04-20 05:32:04', 1, 1, 1, 1),
 (3, 'A-', '3.50', 3.50, 3.99, 60, 69, 'Good !', 1, '2021-04-20 05:32:04', '2021-04-20 05:32:04', 1, 1, 1, 1),
@@ -7581,14 +7581,14 @@ CREATE TABLE `sm_marks_registers` (
   `active_status` tinyint(4) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `student_id` int(10) UNSIGNED DEFAULT NULL,
+  `member_id` int(10) UNSIGNED DEFAULT NULL,
   `exam_id` int(10) UNSIGNED DEFAULT NULL,
-  `class_id` int(10) UNSIGNED DEFAULT NULL,
-  `section_id` int(10) UNSIGNED DEFAULT NULL,
+  `age_group_id` int(10) UNSIGNED DEFAULT NULL,
+  `mgender_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -7610,8 +7610,8 @@ CREATE TABLE `sm_marks_register_children` (
   `subject_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -7627,11 +7627,11 @@ CREATE TABLE `sm_marks_send_sms` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `exam_id` int(10) UNSIGNED DEFAULT NULL,
-  `student_id` int(10) UNSIGNED DEFAULT NULL,
+  `member_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -7652,13 +7652,13 @@ CREATE TABLE `sm_mark_stores` (
   `subject_id` int(10) UNSIGNED DEFAULT NULL,
   `exam_term_id` int(10) UNSIGNED DEFAULT NULL,
   `exam_setup_id` int(10) UNSIGNED DEFAULT NULL,
-  `student_id` int(10) UNSIGNED DEFAULT NULL,
-  `class_id` int(10) UNSIGNED DEFAULT NULL,
-  `section_id` int(10) UNSIGNED DEFAULT NULL,
+  `member_id` int(10) UNSIGNED DEFAULT NULL,
+  `age_group_id` int(10) UNSIGNED DEFAULT NULL,
+  `mgender_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -7676,14 +7676,14 @@ CREATE TABLE `sm_modules` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `sm_modules`
 --
 
-INSERT INTO `sm_modules` (`id`, `name`, `active_status`, `order`, `created_at`, `updated_at`, `created_by`, `updated_by`, `school_id`) VALUES
+INSERT INTO `sm_modules` (`id`, `name`, `active_status`, `order`, `created_at`, `updated_at`, `created_by`, `updated_by`, `church_id`) VALUES
 (1, 'Dashboard', 1, 0, '2021-04-20 05:36:05', NULL, 1, 1, 1),
 (2, 'Admin Section', 1, 1, '2021-04-20 05:36:05', NULL, 1, 1, 1),
 (3, 'Student Information', 1, 2, '2021-04-20 05:36:05', NULL, 1, 1, 1),
@@ -7718,7 +7718,7 @@ CREATE TABLE `sm_module_links` (
   `active_status` tinyint(4) NOT NULL DEFAULT '1',
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
+  `church_id` int(10) UNSIGNED DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -7727,7 +7727,7 @@ CREATE TABLE `sm_module_links` (
 -- Dumping data for table `sm_module_links`
 --
 
-INSERT INTO `sm_module_links` (`id`, `module_id`, `name`, `route`, `active_status`, `created_by`, `updated_by`, `school_id`, `created_at`, `updated_at`) VALUES
+INSERT INTO `sm_module_links` (`id`, `module_id`, `name`, `route`, `active_status`, `created_by`, `updated_by`, `church_id`, `created_at`, `updated_at`) VALUES
 (1, 1, 'Dashboard Menu', '', 1, 1, 1, 1, '2019-07-24 20:21:21', '2019-07-24 22:24:22'),
 (2, 1, '➡ Number of Student', '', 1, 1, 1, 1, '2019-07-24 20:21:21', '2019-07-24 22:24:22'),
 (3, 1, '➡ Number of Teacher', '', 1, 1, 1, 1, '2019-07-24 20:21:21', '2019-07-24 22:24:22'),
@@ -8136,7 +8136,7 @@ CREATE TABLE `sm_module_permissions` (
   `active_status` tinyint(4) NOT NULL DEFAULT '1',
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
+  `church_id` int(10) UNSIGNED DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -8145,7 +8145,7 @@ CREATE TABLE `sm_module_permissions` (
 -- Dumping data for table `sm_module_permissions`
 --
 
-INSERT INTO `sm_module_permissions` (`id`, `dashboard_id`, `name`, `active_status`, `created_by`, `updated_by`, `school_id`, `created_at`, `updated_at`) VALUES
+INSERT INTO `sm_module_permissions` (`id`, `dashboard_id`, `name`, `active_status`, `created_by`, `updated_by`, `church_id`, `created_at`, `updated_at`) VALUES
 (1, 1, 'Dashboard', 1, 1, 1, 1, '2019-07-24 20:21:21', '2019-07-24 22:24:22'),
 (2, 1, 'Admin Section', 1, 1, 1, 1, '2019-07-24 20:21:21', '2019-07-24 22:24:22'),
 (3, 1, 'Student Information', 1, 1, 1, 1, '2019-07-24 20:21:21', '2019-07-24 22:24:22'),
@@ -8208,14 +8208,14 @@ CREATE TABLE `sm_module_permission_assigns` (
   `role_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `sm_module_permission_assigns`
 --
 
-INSERT INTO `sm_module_permission_assigns` (`id`, `active_status`, `created_at`, `updated_at`, `module_id`, `role_id`, `created_by`, `updated_by`, `school_id`) VALUES
+INSERT INTO `sm_module_permission_assigns` (`id`, `active_status`, `created_at`, `updated_at`, `module_id`, `role_id`, `created_by`, `updated_by`, `church_id`) VALUES
 (1, 1, '2019-11-18 02:14:09', '2019-11-18 02:14:09', 1, 1, 1, 1, 1),
 (2, 1, '2019-11-18 02:14:09', '2019-11-18 02:14:09', 2, 1, 1, 1, 1),
 (3, 1, '2019-11-18 02:14:09', '2019-11-18 02:14:09', 3, 1, 1, 1, 1),
@@ -8323,15 +8323,15 @@ CREATE TABLE `sm_news` (
   `category_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `sm_news`
 --
 
-INSERT INTO `sm_news` (`id`, `news_title`, `view_count`, `active_status`, `image`, `image_thumb`, `news_body`, `publish_date`, `order`, `created_at`, `updated_at`, `category_id`, `created_by`, `updated_by`, `school_id`, `academic_id`) VALUES
+INSERT INTO `sm_news` (`id`, `news_title`, `view_count`, `active_status`, `image`, `image_thumb`, `news_body`, `publish_date`, `order`, `created_at`, `updated_at`, `category_id`, `created_by`, `updated_by`, `church_id`, `church_year_id`) VALUES
 (1, 'Ut et ut nostrum ab atque.', 6, 1, 'public/uploads/news/news1.jpg', NULL, 'Cumque assumenda voluptas consequatur vel velit. Ut voluptatibus blanditiis quia commodi sed est doloribus quos. Et eius qui minus. Id aliquid enim dolores quas vero neque. Inventore est id dolor fugit qui sit facilis. Corrupti ipsa explicabo rem sequi in ex facere. Mollitia sed eos sed. Ab exercitationem debitis nihil sunt voluptatibus et consequatur. Adipisci quis ipsam nam aut tenetur. Ut quibusdam et dolor quo. Asperiores placeat magnam necessitatibus itaque nemo earum.', '2019-06-02', '1', '2021-04-20 05:46:42', NULL, 1, 1, 1, 1, 1),
 (2, 'Delectus non a autem est ratione.', 2, 1, 'public/uploads/news/news2.jpg', NULL, 'Reprehenderit molestiae facilis voluptatum ut maiores. Incidunt ipsam est doloribus et eaque voluptatibus in. Repellat ut eveniet occaecati officia aut sint dolores. Eaque reprehenderit aut voluptas ratione. Fugit ducimus quod ex earum. Eos unde ut ad rerum veritatis fugiat. Perferendis dolorem sed ut cumque quia nobis. Sed inventore magni deserunt. Doloremque eveniet accusamus dolor commodi sequi repudiandae.', '2019-06-02', '2', '2021-04-20 05:46:42', NULL, 1, 1, 1, 1, 1),
 (3, 'Quo suscipit sunt veniam.', 9, 1, 'public/uploads/news/news3.jpg', NULL, 'Facere voluptas aut voluptate fuga. Voluptatem dignissimos voluptas voluptatibus libero. At et earum eos vel minus sed vel. Delectus explicabo optio rem autem sint earum. Quo possimus ut impedit quia sit amet. Qui magni dolorem dolorum blanditiis alias rerum. Est temporibus eum laudantium id consequuntur. Quibusdam ut in ab expedita natus. Enim et saepe consequatur cupiditate sed aspernatur earum. Quaerat et cumque repellat inventore.', '2019-06-02', '3', '2021-04-20 05:46:42', NULL, 1, 1, 1, 1, 1),
@@ -8356,14 +8356,14 @@ CREATE TABLE `sm_news_categories` (
   `category_name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `school_id` bigint(20) UNSIGNED NOT NULL DEFAULT '1'
+  `church_id` bigint(20) UNSIGNED NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `sm_news_categories`
 --
 
-INSERT INTO `sm_news_categories` (`id`, `category_name`, `created_at`, `updated_at`, `school_id`) VALUES
+INSERT INTO `sm_news_categories` (`id`, `category_name`, `created_at`, `updated_at`, `church_id`) VALUES
 (1, 'International', NULL, NULL, 1),
 (2, 'Our history', NULL, NULL, 1),
 (3, 'Our mission and vision', NULL, NULL, 1),
@@ -8391,14 +8391,14 @@ CREATE TABLE `sm_news_pages` (
   `active_status` tinyint(4) NOT NULL DEFAULT '1',
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `sm_news_pages`
 --
 
-INSERT INTO `sm_news_pages` (`id`, `created_at`, `updated_at`, `title`, `description`, `main_title`, `main_description`, `image`, `main_image`, `button_text`, `button_url`, `active_status`, `created_by`, `updated_by`, `school_id`) VALUES
+INSERT INTO `sm_news_pages` (`id`, `created_at`, `updated_at`, `title`, `description`, `main_title`, `main_description`, `image`, `main_image`, `button_text`, `button_url`, `active_status`, `created_by`, `updated_by`, `church_id`) VALUES
 (1, NULL, NULL, 'News Infix', 'Lisus consequat sapien metus dis urna, facilisi. Nonummy rutrum eu lacinia platea a, ipsum parturient, orci tristique. Nisi diam natoque.', 'Under Graduate Education', 'INFIX has all in one place. You’ll find everything what you are looking into education management system software. We care! User will never bothered in our real eye catchy user friendly UI & UX  Interface design. You know! Smart Idea always comes to well planners. And Our INFIX is Smart for its Well Documentation. Explore in new support world! It’s now faster & quicker. You’ll find us on Support Ticket, Email, Skype, WhatsApp.', 'public/uploads/about_page/about.jpg', 'public/uploads/about_page/about-img.jpg', 'Learn More News ', 'news-page', 1, 1, 1, 1);
 
 -- --------------------------------------------------------
@@ -8420,8 +8420,8 @@ CREATE TABLE `sm_notice_boards` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8443,8 +8443,8 @@ CREATE TABLE `sm_notifications` (
   `role_id` int(10) UNSIGNED NOT NULL DEFAULT '1',
   `created_by` int(10) UNSIGNED NOT NULL DEFAULT '1',
   `updated_by` int(10) UNSIGNED NOT NULL DEFAULT '1',
-  `school_id` int(10) UNSIGNED NOT NULL DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED NOT NULL DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8471,13 +8471,13 @@ CREATE TABLE `sm_online_exams` (
   `active_status` tinyint(4) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `class_id` int(10) UNSIGNED DEFAULT NULL,
-  `section_id` int(10) UNSIGNED DEFAULT NULL,
+  `age_group_id` int(10) UNSIGNED DEFAULT NULL,
+  `mgender_id` int(10) UNSIGNED DEFAULT NULL,
   `subject_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8493,13 +8493,13 @@ CREATE TABLE `sm_online_exam_marks` (
   `active_status` tinyint(4) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `student_id` int(10) UNSIGNED DEFAULT NULL,
+  `member_id` int(10) UNSIGNED DEFAULT NULL,
   `subject_id` int(10) UNSIGNED DEFAULT NULL,
   `exam_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8521,8 +8521,8 @@ CREATE TABLE `sm_online_exam_questions` (
   `online_exam_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8539,8 +8539,8 @@ CREATE TABLE `sm_online_exam_question_assigns` (
   `question_bank_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8557,8 +8557,8 @@ CREATE TABLE `sm_online_exam_question_mu_options` (
   `online_exam_question_id` int(10) UNSIGNED DEFAULT NULL COMMENT 'here we use foreign key shorter name',
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8569,13 +8569,13 @@ CREATE TABLE `sm_online_exam_question_mu_options` (
 
 CREATE TABLE `sm_optional_subject_assigns` (
   `id` int(10) UNSIGNED NOT NULL,
-  `student_id` int(10) UNSIGNED DEFAULT NULL,
+  `member_id` int(10) UNSIGNED DEFAULT NULL,
   `subject_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
+  `church_id` int(10) UNSIGNED DEFAULT '1',
   `session_id` int(10) UNSIGNED NOT NULL,
-  `academic_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -8639,8 +8639,8 @@ CREATE TABLE `sm_parents` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `user_id` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8668,14 +8668,14 @@ CREATE TABLE `sm_payment_gateway_settings` (
   `cheque_details` text COLLATE utf8mb4_unicode_ci,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `sm_payment_gateway_settings`
 --
 
-INSERT INTO `sm_payment_gateway_settings` (`id`, `gateway_name`, `gateway_username`, `gateway_password`, `gateway_signature`, `gateway_client_id`, `gateway_mode`, `gateway_secret_key`, `gateway_secret_word`, `gateway_publisher_key`, `gateway_private_key`, `active_status`, `created_at`, `updated_at`, `bank_details`, `cheque_details`, `created_by`, `updated_by`, `school_id`) VALUES
+INSERT INTO `sm_payment_gateway_settings` (`id`, `gateway_name`, `gateway_username`, `gateway_password`, `gateway_signature`, `gateway_client_id`, `gateway_mode`, `gateway_secret_key`, `gateway_secret_word`, `gateway_publisher_key`, `gateway_private_key`, `active_status`, `created_at`, `updated_at`, `bank_details`, `cheque_details`, `created_by`, `updated_by`, `church_id`) VALUES
 (1, 'PayPal', 'demo@paypal.com', '12334589', NULL, 'AaCPtpoUHZEXCa3v006nbYhYfD0HIX-dlgYWlsb0fdoFqpVToATuUbT43VuUE6pAxgvSbPTspKBqAF0x', NULL, 'EJ6q4h8w0OanYO1WKtNbo9o8suDg6PKUkHNKv-T6F4APDiq2e19OZf7DfpL5uOlEzJ_AMgeE0L2PtTEj', NULL, NULL, NULL, 0, '2021-04-20 05:31:13', NULL, NULL, NULL, 1, 1, 1),
 (2, 'Stripe', 'demo@strip.com', '12334589', NULL, '', NULL, 'AVZdghanegaOjiL6DPXd0XwjMGEQ2aXc58z1-isWmBFnw1h2j', 'AVZdghanegaOjiL6DPXd0XwjMGEQ2aXc58z1', NULL, NULL, 0, '2021-04-20 05:31:13', NULL, NULL, NULL, 1, 1, 1),
 (3, 'Paystack', 'demo@gmail.com', '12334589', NULL, '', NULL, 'sk_live_2679322872013c265e161bc8ea11efc1e822bce1', NULL, 'pk_live_e5738ce9aade963387204f1f19bee599176e7a71', NULL, 0, '2021-04-20 05:31:13', NULL, NULL, NULL, 1, 1, 1),
@@ -8698,14 +8698,14 @@ CREATE TABLE `sm_payment_methhods` (
   `gateway_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `sm_payment_methhods`
 --
 
-INSERT INTO `sm_payment_methhods` (`id`, `method`, `type`, `active_status`, `created_at`, `updated_at`, `gateway_id`, `created_by`, `updated_by`, `school_id`) VALUES
+INSERT INTO `sm_payment_methhods` (`id`, `method`, `type`, `active_status`, `created_at`, `updated_at`, `gateway_id`, `created_by`, `updated_by`, `church_id`) VALUES
 (1, 'Cash', 'System', 1, '2021-04-20 05:31:16', NULL, NULL, 1, 1, 1),
 (2, 'Cheque', 'System', 1, '2021-04-20 05:31:16', NULL, NULL, 1, 1, 1),
 (3, 'Bank', 'System', 1, '2021-04-20 05:31:16', NULL, NULL, 1, 1, 1),
@@ -8733,8 +8733,8 @@ CREATE TABLE `sm_phone_call_logs` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8757,8 +8757,8 @@ CREATE TABLE `sm_postal_dispatches` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8781,8 +8781,8 @@ CREATE TABLE `sm_postal_receives` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8803,7 +8803,7 @@ CREATE TABLE `sm_product_purchases` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `user_id` int(10) UNSIGNED DEFAULT NULL,
   `staff_id` int(10) UNSIGNED DEFAULT NULL,
-  `school_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8824,12 +8824,12 @@ CREATE TABLE `sm_question_banks` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `q_group_id` int(10) UNSIGNED DEFAULT NULL,
-  `class_id` int(10) UNSIGNED DEFAULT NULL,
-  `section_id` int(10) UNSIGNED DEFAULT NULL,
+  `age_group_id` int(10) UNSIGNED DEFAULT NULL,
+  `mgender_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8848,8 +8848,8 @@ CREATE TABLE `sm_question_bank_mu_options` (
   `question_bank_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8866,8 +8866,8 @@ CREATE TABLE `sm_question_groups` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8884,8 +8884,8 @@ CREATE TABLE `sm_question_levels` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8908,13 +8908,13 @@ CREATE TABLE `sm_result_stores` (
   `exam_type_id` int(10) UNSIGNED DEFAULT NULL,
   `subject_id` int(10) UNSIGNED DEFAULT NULL,
   `exam_setup_id` int(10) UNSIGNED DEFAULT NULL,
-  `student_id` int(10) UNSIGNED DEFAULT NULL,
-  `class_id` int(10) UNSIGNED DEFAULT NULL,
-  `section_id` int(10) UNSIGNED DEFAULT NULL,
+  `member_id` int(10) UNSIGNED DEFAULT NULL,
+  `age_group_id` int(10) UNSIGNED DEFAULT NULL,
+  `mgender_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8932,14 +8932,14 @@ CREATE TABLE `sm_role_permissions` (
   `role_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `sm_role_permissions`
 --
 
-INSERT INTO `sm_role_permissions` (`id`, `active_status`, `created_at`, `updated_at`, `module_link_id`, `role_id`, `created_by`, `updated_by`, `school_id`) VALUES
+INSERT INTO `sm_role_permissions` (`id`, `active_status`, `created_at`, `updated_at`, `module_link_id`, `role_id`, `created_by`, `updated_by`, `church_id`) VALUES
 (1, 1, '2019-11-18 02:13:45', '2019-11-18 02:13:45', 1, 1, 1, 1, 1),
 (2, 1, '2019-11-18 02:13:45', '2019-11-18 02:13:45', 2, 1, 1, 1, 1),
 (3, 1, '2019-11-18 02:13:45', '2019-11-18 02:13:45', 3, 1, 1, 1, 1),
@@ -9645,7 +9645,7 @@ INSERT INTO `sm_role_permissions` (`id`, `active_status`, `created_at`, `updated
 (1096, 1, '2019-11-18 02:13:49', '2019-11-18 02:13:49', 313, 5, 1, 1, 1),
 (1097, 1, '2019-11-18 02:13:49', '2019-11-18 02:13:49', 314, 5, 1, 1, 1),
 (1098, 1, '2019-11-18 02:13:49', '2019-11-18 02:13:49', 315, 5, 1, 1, 1);
-INSERT INTO `sm_role_permissions` (`id`, `active_status`, `created_at`, `updated_at`, `module_link_id`, `role_id`, `created_by`, `updated_by`, `school_id`) VALUES
+INSERT INTO `sm_role_permissions` (`id`, `active_status`, `created_at`, `updated_at`, `module_link_id`, `role_id`, `created_by`, `updated_by`, `church_id`) VALUES
 (1099, 1, '2019-11-18 02:13:49', '2019-11-18 02:13:49', 316, 5, 1, 1, 1),
 (1100, 1, '2019-11-18 02:13:49', '2019-11-18 02:13:49', 317, 5, 1, 1, 1),
 (1101, 1, '2019-11-18 02:13:49', '2019-11-18 02:13:49', 318, 5, 1, 1, 1),
@@ -10084,8 +10084,8 @@ CREATE TABLE `sm_room_lists` (
   `room_type_id` int(10) UNSIGNED DEFAULT '1',
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -10103,8 +10103,8 @@ CREATE TABLE `sm_room_types` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -10122,8 +10122,8 @@ CREATE TABLE `sm_routes` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -10134,13 +10134,13 @@ CREATE TABLE `sm_routes` (
 
 CREATE TABLE `sm_schools` (
   `id` int(10) UNSIGNED NOT NULL,
-  `school_name` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `church_name` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_by` tinyint(4) NOT NULL DEFAULT '1',
   `updated_by` tinyint(4) NOT NULL DEFAULT '1',
   `email` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `address` text COLLATE utf8mb4_unicode_ci,
   `phone` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `school_code` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `church_code` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `is_email_verified` tinyint(1) NOT NULL DEFAULT '0',
   `starting_date` date DEFAULT NULL,
   `ending_date` date DEFAULT NULL,
@@ -10157,7 +10157,7 @@ CREATE TABLE `sm_schools` (
 -- Dumping data for table `sm_schools`
 --
 
-INSERT INTO `sm_schools` (`id`, `school_name`, `created_by`, `updated_by`, `email`, `address`, `phone`, `school_code`, `is_email_verified`, `starting_date`, `ending_date`, `package_id`, `plan_type`, `contact_type`, `active_status`, `is_enabled`, `created_at`, `updated_at`) VALUES
+INSERT INTO `sm_schools` (`id`, `church_name`, `created_by`, `updated_by`, `email`, `address`, `phone`, `church_code`, `is_email_verified`, `starting_date`, `ending_date`, `package_id`, `plan_type`, `contact_type`, `active_status`, `is_enabled`, `created_at`, `updated_at`) VALUES
 (1, 'InfixEdu', 1, 1, 'admin@infixedu.com', NULL, NULL, NULL, 0, '2021-04-20', NULL, NULL, NULL, 'yearly', 1, 'yes', NULL, NULL);
 
 -- --------------------------------------------------------
@@ -10173,12 +10173,12 @@ CREATE TABLE `sm_seat_plans` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `exam_id` int(10) UNSIGNED DEFAULT NULL,
   `subject_id` int(10) UNSIGNED DEFAULT NULL,
-  `class_id` int(10) UNSIGNED DEFAULT NULL,
-  `section_id` int(10) UNSIGNED DEFAULT NULL,
+  `age_group_id` int(10) UNSIGNED DEFAULT NULL,
+  `mgender_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -10199,8 +10199,8 @@ CREATE TABLE `sm_seat_plan_children` (
   `seat_plan_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -10211,14 +10211,14 @@ CREATE TABLE `sm_seat_plan_children` (
 
 CREATE TABLE `sm_sections` (
   `id` int(10) UNSIGNED NOT NULL,
-  `section_name` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `mgender_name` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
   `active_status` tinyint(4) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -10239,8 +10239,8 @@ CREATE TABLE `sm_send_messages` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -10257,14 +10257,14 @@ CREATE TABLE `sm_sessions` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `sm_sessions`
 --
 
-INSERT INTO `sm_sessions` (`id`, `session`, `active_status`, `created_at`, `updated_at`, `created_by`, `updated_by`, `school_id`) VALUES
+INSERT INTO `sm_sessions` (`id`, `session`, `active_status`, `created_at`, `updated_at`, `created_by`, `updated_by`, `church_id`) VALUES
 (1, '2020-2021', 1, '2021-04-20 05:31:21', '2021-04-20 05:31:21', 1, 1, 1);
 
 -- --------------------------------------------------------
@@ -10283,8 +10283,8 @@ CREATE TABLE `sm_setup_admins` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -10316,14 +10316,14 @@ CREATE TABLE `sm_sms_gateways` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `sm_sms_gateways`
 --
 
-INSERT INTO `sm_sms_gateways` (`id`, `gateway_name`, `clickatell_username`, `clickatell_password`, `clickatell_api_id`, `twilio_account_sid`, `twilio_authentication_token`, `twilio_registered_no`, `msg91_authentication_key_sid`, `msg91_sender_id`, `msg91_route`, `msg91_country_code`, `textlocal_username`, `textlocal_hash`, `textlocal_sender`, `africatalking_username`, `africatalking_api_key`, `active_status`, `created_at`, `updated_at`, `created_by`, `updated_by`, `school_id`) VALUES
+INSERT INTO `sm_sms_gateways` (`id`, `gateway_name`, `clickatell_username`, `clickatell_password`, `clickatell_api_id`, `twilio_account_sid`, `twilio_authentication_token`, `twilio_registered_no`, `msg91_authentication_key_sid`, `msg91_sender_id`, `msg91_route`, `msg91_country_code`, `textlocal_username`, `textlocal_hash`, `textlocal_sender`, `africatalking_username`, `africatalking_api_key`, `active_status`, `created_at`, `updated_at`, `created_by`, `updated_by`, `church_id`) VALUES
 (1, 'Twilio', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2021-04-20 05:41:08', '2021-04-20 05:41:08', 1, 1, 1),
 (2, 'Msg91', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2021-04-20 05:41:08', '2021-04-20 05:41:08', 1, 1, 1),
 (3, 'TextLocal', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'TXTLCL', NULL, NULL, 0, '2021-04-20 05:41:08', '2021-04-20 05:41:08', 1, 1, 1),
@@ -10344,14 +10344,14 @@ CREATE TABLE `sm_social_media_icons` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `sm_social_media_icons`
 --
 
-INSERT INTO `sm_social_media_icons` (`id`, `url`, `icon`, `status`, `created_at`, `updated_at`, `created_by`, `updated_by`, `school_id`) VALUES
+INSERT INTO `sm_social_media_icons` (`id`, `url`, `icon`, `status`, `created_at`, `updated_at`, `created_by`, `updated_by`, `church_id`) VALUES
 (1, 'https://www.facebook.com/Spondonit', 'fa fa-facebook', 1, NULL, NULL, 1, 1, 1),
 (2, 'https://www.facebook.com/Spondonit', 'fa fa-twitter', 1, NULL, NULL, 1, 1, 1),
 (3, 'https://www.facebook.com/Spondonit', 'fa fa-dribbble', 1, NULL, NULL, 1, 1, 1),
@@ -10414,7 +10414,7 @@ CREATE TABLE `sm_staffs` (
   `gender_id` int(10) UNSIGNED DEFAULT '1',
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
+  `church_id` int(10) UNSIGNED DEFAULT '1',
   `is_saas` int(10) UNSIGNED DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -10422,7 +10422,7 @@ CREATE TABLE `sm_staffs` (
 -- Dumping data for table `sm_staffs`
 --
 
-INSERT INTO `sm_staffs` (`id`, `staff_no`, `first_name`, `last_name`, `full_name`, `fathers_name`, `mothers_name`, `date_of_birth`, `date_of_joining`, `email`, `mobile`, `emergency_mobile`, `marital_status`, `merital_status`, `staff_photo`, `current_address`, `permanent_address`, `qualification`, `experience`, `epf_no`, `basic_salary`, `contract_type`, `location`, `casual_leave`, `medical_leave`, `metarnity_leave`, `bank_account_name`, `bank_account_no`, `bank_name`, `bank_brach`, `facebook_url`, `twiteer_url`, `linkedin_url`, `instragram_url`, `joining_letter`, `resume`, `other_document`, `notes`, `active_status`, `driving_license`, `driving_license_ex_date`, `created_at`, `updated_at`, `designation_id`, `department_id`, `user_id`, `role_id`, `gender_id`, `created_by`, `updated_by`, `school_id`, `is_saas`) VALUES
+INSERT INTO `sm_staffs` (`id`, `staff_no`, `first_name`, `last_name`, `full_name`, `fathers_name`, `mothers_name`, `date_of_birth`, `date_of_joining`, `email`, `mobile`, `emergency_mobile`, `marital_status`, `merital_status`, `staff_photo`, `current_address`, `permanent_address`, `qualification`, `experience`, `epf_no`, `basic_salary`, `contract_type`, `location`, `casual_leave`, `medical_leave`, `metarnity_leave`, `bank_account_name`, `bank_account_no`, `bank_name`, `bank_brach`, `facebook_url`, `twiteer_url`, `linkedin_url`, `instragram_url`, `joining_letter`, `resume`, `other_document`, `notes`, `active_status`, `driving_license`, `driving_license_ex_date`, `created_at`, `updated_at`, `designation_id`, `department_id`, `user_id`, `role_id`, `gender_id`, `created_by`, `updated_by`, `church_id`, `is_saas`) VALUES
 (1, 1, 'Super', 'Admin', 'Super Admin', NULL, NULL, '2021-04-20', '2021-04-20', 'admin@infixedu.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2021-04-20 05:31:39', NULL, 1, 1, 1, 1, 1, 1, 1, 1, 0);
 
 -- --------------------------------------------------------
@@ -10443,8 +10443,8 @@ CREATE TABLE `sm_staff_attendance_imports` (
   `staff_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -10463,8 +10463,8 @@ CREATE TABLE `sm_staff_attendences` (
   `staff_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -10475,7 +10475,7 @@ CREATE TABLE `sm_staff_attendences` (
 
 CREATE TABLE `sm_students` (
   `id` int(10) UNSIGNED NOT NULL,
-  `admission_no` int(11) DEFAULT NULL,
+  `registration_no` int(11) DEFAULT NULL,
   `roll_no` int(11) DEFAULT NULL,
   `first_name` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `last_name` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -10518,8 +10518,8 @@ CREATE TABLE `sm_students` (
   `room_id` int(10) UNSIGNED DEFAULT NULL,
   `student_category_id` int(10) UNSIGNED DEFAULT NULL,
   `student_group_id` int(10) UNSIGNED DEFAULT NULL,
-  `class_id` int(10) UNSIGNED NOT NULL,
-  `section_id` int(10) UNSIGNED NOT NULL,
+  `age_group_id` int(10) UNSIGNED NOT NULL,
+  `mgender_id` int(10) UNSIGNED NOT NULL,
   `session_id` int(10) UNSIGNED NOT NULL,
   `parent_id` int(10) UNSIGNED DEFAULT NULL,
   `user_id` int(10) UNSIGNED DEFAULT NULL,
@@ -10527,8 +10527,8 @@ CREATE TABLE `sm_students` (
   `gender_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -10544,11 +10544,11 @@ CREATE TABLE `sm_student_attendances` (
   `attendance_date` date DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `student_id` int(10) UNSIGNED DEFAULT NULL,
+  `member_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -10566,11 +10566,11 @@ CREATE TABLE `sm_student_attendance_imports` (
   `notes` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `student_id` int(10) UNSIGNED DEFAULT NULL,
+  `member_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -10586,8 +10586,8 @@ CREATE TABLE `sm_student_categories` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -10612,15 +10612,15 @@ CREATE TABLE `sm_student_certificates` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `sm_student_certificates`
 --
 
-INSERT INTO `sm_student_certificates` (`id`, `name`, `header_left_text`, `date`, `body`, `footer_left_text`, `footer_center_text`, `footer_right_text`, `student_photo`, `file`, `active_status`, `created_at`, `updated_at`, `created_by`, `updated_by`, `school_id`, `academic_id`) VALUES
+INSERT INTO `sm_student_certificates` (`id`, `name`, `header_left_text`, `date`, `body`, `footer_left_text`, `footer_center_text`, `footer_right_text`, `student_photo`, `file`, `active_status`, `created_at`, `updated_at`, `created_by`, `updated_by`, `church_id`, `church_year_id`) VALUES
 (1, 'Certificate in Technical Communication (PCTC)', 'Since 2020', '2020-05-17', 'Earning my UCR Extension professional certificate is one of the most beneficial things I\'ve done for my career. Before even completing the program, I was contacted twice by companies who were interested in hiring me as a technical writer. This program helped me reach my career goals in a very short time', 'Advisor Signature', 'Instructor Signature', 'Principale Signature', 0, 'public/uploads/certificate/c.jpg', 1, '2021-04-20 05:42:39', '2021-04-20 05:42:39', 1, 1, 1, 1);
 
 -- --------------------------------------------------------
@@ -10640,8 +10640,8 @@ CREATE TABLE `sm_student_documents` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -10685,8 +10685,8 @@ CREATE TABLE `sm_student_excel_formats` (
   `local_identification_no` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `previous_school_details` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `note` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -10703,8 +10703,8 @@ CREATE TABLE `sm_student_groups` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -10723,29 +10723,29 @@ CREATE TABLE `sm_student_homeworks` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `evaluated_by` int(10) UNSIGNED DEFAULT NULL,
-  `student_id` int(10) UNSIGNED DEFAULT NULL,
+  `member_id` int(10) UNSIGNED DEFAULT NULL,
   `subject_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `sm_student_id_cards`
+-- Table structure for table `sm_member_id_cards`
 --
 
-CREATE TABLE `sm_student_id_cards` (
+CREATE TABLE `sm_member_id_cards` (
   `id` int(10) UNSIGNED NOT NULL,
   `title` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `logo` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `designation` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `signature` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `address` text COLLATE utf8mb4_unicode_ci,
-  `admission_no` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0' COMMENT '0 for no 1 for yes',
-  `student_name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0' COMMENT '0 for no 1 for yes',
+  `registration_no` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0' COMMENT '0 for no 1 for yes',
+  `member_name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0' COMMENT '0 for no 1 for yes',
   `class` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0' COMMENT '0 for no 1 for yes',
   `father_name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0' COMMENT '0 for no 1 for yes',
   `mother_name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0' COMMENT '0 for no 1 for yes',
@@ -10758,8 +10758,8 @@ CREATE TABLE `sm_student_id_cards` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -10773,13 +10773,13 @@ CREATE TABLE `sm_student_promotions` (
   `result_status` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `previous_class_id` int(10) UNSIGNED DEFAULT NULL,
-  `current_class_id` int(10) UNSIGNED DEFAULT NULL,
-  `previous_section_id` int(10) UNSIGNED DEFAULT NULL,
-  `current_section_id` int(10) UNSIGNED DEFAULT NULL,
+  `previous_age_group_id` int(10) UNSIGNED DEFAULT NULL,
+  `current_age_group_id` int(10) UNSIGNED DEFAULT NULL,
+  `previous_mgender_id` int(10) UNSIGNED DEFAULT NULL,
+  `current_mgender_id` int(10) UNSIGNED DEFAULT NULL,
   `previous_session_id` int(10) UNSIGNED DEFAULT NULL,
   `current_session_id` int(10) UNSIGNED DEFAULT NULL,
-  `student_id` int(10) UNSIGNED DEFAULT NULL,
+  `member_id` int(10) UNSIGNED DEFAULT NULL,
   `admission_number` int(11) DEFAULT NULL,
   `student_info` longtext COLLATE utf8mb4_unicode_ci,
   `merit_student_info` longtext COLLATE utf8mb4_unicode_ci,
@@ -10787,8 +10787,8 @@ CREATE TABLE `sm_student_promotions` (
   `current_roll_number` int(11) DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -10805,12 +10805,12 @@ CREATE TABLE `sm_student_take_online_exams` (
   `active_status` tinyint(4) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `student_id` int(10) UNSIGNED DEFAULT NULL,
+  `member_id` int(10) UNSIGNED DEFAULT NULL,
   `online_exam_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -10830,8 +10830,8 @@ CREATE TABLE `sm_student_take_online_exam_questions` (
   `question_bank_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -10850,8 +10850,8 @@ CREATE TABLE `sm_student_take_onln_ex_ques_options` (
   `take_online_exam_question_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -10862,7 +10862,7 @@ CREATE TABLE `sm_student_take_onln_ex_ques_options` (
 
 CREATE TABLE `sm_student_timelines` (
   `id` int(10) UNSIGNED NOT NULL,
-  `staff_student_id` int(11) NOT NULL,
+  `staff_member_id` int(11) NOT NULL,
   `title` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `date` date DEFAULT NULL,
   `description` text COLLATE utf8mb4_unicode_ci,
@@ -10874,8 +10874,8 @@ CREATE TABLE `sm_student_timelines` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -10910,14 +10910,14 @@ CREATE TABLE `sm_styles` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `sm_styles`
 --
 
-INSERT INTO `sm_styles` (`id`, `style_name`, `path_main_style`, `path_infix_style`, `primary_color`, `primary_color2`, `title_color`, `text_color`, `white`, `black`, `sidebar_bg`, `barchart1`, `barchart2`, `barcharttextcolor`, `barcharttextfamily`, `areachartlinecolor1`, `areachartlinecolor2`, `dashboardbackground`, `active_status`, `is_active`, `is_default`, `created_at`, `updated_at`, `created_by`, `updated_by`, `school_id`) VALUES
+INSERT INTO `sm_styles` (`id`, `style_name`, `path_main_style`, `path_infix_style`, `primary_color`, `primary_color2`, `title_color`, `text_color`, `white`, `black`, `sidebar_bg`, `barchart1`, `barchart2`, `barcharttextcolor`, `barcharttextfamily`, `areachartlinecolor1`, `areachartlinecolor2`, `dashboardbackground`, `active_status`, `is_active`, `is_default`, `created_at`, `updated_at`, `created_by`, `updated_by`, `church_id`) VALUES
 (1, 'Default', 'style.css', 'infix.css', '#415094', '#7c32ff', '#222222', '#828bb2', '#ffffff', '#000000', '#e7ecff', '#8a33f8', '#f25278', '#415094', '\"poppins\", sans-serif', 'rgba(124, 50, 255, 0.5)', 'rgba(242, 82, 120, 0.5)', '', 1, 1, 0, '2021-04-20 05:46:57', '2021-04-20 05:46:57', 1, 1, 1),
 (2, 'Lawn Green', 'lawngreen_version/style.css', 'lawngreen_version/infix.css', '#415094', '#03e396', '#222222', '#828bb2', '#ffffff', '#000000', '#e7ecff', '#415094', '#03e396', '#03e396', '\"Cerebri Sans\", Helvetica, Arial, sans-serif', '#415094', '#03e396', '#e7ecff', 1, 0, 0, '2021-04-20 05:46:57', '2021-04-20 05:46:57', 1, 1, 1);
 
@@ -10937,8 +10937,8 @@ CREATE TABLE `sm_subjects` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -10955,11 +10955,11 @@ CREATE TABLE `sm_subject_attendances` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `subject_id` int(10) UNSIGNED DEFAULT NULL,
-  `student_id` int(10) UNSIGNED DEFAULT NULL,
+  `member_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -10982,8 +10982,8 @@ CREATE TABLE `sm_suppliers` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -11031,8 +11031,8 @@ CREATE TABLE `sm_teacher_upload_contents` (
   `section` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -11044,10 +11044,10 @@ CREATE TABLE `sm_teacher_upload_contents` (
 CREATE TABLE `sm_temporary_meritlists` (
   `id` int(10) UNSIGNED NOT NULL,
   `iid` varchar(250) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `student_id` varchar(250) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `member_id` varchar(250) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `merit_order` double(8,2) DEFAULT NULL,
-  `student_name` varchar(250) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `admission_no` varchar(250) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `member_name` varchar(250) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `registration_no` varchar(250) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `subjects_id_string` varchar(250) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `subjects_string` varchar(250) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `marks_string` varchar(250) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -11058,10 +11058,10 @@ CREATE TABLE `sm_temporary_meritlists` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `exam_id` int(10) UNSIGNED DEFAULT NULL,
-  `class_id` int(10) UNSIGNED DEFAULT NULL,
-  `section_id` int(10) UNSIGNED DEFAULT NULL,
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `age_group_id` int(10) UNSIGNED DEFAULT NULL,
+  `mgender_id` int(10) UNSIGNED DEFAULT NULL,
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -11079,14 +11079,14 @@ CREATE TABLE `sm_testimonials` (
   `description` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `school_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `sm_testimonials`
 --
 
-INSERT INTO `sm_testimonials` (`id`, `name`, `designation`, `institution_name`, `image`, `description`, `created_at`, `updated_at`, `school_id`) VALUES
+INSERT INTO `sm_testimonials` (`id`, `name`, `designation`, `institution_name`, `image`, `description`, `created_at`, `updated_at`, `church_id`) VALUES
 (1, 'Tristique euhen', 'CEO', 'Google', 'public/uploads/testimonial/testimonial_1.jpg', 'its vast! Infix has more additional feature that will expect in a complete solution.', '2021-04-20 05:46:43', NULL, 1),
 (2, 'Malala euhen', 'Chairman', 'Linkdin', 'public/uploads/testimonial/testimonial_2.jpg', 'its vast! Infix has more additional feature that will expect in a complete solution.', '2021-04-20 05:46:43', NULL, 1);
 
@@ -11550,8 +11550,8 @@ CREATE TABLE `sm_to_dos` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -11575,8 +11575,8 @@ CREATE TABLE `sm_upload_contents` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -11587,7 +11587,7 @@ CREATE TABLE `sm_upload_contents` (
 
 CREATE TABLE `sm_upload_homework_contents` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `student_id` int(10) UNSIGNED DEFAULT '1',
+  `member_id` int(10) UNSIGNED DEFAULT '1',
   `homework_id` int(10) UNSIGNED DEFAULT '1',
   `description` text COLLATE utf8mb4_unicode_ci,
   `file` text COLLATE utf8mb4_unicode_ci,
@@ -11595,8 +11595,8 @@ CREATE TABLE `sm_upload_homework_contents` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -11613,8 +11613,8 @@ CREATE TABLE `sm_user_logs` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `user_id` int(10) UNSIGNED DEFAULT NULL,
   `role_id` int(10) UNSIGNED DEFAULT NULL,
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -11635,8 +11635,8 @@ CREATE TABLE `sm_vehicles` (
   `driver_id` int(10) UNSIGNED DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -11661,8 +11661,8 @@ CREATE TABLE `sm_visitors` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` int(10) UNSIGNED DEFAULT '1',
   `updated_by` int(10) UNSIGNED DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -11677,17 +11677,17 @@ CREATE TABLE `sm_weekends` (
   `order` int(11) DEFAULT NULL,
   `is_weekend` int(11) DEFAULT NULL,
   `active_status` int(11) NOT NULL DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
+  `church_id` int(10) UNSIGNED DEFAULT '1',
   `created_at` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `updated_at` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `academic_id` int(10) UNSIGNED DEFAULT '1'
+  `church_year_id` int(10) UNSIGNED DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `sm_weekends`
 --
 
-INSERT INTO `sm_weekends` (`id`, `name`, `order`, `is_weekend`, `active_status`, `school_id`, `created_at`, `updated_at`, `academic_id`) VALUES
+INSERT INTO `sm_weekends` (`id`, `name`, `order`, `is_weekend`, `active_status`, `church_id`, `created_at`, `updated_at`, `church_year_id`) VALUES
 (1, 'Saturday', 1, 0, 1, 1, '2021-04-20 11:44:37', '2021-04-20 11:44:37', 1),
 (2, 'Sunday', 2, 0, 1, 1, '2021-04-20 11:44:37', '2021-04-20 11:44:37', 1),
 (3, 'Monday', 3, 0, 1, 1, '2021-04-20 11:44:37', '2021-04-20 11:44:37', 1),
@@ -11707,10 +11707,10 @@ CREATE TABLE `student_attendance_bulks` (
   `attendance_date` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `attendance_type` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `note` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `student_id` int(11) DEFAULT NULL,
-  `class_id` int(11) DEFAULT NULL,
-  `section_id` int(11) DEFAULT NULL,
-  `school_id` int(10) UNSIGNED DEFAULT '1',
+  `member_id` int(11) DEFAULT NULL,
+  `age_group_id` int(11) DEFAULT NULL,
+  `mgender_id` int(11) DEFAULT NULL,
+  `church_id` int(10) UNSIGNED DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -11826,7 +11826,7 @@ CREATE TABLE `users` (
   `created_by` int(11) DEFAULT '1',
   `updated_by` int(11) DEFAULT '1',
   `access_status` int(11) DEFAULT '1',
-  `school_id` int(10) UNSIGNED DEFAULT '1',
+  `church_id` int(10) UNSIGNED DEFAULT '1',
   `role_id` int(10) UNSIGNED DEFAULT NULL,
   `is_administrator` enum('yes','no') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'no',
   `is_registered` tinyint(4) NOT NULL DEFAULT '0',
@@ -11841,7 +11841,7 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `full_name`, `username`, `email`, `password`, `usertype`, `active_status`, `random_code`, `notificationToken`, `remember_token`, `created_at`, `updated_at`, `language`, `style_id`, `rtl_ltl`, `selected_session`, `created_by`, `updated_by`, `access_status`, `school_id`, `role_id`, `is_administrator`, `is_registered`, `stripe_id`, `card_brand`, `card_last_four`, `verified`, `trial_ends_at`) VALUES
+INSERT INTO `users` (`id`, `full_name`, `username`, `email`, `password`, `usertype`, `active_status`, `random_code`, `notificationToken`, `remember_token`, `created_at`, `updated_at`, `language`, `style_id`, `rtl_ltl`, `selected_session`, `created_by`, `updated_by`, `access_status`, `church_id`, `role_id`, `is_administrator`, `is_registered`, `stripe_id`, `card_brand`, `card_last_four`, `verified`, `trial_ends_at`) VALUES
 (1, 'admin', 'admin@infixedu.com', 'admin@infixedu.com', '$2y$10$NpHPKOm2TEYvHl9LwIOR6.JxwcuxugdU5loltLQN4MJ0T6gKWYPKq', NULL, 1, NULL, NULL, NULL, '2021-04-20 05:30:17', '2021-04-20 05:30:17', 'en', 1, 2, 1, 1, 1, 1, 1, 1, 'yes', 0, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
@@ -11857,8 +11857,8 @@ CREATE TABLE `user_menus` (
   `active_status` tinyint(4) NOT NULL DEFAULT '1',
   `role_id` int(10) UNSIGNED DEFAULT NULL,
   `user_id` int(10) UNSIGNED DEFAULT NULL,
-  `school_id` int(10) UNSIGNED DEFAULT '1',
-  `academic_id` int(10) UNSIGNED DEFAULT '1',
+  `church_id` int(10) UNSIGNED DEFAULT '1',
+  `church_year_id` int(10) UNSIGNED DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -11932,30 +11932,30 @@ ALTER TABLE `check_classes`
 --
 ALTER TABLE `continents`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `continents_school_id_foreign` (`school_id`);
+  ADD KEY `continents_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `continets`
 --
 ALTER TABLE `continets`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `continets_school_id_foreign` (`school_id`);
+  ADD KEY `continets_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `countries`
 --
 ALTER TABLE `countries`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `countries_school_id_foreign` (`school_id`),
-  ADD KEY `countries_academic_id_foreign` (`academic_id`);
+  ADD KEY `countries_church_id_foreign` (`church_id`),
+  ADD KEY `countries_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `custom_result_settings`
 --
 ALTER TABLE `custom_result_settings`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `custom_result_settings_school_id_foreign` (`school_id`),
-  ADD KEY `custom_result_settings_academic_id_foreign` (`academic_id`);
+  ADD KEY `custom_result_settings_church_id_foreign` (`church_id`),
+  ADD KEY `custom_result_settings_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `infix_module_infos`
@@ -11964,7 +11964,7 @@ ALTER TABLE `infix_module_infos`
   ADD PRIMARY KEY (`id`),
   ADD KEY `infix_module_infos_created_by_foreign` (`created_by`),
   ADD KEY `infix_module_infos_updated_by_foreign` (`updated_by`),
-  ADD KEY `infix_module_infos_school_id_foreign` (`school_id`);
+  ADD KEY `infix_module_infos_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `infix_module_managers`
@@ -11979,7 +11979,7 @@ ALTER TABLE `infix_module_student_parent_infos`
   ADD PRIMARY KEY (`id`),
   ADD KEY `infix_module_student_parent_infos_created_by_foreign` (`created_by`),
   ADD KEY `infix_module_student_parent_infos_updated_by_foreign` (`updated_by`),
-  ADD KEY `infix_module_student_parent_infos_school_id_foreign` (`school_id`);
+  ADD KEY `infix_module_student_parent_infos_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `infix_permission_assigns`
@@ -11987,14 +11987,14 @@ ALTER TABLE `infix_module_student_parent_infos`
 ALTER TABLE `infix_permission_assigns`
   ADD PRIMARY KEY (`id`),
   ADD KEY `infix_permission_assigns_role_id_foreign` (`role_id`),
-  ADD KEY `infix_permission_assigns_school_id_foreign` (`school_id`);
+  ADD KEY `infix_permission_assigns_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `infix_roles`
 --
 ALTER TABLE `infix_roles`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `infix_roles_school_id_foreign` (`school_id`);
+  ADD KEY `infix_roles_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `jobs`
@@ -12008,7 +12008,7 @@ ALTER TABLE `jobs`
 --
 ALTER TABLE `languages`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `languages_school_id_foreign` (`school_id`);
+  ADD KEY `languages_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `lesson_planners`
@@ -12019,18 +12019,18 @@ ALTER TABLE `lesson_planners`
   ADD KEY `lesson_planners_teacher_id_foreign` (`teacher_id`),
   ADD KEY `lesson_planners_class_period_id_foreign` (`class_period_id`),
   ADD KEY `lesson_planners_subject_id_foreign` (`subject_id`),
-  ADD KEY `lesson_planners_class_id_foreign` (`class_id`),
-  ADD KEY `lesson_planners_section_id_foreign` (`section_id`),
-  ADD KEY `lesson_planners_school_id_foreign` (`school_id`),
-  ADD KEY `lesson_planners_academic_id_foreign` (`academic_id`);
+  ADD KEY `lesson_planners_age_group_id_foreign` (`age_group_id`),
+  ADD KEY `lesson_planners_mgender_id_foreign` (`mgender_id`),
+  ADD KEY `lesson_planners_church_id_foreign` (`church_id`),
+  ADD KEY `lesson_planners_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `library_subjects`
 --
 ALTER TABLE `library_subjects`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `library_subjects_school_id_foreign` (`school_id`),
-  ADD KEY `library_subjects_academic_id_foreign` (`academic_id`);
+  ADD KEY `library_subjects_church_id_foreign` (`church_id`),
+  ADD KEY `library_subjects_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `menu_manages`
@@ -12039,8 +12039,8 @@ ALTER TABLE `menu_manages`
   ADD PRIMARY KEY (`id`),
   ADD KEY `menu_manages_role_id_foreign` (`role_id`),
   ADD KEY `menu_manages_user_id_foreign` (`user_id`),
-  ADD KEY `menu_manages_school_id_foreign` (`school_id`),
-  ADD KEY `menu_manages_academic_id_foreign` (`academic_id`);
+  ADD KEY `menu_manages_church_id_foreign` (`church_id`),
+  ADD KEY `menu_manages_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `migrations`
@@ -12106,7 +12106,7 @@ ALTER TABLE `password_resets`
 --
 ALTER TABLE `roles`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `roles_school_id_foreign` (`school_id`);
+  ADD KEY `roles_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `sidebars`
@@ -12116,7 +12116,7 @@ ALTER TABLE `sidebars`
   ADD KEY `sidebars_infix_module_id_foreign` (`infix_module_id`),
   ADD KEY `sidebars_role_id_foreign` (`role_id`),
   ADD KEY `sidebars_user_id_foreign` (`user_id`),
-  ADD KEY `sidebars_school_id_foreign` (`school_id`);
+  ADD KEY `sidebars_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `sms_templates`
@@ -12129,22 +12129,22 @@ ALTER TABLE `sms_templates`
 --
 ALTER TABLE `sm_about_pages`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_about_pages_school_id_foreign` (`school_id`);
+  ADD KEY `sm_about_pages_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `sm_academic_years`
 --
 ALTER TABLE `sm_academic_years`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_academic_years_school_id_foreign` (`school_id`);
+  ADD KEY `sm_academic_years_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `sm_add_expenses`
 --
 ALTER TABLE `sm_add_expenses`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_add_expenses_school_id_foreign` (`school_id`),
-  ADD KEY `sm_add_expenses_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_add_expenses_church_id_foreign` (`church_id`),
+  ADD KEY `sm_add_expenses_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_add_incomes`
@@ -12153,8 +12153,8 @@ ALTER TABLE `sm_add_incomes`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_add_incomes_account_id_foreign` (`account_id`),
   ADD KEY `sm_add_incomes_payment_method_id_foreign` (`payment_method_id`),
-  ADD KEY `sm_add_incomes_school_id_foreign` (`school_id`),
-  ADD KEY `sm_add_incomes_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_add_incomes_church_id_foreign` (`church_id`),
+  ADD KEY `sm_add_incomes_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_add_ons`
@@ -12168,8 +12168,8 @@ ALTER TABLE `sm_add_ons`
 ALTER TABLE `sm_admission_queries`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_admission_queries_class_foreign` (`class`),
-  ADD KEY `sm_admission_queries_school_id_foreign` (`school_id`),
-  ADD KEY `sm_admission_queries_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_admission_queries_church_id_foreign` (`church_id`),
+  ADD KEY `sm_admission_queries_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_admission_query_followups`
@@ -12177,26 +12177,26 @@ ALTER TABLE `sm_admission_queries`
 ALTER TABLE `sm_admission_query_followups`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_admission_query_followups_admission_query_id_foreign` (`admission_query_id`),
-  ADD KEY `sm_admission_query_followups_school_id_foreign` (`school_id`),
-  ADD KEY `sm_admission_query_followups_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_admission_query_followups_church_id_foreign` (`church_id`),
+  ADD KEY `sm_admission_query_followups_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_amount_transfers`
 --
 ALTER TABLE `sm_amount_transfers`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_amount_transfers_school_id_foreign` (`school_id`),
-  ADD KEY `sm_amount_transfers_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_amount_transfers_church_id_foreign` (`church_id`),
+  ADD KEY `sm_amount_transfers_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_assign_class_teachers`
 --
 ALTER TABLE `sm_assign_class_teachers`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_assign_class_teachers_class_id_foreign` (`class_id`),
-  ADD KEY `sm_assign_class_teachers_section_id_foreign` (`section_id`),
-  ADD KEY `sm_assign_class_teachers_school_id_foreign` (`school_id`),
-  ADD KEY `sm_assign_class_teachers_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_assign_class_teachers_age_group_id_foreign` (`age_group_id`),
+  ADD KEY `sm_assign_class_teachers_mgender_id_foreign` (`mgender_id`),
+  ADD KEY `sm_assign_class_teachers_church_id_foreign` (`church_id`),
+  ADD KEY `sm_assign_class_teachers_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_assign_subjects`
@@ -12204,11 +12204,11 @@ ALTER TABLE `sm_assign_class_teachers`
 ALTER TABLE `sm_assign_subjects`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_assign_subjects_teacher_id_foreign` (`teacher_id`),
-  ADD KEY `sm_assign_subjects_class_id_foreign` (`class_id`),
-  ADD KEY `sm_assign_subjects_section_id_foreign` (`section_id`),
+  ADD KEY `sm_assign_subjects_age_group_id_foreign` (`age_group_id`),
+  ADD KEY `sm_assign_subjects_mgender_id_foreign` (`mgender_id`),
   ADD KEY `sm_assign_subjects_subject_id_foreign` (`subject_id`),
-  ADD KEY `sm_assign_subjects_school_id_foreign` (`school_id`),
-  ADD KEY `sm_assign_subjects_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_assign_subjects_church_id_foreign` (`church_id`),
+  ADD KEY `sm_assign_subjects_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_assign_vehicles`
@@ -12217,31 +12217,31 @@ ALTER TABLE `sm_assign_vehicles`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_assign_vehicles_vehicle_id_foreign` (`vehicle_id`),
   ADD KEY `sm_assign_vehicles_route_id_foreign` (`route_id`),
-  ADD KEY `sm_assign_vehicles_school_id_foreign` (`school_id`),
-  ADD KEY `sm_assign_vehicles_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_assign_vehicles_church_id_foreign` (`church_id`),
+  ADD KEY `sm_assign_vehicles_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_background_settings`
 --
 ALTER TABLE `sm_background_settings`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_background_settings_school_id_foreign` (`school_id`);
+  ADD KEY `sm_background_settings_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `sm_backups`
 --
 ALTER TABLE `sm_backups`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_backups_school_id_foreign` (`school_id`),
-  ADD KEY `sm_backups_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_backups_church_id_foreign` (`church_id`),
+  ADD KEY `sm_backups_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_bank_accounts`
 --
 ALTER TABLE `sm_bank_accounts`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_bank_accounts_school_id_foreign` (`school_id`),
-  ADD KEY `sm_bank_accounts_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_bank_accounts_church_id_foreign` (`church_id`),
+  ADD KEY `sm_bank_accounts_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_bank_payment_slips`
@@ -12250,11 +12250,11 @@ ALTER TABLE `sm_bank_payment_slips`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_bank_payment_slips_fees_discount_id_foreign` (`fees_discount_id`),
   ADD KEY `sm_bank_payment_slips_fees_type_id_foreign` (`fees_type_id`),
-  ADD KEY `sm_bank_payment_slips_student_id_foreign` (`student_id`),
-  ADD KEY `sm_bank_payment_slips_class_id_foreign` (`class_id`),
-  ADD KEY `sm_bank_payment_slips_section_id_foreign` (`section_id`),
-  ADD KEY `sm_bank_payment_slips_school_id_foreign` (`school_id`),
-  ADD KEY `sm_bank_payment_slips_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_bank_payment_slips_member_id_foreign` (`member_id`),
+  ADD KEY `sm_bank_payment_slips_age_group_id_foreign` (`age_group_id`),
+  ADD KEY `sm_bank_payment_slips_mgender_id_foreign` (`mgender_id`),
+  ADD KEY `sm_bank_payment_slips_church_id_foreign` (`church_id`),
+  ADD KEY `sm_bank_payment_slips_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_bank_statements`
@@ -12267,7 +12267,7 @@ ALTER TABLE `sm_bank_statements`
 --
 ALTER TABLE `sm_base_groups`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_base_groups_school_id_foreign` (`school_id`);
+  ADD KEY `sm_base_groups_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `sm_base_setups`
@@ -12275,7 +12275,7 @@ ALTER TABLE `sm_base_groups`
 ALTER TABLE `sm_base_setups`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_base_setups_base_group_id_foreign` (`base_group_id`),
-  ADD KEY `sm_base_setups_school_id_foreign` (`school_id`);
+  ADD KEY `sm_base_setups_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `sm_books`
@@ -12283,16 +12283,16 @@ ALTER TABLE `sm_base_setups`
 ALTER TABLE `sm_books`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_books_book_category_id_foreign` (`book_category_id`),
-  ADD KEY `sm_books_school_id_foreign` (`school_id`),
-  ADD KEY `sm_books_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_books_church_id_foreign` (`church_id`),
+  ADD KEY `sm_books_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_book_categories`
 --
 ALTER TABLE `sm_book_categories`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_book_categories_school_id_foreign` (`school_id`),
-  ADD KEY `sm_book_categories_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_book_categories_church_id_foreign` (`church_id`),
+  ADD KEY `sm_book_categories_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_book_issues`
@@ -12301,50 +12301,50 @@ ALTER TABLE `sm_book_issues`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_book_issues_book_id_foreign` (`book_id`),
   ADD KEY `sm_book_issues_member_id_foreign` (`member_id`),
-  ADD KEY `sm_book_issues_school_id_foreign` (`school_id`),
-  ADD KEY `sm_book_issues_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_book_issues_church_id_foreign` (`church_id`),
+  ADD KEY `sm_book_issues_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_chart_of_accounts`
 --
 ALTER TABLE `sm_chart_of_accounts`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_chart_of_accounts_school_id_foreign` (`school_id`),
-  ADD KEY `sm_chart_of_accounts_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_chart_of_accounts_church_id_foreign` (`church_id`),
+  ADD KEY `sm_chart_of_accounts_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_classes`
 --
 ALTER TABLE `sm_classes`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_classes_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_classes_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_class_optional_subject`
 --
 ALTER TABLE `sm_class_optional_subject`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_class_optional_subject_school_id_foreign` (`school_id`),
-  ADD KEY `sm_class_optional_subject_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_class_optional_subject_church_id_foreign` (`church_id`),
+  ADD KEY `sm_class_optional_subject_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_class_rooms`
 --
 ALTER TABLE `sm_class_rooms`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_class_rooms_school_id_foreign` (`school_id`),
-  ADD KEY `sm_class_rooms_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_class_rooms_church_id_foreign` (`church_id`),
+  ADD KEY `sm_class_rooms_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_class_routines`
 --
 ALTER TABLE `sm_class_routines`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_class_routines_class_id_foreign` (`class_id`),
-  ADD KEY `sm_class_routines_section_id_foreign` (`section_id`),
+  ADD KEY `sm_class_routines_age_group_id_foreign` (`age_group_id`),
+  ADD KEY `sm_class_routines_mgender_id_foreign` (`mgender_id`),
   ADD KEY `sm_class_routines_subject_id_foreign` (`subject_id`),
-  ADD KEY `sm_class_routines_school_id_foreign` (`school_id`),
-  ADD KEY `sm_class_routines_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_class_routines_church_id_foreign` (`church_id`),
+  ADD KEY `sm_class_routines_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_class_routine_updates`
@@ -12355,20 +12355,20 @@ ALTER TABLE `sm_class_routine_updates`
   ADD KEY `sm_class_routine_updates_teacher_id_foreign` (`teacher_id`),
   ADD KEY `sm_class_routine_updates_class_period_id_foreign` (`class_period_id`),
   ADD KEY `sm_class_routine_updates_subject_id_foreign` (`subject_id`),
-  ADD KEY `sm_class_routine_updates_class_id_foreign` (`class_id`),
-  ADD KEY `sm_class_routine_updates_section_id_foreign` (`section_id`),
-  ADD KEY `sm_class_routine_updates_school_id_foreign` (`school_id`),
-  ADD KEY `sm_class_routine_updates_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_class_routine_updates_age_group_id_foreign` (`age_group_id`),
+  ADD KEY `sm_class_routine_updates_mgender_id_foreign` (`mgender_id`),
+  ADD KEY `sm_class_routine_updates_church_id_foreign` (`church_id`),
+  ADD KEY `sm_class_routine_updates_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_class_sections`
 --
 ALTER TABLE `sm_class_sections`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_class_sections_class_id_foreign` (`class_id`),
-  ADD KEY `sm_class_sections_section_id_foreign` (`section_id`),
-  ADD KEY `sm_class_sections_school_id_foreign` (`school_id`),
-  ADD KEY `sm_class_sections_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_class_sections_age_group_id_foreign` (`age_group_id`),
+  ADD KEY `sm_class_sections_mgender_id_foreign` (`mgender_id`),
+  ADD KEY `sm_class_sections_church_id_foreign` (`church_id`),
+  ADD KEY `sm_class_sections_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_class_teachers`
@@ -12377,60 +12377,60 @@ ALTER TABLE `sm_class_teachers`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_class_teachers_teacher_id_foreign` (`teacher_id`),
   ADD KEY `sm_class_teachers_assign_class_teacher_id_foreign` (`assign_class_teacher_id`),
-  ADD KEY `sm_class_teachers_school_id_foreign` (`school_id`),
-  ADD KEY `sm_class_teachers_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_class_teachers_church_id_foreign` (`church_id`),
+  ADD KEY `sm_class_teachers_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_class_times`
 --
 ALTER TABLE `sm_class_times`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_class_times_school_id_foreign` (`school_id`),
-  ADD KEY `sm_class_times_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_class_times_church_id_foreign` (`church_id`),
+  ADD KEY `sm_class_times_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_complaints`
 --
 ALTER TABLE `sm_complaints`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_complaints_school_id_foreign` (`school_id`),
-  ADD KEY `sm_complaints_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_complaints_church_id_foreign` (`church_id`),
+  ADD KEY `sm_complaints_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_contact_messages`
 --
 ALTER TABLE `sm_contact_messages`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_contact_messages_school_id_foreign` (`school_id`);
+  ADD KEY `sm_contact_messages_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `sm_contact_pages`
 --
 ALTER TABLE `sm_contact_pages`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_contact_pages_school_id_foreign` (`school_id`);
+  ADD KEY `sm_contact_pages_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `sm_content_types`
 --
 ALTER TABLE `sm_content_types`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_content_types_school_id_foreign` (`school_id`),
-  ADD KEY `sm_content_types_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_content_types_church_id_foreign` (`church_id`),
+  ADD KEY `sm_content_types_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_countries`
 --
 ALTER TABLE `sm_countries`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_countries_school_id_foreign` (`school_id`);
+  ADD KEY `sm_countries_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `sm_courses`
 --
 ALTER TABLE `sm_courses`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_courses_school_id_foreign` (`school_id`);
+  ADD KEY `sm_courses_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `sm_course_categories`
@@ -12443,14 +12443,14 @@ ALTER TABLE `sm_course_categories`
 --
 ALTER TABLE `sm_course_pages`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_course_pages_school_id_foreign` (`school_id`);
+  ADD KEY `sm_course_pages_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `sm_currencies`
 --
 ALTER TABLE `sm_currencies`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_currencies_school_id_foreign` (`school_id`);
+  ADD KEY `sm_currencies_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `sm_custom_links`
@@ -12463,8 +12463,8 @@ ALTER TABLE `sm_custom_links`
 --
 ALTER TABLE `sm_custom_temporary_results`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_custom_temporary_results_school_id_foreign` (`school_id`),
-  ADD KEY `sm_custom_temporary_results_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_custom_temporary_results_church_id_foreign` (`church_id`),
+  ADD KEY `sm_custom_temporary_results_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_dashboard_settings`
@@ -12472,53 +12472,53 @@ ALTER TABLE `sm_custom_temporary_results`
 ALTER TABLE `sm_dashboard_settings`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_dashboard_settings_role_id_foreign` (`role_id`),
-  ADD KEY `sm_dashboard_settings_school_id_foreign` (`school_id`);
+  ADD KEY `sm_dashboard_settings_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `sm_date_formats`
 --
 ALTER TABLE `sm_date_formats`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_date_formats_school_id_foreign` (`school_id`);
+  ADD KEY `sm_date_formats_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `sm_designations`
 --
 ALTER TABLE `sm_designations`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_designations_school_id_foreign` (`school_id`);
+  ADD KEY `sm_designations_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `sm_dormitory_lists`
 --
 ALTER TABLE `sm_dormitory_lists`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_dormitory_lists_school_id_foreign` (`school_id`),
-  ADD KEY `sm_dormitory_lists_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_dormitory_lists_church_id_foreign` (`church_id`),
+  ADD KEY `sm_dormitory_lists_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_email_settings`
 --
 ALTER TABLE `sm_email_settings`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_email_settings_school_id_foreign` (`school_id`),
-  ADD KEY `sm_email_settings_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_email_settings_church_id_foreign` (`church_id`),
+  ADD KEY `sm_email_settings_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_email_sms_logs`
 --
 ALTER TABLE `sm_email_sms_logs`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_email_sms_logs_school_id_foreign` (`school_id`),
-  ADD KEY `sm_email_sms_logs_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_email_sms_logs_church_id_foreign` (`church_id`),
+  ADD KEY `sm_email_sms_logs_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_events`
 --
 ALTER TABLE `sm_events`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_events_school_id_foreign` (`school_id`),
-  ADD KEY `sm_events_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_events_church_id_foreign` (`church_id`),
+  ADD KEY `sm_events_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_exams`
@@ -12526,11 +12526,11 @@ ALTER TABLE `sm_events`
 ALTER TABLE `sm_exams`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_exams_exam_type_id_foreign` (`exam_type_id`),
-  ADD KEY `sm_exams_class_id_foreign` (`class_id`),
-  ADD KEY `sm_exams_section_id_foreign` (`section_id`),
+  ADD KEY `sm_exams_age_group_id_foreign` (`age_group_id`),
+  ADD KEY `sm_exams_mgender_id_foreign` (`mgender_id`),
   ADD KEY `sm_exams_subject_id_foreign` (`subject_id`),
-  ADD KEY `sm_exams_school_id_foreign` (`school_id`),
-  ADD KEY `sm_exams_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_exams_church_id_foreign` (`church_id`),
+  ADD KEY `sm_exams_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_exam_attendances`
@@ -12539,10 +12539,10 @@ ALTER TABLE `sm_exam_attendances`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_exam_attendances_subject_id_foreign` (`subject_id`),
   ADD KEY `sm_exam_attendances_exam_id_foreign` (`exam_id`),
-  ADD KEY `sm_exam_attendances_class_id_foreign` (`class_id`),
-  ADD KEY `sm_exam_attendances_section_id_foreign` (`section_id`),
-  ADD KEY `sm_exam_attendances_school_id_foreign` (`school_id`),
-  ADD KEY `sm_exam_attendances_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_exam_attendances_age_group_id_foreign` (`age_group_id`),
+  ADD KEY `sm_exam_attendances_mgender_id_foreign` (`mgender_id`),
+  ADD KEY `sm_exam_attendances_church_id_foreign` (`church_id`),
+  ADD KEY `sm_exam_attendances_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_exam_attendance_children`
@@ -12550,9 +12550,9 @@ ALTER TABLE `sm_exam_attendances`
 ALTER TABLE `sm_exam_attendance_children`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_exam_attendance_children_exam_attendance_id_foreign` (`exam_attendance_id`),
-  ADD KEY `sm_exam_attendance_children_student_id_foreign` (`student_id`),
-  ADD KEY `sm_exam_attendance_children_school_id_foreign` (`school_id`),
-  ADD KEY `sm_exam_attendance_children_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_exam_attendance_children_member_id_foreign` (`member_id`),
+  ADD KEY `sm_exam_attendance_children_church_id_foreign` (`church_id`),
+  ADD KEY `sm_exam_attendance_children_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_exam_marks_registers`
@@ -12560,10 +12560,10 @@ ALTER TABLE `sm_exam_attendance_children`
 ALTER TABLE `sm_exam_marks_registers`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_exam_marks_registers_exam_id_foreign` (`exam_id`),
-  ADD KEY `sm_exam_marks_registers_student_id_foreign` (`student_id`),
+  ADD KEY `sm_exam_marks_registers_member_id_foreign` (`member_id`),
   ADD KEY `sm_exam_marks_registers_subject_id_foreign` (`subject_id`),
-  ADD KEY `sm_exam_marks_registers_school_id_foreign` (`school_id`),
-  ADD KEY `sm_exam_marks_registers_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_exam_marks_registers_church_id_foreign` (`church_id`),
+  ADD KEY `sm_exam_marks_registers_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_exam_schedules`
@@ -12575,10 +12575,10 @@ ALTER TABLE `sm_exam_schedules`
   ADD KEY `sm_exam_schedules_subject_id_foreign` (`subject_id`),
   ADD KEY `sm_exam_schedules_exam_term_id_foreign` (`exam_term_id`),
   ADD KEY `sm_exam_schedules_exam_id_foreign` (`exam_id`),
-  ADD KEY `sm_exam_schedules_class_id_foreign` (`class_id`),
-  ADD KEY `sm_exam_schedules_section_id_foreign` (`section_id`),
-  ADD KEY `sm_exam_schedules_school_id_foreign` (`school_id`),
-  ADD KEY `sm_exam_schedules_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_exam_schedules_age_group_id_foreign` (`age_group_id`),
+  ADD KEY `sm_exam_schedules_mgender_id_foreign` (`mgender_id`),
+  ADD KEY `sm_exam_schedules_church_id_foreign` (`church_id`),
+  ADD KEY `sm_exam_schedules_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_exam_schedule_subjects`
@@ -12587,16 +12587,16 @@ ALTER TABLE `sm_exam_schedule_subjects`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_exam_schedule_subjects_exam_schedule_id_foreign` (`exam_schedule_id`),
   ADD KEY `sm_exam_schedule_subjects_subject_id_foreign` (`subject_id`),
-  ADD KEY `sm_exam_schedule_subjects_school_id_foreign` (`school_id`),
-  ADD KEY `sm_exam_schedule_subjects_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_exam_schedule_subjects_church_id_foreign` (`church_id`),
+  ADD KEY `sm_exam_schedule_subjects_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_exam_settings`
 --
 ALTER TABLE `sm_exam_settings`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_exam_settings_school_id_foreign` (`school_id`),
-  ADD KEY `sm_exam_settings_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_exam_settings_church_id_foreign` (`church_id`),
+  ADD KEY `sm_exam_settings_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_exam_setups`
@@ -12604,28 +12604,28 @@ ALTER TABLE `sm_exam_settings`
 ALTER TABLE `sm_exam_setups`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_exam_setups_exam_id_foreign` (`exam_id`),
-  ADD KEY `sm_exam_setups_class_id_foreign` (`class_id`),
+  ADD KEY `sm_exam_setups_age_group_id_foreign` (`age_group_id`),
   ADD KEY `sm_exam_setups_subject_id_foreign` (`subject_id`),
-  ADD KEY `sm_exam_setups_section_id_foreign` (`section_id`),
+  ADD KEY `sm_exam_setups_mgender_id_foreign` (`mgender_id`),
   ADD KEY `sm_exam_setups_exam_term_id_foreign` (`exam_term_id`),
-  ADD KEY `sm_exam_setups_school_id_foreign` (`school_id`),
-  ADD KEY `sm_exam_setups_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_exam_setups_church_id_foreign` (`church_id`),
+  ADD KEY `sm_exam_setups_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_exam_types`
 --
 ALTER TABLE `sm_exam_types`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_exam_types_school_id_foreign` (`school_id`),
-  ADD KEY `sm_exam_types_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_exam_types_church_id_foreign` (`church_id`),
+  ADD KEY `sm_exam_types_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_expense_heads`
 --
 ALTER TABLE `sm_expense_heads`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_expense_heads_school_id_foreign` (`school_id`),
-  ADD KEY `sm_expense_heads_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_expense_heads_church_id_foreign` (`church_id`),
+  ADD KEY `sm_expense_heads_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_fees_assigns`
@@ -12634,44 +12634,44 @@ ALTER TABLE `sm_fees_assigns`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_fees_assigns_fees_master_id_foreign` (`fees_master_id`),
   ADD KEY `sm_fees_assigns_fees_discount_id_foreign` (`fees_discount_id`),
-  ADD KEY `sm_fees_assigns_student_id_foreign` (`student_id`),
-  ADD KEY `sm_fees_assigns_school_id_foreign` (`school_id`),
-  ADD KEY `sm_fees_assigns_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_fees_assigns_member_id_foreign` (`member_id`),
+  ADD KEY `sm_fees_assigns_church_id_foreign` (`church_id`),
+  ADD KEY `sm_fees_assigns_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_fees_assign_discounts`
 --
 ALTER TABLE `sm_fees_assign_discounts`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_fees_assign_discounts_student_id_foreign` (`student_id`),
+  ADD KEY `sm_fees_assign_discounts_member_id_foreign` (`member_id`),
   ADD KEY `sm_fees_assign_discounts_fees_discount_id_foreign` (`fees_discount_id`),
-  ADD KEY `sm_fees_assign_discounts_school_id_foreign` (`school_id`),
-  ADD KEY `sm_fees_assign_discounts_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_fees_assign_discounts_church_id_foreign` (`church_id`),
+  ADD KEY `sm_fees_assign_discounts_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_fees_carry_forwards`
 --
 ALTER TABLE `sm_fees_carry_forwards`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_fees_carry_forwards_student_id_foreign` (`student_id`),
-  ADD KEY `sm_fees_carry_forwards_school_id_foreign` (`school_id`),
-  ADD KEY `sm_fees_carry_forwards_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_fees_carry_forwards_member_id_foreign` (`member_id`),
+  ADD KEY `sm_fees_carry_forwards_church_id_foreign` (`church_id`),
+  ADD KEY `sm_fees_carry_forwards_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_fees_discounts`
 --
 ALTER TABLE `sm_fees_discounts`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_fees_discounts_school_id_foreign` (`school_id`),
-  ADD KEY `sm_fees_discounts_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_fees_discounts_church_id_foreign` (`church_id`),
+  ADD KEY `sm_fees_discounts_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_fees_groups`
 --
 ALTER TABLE `sm_fees_groups`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_fees_groups_school_id_foreign` (`school_id`),
-  ADD KEY `sm_fees_groups_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_fees_groups_church_id_foreign` (`church_id`),
+  ADD KEY `sm_fees_groups_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_fees_masters`
@@ -12680,8 +12680,8 @@ ALTER TABLE `sm_fees_masters`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_fees_masters_fees_group_id_foreign` (`fees_group_id`),
   ADD KEY `sm_fees_masters_fees_type_id_foreign` (`fees_type_id`),
-  ADD KEY `sm_fees_masters_school_id_foreign` (`school_id`),
-  ADD KEY `sm_fees_masters_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_fees_masters_church_id_foreign` (`church_id`),
+  ADD KEY `sm_fees_masters_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_fees_payments`
@@ -12690,9 +12690,9 @@ ALTER TABLE `sm_fees_payments`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_fees_payments_fees_discount_id_foreign` (`fees_discount_id`),
   ADD KEY `sm_fees_payments_fees_type_id_foreign` (`fees_type_id`),
-  ADD KEY `sm_fees_payments_student_id_foreign` (`student_id`),
-  ADD KEY `sm_fees_payments_school_id_foreign` (`school_id`),
-  ADD KEY `sm_fees_payments_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_fees_payments_member_id_foreign` (`member_id`),
+  ADD KEY `sm_fees_payments_church_id_foreign` (`church_id`),
+  ADD KEY `sm_fees_payments_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_fees_types`
@@ -12700,8 +12700,8 @@ ALTER TABLE `sm_fees_payments`
 ALTER TABLE `sm_fees_types`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_fees_types_fees_group_id_foreign` (`fees_group_id`),
-  ADD KEY `sm_fees_types_school_id_foreign` (`school_id`),
-  ADD KEY `sm_fees_types_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_fees_types_church_id_foreign` (`church_id`),
+  ADD KEY `sm_fees_types_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_frontend_persmissions`
@@ -12717,8 +12717,8 @@ ALTER TABLE `sm_general_settings`
   ADD KEY `sm_general_settings_session_id_foreign` (`session_id`),
   ADD KEY `sm_general_settings_language_id_foreign` (`language_id`),
   ADD KEY `sm_general_settings_date_format_id_foreign` (`date_format_id`),
-  ADD KEY `sm_general_settings_school_id_foreign` (`school_id`),
-  ADD KEY `sm_general_settings_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_general_settings_church_id_foreign` (`church_id`),
+  ADD KEY `sm_general_settings_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_header_menu_managers`
@@ -12731,8 +12731,8 @@ ALTER TABLE `sm_header_menu_managers`
 --
 ALTER TABLE `sm_holidays`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_holidays_school_id_foreign` (`school_id`),
-  ADD KEY `sm_holidays_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_holidays_church_id_foreign` (`church_id`),
+  ADD KEY `sm_holidays_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_homeworks`
@@ -12740,21 +12740,21 @@ ALTER TABLE `sm_holidays`
 ALTER TABLE `sm_homeworks`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_homeworks_evaluated_by_foreign` (`evaluated_by`),
-  ADD KEY `sm_homeworks_class_id_foreign` (`class_id`),
-  ADD KEY `sm_homeworks_section_id_foreign` (`section_id`),
+  ADD KEY `sm_homeworks_age_group_id_foreign` (`age_group_id`),
+  ADD KEY `sm_homeworks_mgender_id_foreign` (`mgender_id`),
   ADD KEY `sm_homeworks_subject_id_foreign` (`subject_id`),
-  ADD KEY `sm_homeworks_school_id_foreign` (`school_id`),
-  ADD KEY `sm_homeworks_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_homeworks_church_id_foreign` (`church_id`),
+  ADD KEY `sm_homeworks_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_homework_students`
 --
 ALTER TABLE `sm_homework_students`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_homework_students_student_id_foreign` (`student_id`),
+  ADD KEY `sm_homework_students_member_id_foreign` (`member_id`),
   ADD KEY `sm_homework_students_homework_id_foreign` (`homework_id`),
-  ADD KEY `sm_homework_students_school_id_foreign` (`school_id`),
-  ADD KEY `sm_homework_students_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_homework_students_church_id_foreign` (`church_id`),
+  ADD KEY `sm_homework_students_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_home_page_settings`
@@ -12767,8 +12767,8 @@ ALTER TABLE `sm_home_page_settings`
 --
 ALTER TABLE `sm_hourly_rates`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_hourly_rates_school_id_foreign` (`school_id`),
-  ADD KEY `sm_hourly_rates_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_hourly_rates_church_id_foreign` (`church_id`),
+  ADD KEY `sm_hourly_rates_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_hr_payroll_earn_deducs`
@@ -12776,8 +12776,8 @@ ALTER TABLE `sm_hourly_rates`
 ALTER TABLE `sm_hr_payroll_earn_deducs`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_hr_payroll_earn_deducs_payroll_generate_id_foreign` (`payroll_generate_id`),
-  ADD KEY `sm_hr_payroll_earn_deducs_school_id_foreign` (`school_id`),
-  ADD KEY `sm_hr_payroll_earn_deducs_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_hr_payroll_earn_deducs_church_id_foreign` (`church_id`),
+  ADD KEY `sm_hr_payroll_earn_deducs_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_hr_payroll_generates`
@@ -12785,16 +12785,16 @@ ALTER TABLE `sm_hr_payroll_earn_deducs`
 ALTER TABLE `sm_hr_payroll_generates`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_hr_payroll_generates_staff_id_foreign` (`staff_id`),
-  ADD KEY `sm_hr_payroll_generates_school_id_foreign` (`school_id`),
-  ADD KEY `sm_hr_payroll_generates_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_hr_payroll_generates_church_id_foreign` (`church_id`),
+  ADD KEY `sm_hr_payroll_generates_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_hr_salary_templates`
 --
 ALTER TABLE `sm_hr_salary_templates`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_hr_salary_templates_school_id_foreign` (`school_id`),
-  ADD KEY `sm_hr_salary_templates_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_hr_salary_templates_church_id_foreign` (`church_id`),
+  ADD KEY `sm_hr_salary_templates_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_human_departments`
@@ -12803,30 +12803,30 @@ ALTER TABLE `sm_human_departments`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_human_departments_created_by_foreign` (`created_by`),
   ADD KEY `sm_human_departments_updated_by_foreign` (`updated_by`),
-  ADD KEY `sm_human_departments_school_id_foreign` (`school_id`);
+  ADD KEY `sm_human_departments_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `sm_income_heads`
 --
 ALTER TABLE `sm_income_heads`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_income_heads_school_id_foreign` (`school_id`),
-  ADD KEY `sm_income_heads_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_income_heads_church_id_foreign` (`church_id`),
+  ADD KEY `sm_income_heads_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_instructions`
 --
 ALTER TABLE `sm_instructions`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_instructions_school_id_foreign` (`school_id`);
+  ADD KEY `sm_instructions_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `sm_inventory_payments`
 --
 ALTER TABLE `sm_inventory_payments`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_inventory_payments_school_id_foreign` (`school_id`),
-  ADD KEY `sm_inventory_payments_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_inventory_payments_church_id_foreign` (`church_id`),
+  ADD KEY `sm_inventory_payments_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_items`
@@ -12834,16 +12834,16 @@ ALTER TABLE `sm_inventory_payments`
 ALTER TABLE `sm_items`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_items_item_category_id_foreign` (`item_category_id`),
-  ADD KEY `sm_items_school_id_foreign` (`school_id`),
-  ADD KEY `sm_items_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_items_church_id_foreign` (`church_id`),
+  ADD KEY `sm_items_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_item_categories`
 --
 ALTER TABLE `sm_item_categories`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_item_categories_school_id_foreign` (`school_id`),
-  ADD KEY `sm_item_categories_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_item_categories_church_id_foreign` (`church_id`),
+  ADD KEY `sm_item_categories_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_item_issues`
@@ -12853,8 +12853,8 @@ ALTER TABLE `sm_item_issues`
   ADD KEY `sm_item_issues_role_id_foreign` (`role_id`),
   ADD KEY `sm_item_issues_item_category_id_foreign` (`item_category_id`),
   ADD KEY `sm_item_issues_item_id_foreign` (`item_id`),
-  ADD KEY `sm_item_issues_school_id_foreign` (`school_id`),
-  ADD KEY `sm_item_issues_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_item_issues_church_id_foreign` (`church_id`),
+  ADD KEY `sm_item_issues_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_item_receives`
@@ -12863,8 +12863,8 @@ ALTER TABLE `sm_item_receives`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_item_receives_supplier_id_foreign` (`supplier_id`),
   ADD KEY `sm_item_receives_store_id_foreign` (`store_id`),
-  ADD KEY `sm_item_receives_school_id_foreign` (`school_id`),
-  ADD KEY `sm_item_receives_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_item_receives_church_id_foreign` (`church_id`),
+  ADD KEY `sm_item_receives_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_item_receive_children`
@@ -12873,8 +12873,8 @@ ALTER TABLE `sm_item_receive_children`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_item_receive_children_item_id_foreign` (`item_id`),
   ADD KEY `sm_item_receive_children_item_receive_id_foreign` (`item_receive_id`),
-  ADD KEY `sm_item_receive_children_school_id_foreign` (`school_id`),
-  ADD KEY `sm_item_receive_children_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_item_receive_children_church_id_foreign` (`church_id`),
+  ADD KEY `sm_item_receive_children_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_item_sells`
@@ -12882,24 +12882,24 @@ ALTER TABLE `sm_item_receive_children`
 ALTER TABLE `sm_item_sells`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_item_sells_role_id_foreign` (`role_id`),
-  ADD KEY `sm_item_sells_school_id_foreign` (`school_id`),
-  ADD KEY `sm_item_sells_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_item_sells_church_id_foreign` (`church_id`),
+  ADD KEY `sm_item_sells_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_item_sell_children`
 --
 ALTER TABLE `sm_item_sell_children`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_item_sell_children_school_id_foreign` (`school_id`),
-  ADD KEY `sm_item_sell_children_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_item_sell_children_church_id_foreign` (`church_id`),
+  ADD KEY `sm_item_sell_children_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_item_stores`
 --
 ALTER TABLE `sm_item_stores`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_item_stores_school_id_foreign` (`school_id`),
-  ADD KEY `sm_item_stores_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_item_stores_church_id_foreign` (`church_id`),
+  ADD KEY `sm_item_stores_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_languages`
@@ -12907,7 +12907,7 @@ ALTER TABLE `sm_item_stores`
 ALTER TABLE `sm_languages`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_languages_lang_id_foreign` (`lang_id`),
-  ADD KEY `sm_languages_school_id_foreign` (`school_id`);
+  ADD KEY `sm_languages_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `sm_language_phrases`
@@ -12920,8 +12920,8 @@ ALTER TABLE `sm_language_phrases`
 --
 ALTER TABLE `sm_leave_deduction_infos`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_leave_deduction_infos_school_id_foreign` (`school_id`),
-  ADD KEY `sm_leave_deduction_infos_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_leave_deduction_infos_church_id_foreign` (`church_id`),
+  ADD KEY `sm_leave_deduction_infos_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_leave_defines`
@@ -12931,8 +12931,8 @@ ALTER TABLE `sm_leave_defines`
   ADD KEY `sm_leave_defines_role_id_foreign` (`role_id`),
   ADD KEY `sm_leave_defines_user_id_foreign` (`user_id`),
   ADD KEY `sm_leave_defines_type_id_foreign` (`type_id`),
-  ADD KEY `sm_leave_defines_school_id_foreign` (`school_id`),
-  ADD KEY `sm_leave_defines_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_leave_defines_church_id_foreign` (`church_id`),
+  ADD KEY `sm_leave_defines_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_leave_requests`
@@ -12943,49 +12943,49 @@ ALTER TABLE `sm_leave_requests`
   ADD KEY `sm_leave_requests_staff_id_foreign` (`staff_id`),
   ADD KEY `sm_leave_requests_role_id_foreign` (`role_id`),
   ADD KEY `sm_leave_requests_type_id_foreign` (`type_id`),
-  ADD KEY `sm_leave_requests_school_id_foreign` (`school_id`),
-  ADD KEY `sm_leave_requests_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_leave_requests_church_id_foreign` (`church_id`),
+  ADD KEY `sm_leave_requests_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_leave_types`
 --
 ALTER TABLE `sm_leave_types`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_leave_types_school_id_foreign` (`school_id`),
-  ADD KEY `sm_leave_types_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_leave_types_church_id_foreign` (`church_id`),
+  ADD KEY `sm_leave_types_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_lessons`
 --
 ALTER TABLE `sm_lessons`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_lessons_class_id_foreign` (`class_id`),
-  ADD KEY `sm_lessons_section_id_foreign` (`section_id`),
+  ADD KEY `sm_lessons_age_group_id_foreign` (`age_group_id`),
+  ADD KEY `sm_lessons_mgender_id_foreign` (`mgender_id`),
   ADD KEY `sm_lessons_subject_id_foreign` (`subject_id`),
-  ADD KEY `sm_lessons_school_id_foreign` (`school_id`),
-  ADD KEY `sm_lessons_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_lessons_church_id_foreign` (`church_id`),
+  ADD KEY `sm_lessons_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_lesson_details`
 --
 ALTER TABLE `sm_lesson_details`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_lesson_details_class_id_foreign` (`class_id`),
-  ADD KEY `sm_lesson_details_section_id_foreign` (`section_id`),
+  ADD KEY `sm_lesson_details_age_group_id_foreign` (`age_group_id`),
+  ADD KEY `sm_lesson_details_mgender_id_foreign` (`mgender_id`),
   ADD KEY `sm_lesson_details_subject_id_foreign` (`subject_id`),
-  ADD KEY `sm_lesson_details_school_id_foreign` (`school_id`),
-  ADD KEY `sm_lesson_details_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_lesson_details_church_id_foreign` (`church_id`),
+  ADD KEY `sm_lesson_details_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_lesson_topics`
 --
 ALTER TABLE `sm_lesson_topics`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_lesson_topics_class_id_foreign` (`class_id`),
-  ADD KEY `sm_lesson_topics_section_id_foreign` (`section_id`),
+  ADD KEY `sm_lesson_topics_age_group_id_foreign` (`age_group_id`),
+  ADD KEY `sm_lesson_topics_mgender_id_foreign` (`mgender_id`),
   ADD KEY `sm_lesson_topics_subject_id_foreign` (`subject_id`),
-  ADD KEY `sm_lesson_topics_school_id_foreign` (`school_id`),
-  ADD KEY `sm_lesson_topics_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_lesson_topics_church_id_foreign` (`church_id`),
+  ADD KEY `sm_lesson_topics_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_lesson_topic_details`
@@ -12993,8 +12993,8 @@ ALTER TABLE `sm_lesson_topics`
 ALTER TABLE `sm_lesson_topic_details`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_lesson_topic_details_topic_id_foreign` (`topic_id`),
-  ADD KEY `sm_lesson_topic_details_school_id_foreign` (`school_id`),
-  ADD KEY `sm_lesson_topic_details_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_lesson_topic_details_church_id_foreign` (`church_id`),
+  ADD KEY `sm_lesson_topic_details_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_library_members`
@@ -13003,28 +13003,28 @@ ALTER TABLE `sm_library_members`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_library_members_member_type_foreign` (`member_type`),
   ADD KEY `sm_library_members_student_staff_id_foreign` (`student_staff_id`),
-  ADD KEY `sm_library_members_school_id_foreign` (`school_id`),
-  ADD KEY `sm_library_members_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_library_members_church_id_foreign` (`church_id`),
+  ADD KEY `sm_library_members_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_marks_grades`
 --
 ALTER TABLE `sm_marks_grades`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_marks_grades_school_id_foreign` (`school_id`),
-  ADD KEY `sm_marks_grades_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_marks_grades_church_id_foreign` (`church_id`),
+  ADD KEY `sm_marks_grades_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_marks_registers`
 --
 ALTER TABLE `sm_marks_registers`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_marks_registers_student_id_foreign` (`student_id`),
+  ADD KEY `sm_marks_registers_member_id_foreign` (`member_id`),
   ADD KEY `sm_marks_registers_exam_id_foreign` (`exam_id`),
-  ADD KEY `sm_marks_registers_class_id_foreign` (`class_id`),
-  ADD KEY `sm_marks_registers_section_id_foreign` (`section_id`),
-  ADD KEY `sm_marks_registers_school_id_foreign` (`school_id`),
-  ADD KEY `sm_marks_registers_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_marks_registers_age_group_id_foreign` (`age_group_id`),
+  ADD KEY `sm_marks_registers_mgender_id_foreign` (`mgender_id`),
+  ADD KEY `sm_marks_registers_church_id_foreign` (`church_id`),
+  ADD KEY `sm_marks_registers_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_marks_register_children`
@@ -13033,8 +13033,8 @@ ALTER TABLE `sm_marks_register_children`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_marks_register_children_marks_register_id_foreign` (`marks_register_id`),
   ADD KEY `sm_marks_register_children_subject_id_foreign` (`subject_id`),
-  ADD KEY `sm_marks_register_children_school_id_foreign` (`school_id`),
-  ADD KEY `sm_marks_register_children_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_marks_register_children_church_id_foreign` (`church_id`),
+  ADD KEY `sm_marks_register_children_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_marks_send_sms`
@@ -13042,9 +13042,9 @@ ALTER TABLE `sm_marks_register_children`
 ALTER TABLE `sm_marks_send_sms`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_marks_send_sms_exam_id_foreign` (`exam_id`),
-  ADD KEY `sm_marks_send_sms_student_id_foreign` (`student_id`),
-  ADD KEY `sm_marks_send_sms_school_id_foreign` (`school_id`),
-  ADD KEY `sm_marks_send_sms_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_marks_send_sms_member_id_foreign` (`member_id`),
+  ADD KEY `sm_marks_send_sms_church_id_foreign` (`church_id`),
+  ADD KEY `sm_marks_send_sms_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_mark_stores`
@@ -13054,18 +13054,18 @@ ALTER TABLE `sm_mark_stores`
   ADD KEY `sm_mark_stores_subject_id_foreign` (`subject_id`),
   ADD KEY `sm_mark_stores_exam_term_id_foreign` (`exam_term_id`),
   ADD KEY `sm_mark_stores_exam_setup_id_foreign` (`exam_setup_id`),
-  ADD KEY `sm_mark_stores_student_id_foreign` (`student_id`),
-  ADD KEY `sm_mark_stores_class_id_foreign` (`class_id`),
-  ADD KEY `sm_mark_stores_section_id_foreign` (`section_id`),
-  ADD KEY `sm_mark_stores_school_id_foreign` (`school_id`),
-  ADD KEY `sm_mark_stores_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_mark_stores_member_id_foreign` (`member_id`),
+  ADD KEY `sm_mark_stores_age_group_id_foreign` (`age_group_id`),
+  ADD KEY `sm_mark_stores_mgender_id_foreign` (`mgender_id`),
+  ADD KEY `sm_mark_stores_church_id_foreign` (`church_id`),
+  ADD KEY `sm_mark_stores_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_modules`
 --
 ALTER TABLE `sm_modules`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_modules_school_id_foreign` (`school_id`);
+  ADD KEY `sm_modules_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `sm_module_links`
@@ -13075,14 +13075,14 @@ ALTER TABLE `sm_module_links`
   ADD KEY `sm_module_links_module_id_foreign` (`module_id`),
   ADD KEY `sm_module_links_created_by_foreign` (`created_by`),
   ADD KEY `sm_module_links_updated_by_foreign` (`updated_by`),
-  ADD KEY `sm_module_links_school_id_foreign` (`school_id`);
+  ADD KEY `sm_module_links_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `sm_module_permissions`
 --
 ALTER TABLE `sm_module_permissions`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_module_permissions_school_id_foreign` (`school_id`);
+  ADD KEY `sm_module_permissions_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `sm_module_permission_assigns`
@@ -13091,7 +13091,7 @@ ALTER TABLE `sm_module_permission_assigns`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_module_permission_assigns_module_id_foreign` (`module_id`),
   ADD KEY `sm_module_permission_assigns_role_id_foreign` (`role_id`),
-  ADD KEY `sm_module_permission_assigns_school_id_foreign` (`school_id`);
+  ADD KEY `sm_module_permission_assigns_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `sm_news`
@@ -13113,45 +13113,45 @@ ALTER TABLE `sm_news_pages`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_news_pages_created_by_foreign` (`created_by`),
   ADD KEY `sm_news_pages_updated_by_foreign` (`updated_by`),
-  ADD KEY `sm_news_pages_school_id_foreign` (`school_id`);
+  ADD KEY `sm_news_pages_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `sm_notice_boards`
 --
 ALTER TABLE `sm_notice_boards`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_notice_boards_school_id_foreign` (`school_id`),
-  ADD KEY `sm_notice_boards_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_notice_boards_church_id_foreign` (`church_id`),
+  ADD KEY `sm_notice_boards_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_notifications`
 --
 ALTER TABLE `sm_notifications`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_notifications_school_id_foreign` (`school_id`),
-  ADD KEY `sm_notifications_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_notifications_church_id_foreign` (`church_id`),
+  ADD KEY `sm_notifications_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_online_exams`
 --
 ALTER TABLE `sm_online_exams`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_online_exams_class_id_foreign` (`class_id`),
-  ADD KEY `sm_online_exams_section_id_foreign` (`section_id`),
+  ADD KEY `sm_online_exams_age_group_id_foreign` (`age_group_id`),
+  ADD KEY `sm_online_exams_mgender_id_foreign` (`mgender_id`),
   ADD KEY `sm_online_exams_subject_id_foreign` (`subject_id`),
-  ADD KEY `sm_online_exams_school_id_foreign` (`school_id`),
-  ADD KEY `sm_online_exams_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_online_exams_church_id_foreign` (`church_id`),
+  ADD KEY `sm_online_exams_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_online_exam_marks`
 --
 ALTER TABLE `sm_online_exam_marks`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_online_exam_marks_student_id_foreign` (`student_id`),
+  ADD KEY `sm_online_exam_marks_member_id_foreign` (`member_id`),
   ADD KEY `sm_online_exam_marks_subject_id_foreign` (`subject_id`),
   ADD KEY `sm_online_exam_marks_exam_id_foreign` (`exam_id`),
-  ADD KEY `sm_online_exam_marks_school_id_foreign` (`school_id`),
-  ADD KEY `sm_online_exam_marks_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_online_exam_marks_church_id_foreign` (`church_id`),
+  ADD KEY `sm_online_exam_marks_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_online_exam_questions`
@@ -13159,8 +13159,8 @@ ALTER TABLE `sm_online_exam_marks`
 ALTER TABLE `sm_online_exam_questions`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_online_exam_questions_online_exam_id_foreign` (`online_exam_id`),
-  ADD KEY `sm_online_exam_questions_school_id_foreign` (`school_id`),
-  ADD KEY `sm_online_exam_questions_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_online_exam_questions_church_id_foreign` (`church_id`),
+  ADD KEY `sm_online_exam_questions_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_online_exam_question_assigns`
@@ -13169,8 +13169,8 @@ ALTER TABLE `sm_online_exam_question_assigns`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_online_exam_question_assigns_online_exam_id_foreign` (`online_exam_id`),
   ADD KEY `sm_online_exam_question_assigns_question_bank_id_foreign` (`question_bank_id`),
-  ADD KEY `sm_online_exam_question_assigns_school_id_foreign` (`school_id`),
-  ADD KEY `sm_online_exam_question_assigns_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_online_exam_question_assigns_church_id_foreign` (`church_id`),
+  ADD KEY `sm_online_exam_question_assigns_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_online_exam_question_mu_options`
@@ -13178,19 +13178,19 @@ ALTER TABLE `sm_online_exam_question_assigns`
 ALTER TABLE `sm_online_exam_question_mu_options`
   ADD PRIMARY KEY (`id`),
   ADD KEY `on_ex_qu_id` (`online_exam_question_id`),
-  ADD KEY `sm_online_exam_question_mu_options_school_id_foreign` (`school_id`),
-  ADD KEY `sm_online_exam_question_mu_options_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_online_exam_question_mu_options_church_id_foreign` (`church_id`),
+  ADD KEY `sm_online_exam_question_mu_options_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_optional_subject_assigns`
 --
 ALTER TABLE `sm_optional_subject_assigns`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_optional_subject_assigns_student_id_foreign` (`student_id`),
+  ADD KEY `sm_optional_subject_assigns_member_id_foreign` (`member_id`),
   ADD KEY `sm_optional_subject_assigns_subject_id_foreign` (`subject_id`),
-  ADD KEY `sm_optional_subject_assigns_school_id_foreign` (`school_id`),
+  ADD KEY `sm_optional_subject_assigns_church_id_foreign` (`church_id`),
   ADD KEY `sm_optional_subject_assigns_session_id_foreign` (`session_id`),
-  ADD KEY `sm_optional_subject_assigns_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_optional_subject_assigns_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_pages`
@@ -13205,15 +13205,15 @@ ALTER TABLE `sm_pages`
 ALTER TABLE `sm_parents`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_parents_user_id_foreign` (`user_id`),
-  ADD KEY `sm_parents_school_id_foreign` (`school_id`),
-  ADD KEY `sm_parents_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_parents_church_id_foreign` (`church_id`),
+  ADD KEY `sm_parents_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_payment_gateway_settings`
 --
 ALTER TABLE `sm_payment_gateway_settings`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_payment_gateway_settings_school_id_foreign` (`school_id`);
+  ADD KEY `sm_payment_gateway_settings_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `sm_payment_methhods`
@@ -13221,31 +13221,31 @@ ALTER TABLE `sm_payment_gateway_settings`
 ALTER TABLE `sm_payment_methhods`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_payment_methhods_gateway_id_foreign` (`gateway_id`),
-  ADD KEY `sm_payment_methhods_school_id_foreign` (`school_id`);
+  ADD KEY `sm_payment_methhods_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `sm_phone_call_logs`
 --
 ALTER TABLE `sm_phone_call_logs`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_phone_call_logs_school_id_foreign` (`school_id`),
-  ADD KEY `sm_phone_call_logs_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_phone_call_logs_church_id_foreign` (`church_id`),
+  ADD KEY `sm_phone_call_logs_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_postal_dispatches`
 --
 ALTER TABLE `sm_postal_dispatches`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_postal_dispatches_school_id_foreign` (`school_id`),
-  ADD KEY `sm_postal_dispatches_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_postal_dispatches_church_id_foreign` (`church_id`),
+  ADD KEY `sm_postal_dispatches_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_postal_receives`
 --
 ALTER TABLE `sm_postal_receives`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_postal_receives_school_id_foreign` (`school_id`),
-  ADD KEY `sm_postal_receives_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_postal_receives_church_id_foreign` (`church_id`),
+  ADD KEY `sm_postal_receives_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_product_purchases`
@@ -13254,7 +13254,7 @@ ALTER TABLE `sm_product_purchases`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_product_purchases_user_id_foreign` (`user_id`),
   ADD KEY `sm_product_purchases_staff_id_foreign` (`staff_id`),
-  ADD KEY `sm_product_purchases_school_id_foreign` (`school_id`);
+  ADD KEY `sm_product_purchases_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `sm_question_banks`
@@ -13262,10 +13262,10 @@ ALTER TABLE `sm_product_purchases`
 ALTER TABLE `sm_question_banks`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_question_banks_q_group_id_foreign` (`q_group_id`),
-  ADD KEY `sm_question_banks_class_id_foreign` (`class_id`),
-  ADD KEY `sm_question_banks_section_id_foreign` (`section_id`),
-  ADD KEY `sm_question_banks_school_id_foreign` (`school_id`),
-  ADD KEY `sm_question_banks_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_question_banks_age_group_id_foreign` (`age_group_id`),
+  ADD KEY `sm_question_banks_mgender_id_foreign` (`mgender_id`),
+  ADD KEY `sm_question_banks_church_id_foreign` (`church_id`),
+  ADD KEY `sm_question_banks_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_question_bank_mu_options`
@@ -13273,24 +13273,24 @@ ALTER TABLE `sm_question_banks`
 ALTER TABLE `sm_question_bank_mu_options`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_question_bank_mu_options_question_bank_id_foreign` (`question_bank_id`),
-  ADD KEY `sm_question_bank_mu_options_school_id_foreign` (`school_id`),
-  ADD KEY `sm_question_bank_mu_options_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_question_bank_mu_options_church_id_foreign` (`church_id`),
+  ADD KEY `sm_question_bank_mu_options_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_question_groups`
 --
 ALTER TABLE `sm_question_groups`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_question_groups_school_id_foreign` (`school_id`),
-  ADD KEY `sm_question_groups_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_question_groups_church_id_foreign` (`church_id`),
+  ADD KEY `sm_question_groups_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_question_levels`
 --
 ALTER TABLE `sm_question_levels`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_question_levels_school_id_foreign` (`school_id`),
-  ADD KEY `sm_question_levels_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_question_levels_church_id_foreign` (`church_id`),
+  ADD KEY `sm_question_levels_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_result_stores`
@@ -13300,11 +13300,11 @@ ALTER TABLE `sm_result_stores`
   ADD KEY `sm_result_stores_exam_type_id_foreign` (`exam_type_id`),
   ADD KEY `sm_result_stores_subject_id_foreign` (`subject_id`),
   ADD KEY `sm_result_stores_exam_setup_id_foreign` (`exam_setup_id`),
-  ADD KEY `sm_result_stores_student_id_foreign` (`student_id`),
-  ADD KEY `sm_result_stores_class_id_foreign` (`class_id`),
-  ADD KEY `sm_result_stores_section_id_foreign` (`section_id`),
-  ADD KEY `sm_result_stores_school_id_foreign` (`school_id`),
-  ADD KEY `sm_result_stores_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_result_stores_member_id_foreign` (`member_id`),
+  ADD KEY `sm_result_stores_age_group_id_foreign` (`age_group_id`),
+  ADD KEY `sm_result_stores_mgender_id_foreign` (`mgender_id`),
+  ADD KEY `sm_result_stores_church_id_foreign` (`church_id`),
+  ADD KEY `sm_result_stores_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_role_permissions`
@@ -13313,7 +13313,7 @@ ALTER TABLE `sm_role_permissions`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_role_permissions_module_link_id_foreign` (`module_link_id`),
   ADD KEY `sm_role_permissions_role_id_foreign` (`role_id`),
-  ADD KEY `sm_role_permissions_school_id_foreign` (`school_id`);
+  ADD KEY `sm_role_permissions_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `sm_room_lists`
@@ -13322,24 +13322,24 @@ ALTER TABLE `sm_room_lists`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_room_lists_dormitory_id_foreign` (`dormitory_id`),
   ADD KEY `sm_room_lists_room_type_id_foreign` (`room_type_id`),
-  ADD KEY `sm_room_lists_school_id_foreign` (`school_id`),
-  ADD KEY `sm_room_lists_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_room_lists_church_id_foreign` (`church_id`),
+  ADD KEY `sm_room_lists_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_room_types`
 --
 ALTER TABLE `sm_room_types`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_room_types_school_id_foreign` (`school_id`),
-  ADD KEY `sm_room_types_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_room_types_church_id_foreign` (`church_id`),
+  ADD KEY `sm_room_types_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_routes`
 --
 ALTER TABLE `sm_routes`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_routes_school_id_foreign` (`school_id`),
-  ADD KEY `sm_routes_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_routes_church_id_foreign` (`church_id`),
+  ADD KEY `sm_routes_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_schools`
@@ -13354,10 +13354,10 @@ ALTER TABLE `sm_seat_plans`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_seat_plans_exam_id_foreign` (`exam_id`),
   ADD KEY `sm_seat_plans_subject_id_foreign` (`subject_id`),
-  ADD KEY `sm_seat_plans_class_id_foreign` (`class_id`),
-  ADD KEY `sm_seat_plans_section_id_foreign` (`section_id`),
-  ADD KEY `sm_seat_plans_school_id_foreign` (`school_id`),
-  ADD KEY `sm_seat_plans_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_seat_plans_age_group_id_foreign` (`age_group_id`),
+  ADD KEY `sm_seat_plans_mgender_id_foreign` (`mgender_id`),
+  ADD KEY `sm_seat_plans_church_id_foreign` (`church_id`),
+  ADD KEY `sm_seat_plans_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_seat_plan_children`
@@ -13365,53 +13365,53 @@ ALTER TABLE `sm_seat_plans`
 ALTER TABLE `sm_seat_plan_children`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_seat_plan_children_seat_plan_id_foreign` (`seat_plan_id`),
-  ADD KEY `sm_seat_plan_children_school_id_foreign` (`school_id`),
-  ADD KEY `sm_seat_plan_children_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_seat_plan_children_church_id_foreign` (`church_id`),
+  ADD KEY `sm_seat_plan_children_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_sections`
 --
 ALTER TABLE `sm_sections`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_sections_school_id_foreign` (`school_id`),
-  ADD KEY `sm_sections_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_sections_church_id_foreign` (`church_id`),
+  ADD KEY `sm_sections_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_send_messages`
 --
 ALTER TABLE `sm_send_messages`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_send_messages_school_id_foreign` (`school_id`),
-  ADD KEY `sm_send_messages_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_send_messages_church_id_foreign` (`church_id`),
+  ADD KEY `sm_send_messages_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_sessions`
 --
 ALTER TABLE `sm_sessions`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_sessions_school_id_foreign` (`school_id`);
+  ADD KEY `sm_sessions_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `sm_setup_admins`
 --
 ALTER TABLE `sm_setup_admins`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_setup_admins_school_id_foreign` (`school_id`),
-  ADD KEY `sm_setup_admins_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_setup_admins_church_id_foreign` (`church_id`),
+  ADD KEY `sm_setup_admins_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_sms_gateways`
 --
 ALTER TABLE `sm_sms_gateways`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_sms_gateways_school_id_foreign` (`school_id`);
+  ADD KEY `sm_sms_gateways_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `sm_social_media_icons`
 --
 ALTER TABLE `sm_social_media_icons`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_social_media_icons_school_id_foreign` (`school_id`);
+  ADD KEY `sm_social_media_icons_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `sm_staffs`
@@ -13423,7 +13423,7 @@ ALTER TABLE `sm_staffs`
   ADD KEY `sm_staffs_user_id_foreign` (`user_id`),
   ADD KEY `sm_staffs_role_id_foreign` (`role_id`),
   ADD KEY `sm_staffs_gender_id_foreign` (`gender_id`),
-  ADD KEY `sm_staffs_school_id_foreign` (`school_id`);
+  ADD KEY `sm_staffs_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `sm_staff_attendance_imports`
@@ -13431,8 +13431,8 @@ ALTER TABLE `sm_staffs`
 ALTER TABLE `sm_staff_attendance_imports`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_staff_attendance_imports_staff_id_foreign` (`staff_id`),
-  ADD KEY `sm_staff_attendance_imports_school_id_foreign` (`school_id`),
-  ADD KEY `sm_staff_attendance_imports_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_staff_attendance_imports_church_id_foreign` (`church_id`),
+  ADD KEY `sm_staff_attendance_imports_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_staff_attendences`
@@ -13440,8 +13440,8 @@ ALTER TABLE `sm_staff_attendance_imports`
 ALTER TABLE `sm_staff_attendences`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_staff_attendences_staff_id_foreign` (`staff_id`),
-  ADD KEY `sm_staff_attendences_school_id_foreign` (`school_id`),
-  ADD KEY `sm_staff_attendences_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_staff_attendences_church_id_foreign` (`church_id`),
+  ADD KEY `sm_staff_attendences_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_students`
@@ -13456,72 +13456,72 @@ ALTER TABLE `sm_students`
   ADD KEY `sm_students_room_id_foreign` (`room_id`),
   ADD KEY `sm_students_student_category_id_foreign` (`student_category_id`),
   ADD KEY `sm_students_student_group_id_foreign` (`student_group_id`),
-  ADD KEY `sm_students_class_id_foreign` (`class_id`),
-  ADD KEY `sm_students_section_id_foreign` (`section_id`),
+  ADD KEY `sm_students_age_group_id_foreign` (`age_group_id`),
+  ADD KEY `sm_students_mgender_id_foreign` (`mgender_id`),
   ADD KEY `sm_students_session_id_foreign` (`session_id`),
   ADD KEY `sm_students_parent_id_foreign` (`parent_id`),
   ADD KEY `sm_students_user_id_foreign` (`user_id`),
   ADD KEY `sm_students_role_id_foreign` (`role_id`),
   ADD KEY `sm_students_gender_id_foreign` (`gender_id`),
-  ADD KEY `sm_students_school_id_foreign` (`school_id`),
-  ADD KEY `sm_students_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_students_church_id_foreign` (`church_id`),
+  ADD KEY `sm_students_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_student_attendances`
 --
 ALTER TABLE `sm_student_attendances`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_student_attendances_student_id_foreign` (`student_id`),
-  ADD KEY `sm_student_attendances_school_id_foreign` (`school_id`),
-  ADD KEY `sm_student_attendances_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_student_attendances_member_id_foreign` (`member_id`),
+  ADD KEY `sm_student_attendances_church_id_foreign` (`church_id`),
+  ADD KEY `sm_student_attendances_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_student_attendance_imports`
 --
 ALTER TABLE `sm_student_attendance_imports`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_student_attendance_imports_student_id_foreign` (`student_id`),
-  ADD KEY `sm_student_attendance_imports_school_id_foreign` (`school_id`),
-  ADD KEY `sm_student_attendance_imports_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_student_attendance_imports_member_id_foreign` (`member_id`),
+  ADD KEY `sm_student_attendance_imports_church_id_foreign` (`church_id`),
+  ADD KEY `sm_student_attendance_imports_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_student_categories`
 --
 ALTER TABLE `sm_student_categories`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_student_categories_school_id_foreign` (`school_id`),
-  ADD KEY `sm_student_categories_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_student_categories_church_id_foreign` (`church_id`),
+  ADD KEY `sm_student_categories_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_student_certificates`
 --
 ALTER TABLE `sm_student_certificates`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_student_certificates_school_id_foreign` (`school_id`),
-  ADD KEY `sm_student_certificates_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_student_certificates_church_id_foreign` (`church_id`),
+  ADD KEY `sm_student_certificates_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_student_documents`
 --
 ALTER TABLE `sm_student_documents`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_student_documents_school_id_foreign` (`school_id`),
-  ADD KEY `sm_student_documents_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_student_documents_church_id_foreign` (`church_id`),
+  ADD KEY `sm_student_documents_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_student_excel_formats`
 --
 ALTER TABLE `sm_student_excel_formats`
-  ADD KEY `sm_student_excel_formats_school_id_foreign` (`school_id`),
-  ADD KEY `sm_student_excel_formats_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_student_excel_formats_church_id_foreign` (`church_id`),
+  ADD KEY `sm_student_excel_formats_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_student_groups`
 --
 ALTER TABLE `sm_student_groups`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_student_groups_school_id_foreign` (`school_id`),
-  ADD KEY `sm_student_groups_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_student_groups_church_id_foreign` (`church_id`),
+  ADD KEY `sm_student_groups_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_student_homeworks`
@@ -13529,43 +13529,43 @@ ALTER TABLE `sm_student_groups`
 ALTER TABLE `sm_student_homeworks`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_student_homeworks_evaluated_by_foreign` (`evaluated_by`),
-  ADD KEY `sm_student_homeworks_student_id_foreign` (`student_id`),
+  ADD KEY `sm_student_homeworks_member_id_foreign` (`member_id`),
   ADD KEY `sm_student_homeworks_subject_id_foreign` (`subject_id`),
-  ADD KEY `sm_student_homeworks_school_id_foreign` (`school_id`),
-  ADD KEY `sm_student_homeworks_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_student_homeworks_church_id_foreign` (`church_id`),
+  ADD KEY `sm_student_homeworks_church_year_id_foreign` (`church_year_id`);
 
 --
--- Indexes for table `sm_student_id_cards`
+-- Indexes for table `sm_member_id_cards`
 --
-ALTER TABLE `sm_student_id_cards`
+ALTER TABLE `sm_member_id_cards`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_student_id_cards_school_id_foreign` (`school_id`),
-  ADD KEY `sm_student_id_cards_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_member_id_cards_church_id_foreign` (`church_id`),
+  ADD KEY `sm_member_id_cards_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_student_promotions`
 --
 ALTER TABLE `sm_student_promotions`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_student_promotions_previous_class_id_foreign` (`previous_class_id`),
-  ADD KEY `sm_student_promotions_current_class_id_foreign` (`current_class_id`),
-  ADD KEY `sm_student_promotions_previous_section_id_foreign` (`previous_section_id`),
-  ADD KEY `sm_student_promotions_current_section_id_foreign` (`current_section_id`),
+  ADD KEY `sm_student_promotions_previous_age_group_id_foreign` (`previous_age_group_id`),
+  ADD KEY `sm_student_promotions_current_age_group_id_foreign` (`current_age_group_id`),
+  ADD KEY `sm_student_promotions_previous_mgender_id_foreign` (`previous_mgender_id`),
+  ADD KEY `sm_student_promotions_current_mgender_id_foreign` (`current_mgender_id`),
   ADD KEY `sm_student_promotions_previous_session_id_foreign` (`previous_session_id`),
   ADD KEY `sm_student_promotions_current_session_id_foreign` (`current_session_id`),
-  ADD KEY `sm_student_promotions_student_id_foreign` (`student_id`),
-  ADD KEY `sm_student_promotions_school_id_foreign` (`school_id`),
-  ADD KEY `sm_student_promotions_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_student_promotions_member_id_foreign` (`member_id`),
+  ADD KEY `sm_student_promotions_church_id_foreign` (`church_id`),
+  ADD KEY `sm_student_promotions_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_student_take_online_exams`
 --
 ALTER TABLE `sm_student_take_online_exams`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_student_take_online_exams_student_id_foreign` (`student_id`),
+  ADD KEY `sm_student_take_online_exams_member_id_foreign` (`member_id`),
   ADD KEY `sm_student_take_online_exams_online_exam_id_foreign` (`online_exam_id`),
-  ADD KEY `sm_student_take_online_exams_school_id_foreign` (`school_id`),
-  ADD KEY `sm_student_take_online_exams_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_student_take_online_exams_church_id_foreign` (`church_id`),
+  ADD KEY `sm_student_take_online_exams_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_student_take_online_exam_questions`
@@ -13574,8 +13574,8 @@ ALTER TABLE `sm_student_take_online_exam_questions`
   ADD PRIMARY KEY (`id`),
   ADD KEY `t_on_ex_id` (`take_online_exam_id`),
   ADD KEY `sm_student_take_online_exam_questions_question_bank_id_foreign` (`question_bank_id`),
-  ADD KEY `sm_student_take_online_exam_questions_school_id_foreign` (`school_id`),
-  ADD KEY `sm_student_take_online_exam_questions_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_student_take_online_exam_questions_church_id_foreign` (`church_id`),
+  ADD KEY `sm_student_take_online_exam_questions_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_student_take_onln_ex_ques_options`
@@ -13583,31 +13583,31 @@ ALTER TABLE `sm_student_take_online_exam_questions`
 ALTER TABLE `sm_student_take_onln_ex_ques_options`
   ADD PRIMARY KEY (`id`),
   ADD KEY `t_on_ex_q_id` (`take_online_exam_question_id`),
-  ADD KEY `sm_student_take_onln_ex_ques_options_school_id_foreign` (`school_id`),
-  ADD KEY `sm_student_take_onln_ex_ques_options_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_student_take_onln_ex_ques_options_church_id_foreign` (`church_id`),
+  ADD KEY `sm_student_take_onln_ex_ques_options_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_student_timelines`
 --
 ALTER TABLE `sm_student_timelines`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_student_timelines_school_id_foreign` (`school_id`),
-  ADD KEY `sm_student_timelines_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_student_timelines_church_id_foreign` (`church_id`),
+  ADD KEY `sm_student_timelines_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_styles`
 --
 ALTER TABLE `sm_styles`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_styles_school_id_foreign` (`school_id`);
+  ADD KEY `sm_styles_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `sm_subjects`
 --
 ALTER TABLE `sm_subjects`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_subjects_school_id_foreign` (`school_id`),
-  ADD KEY `sm_subjects_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_subjects_church_id_foreign` (`church_id`),
+  ADD KEY `sm_subjects_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_subject_attendances`
@@ -13615,17 +13615,17 @@ ALTER TABLE `sm_subjects`
 ALTER TABLE `sm_subject_attendances`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_subject_attendances_subject_id_foreign` (`subject_id`),
-  ADD KEY `sm_subject_attendances_student_id_foreign` (`student_id`),
-  ADD KEY `sm_subject_attendances_school_id_foreign` (`school_id`),
-  ADD KEY `sm_subject_attendances_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_subject_attendances_member_id_foreign` (`member_id`),
+  ADD KEY `sm_subject_attendances_church_id_foreign` (`church_id`),
+  ADD KEY `sm_subject_attendances_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_suppliers`
 --
 ALTER TABLE `sm_suppliers`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_suppliers_school_id_foreign` (`school_id`),
-  ADD KEY `sm_suppliers_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_suppliers_church_id_foreign` (`church_id`),
+  ADD KEY `sm_suppliers_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_system_versions`
@@ -13640,8 +13640,8 @@ ALTER TABLE `sm_teacher_upload_contents`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_teacher_upload_contents_class_foreign` (`class`),
   ADD KEY `sm_teacher_upload_contents_section_foreign` (`section`),
-  ADD KEY `sm_teacher_upload_contents_school_id_foreign` (`school_id`),
-  ADD KEY `sm_teacher_upload_contents_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_teacher_upload_contents_church_id_foreign` (`church_id`),
+  ADD KEY `sm_teacher_upload_contents_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_temporary_meritlists`
@@ -13649,17 +13649,17 @@ ALTER TABLE `sm_teacher_upload_contents`
 ALTER TABLE `sm_temporary_meritlists`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_temporary_meritlists_exam_id_foreign` (`exam_id`),
-  ADD KEY `sm_temporary_meritlists_class_id_foreign` (`class_id`),
-  ADD KEY `sm_temporary_meritlists_section_id_foreign` (`section_id`),
-  ADD KEY `sm_temporary_meritlists_school_id_foreign` (`school_id`),
-  ADD KEY `sm_temporary_meritlists_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_temporary_meritlists_age_group_id_foreign` (`age_group_id`),
+  ADD KEY `sm_temporary_meritlists_mgender_id_foreign` (`mgender_id`),
+  ADD KEY `sm_temporary_meritlists_church_id_foreign` (`church_id`),
+  ADD KEY `sm_temporary_meritlists_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_testimonials`
 --
 ALTER TABLE `sm_testimonials`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_testimonials_school_id_foreign` (`school_id`);
+  ADD KEY `sm_testimonials_church_id_foreign` (`church_id`);
 
 --
 -- Indexes for table `sm_time_zones`
@@ -13672,26 +13672,26 @@ ALTER TABLE `sm_time_zones`
 --
 ALTER TABLE `sm_to_dos`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_to_dos_school_id_foreign` (`school_id`),
-  ADD KEY `sm_to_dos_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_to_dos_church_id_foreign` (`church_id`),
+  ADD KEY `sm_to_dos_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_upload_contents`
 --
 ALTER TABLE `sm_upload_contents`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_upload_contents_school_id_foreign` (`school_id`),
-  ADD KEY `sm_upload_contents_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_upload_contents_church_id_foreign` (`church_id`),
+  ADD KEY `sm_upload_contents_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_upload_homework_contents`
 --
 ALTER TABLE `sm_upload_homework_contents`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_upload_homework_contents_student_id_foreign` (`student_id`),
+  ADD KEY `sm_upload_homework_contents_member_id_foreign` (`member_id`),
   ADD KEY `sm_upload_homework_contents_homework_id_foreign` (`homework_id`),
-  ADD KEY `sm_upload_homework_contents_school_id_foreign` (`school_id`),
-  ADD KEY `sm_upload_homework_contents_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_upload_homework_contents_church_id_foreign` (`church_id`),
+  ADD KEY `sm_upload_homework_contents_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_user_logs`
@@ -13700,32 +13700,32 @@ ALTER TABLE `sm_user_logs`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sm_user_logs_user_id_foreign` (`user_id`),
   ADD KEY `sm_user_logs_role_id_foreign` (`role_id`),
-  ADD KEY `sm_user_logs_school_id_foreign` (`school_id`),
-  ADD KEY `sm_user_logs_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_user_logs_church_id_foreign` (`church_id`),
+  ADD KEY `sm_user_logs_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_vehicles`
 --
 ALTER TABLE `sm_vehicles`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_vehicles_school_id_foreign` (`school_id`),
-  ADD KEY `sm_vehicles_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_vehicles_church_id_foreign` (`church_id`),
+  ADD KEY `sm_vehicles_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_visitors`
 --
 ALTER TABLE `sm_visitors`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_visitors_school_id_foreign` (`school_id`),
-  ADD KEY `sm_visitors_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_visitors_church_id_foreign` (`church_id`),
+  ADD KEY `sm_visitors_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `sm_weekends`
 --
 ALTER TABLE `sm_weekends`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sm_weekends_school_id_foreign` (`school_id`),
-  ADD KEY `sm_weekends_academic_id_foreign` (`academic_id`);
+  ADD KEY `sm_weekends_church_id_foreign` (`church_id`),
+  ADD KEY `sm_weekends_church_year_id_foreign` (`church_year_id`);
 
 --
 -- Indexes for table `student_attendance_bulks`
@@ -13763,7 +13763,7 @@ ALTER TABLE `telescope_entries_tags`
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `users_email_unique` (`email`),
-  ADD KEY `users_school_id_foreign` (`school_id`),
+  ADD KEY `users_church_id_foreign` (`church_id`),
   ADD KEY `users_role_id_foreign` (`role_id`);
 
 --
@@ -13773,8 +13773,8 @@ ALTER TABLE `user_menus`
   ADD PRIMARY KEY (`id`),
   ADD KEY `user_menus_role_id_foreign` (`role_id`),
   ADD KEY `user_menus_user_id_foreign` (`user_id`),
-  ADD KEY `user_menus_school_id_foreign` (`school_id`),
-  ADD KEY `user_menus_academic_id_foreign` (`academic_id`);
+  ADD KEY `user_menus_church_id_foreign` (`church_id`),
+  ADD KEY `user_menus_church_year_id_foreign` (`church_year_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -14921,9 +14921,9 @@ ALTER TABLE `sm_student_homeworks`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `sm_student_id_cards`
+-- AUTO_INCREMENT for table `sm_member_id_cards`
 --
-ALTER TABLE `sm_student_id_cards`
+ALTER TABLE `sm_member_id_cards`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
@@ -15090,34 +15090,34 @@ ALTER TABLE `user_menus`
 -- Constraints for table `continents`
 --
 ALTER TABLE `continents`
-  ADD CONSTRAINT `continents_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `continents_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `continets`
 --
 ALTER TABLE `continets`
-  ADD CONSTRAINT `continets_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `continets_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `countries`
 --
 ALTER TABLE `countries`
-  ADD CONSTRAINT `countries_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `countries_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `countries_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `countries_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `custom_result_settings`
 --
 ALTER TABLE `custom_result_settings`
-  ADD CONSTRAINT `custom_result_settings_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `custom_result_settings_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `custom_result_settings_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `custom_result_settings_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `infix_module_infos`
 --
 ALTER TABLE `infix_module_infos`
   ADD CONSTRAINT `infix_module_infos_created_by_foreign` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `infix_module_infos_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `infix_module_infos_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `infix_module_infos_updated_by_foreign` FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
@@ -15125,7 +15125,7 @@ ALTER TABLE `infix_module_infos`
 --
 ALTER TABLE `infix_module_student_parent_infos`
   ADD CONSTRAINT `infix_module_student_parent_infos_created_by_foreign` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `infix_module_student_parent_infos_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `infix_module_student_parent_infos_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `infix_module_student_parent_infos_updated_by_foreign` FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
@@ -15133,30 +15133,30 @@ ALTER TABLE `infix_module_student_parent_infos`
 --
 ALTER TABLE `infix_permission_assigns`
   ADD CONSTRAINT `infix_permission_assigns_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `infix_roles` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `infix_permission_assigns_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `infix_permission_assigns_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `infix_roles`
 --
 ALTER TABLE `infix_roles`
-  ADD CONSTRAINT `infix_roles_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `infix_roles_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `languages`
 --
 ALTER TABLE `languages`
-  ADD CONSTRAINT `languages_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `languages_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `lesson_planners`
 --
 ALTER TABLE `lesson_planners`
-  ADD CONSTRAINT `lesson_planners_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `lesson_planners_class_id_foreign` FOREIGN KEY (`class_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `lesson_planners_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `lesson_planners_age_group_id_foreign` FOREIGN KEY (`age_group_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `lesson_planners_class_period_id_foreign` FOREIGN KEY (`class_period_id`) REFERENCES `sm_class_times` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `lesson_planners_room_id_foreign` FOREIGN KEY (`room_id`) REFERENCES `sm_class_rooms` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `lesson_planners_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `lesson_planners_section_id_foreign` FOREIGN KEY (`section_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `lesson_planners_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `lesson_planners_mgender_id_foreign` FOREIGN KEY (`mgender_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `lesson_planners_subject_id_foreign` FOREIGN KEY (`subject_id`) REFERENCES `sm_subjects` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `lesson_planners_teacher_id_foreign` FOREIGN KEY (`teacher_id`) REFERENCES `sm_staffs` (`id`) ON DELETE CASCADE;
 
@@ -15164,23 +15164,23 @@ ALTER TABLE `lesson_planners`
 -- Constraints for table `library_subjects`
 --
 ALTER TABLE `library_subjects`
-  ADD CONSTRAINT `library_subjects_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `library_subjects_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `library_subjects_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `library_subjects_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `menu_manages`
 --
 ALTER TABLE `menu_manages`
-  ADD CONSTRAINT `menu_manages_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `menu_manages_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `menu_manages_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `infix_roles` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `menu_manages_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `menu_manages_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `menu_manages_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `roles`
 --
 ALTER TABLE `roles`
-  ADD CONSTRAINT `roles_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `roles_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sidebars`
@@ -15188,77 +15188,77 @@ ALTER TABLE `roles`
 ALTER TABLE `sidebars`
   ADD CONSTRAINT `sidebars_infix_module_id_foreign` FOREIGN KEY (`infix_module_id`) REFERENCES `infix_module_infos` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sidebars_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `infix_roles` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sidebars_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sidebars_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sidebars_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_about_pages`
 --
 ALTER TABLE `sm_about_pages`
-  ADD CONSTRAINT `sm_about_pages_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_about_pages_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_academic_years`
 --
 ALTER TABLE `sm_academic_years`
-  ADD CONSTRAINT `sm_academic_years_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_academic_years_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_add_expenses`
 --
 ALTER TABLE `sm_add_expenses`
-  ADD CONSTRAINT `sm_add_expenses_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_add_expenses_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_add_expenses_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_add_expenses_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_add_incomes`
 --
 ALTER TABLE `sm_add_incomes`
-  ADD CONSTRAINT `sm_add_incomes_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_add_incomes_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_add_incomes_account_id_foreign` FOREIGN KEY (`account_id`) REFERENCES `sm_bank_accounts` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_add_incomes_payment_method_id_foreign` FOREIGN KEY (`payment_method_id`) REFERENCES `sm_payment_methhods` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_add_incomes_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_add_incomes_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_admission_queries`
 --
 ALTER TABLE `sm_admission_queries`
-  ADD CONSTRAINT `sm_admission_queries_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_admission_queries_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_admission_queries_class_foreign` FOREIGN KEY (`class`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_admission_queries_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_admission_queries_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_admission_query_followups`
 --
 ALTER TABLE `sm_admission_query_followups`
-  ADD CONSTRAINT `sm_admission_query_followups_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_admission_query_followups_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_admission_query_followups_admission_query_id_foreign` FOREIGN KEY (`admission_query_id`) REFERENCES `sm_admission_queries` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_admission_query_followups_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_admission_query_followups_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_amount_transfers`
 --
 ALTER TABLE `sm_amount_transfers`
-  ADD CONSTRAINT `sm_amount_transfers_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_amount_transfers_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_amount_transfers_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_amount_transfers_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_assign_class_teachers`
 --
 ALTER TABLE `sm_assign_class_teachers`
-  ADD CONSTRAINT `sm_assign_class_teachers_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_assign_class_teachers_class_id_foreign` FOREIGN KEY (`class_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_assign_class_teachers_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_assign_class_teachers_section_id_foreign` FOREIGN KEY (`section_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_assign_class_teachers_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_assign_class_teachers_age_group_id_foreign` FOREIGN KEY (`age_group_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_assign_class_teachers_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_assign_class_teachers_mgender_id_foreign` FOREIGN KEY (`mgender_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_assign_subjects`
 --
 ALTER TABLE `sm_assign_subjects`
-  ADD CONSTRAINT `sm_assign_subjects_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_assign_subjects_class_id_foreign` FOREIGN KEY (`class_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_assign_subjects_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_assign_subjects_section_id_foreign` FOREIGN KEY (`section_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_assign_subjects_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_assign_subjects_age_group_id_foreign` FOREIGN KEY (`age_group_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_assign_subjects_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_assign_subjects_mgender_id_foreign` FOREIGN KEY (`mgender_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_assign_subjects_subject_id_foreign` FOREIGN KEY (`subject_id`) REFERENCES `sm_subjects` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_assign_subjects_teacher_id_foreign` FOREIGN KEY (`teacher_id`) REFERENCES `sm_staffs` (`id`) ON DELETE CASCADE;
 
@@ -15266,127 +15266,127 @@ ALTER TABLE `sm_assign_subjects`
 -- Constraints for table `sm_assign_vehicles`
 --
 ALTER TABLE `sm_assign_vehicles`
-  ADD CONSTRAINT `sm_assign_vehicles_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_assign_vehicles_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_assign_vehicles_route_id_foreign` FOREIGN KEY (`route_id`) REFERENCES `sm_routes` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_assign_vehicles_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_assign_vehicles_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_assign_vehicles_vehicle_id_foreign` FOREIGN KEY (`vehicle_id`) REFERENCES `sm_vehicles` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_background_settings`
 --
 ALTER TABLE `sm_background_settings`
-  ADD CONSTRAINT `sm_background_settings_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_background_settings_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_backups`
 --
 ALTER TABLE `sm_backups`
-  ADD CONSTRAINT `sm_backups_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_backups_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_backups_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_backups_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_bank_accounts`
 --
 ALTER TABLE `sm_bank_accounts`
-  ADD CONSTRAINT `sm_bank_accounts_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_bank_accounts_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_bank_accounts_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_bank_accounts_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_bank_payment_slips`
 --
 ALTER TABLE `sm_bank_payment_slips`
-  ADD CONSTRAINT `sm_bank_payment_slips_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_bank_payment_slips_class_id_foreign` FOREIGN KEY (`class_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_bank_payment_slips_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_bank_payment_slips_age_group_id_foreign` FOREIGN KEY (`age_group_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_bank_payment_slips_fees_discount_id_foreign` FOREIGN KEY (`fees_discount_id`) REFERENCES `sm_fees_discounts` (`id`),
   ADD CONSTRAINT `sm_bank_payment_slips_fees_type_id_foreign` FOREIGN KEY (`fees_type_id`) REFERENCES `sm_fees_types` (`id`),
-  ADD CONSTRAINT `sm_bank_payment_slips_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`),
-  ADD CONSTRAINT `sm_bank_payment_slips_section_id_foreign` FOREIGN KEY (`section_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_bank_payment_slips_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_bank_payment_slips_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`),
+  ADD CONSTRAINT `sm_bank_payment_slips_mgender_id_foreign` FOREIGN KEY (`mgender_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_bank_payment_slips_member_id_foreign` FOREIGN KEY (`member_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_base_groups`
 --
 ALTER TABLE `sm_base_groups`
-  ADD CONSTRAINT `sm_base_groups_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_base_groups_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_base_setups`
 --
 ALTER TABLE `sm_base_setups`
   ADD CONSTRAINT `sm_base_setups_base_group_id_foreign` FOREIGN KEY (`base_group_id`) REFERENCES `sm_base_groups` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_base_setups_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_base_setups_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_books`
 --
 ALTER TABLE `sm_books`
-  ADD CONSTRAINT `sm_books_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_books_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_books_book_category_id_foreign` FOREIGN KEY (`book_category_id`) REFERENCES `sm_book_categories` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_books_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_books_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_book_categories`
 --
 ALTER TABLE `sm_book_categories`
-  ADD CONSTRAINT `sm_book_categories_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_book_categories_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_book_categories_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_book_categories_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_book_issues`
 --
 ALTER TABLE `sm_book_issues`
-  ADD CONSTRAINT `sm_book_issues_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_book_issues_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_book_issues_book_id_foreign` FOREIGN KEY (`book_id`) REFERENCES `sm_books` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_book_issues_member_id_foreign` FOREIGN KEY (`member_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_book_issues_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_book_issues_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_chart_of_accounts`
 --
 ALTER TABLE `sm_chart_of_accounts`
-  ADD CONSTRAINT `sm_chart_of_accounts_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_chart_of_accounts_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_chart_of_accounts_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_chart_of_accounts_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_classes`
 --
 ALTER TABLE `sm_classes`
-  ADD CONSTRAINT `sm_classes_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_classes_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_class_optional_subject`
 --
 ALTER TABLE `sm_class_optional_subject`
-  ADD CONSTRAINT `sm_class_optional_subject_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_class_optional_subject_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_class_optional_subject_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_class_optional_subject_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_class_rooms`
 --
 ALTER TABLE `sm_class_rooms`
-  ADD CONSTRAINT `sm_class_rooms_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_class_rooms_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_class_rooms_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_class_rooms_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_class_routines`
 --
 ALTER TABLE `sm_class_routines`
-  ADD CONSTRAINT `sm_class_routines_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_class_routines_class_id_foreign` FOREIGN KEY (`class_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_class_routines_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_class_routines_section_id_foreign` FOREIGN KEY (`section_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_class_routines_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_class_routines_age_group_id_foreign` FOREIGN KEY (`age_group_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_class_routines_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_class_routines_mgender_id_foreign` FOREIGN KEY (`mgender_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_class_routines_subject_id_foreign` FOREIGN KEY (`subject_id`) REFERENCES `sm_subjects` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_class_routine_updates`
 --
 ALTER TABLE `sm_class_routine_updates`
-  ADD CONSTRAINT `sm_class_routine_updates_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_class_routine_updates_class_id_foreign` FOREIGN KEY (`class_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_class_routine_updates_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_class_routine_updates_age_group_id_foreign` FOREIGN KEY (`age_group_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_class_routine_updates_class_period_id_foreign` FOREIGN KEY (`class_period_id`) REFERENCES `sm_class_times` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_class_routine_updates_room_id_foreign` FOREIGN KEY (`room_id`) REFERENCES `sm_class_rooms` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_class_routine_updates_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_class_routine_updates_section_id_foreign` FOREIGN KEY (`section_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_class_routine_updates_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_class_routine_updates_mgender_id_foreign` FOREIGN KEY (`mgender_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_class_routine_updates_subject_id_foreign` FOREIGN KEY (`subject_id`) REFERENCES `sm_subjects` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_class_routine_updates_teacher_id_foreign` FOREIGN KEY (`teacher_id`) REFERENCES `sm_staffs` (`id`) ON DELETE CASCADE;
 
@@ -15394,422 +15394,422 @@ ALTER TABLE `sm_class_routine_updates`
 -- Constraints for table `sm_class_sections`
 --
 ALTER TABLE `sm_class_sections`
-  ADD CONSTRAINT `sm_class_sections_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_class_sections_class_id_foreign` FOREIGN KEY (`class_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_class_sections_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_class_sections_section_id_foreign` FOREIGN KEY (`section_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_class_sections_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_class_sections_age_group_id_foreign` FOREIGN KEY (`age_group_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_class_sections_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_class_sections_mgender_id_foreign` FOREIGN KEY (`mgender_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_class_teachers`
 --
 ALTER TABLE `sm_class_teachers`
-  ADD CONSTRAINT `sm_class_teachers_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_class_teachers_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_class_teachers_assign_class_teacher_id_foreign` FOREIGN KEY (`assign_class_teacher_id`) REFERENCES `sm_assign_class_teachers` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_class_teachers_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_class_teachers_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_class_teachers_teacher_id_foreign` FOREIGN KEY (`teacher_id`) REFERENCES `sm_staffs` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_class_times`
 --
 ALTER TABLE `sm_class_times`
-  ADD CONSTRAINT `sm_class_times_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_class_times_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_class_times_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_class_times_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_complaints`
 --
 ALTER TABLE `sm_complaints`
-  ADD CONSTRAINT `sm_complaints_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_complaints_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_complaints_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_complaints_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_contact_messages`
 --
 ALTER TABLE `sm_contact_messages`
-  ADD CONSTRAINT `sm_contact_messages_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_contact_messages_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_contact_pages`
 --
 ALTER TABLE `sm_contact_pages`
-  ADD CONSTRAINT `sm_contact_pages_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_contact_pages_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_content_types`
 --
 ALTER TABLE `sm_content_types`
-  ADD CONSTRAINT `sm_content_types_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_content_types_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_content_types_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_content_types_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_countries`
 --
 ALTER TABLE `sm_countries`
-  ADD CONSTRAINT `sm_countries_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_countries_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_courses`
 --
 ALTER TABLE `sm_courses`
-  ADD CONSTRAINT `sm_courses_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_courses_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_course_pages`
 --
 ALTER TABLE `sm_course_pages`
-  ADD CONSTRAINT `sm_course_pages_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_course_pages_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_currencies`
 --
 ALTER TABLE `sm_currencies`
-  ADD CONSTRAINT `sm_currencies_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_currencies_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_custom_temporary_results`
 --
 ALTER TABLE `sm_custom_temporary_results`
-  ADD CONSTRAINT `sm_custom_temporary_results_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_custom_temporary_results_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`);
+  ADD CONSTRAINT `sm_custom_temporary_results_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_custom_temporary_results_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`);
 
 --
 -- Constraints for table `sm_dashboard_settings`
 --
 ALTER TABLE `sm_dashboard_settings`
   ADD CONSTRAINT `sm_dashboard_settings_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_dashboard_settings_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_dashboard_settings_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_date_formats`
 --
 ALTER TABLE `sm_date_formats`
-  ADD CONSTRAINT `sm_date_formats_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_date_formats_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_designations`
 --
 ALTER TABLE `sm_designations`
-  ADD CONSTRAINT `sm_designations_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_designations_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_dormitory_lists`
 --
 ALTER TABLE `sm_dormitory_lists`
-  ADD CONSTRAINT `sm_dormitory_lists_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_dormitory_lists_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_dormitory_lists_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_dormitory_lists_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_email_settings`
 --
 ALTER TABLE `sm_email_settings`
-  ADD CONSTRAINT `sm_email_settings_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_email_settings_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_email_settings_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_email_settings_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_email_sms_logs`
 --
 ALTER TABLE `sm_email_sms_logs`
-  ADD CONSTRAINT `sm_email_sms_logs_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_email_sms_logs_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_email_sms_logs_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_email_sms_logs_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_events`
 --
 ALTER TABLE `sm_events`
-  ADD CONSTRAINT `sm_events_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_events_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_events_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_events_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_exams`
 --
 ALTER TABLE `sm_exams`
-  ADD CONSTRAINT `sm_exams_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_exams_class_id_foreign` FOREIGN KEY (`class_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_exams_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_exams_age_group_id_foreign` FOREIGN KEY (`age_group_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_exams_exam_type_id_foreign` FOREIGN KEY (`exam_type_id`) REFERENCES `sm_exam_types` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_exams_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_exams_section_id_foreign` FOREIGN KEY (`section_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_exams_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_exams_mgender_id_foreign` FOREIGN KEY (`mgender_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_exams_subject_id_foreign` FOREIGN KEY (`subject_id`) REFERENCES `sm_subjects` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_exam_attendances`
 --
 ALTER TABLE `sm_exam_attendances`
-  ADD CONSTRAINT `sm_exam_attendances_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_exam_attendances_class_id_foreign` FOREIGN KEY (`class_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_exam_attendances_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_exam_attendances_age_group_id_foreign` FOREIGN KEY (`age_group_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_exam_attendances_exam_id_foreign` FOREIGN KEY (`exam_id`) REFERENCES `sm_exams` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_exam_attendances_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_exam_attendances_section_id_foreign` FOREIGN KEY (`section_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_exam_attendances_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_exam_attendances_mgender_id_foreign` FOREIGN KEY (`mgender_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_exam_attendances_subject_id_foreign` FOREIGN KEY (`subject_id`) REFERENCES `sm_subjects` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_exam_attendance_children`
 --
 ALTER TABLE `sm_exam_attendance_children`
-  ADD CONSTRAINT `sm_exam_attendance_children_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_exam_attendance_children_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_exam_attendance_children_exam_attendance_id_foreign` FOREIGN KEY (`exam_attendance_id`) REFERENCES `sm_exam_attendances` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_exam_attendance_children_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_exam_attendance_children_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_exam_attendance_children_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_exam_attendance_children_member_id_foreign` FOREIGN KEY (`member_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_exam_marks_registers`
 --
 ALTER TABLE `sm_exam_marks_registers`
-  ADD CONSTRAINT `sm_exam_marks_registers_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_exam_marks_registers_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_exam_marks_registers_exam_id_foreign` FOREIGN KEY (`exam_id`) REFERENCES `sm_exams` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_exam_marks_registers_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_exam_marks_registers_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_exam_marks_registers_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_exam_marks_registers_member_id_foreign` FOREIGN KEY (`member_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_exam_marks_registers_subject_id_foreign` FOREIGN KEY (`subject_id`) REFERENCES `sm_subjects` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_exam_schedules`
 --
 ALTER TABLE `sm_exam_schedules`
-  ADD CONSTRAINT `sm_exam_schedules_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_exam_schedules_class_id_foreign` FOREIGN KEY (`class_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_exam_schedules_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_exam_schedules_age_group_id_foreign` FOREIGN KEY (`age_group_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_exam_schedules_exam_id_foreign` FOREIGN KEY (`exam_id`) REFERENCES `sm_exams` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_exam_schedules_exam_period_id_foreign` FOREIGN KEY (`exam_period_id`) REFERENCES `sm_class_times` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_exam_schedules_exam_term_id_foreign` FOREIGN KEY (`exam_term_id`) REFERENCES `sm_exam_types` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_exam_schedules_room_id_foreign` FOREIGN KEY (`room_id`) REFERENCES `sm_room_lists` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_exam_schedules_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_exam_schedules_section_id_foreign` FOREIGN KEY (`section_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_exam_schedules_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_exam_schedules_mgender_id_foreign` FOREIGN KEY (`mgender_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_exam_schedules_subject_id_foreign` FOREIGN KEY (`subject_id`) REFERENCES `sm_subjects` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_exam_schedule_subjects`
 --
 ALTER TABLE `sm_exam_schedule_subjects`
-  ADD CONSTRAINT `sm_exam_schedule_subjects_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_exam_schedule_subjects_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_exam_schedule_subjects_exam_schedule_id_foreign` FOREIGN KEY (`exam_schedule_id`) REFERENCES `sm_exam_schedules` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_exam_schedule_subjects_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_exam_schedule_subjects_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_exam_schedule_subjects_subject_id_foreign` FOREIGN KEY (`subject_id`) REFERENCES `sm_subjects` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_exam_settings`
 --
 ALTER TABLE `sm_exam_settings`
-  ADD CONSTRAINT `sm_exam_settings_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_exam_settings_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_exam_settings_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_exam_settings_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_exam_setups`
 --
 ALTER TABLE `sm_exam_setups`
-  ADD CONSTRAINT `sm_exam_setups_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_exam_setups_class_id_foreign` FOREIGN KEY (`class_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_exam_setups_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_exam_setups_age_group_id_foreign` FOREIGN KEY (`age_group_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_exam_setups_exam_id_foreign` FOREIGN KEY (`exam_id`) REFERENCES `sm_exams` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_exam_setups_exam_term_id_foreign` FOREIGN KEY (`exam_term_id`) REFERENCES `sm_exam_types` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_exam_setups_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_exam_setups_section_id_foreign` FOREIGN KEY (`section_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_exam_setups_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_exam_setups_mgender_id_foreign` FOREIGN KEY (`mgender_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_exam_setups_subject_id_foreign` FOREIGN KEY (`subject_id`) REFERENCES `sm_subjects` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_exam_types`
 --
 ALTER TABLE `sm_exam_types`
-  ADD CONSTRAINT `sm_exam_types_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_exam_types_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_exam_types_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_exam_types_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_expense_heads`
 --
 ALTER TABLE `sm_expense_heads`
-  ADD CONSTRAINT `sm_expense_heads_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_expense_heads_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_expense_heads_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_expense_heads_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_fees_assigns`
 --
 ALTER TABLE `sm_fees_assigns`
-  ADD CONSTRAINT `sm_fees_assigns_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_fees_assigns_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_fees_assigns_fees_discount_id_foreign` FOREIGN KEY (`fees_discount_id`) REFERENCES `sm_fees_discounts` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_fees_assigns_fees_master_id_foreign` FOREIGN KEY (`fees_master_id`) REFERENCES `sm_fees_masters` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_fees_assigns_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_fees_assigns_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_fees_assigns_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_fees_assigns_member_id_foreign` FOREIGN KEY (`member_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_fees_assign_discounts`
 --
 ALTER TABLE `sm_fees_assign_discounts`
-  ADD CONSTRAINT `sm_fees_assign_discounts_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_fees_assign_discounts_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_fees_assign_discounts_fees_discount_id_foreign` FOREIGN KEY (`fees_discount_id`) REFERENCES `sm_fees_discounts` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_fees_assign_discounts_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_fees_assign_discounts_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_fees_assign_discounts_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_fees_assign_discounts_member_id_foreign` FOREIGN KEY (`member_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_fees_carry_forwards`
 --
 ALTER TABLE `sm_fees_carry_forwards`
-  ADD CONSTRAINT `sm_fees_carry_forwards_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_fees_carry_forwards_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_fees_carry_forwards_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_fees_carry_forwards_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_fees_carry_forwards_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_fees_carry_forwards_member_id_foreign` FOREIGN KEY (`member_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_fees_discounts`
 --
 ALTER TABLE `sm_fees_discounts`
-  ADD CONSTRAINT `sm_fees_discounts_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_fees_discounts_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_fees_discounts_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_fees_discounts_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_fees_groups`
 --
 ALTER TABLE `sm_fees_groups`
-  ADD CONSTRAINT `sm_fees_groups_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_fees_groups_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_fees_groups_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_fees_groups_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_fees_masters`
 --
 ALTER TABLE `sm_fees_masters`
-  ADD CONSTRAINT `sm_fees_masters_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_fees_masters_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_fees_masters_fees_group_id_foreign` FOREIGN KEY (`fees_group_id`) REFERENCES `sm_fees_groups` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_fees_masters_fees_type_id_foreign` FOREIGN KEY (`fees_type_id`) REFERENCES `sm_fees_types` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_fees_masters_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_fees_masters_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_fees_payments`
 --
 ALTER TABLE `sm_fees_payments`
-  ADD CONSTRAINT `sm_fees_payments_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_fees_payments_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_fees_payments_fees_discount_id_foreign` FOREIGN KEY (`fees_discount_id`) REFERENCES `sm_fees_discounts` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_fees_payments_fees_type_id_foreign` FOREIGN KEY (`fees_type_id`) REFERENCES `sm_fees_types` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_fees_payments_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_fees_payments_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_fees_payments_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_fees_payments_member_id_foreign` FOREIGN KEY (`member_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_fees_types`
 --
 ALTER TABLE `sm_fees_types`
-  ADD CONSTRAINT `sm_fees_types_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_fees_types_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_fees_types_fees_group_id_foreign` FOREIGN KEY (`fees_group_id`) REFERENCES `sm_fees_groups` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_fees_types_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_fees_types_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_general_settings`
 --
 ALTER TABLE `sm_general_settings`
-  ADD CONSTRAINT `sm_general_settings_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_general_settings_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_general_settings_date_format_id_foreign` FOREIGN KEY (`date_format_id`) REFERENCES `sm_date_formats` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_general_settings_language_id_foreign` FOREIGN KEY (`language_id`) REFERENCES `sm_languages` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_general_settings_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_general_settings_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_general_settings_session_id_foreign` FOREIGN KEY (`session_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_holidays`
 --
 ALTER TABLE `sm_holidays`
-  ADD CONSTRAINT `sm_holidays_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_holidays_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_holidays_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_holidays_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_homeworks`
 --
 ALTER TABLE `sm_homeworks`
-  ADD CONSTRAINT `sm_homeworks_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_homeworks_class_id_foreign` FOREIGN KEY (`class_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_homeworks_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_homeworks_age_group_id_foreign` FOREIGN KEY (`age_group_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_homeworks_evaluated_by_foreign` FOREIGN KEY (`evaluated_by`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_homeworks_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_homeworks_section_id_foreign` FOREIGN KEY (`section_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_homeworks_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_homeworks_mgender_id_foreign` FOREIGN KEY (`mgender_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_homeworks_subject_id_foreign` FOREIGN KEY (`subject_id`) REFERENCES `sm_subjects` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_homework_students`
 --
 ALTER TABLE `sm_homework_students`
-  ADD CONSTRAINT `sm_homework_students_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_homework_students_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_homework_students_homework_id_foreign` FOREIGN KEY (`homework_id`) REFERENCES `sm_homeworks` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_homework_students_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_homework_students_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_homework_students_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_homework_students_member_id_foreign` FOREIGN KEY (`member_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_hourly_rates`
 --
 ALTER TABLE `sm_hourly_rates`
-  ADD CONSTRAINT `sm_hourly_rates_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_hourly_rates_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_hourly_rates_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_hourly_rates_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_hr_payroll_earn_deducs`
 --
 ALTER TABLE `sm_hr_payroll_earn_deducs`
-  ADD CONSTRAINT `sm_hr_payroll_earn_deducs_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_hr_payroll_earn_deducs_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_hr_payroll_earn_deducs_payroll_generate_id_foreign` FOREIGN KEY (`payroll_generate_id`) REFERENCES `sm_hr_payroll_generates` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_hr_payroll_earn_deducs_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_hr_payroll_earn_deducs_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_hr_payroll_generates`
 --
 ALTER TABLE `sm_hr_payroll_generates`
-  ADD CONSTRAINT `sm_hr_payroll_generates_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_hr_payroll_generates_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_hr_payroll_generates_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_hr_payroll_generates_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_hr_payroll_generates_staff_id_foreign` FOREIGN KEY (`staff_id`) REFERENCES `sm_staffs` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_hr_salary_templates`
 --
 ALTER TABLE `sm_hr_salary_templates`
-  ADD CONSTRAINT `sm_hr_salary_templates_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_hr_salary_templates_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_hr_salary_templates_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_hr_salary_templates_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_human_departments`
 --
 ALTER TABLE `sm_human_departments`
   ADD CONSTRAINT `sm_human_departments_created_by_foreign` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_human_departments_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_human_departments_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_human_departments_updated_by_foreign` FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_income_heads`
 --
 ALTER TABLE `sm_income_heads`
-  ADD CONSTRAINT `sm_income_heads_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_income_heads_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_income_heads_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_income_heads_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_instructions`
 --
 ALTER TABLE `sm_instructions`
-  ADD CONSTRAINT `sm_instructions_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_instructions_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_inventory_payments`
 --
 ALTER TABLE `sm_inventory_payments`
-  ADD CONSTRAINT `sm_inventory_payments_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_inventory_payments_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_inventory_payments_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_inventory_payments_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_items`
 --
 ALTER TABLE `sm_items`
-  ADD CONSTRAINT `sm_items_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_items_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_items_item_category_id_foreign` FOREIGN KEY (`item_category_id`) REFERENCES `sm_item_categories` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_items_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_items_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_item_categories`
 --
 ALTER TABLE `sm_item_categories`
-  ADD CONSTRAINT `sm_item_categories_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_item_categories_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_item_categories_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_item_categories_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_item_issues`
 --
 ALTER TABLE `sm_item_issues`
-  ADD CONSTRAINT `sm_item_issues_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_item_issues_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_item_issues_item_category_id_foreign` FOREIGN KEY (`item_category_id`) REFERENCES `sm_item_categories` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_item_issues_item_id_foreign` FOREIGN KEY (`item_id`) REFERENCES `sm_items` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_item_issues_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_item_issues_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_item_issues_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_item_receives`
 --
 ALTER TABLE `sm_item_receives`
-  ADD CONSTRAINT `sm_item_receives_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_item_receives_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_item_receives_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_item_receives_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_item_receives_store_id_foreign` FOREIGN KEY (`store_id`) REFERENCES `sm_item_stores` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_item_receives_supplier_id_foreign` FOREIGN KEY (`supplier_id`) REFERENCES `sm_suppliers` (`id`) ON DELETE CASCADE;
 
@@ -15817,54 +15817,54 @@ ALTER TABLE `sm_item_receives`
 -- Constraints for table `sm_item_receive_children`
 --
 ALTER TABLE `sm_item_receive_children`
-  ADD CONSTRAINT `sm_item_receive_children_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_item_receive_children_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_item_receive_children_item_id_foreign` FOREIGN KEY (`item_id`) REFERENCES `sm_items` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_item_receive_children_item_receive_id_foreign` FOREIGN KEY (`item_receive_id`) REFERENCES `sm_item_receives` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_item_receive_children_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_item_receive_children_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_item_sells`
 --
 ALTER TABLE `sm_item_sells`
-  ADD CONSTRAINT `sm_item_sells_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_item_sells_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_item_sells_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_item_sells_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_item_sells_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_item_sell_children`
 --
 ALTER TABLE `sm_item_sell_children`
-  ADD CONSTRAINT `sm_item_sell_children_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_item_sell_children_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_item_sell_children_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_item_sell_children_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_item_stores`
 --
 ALTER TABLE `sm_item_stores`
-  ADD CONSTRAINT `sm_item_stores_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_item_stores_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_item_stores_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_item_stores_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_languages`
 --
 ALTER TABLE `sm_languages`
   ADD CONSTRAINT `sm_languages_lang_id_foreign` FOREIGN KEY (`lang_id`) REFERENCES `languages` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_languages_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_languages_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_leave_deduction_infos`
 --
 ALTER TABLE `sm_leave_deduction_infos`
-  ADD CONSTRAINT `sm_leave_deduction_infos_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_leave_deduction_infos_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`);
+  ADD CONSTRAINT `sm_leave_deduction_infos_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_leave_deduction_infos_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`);
 
 --
 -- Constraints for table `sm_leave_defines`
 --
 ALTER TABLE `sm_leave_defines`
-  ADD CONSTRAINT `sm_leave_defines_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_leave_defines_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_leave_defines_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_leave_defines_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_leave_defines_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_leave_defines_type_id_foreign` FOREIGN KEY (`type_id`) REFERENCES `sm_leave_types` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_leave_defines_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
@@ -15872,10 +15872,10 @@ ALTER TABLE `sm_leave_defines`
 -- Constraints for table `sm_leave_requests`
 --
 ALTER TABLE `sm_leave_requests`
-  ADD CONSTRAINT `sm_leave_requests_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_leave_requests_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_leave_requests_leave_define_id_foreign` FOREIGN KEY (`leave_define_id`) REFERENCES `sm_leave_defines` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_leave_requests_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_leave_requests_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_leave_requests_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_leave_requests_staff_id_foreign` FOREIGN KEY (`staff_id`) REFERENCES `sm_staffs` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_leave_requests_type_id_foreign` FOREIGN KEY (`type_id`) REFERENCES `sm_leave_types` (`id`) ON DELETE CASCADE;
 
@@ -15883,110 +15883,110 @@ ALTER TABLE `sm_leave_requests`
 -- Constraints for table `sm_leave_types`
 --
 ALTER TABLE `sm_leave_types`
-  ADD CONSTRAINT `sm_leave_types_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_leave_types_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_leave_types_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_leave_types_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_lessons`
 --
 ALTER TABLE `sm_lessons`
-  ADD CONSTRAINT `sm_lessons_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_lessons_class_id_foreign` FOREIGN KEY (`class_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_lessons_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_lessons_section_id_foreign` FOREIGN KEY (`section_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_lessons_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_lessons_age_group_id_foreign` FOREIGN KEY (`age_group_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_lessons_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_lessons_mgender_id_foreign` FOREIGN KEY (`mgender_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_lessons_subject_id_foreign` FOREIGN KEY (`subject_id`) REFERENCES `sm_subjects` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_lesson_details`
 --
 ALTER TABLE `sm_lesson_details`
-  ADD CONSTRAINT `sm_lesson_details_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_lesson_details_class_id_foreign` FOREIGN KEY (`class_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_lesson_details_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_lesson_details_section_id_foreign` FOREIGN KEY (`section_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_lesson_details_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_lesson_details_age_group_id_foreign` FOREIGN KEY (`age_group_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_lesson_details_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_lesson_details_mgender_id_foreign` FOREIGN KEY (`mgender_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_lesson_details_subject_id_foreign` FOREIGN KEY (`subject_id`) REFERENCES `sm_subjects` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_lesson_topics`
 --
 ALTER TABLE `sm_lesson_topics`
-  ADD CONSTRAINT `sm_lesson_topics_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_lesson_topics_class_id_foreign` FOREIGN KEY (`class_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_lesson_topics_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_lesson_topics_section_id_foreign` FOREIGN KEY (`section_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_lesson_topics_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_lesson_topics_age_group_id_foreign` FOREIGN KEY (`age_group_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_lesson_topics_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_lesson_topics_mgender_id_foreign` FOREIGN KEY (`mgender_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_lesson_topics_subject_id_foreign` FOREIGN KEY (`subject_id`) REFERENCES `sm_subjects` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_lesson_topic_details`
 --
 ALTER TABLE `sm_lesson_topic_details`
-  ADD CONSTRAINT `sm_lesson_topic_details_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_lesson_topic_details_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_lesson_topic_details_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_lesson_topic_details_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_lesson_topic_details_topic_id_foreign` FOREIGN KEY (`topic_id`) REFERENCES `sm_lesson_topics` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_library_members`
 --
 ALTER TABLE `sm_library_members`
-  ADD CONSTRAINT `sm_library_members_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_library_members_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_library_members_member_type_foreign` FOREIGN KEY (`member_type`) REFERENCES `roles` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_library_members_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_library_members_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_library_members_student_staff_id_foreign` FOREIGN KEY (`student_staff_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_marks_grades`
 --
 ALTER TABLE `sm_marks_grades`
-  ADD CONSTRAINT `sm_marks_grades_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_marks_grades_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_marks_grades_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_marks_grades_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_marks_registers`
 --
 ALTER TABLE `sm_marks_registers`
-  ADD CONSTRAINT `sm_marks_registers_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_marks_registers_class_id_foreign` FOREIGN KEY (`class_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_marks_registers_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_marks_registers_age_group_id_foreign` FOREIGN KEY (`age_group_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_marks_registers_exam_id_foreign` FOREIGN KEY (`exam_id`) REFERENCES `sm_exams` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_marks_registers_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_marks_registers_section_id_foreign` FOREIGN KEY (`section_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_marks_registers_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_marks_registers_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_marks_registers_mgender_id_foreign` FOREIGN KEY (`mgender_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_marks_registers_member_id_foreign` FOREIGN KEY (`member_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_marks_register_children`
 --
 ALTER TABLE `sm_marks_register_children`
-  ADD CONSTRAINT `sm_marks_register_children_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_marks_register_children_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_marks_register_children_marks_register_id_foreign` FOREIGN KEY (`marks_register_id`) REFERENCES `sm_marks_registers` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_marks_register_children_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_marks_register_children_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_marks_register_children_subject_id_foreign` FOREIGN KEY (`subject_id`) REFERENCES `sm_subjects` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_marks_send_sms`
 --
 ALTER TABLE `sm_marks_send_sms`
-  ADD CONSTRAINT `sm_marks_send_sms_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_marks_send_sms_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_marks_send_sms_exam_id_foreign` FOREIGN KEY (`exam_id`) REFERENCES `sm_exams` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_marks_send_sms_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_marks_send_sms_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_marks_send_sms_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_marks_send_sms_member_id_foreign` FOREIGN KEY (`member_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_mark_stores`
 --
 ALTER TABLE `sm_mark_stores`
-  ADD CONSTRAINT `sm_mark_stores_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_mark_stores_class_id_foreign` FOREIGN KEY (`class_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_mark_stores_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_mark_stores_age_group_id_foreign` FOREIGN KEY (`age_group_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_mark_stores_exam_setup_id_foreign` FOREIGN KEY (`exam_setup_id`) REFERENCES `sm_exam_setups` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_mark_stores_exam_term_id_foreign` FOREIGN KEY (`exam_term_id`) REFERENCES `sm_exam_types` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_mark_stores_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_mark_stores_section_id_foreign` FOREIGN KEY (`section_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_mark_stores_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_mark_stores_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_mark_stores_mgender_id_foreign` FOREIGN KEY (`mgender_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_mark_stores_member_id_foreign` FOREIGN KEY (`member_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_mark_stores_subject_id_foreign` FOREIGN KEY (`subject_id`) REFERENCES `sm_subjects` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_modules`
 --
 ALTER TABLE `sm_modules`
-  ADD CONSTRAINT `sm_modules_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_modules_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_module_links`
@@ -15994,14 +15994,14 @@ ALTER TABLE `sm_modules`
 ALTER TABLE `sm_module_links`
   ADD CONSTRAINT `sm_module_links_created_by_foreign` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_module_links_module_id_foreign` FOREIGN KEY (`module_id`) REFERENCES `sm_modules` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_module_links_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_module_links_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_module_links_updated_by_foreign` FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_module_permissions`
 --
 ALTER TABLE `sm_module_permissions`
-  ADD CONSTRAINT `sm_module_permissions_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_module_permissions_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_module_permission_assigns`
@@ -16009,7 +16009,7 @@ ALTER TABLE `sm_module_permissions`
 ALTER TABLE `sm_module_permission_assigns`
   ADD CONSTRAINT `sm_module_permission_assigns_module_id_foreign` FOREIGN KEY (`module_id`) REFERENCES `sm_module_permissions` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_module_permission_assigns_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_module_permission_assigns_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_module_permission_assigns_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_news`
@@ -16022,125 +16022,125 @@ ALTER TABLE `sm_news`
 --
 ALTER TABLE `sm_news_pages`
   ADD CONSTRAINT `sm_news_pages_created_by_foreign` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_news_pages_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_news_pages_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_news_pages_updated_by_foreign` FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_notice_boards`
 --
 ALTER TABLE `sm_notice_boards`
-  ADD CONSTRAINT `sm_notice_boards_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_notice_boards_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_notice_boards_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_notice_boards_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_notifications`
 --
 ALTER TABLE `sm_notifications`
-  ADD CONSTRAINT `sm_notifications_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_notifications_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_notifications_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_notifications_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_online_exams`
 --
 ALTER TABLE `sm_online_exams`
-  ADD CONSTRAINT `sm_online_exams_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_online_exams_class_id_foreign` FOREIGN KEY (`class_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_online_exams_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_online_exams_section_id_foreign` FOREIGN KEY (`section_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_online_exams_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_online_exams_age_group_id_foreign` FOREIGN KEY (`age_group_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_online_exams_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_online_exams_mgender_id_foreign` FOREIGN KEY (`mgender_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_online_exams_subject_id_foreign` FOREIGN KEY (`subject_id`) REFERENCES `sm_subjects` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_online_exam_marks`
 --
 ALTER TABLE `sm_online_exam_marks`
-  ADD CONSTRAINT `sm_online_exam_marks_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_online_exam_marks_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_online_exam_marks_exam_id_foreign` FOREIGN KEY (`exam_id`) REFERENCES `sm_exams` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_online_exam_marks_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_online_exam_marks_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_online_exam_marks_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_online_exam_marks_member_id_foreign` FOREIGN KEY (`member_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_online_exam_marks_subject_id_foreign` FOREIGN KEY (`subject_id`) REFERENCES `sm_subjects` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_online_exam_questions`
 --
 ALTER TABLE `sm_online_exam_questions`
-  ADD CONSTRAINT `sm_online_exam_questions_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_online_exam_questions_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_online_exam_questions_online_exam_id_foreign` FOREIGN KEY (`online_exam_id`) REFERENCES `sm_online_exams` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_online_exam_questions_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_online_exam_questions_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_online_exam_question_assigns`
 --
 ALTER TABLE `sm_online_exam_question_assigns`
-  ADD CONSTRAINT `sm_online_exam_question_assigns_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_online_exam_question_assigns_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_online_exam_question_assigns_online_exam_id_foreign` FOREIGN KEY (`online_exam_id`) REFERENCES `sm_online_exams` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_online_exam_question_assigns_question_bank_id_foreign` FOREIGN KEY (`question_bank_id`) REFERENCES `sm_question_banks` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_online_exam_question_assigns_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_online_exam_question_assigns_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_online_exam_question_mu_options`
 --
 ALTER TABLE `sm_online_exam_question_mu_options`
   ADD CONSTRAINT `on_ex_qu_id` FOREIGN KEY (`online_exam_question_id`) REFERENCES `sm_online_exam_questions` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_online_exam_question_mu_options_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_online_exam_question_mu_options_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_online_exam_question_mu_options_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_online_exam_question_mu_options_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_optional_subject_assigns`
 --
 ALTER TABLE `sm_optional_subject_assigns`
-  ADD CONSTRAINT `sm_optional_subject_assigns_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_optional_subject_assigns_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_optional_subject_assigns_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_optional_subject_assigns_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_optional_subject_assigns_session_id_foreign` FOREIGN KEY (`session_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_optional_subject_assigns_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_optional_subject_assigns_member_id_foreign` FOREIGN KEY (`member_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_optional_subject_assigns_subject_id_foreign` FOREIGN KEY (`subject_id`) REFERENCES `sm_subjects` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_parents`
 --
 ALTER TABLE `sm_parents`
-  ADD CONSTRAINT `sm_parents_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_parents_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_parents_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_parents_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_parents_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_payment_gateway_settings`
 --
 ALTER TABLE `sm_payment_gateway_settings`
-  ADD CONSTRAINT `sm_payment_gateway_settings_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_payment_gateway_settings_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_payment_methhods`
 --
 ALTER TABLE `sm_payment_methhods`
   ADD CONSTRAINT `sm_payment_methhods_gateway_id_foreign` FOREIGN KEY (`gateway_id`) REFERENCES `sm_payment_gateway_settings` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_payment_methhods_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_payment_methhods_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_phone_call_logs`
 --
 ALTER TABLE `sm_phone_call_logs`
-  ADD CONSTRAINT `sm_phone_call_logs_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_phone_call_logs_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_phone_call_logs_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_phone_call_logs_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_postal_dispatches`
 --
 ALTER TABLE `sm_postal_dispatches`
-  ADD CONSTRAINT `sm_postal_dispatches_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_postal_dispatches_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_postal_dispatches_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_postal_dispatches_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_postal_receives`
 --
 ALTER TABLE `sm_postal_receives`
-  ADD CONSTRAINT `sm_postal_receives_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_postal_receives_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_postal_receives_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_postal_receives_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_product_purchases`
 --
 ALTER TABLE `sm_product_purchases`
-  ADD CONSTRAINT `sm_product_purchases_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_product_purchases_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_product_purchases_staff_id_foreign` FOREIGN KEY (`staff_id`) REFERENCES `sm_staffs` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_product_purchases_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
@@ -16148,45 +16148,45 @@ ALTER TABLE `sm_product_purchases`
 -- Constraints for table `sm_question_banks`
 --
 ALTER TABLE `sm_question_banks`
-  ADD CONSTRAINT `sm_question_banks_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_question_banks_class_id_foreign` FOREIGN KEY (`class_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_question_banks_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_question_banks_age_group_id_foreign` FOREIGN KEY (`age_group_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_question_banks_q_group_id_foreign` FOREIGN KEY (`q_group_id`) REFERENCES `sm_question_groups` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_question_banks_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_question_banks_section_id_foreign` FOREIGN KEY (`section_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_question_banks_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_question_banks_mgender_id_foreign` FOREIGN KEY (`mgender_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_question_bank_mu_options`
 --
 ALTER TABLE `sm_question_bank_mu_options`
-  ADD CONSTRAINT `sm_question_bank_mu_options_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_question_bank_mu_options_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_question_bank_mu_options_question_bank_id_foreign` FOREIGN KEY (`question_bank_id`) REFERENCES `sm_question_banks` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_question_bank_mu_options_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_question_bank_mu_options_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_question_groups`
 --
 ALTER TABLE `sm_question_groups`
-  ADD CONSTRAINT `sm_question_groups_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_question_groups_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_question_groups_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_question_groups_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_question_levels`
 --
 ALTER TABLE `sm_question_levels`
-  ADD CONSTRAINT `sm_question_levels_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_question_levels_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_question_levels_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_question_levels_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_result_stores`
 --
 ALTER TABLE `sm_result_stores`
-  ADD CONSTRAINT `sm_result_stores_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_result_stores_class_id_foreign` FOREIGN KEY (`class_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_result_stores_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_result_stores_age_group_id_foreign` FOREIGN KEY (`age_group_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_result_stores_exam_setup_id_foreign` FOREIGN KEY (`exam_setup_id`) REFERENCES `sm_exam_setups` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_result_stores_exam_type_id_foreign` FOREIGN KEY (`exam_type_id`) REFERENCES `sm_exam_types` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_result_stores_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_result_stores_section_id_foreign` FOREIGN KEY (`section_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_result_stores_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_result_stores_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_result_stores_mgender_id_foreign` FOREIGN KEY (`mgender_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_result_stores_member_id_foreign` FOREIGN KEY (`member_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_result_stores_subject_id_foreign` FOREIGN KEY (`subject_id`) REFERENCES `sm_subjects` (`id`) ON DELETE CASCADE;
 
 --
@@ -16195,88 +16195,88 @@ ALTER TABLE `sm_result_stores`
 ALTER TABLE `sm_role_permissions`
   ADD CONSTRAINT `sm_role_permissions_module_link_id_foreign` FOREIGN KEY (`module_link_id`) REFERENCES `sm_module_links` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_role_permissions_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `sm_role_permissions_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_role_permissions_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_room_lists`
 --
 ALTER TABLE `sm_room_lists`
-  ADD CONSTRAINT `sm_room_lists_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_room_lists_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_room_lists_dormitory_id_foreign` FOREIGN KEY (`dormitory_id`) REFERENCES `sm_dormitory_lists` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_room_lists_room_type_id_foreign` FOREIGN KEY (`room_type_id`) REFERENCES `sm_room_types` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_room_lists_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_room_lists_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_room_types`
 --
 ALTER TABLE `sm_room_types`
-  ADD CONSTRAINT `sm_room_types_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_room_types_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_room_types_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_room_types_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_routes`
 --
 ALTER TABLE `sm_routes`
-  ADD CONSTRAINT `sm_routes_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_routes_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_routes_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_routes_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_seat_plans`
 --
 ALTER TABLE `sm_seat_plans`
-  ADD CONSTRAINT `sm_seat_plans_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_seat_plans_class_id_foreign` FOREIGN KEY (`class_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_seat_plans_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_seat_plans_age_group_id_foreign` FOREIGN KEY (`age_group_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_seat_plans_exam_id_foreign` FOREIGN KEY (`exam_id`) REFERENCES `sm_exams` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_seat_plans_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_seat_plans_section_id_foreign` FOREIGN KEY (`section_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_seat_plans_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_seat_plans_mgender_id_foreign` FOREIGN KEY (`mgender_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_seat_plans_subject_id_foreign` FOREIGN KEY (`subject_id`) REFERENCES `sm_subjects` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_seat_plan_children`
 --
 ALTER TABLE `sm_seat_plan_children`
-  ADD CONSTRAINT `sm_seat_plan_children_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_seat_plan_children_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_seat_plan_children_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_seat_plan_children_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_seat_plan_children_seat_plan_id_foreign` FOREIGN KEY (`seat_plan_id`) REFERENCES `sm_seat_plans` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_sections`
 --
 ALTER TABLE `sm_sections`
-  ADD CONSTRAINT `sm_sections_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_sections_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_sections_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_sections_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_send_messages`
 --
 ALTER TABLE `sm_send_messages`
-  ADD CONSTRAINT `sm_send_messages_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_send_messages_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_send_messages_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_send_messages_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_sessions`
 --
 ALTER TABLE `sm_sessions`
-  ADD CONSTRAINT `sm_sessions_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_sessions_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_setup_admins`
 --
 ALTER TABLE `sm_setup_admins`
-  ADD CONSTRAINT `sm_setup_admins_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_setup_admins_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_setup_admins_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_setup_admins_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_sms_gateways`
 --
 ALTER TABLE `sm_sms_gateways`
-  ADD CONSTRAINT `sm_sms_gateways_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_sms_gateways_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_social_media_icons`
 --
 ALTER TABLE `sm_social_media_icons`
-  ADD CONSTRAINT `sm_social_media_icons_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_social_media_icons_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_staffs`
@@ -16286,32 +16286,32 @@ ALTER TABLE `sm_staffs`
   ADD CONSTRAINT `sm_staffs_designation_id_foreign` FOREIGN KEY (`designation_id`) REFERENCES `sm_designations` (`id`) ON DELETE SET NULL,
   ADD CONSTRAINT `sm_staffs_gender_id_foreign` FOREIGN KEY (`gender_id`) REFERENCES `sm_base_setups` (`id`) ON DELETE SET NULL,
   ADD CONSTRAINT `sm_staffs_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `infix_roles` (`id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `sm_staffs_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_staffs_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_staffs_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_staff_attendance_imports`
 --
 ALTER TABLE `sm_staff_attendance_imports`
-  ADD CONSTRAINT `sm_staff_attendance_imports_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_staff_attendance_imports_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_staff_attendance_imports_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_staff_attendance_imports_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_staff_attendance_imports_staff_id_foreign` FOREIGN KEY (`staff_id`) REFERENCES `sm_staffs` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_staff_attendences`
 --
 ALTER TABLE `sm_staff_attendences`
-  ADD CONSTRAINT `sm_staff_attendences_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_staff_attendences_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_staff_attendences_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_staff_attendences_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_staff_attendences_staff_id_foreign` FOREIGN KEY (`staff_id`) REFERENCES `sm_staffs` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_students`
 --
 ALTER TABLE `sm_students`
-  ADD CONSTRAINT `sm_students_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_students_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_students_bloodgroup_id_foreign` FOREIGN KEY (`bloodgroup_id`) REFERENCES `sm_base_setups` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_students_class_id_foreign` FOREIGN KEY (`class_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_students_age_group_id_foreign` FOREIGN KEY (`age_group_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_students_dormitory_id_foreign` FOREIGN KEY (`dormitory_id`) REFERENCES `sm_dormitory_lists` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_students_gender_id_foreign` FOREIGN KEY (`gender_id`) REFERENCES `sm_base_setups` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_students_parent_id_foreign` FOREIGN KEY (`parent_id`) REFERENCES `sm_parents` (`id`) ON DELETE CASCADE,
@@ -16319,8 +16319,8 @@ ALTER TABLE `sm_students`
   ADD CONSTRAINT `sm_students_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `infix_roles` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_students_room_id_foreign` FOREIGN KEY (`room_id`) REFERENCES `sm_room_lists` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_students_route_list_id_foreign` FOREIGN KEY (`route_list_id`) REFERENCES `sm_routes` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_students_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_students_section_id_foreign` FOREIGN KEY (`section_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_students_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_students_mgender_id_foreign` FOREIGN KEY (`mgender_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_students_session_id_foreign` FOREIGN KEY (`session_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_students_student_category_id_foreign` FOREIGN KEY (`student_category_id`) REFERENCES `sm_student_categories` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_students_student_group_id_foreign` FOREIGN KEY (`student_group_id`) REFERENCES `sm_student_groups` (`id`) ON DELETE CASCADE,
@@ -16331,223 +16331,223 @@ ALTER TABLE `sm_students`
 -- Constraints for table `sm_student_attendances`
 --
 ALTER TABLE `sm_student_attendances`
-  ADD CONSTRAINT `sm_student_attendances_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_student_attendances_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_student_attendances_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_student_attendances_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_student_attendances_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_student_attendances_member_id_foreign` FOREIGN KEY (`member_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_student_attendance_imports`
 --
 ALTER TABLE `sm_student_attendance_imports`
-  ADD CONSTRAINT `sm_student_attendance_imports_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_student_attendance_imports_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_student_attendance_imports_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_student_attendance_imports_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_student_attendance_imports_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_student_attendance_imports_member_id_foreign` FOREIGN KEY (`member_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_student_categories`
 --
 ALTER TABLE `sm_student_categories`
-  ADD CONSTRAINT `sm_student_categories_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_student_categories_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_student_categories_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_student_categories_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_student_certificates`
 --
 ALTER TABLE `sm_student_certificates`
-  ADD CONSTRAINT `sm_student_certificates_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_student_certificates_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_student_certificates_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_student_certificates_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_student_documents`
 --
 ALTER TABLE `sm_student_documents`
-  ADD CONSTRAINT `sm_student_documents_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_student_documents_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_student_documents_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_student_documents_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_student_excel_formats`
 --
 ALTER TABLE `sm_student_excel_formats`
-  ADD CONSTRAINT `sm_student_excel_formats_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_student_excel_formats_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_student_excel_formats_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_student_excel_formats_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_student_groups`
 --
 ALTER TABLE `sm_student_groups`
-  ADD CONSTRAINT `sm_student_groups_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_student_groups_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_student_groups_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_student_groups_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_student_homeworks`
 --
 ALTER TABLE `sm_student_homeworks`
-  ADD CONSTRAINT `sm_student_homeworks_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_student_homeworks_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_student_homeworks_evaluated_by_foreign` FOREIGN KEY (`evaluated_by`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_student_homeworks_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_student_homeworks_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_student_homeworks_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_student_homeworks_member_id_foreign` FOREIGN KEY (`member_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_student_homeworks_subject_id_foreign` FOREIGN KEY (`subject_id`) REFERENCES `sm_subjects` (`id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `sm_student_id_cards`
+-- Constraints for table `sm_member_id_cards`
 --
-ALTER TABLE `sm_student_id_cards`
-  ADD CONSTRAINT `sm_student_id_cards_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_student_id_cards_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+ALTER TABLE `sm_member_id_cards`
+  ADD CONSTRAINT `sm_member_id_cards_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_member_id_cards_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_student_promotions`
 --
 ALTER TABLE `sm_student_promotions`
-  ADD CONSTRAINT `sm_student_promotions_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_student_promotions_current_class_id_foreign` FOREIGN KEY (`current_class_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_student_promotions_current_section_id_foreign` FOREIGN KEY (`current_section_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_student_promotions_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_student_promotions_current_age_group_id_foreign` FOREIGN KEY (`current_age_group_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_student_promotions_current_mgender_id_foreign` FOREIGN KEY (`current_mgender_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_student_promotions_current_session_id_foreign` FOREIGN KEY (`current_session_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_student_promotions_previous_class_id_foreign` FOREIGN KEY (`previous_class_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_student_promotions_previous_section_id_foreign` FOREIGN KEY (`previous_section_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_student_promotions_previous_age_group_id_foreign` FOREIGN KEY (`previous_age_group_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_student_promotions_previous_mgender_id_foreign` FOREIGN KEY (`previous_mgender_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_student_promotions_previous_session_id_foreign` FOREIGN KEY (`previous_session_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_student_promotions_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_student_promotions_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_student_promotions_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_student_promotions_member_id_foreign` FOREIGN KEY (`member_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_student_take_online_exams`
 --
 ALTER TABLE `sm_student_take_online_exams`
-  ADD CONSTRAINT `sm_student_take_online_exams_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_student_take_online_exams_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_student_take_online_exams_online_exam_id_foreign` FOREIGN KEY (`online_exam_id`) REFERENCES `sm_online_exams` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_student_take_online_exams_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_student_take_online_exams_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_student_take_online_exams_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_student_take_online_exams_member_id_foreign` FOREIGN KEY (`member_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_student_take_online_exam_questions`
 --
 ALTER TABLE `sm_student_take_online_exam_questions`
-  ADD CONSTRAINT `sm_student_take_online_exam_questions_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_student_take_online_exam_questions_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_student_take_online_exam_questions_question_bank_id_foreign` FOREIGN KEY (`question_bank_id`) REFERENCES `sm_question_banks` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_student_take_online_exam_questions_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_student_take_online_exam_questions_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `t_on_ex_id` FOREIGN KEY (`take_online_exam_id`) REFERENCES `sm_student_take_online_exams` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_student_take_onln_ex_ques_options`
 --
 ALTER TABLE `sm_student_take_onln_ex_ques_options`
-  ADD CONSTRAINT `sm_student_take_onln_ex_ques_options_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_student_take_onln_ex_ques_options_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_student_take_onln_ex_ques_options_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_student_take_onln_ex_ques_options_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `t_on_ex_q_id` FOREIGN KEY (`take_online_exam_question_id`) REFERENCES `sm_student_take_online_exam_questions` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_student_timelines`
 --
 ALTER TABLE `sm_student_timelines`
-  ADD CONSTRAINT `sm_student_timelines_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_student_timelines_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_student_timelines_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_student_timelines_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_styles`
 --
 ALTER TABLE `sm_styles`
-  ADD CONSTRAINT `sm_styles_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_styles_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_subjects`
 --
 ALTER TABLE `sm_subjects`
-  ADD CONSTRAINT `sm_subjects_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_subjects_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_subjects_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_subjects_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_subject_attendances`
 --
 ALTER TABLE `sm_subject_attendances`
-  ADD CONSTRAINT `sm_subject_attendances_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_subject_attendances_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_subject_attendances_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_subject_attendances_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_subject_attendances_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_subject_attendances_member_id_foreign` FOREIGN KEY (`member_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_subject_attendances_subject_id_foreign` FOREIGN KEY (`subject_id`) REFERENCES `sm_subjects` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_suppliers`
 --
 ALTER TABLE `sm_suppliers`
-  ADD CONSTRAINT `sm_suppliers_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_suppliers_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_suppliers_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_suppliers_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_teacher_upload_contents`
 --
 ALTER TABLE `sm_teacher_upload_contents`
-  ADD CONSTRAINT `sm_teacher_upload_contents_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_teacher_upload_contents_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_teacher_upload_contents_class_foreign` FOREIGN KEY (`class`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_teacher_upload_contents_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_teacher_upload_contents_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_teacher_upload_contents_section_foreign` FOREIGN KEY (`section`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_temporary_meritlists`
 --
 ALTER TABLE `sm_temporary_meritlists`
-  ADD CONSTRAINT `sm_temporary_meritlists_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_temporary_meritlists_class_id_foreign` FOREIGN KEY (`class_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_temporary_meritlists_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_temporary_meritlists_age_group_id_foreign` FOREIGN KEY (`age_group_id`) REFERENCES `sm_classes` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_temporary_meritlists_exam_id_foreign` FOREIGN KEY (`exam_id`) REFERENCES `sm_exams` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_temporary_meritlists_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_temporary_meritlists_section_id_foreign` FOREIGN KEY (`section_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_temporary_meritlists_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_temporary_meritlists_mgender_id_foreign` FOREIGN KEY (`mgender_id`) REFERENCES `sm_sections` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_testimonials`
 --
 ALTER TABLE `sm_testimonials`
-  ADD CONSTRAINT `sm_testimonials_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_testimonials_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_to_dos`
 --
 ALTER TABLE `sm_to_dos`
-  ADD CONSTRAINT `sm_to_dos_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_to_dos_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_to_dos_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_to_dos_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_upload_contents`
 --
 ALTER TABLE `sm_upload_contents`
-  ADD CONSTRAINT `sm_upload_contents_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_upload_contents_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_upload_contents_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_upload_contents_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_upload_homework_contents`
 --
 ALTER TABLE `sm_upload_homework_contents`
-  ADD CONSTRAINT `sm_upload_homework_contents_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_upload_homework_contents_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_upload_homework_contents_homework_id_foreign` FOREIGN KEY (`homework_id`) REFERENCES `sm_homeworks` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_upload_homework_contents_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_upload_homework_contents_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_upload_homework_contents_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_upload_homework_contents_member_id_foreign` FOREIGN KEY (`member_id`) REFERENCES `sm_students` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_user_logs`
 --
 ALTER TABLE `sm_user_logs`
-  ADD CONSTRAINT `sm_user_logs_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_user_logs_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_user_logs_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `infix_roles` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_user_logs_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_user_logs_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sm_user_logs_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_vehicles`
 --
 ALTER TABLE `sm_vehicles`
-  ADD CONSTRAINT `sm_vehicles_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_vehicles_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_vehicles_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_vehicles_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_visitors`
 --
 ALTER TABLE `sm_visitors`
-  ADD CONSTRAINT `sm_visitors_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_visitors_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_visitors_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_visitors_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sm_weekends`
 --
 ALTER TABLE `sm_weekends`
-  ADD CONSTRAINT `sm_weekends_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `sm_weekends_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sm_weekends_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sm_weekends_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `telescope_entries_tags`
@@ -16560,15 +16560,15 @@ ALTER TABLE `telescope_entries_tags`
 --
 ALTER TABLE `users`
   ADD CONSTRAINT `users_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `infix_roles` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `users_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `users_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `user_menus`
 --
 ALTER TABLE `user_menus`
-  ADD CONSTRAINT `user_menus_academic_id_foreign` FOREIGN KEY (`academic_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `user_menus_church_year_id_foreign` FOREIGN KEY (`church_year_id`) REFERENCES `sm_academic_years` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `user_menus_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `infix_roles` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `user_menus_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `user_menus_church_id_foreign` FOREIGN KEY (`church_id`) REFERENCES `sm_schools` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `user_menus_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 COMMIT;
 

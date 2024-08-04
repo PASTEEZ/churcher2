@@ -35,7 +35,7 @@
                                 <select class="niceSelect w-100 bb form-control {{ @$errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                     <option data-display="@lang('common.select_class')*" value="">@lang('common.select_class') *</option>
                                         @foreach($classes as $class)
-                                        <option value="{{@$class->id}}" {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{@$class->class_name}}</option>
+                                        <option value="{{@$class->id}}" {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{@$class->age_group_name}}</option>
                                         @endforeach
                                 </select>
                                 @if ($errors->has('class'))
@@ -108,7 +108,7 @@
                                         <input type="checkbox" id="checkAll" class="common-checkbox generate-certificate-print-all" name="checkAll" value="">
                                         <label for="checkAll">@lang('common.all')</label>
                                     </th>
-                                    <th>@lang('student.admission_no')</th>
+                                    <th>@lang('student.registration_no')</th>
                                     <th>@lang('common.name')</th>
                                     <th>@lang('common.class_Sec')</th>
                                     <th>@lang('student.father_name')</th>
@@ -125,9 +125,9 @@
                                         <input type="checkbox" id="student.{{@$student->id}}" class="common-checkbox generate-certificate-print" name="student_checked[]" value="{{@$student->id}}">
                                             <label for="student.{{@$student->id}}"></label>
                                     </td>
-                                    <td>{{@$student->admission_no}}</td>
+                                    <td>{{@$student->registration_no}}</td>
                                     <td>{{@$student->full_name}}</td>
-                                    <td>{{@$student->class !=""?@$student->class->class_name:""}} ({{@$student->section !=""?@$student->section->section_name:""}})</td>
+                                    <td>{{@$student->class !=""?@$student->class->age_group_name:""}} ({{@$student->section !=""?@$student->section->mgender_name:""}})</td>
                                     
                                     <td>{{@$student->parents !=""?@$student->parents->fathers_name:""}}</td>
                                     <td>

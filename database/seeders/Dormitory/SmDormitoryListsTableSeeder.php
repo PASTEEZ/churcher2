@@ -12,10 +12,10 @@ class SmDormitoryListsTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run($school_id, $count = 5)
+    public function run($church_id, $count = 5)
     {
         SmDormitoryList::factory()->times($count)->create([
-            'school_id' => $school_id
+            'church_id' => $church_id
         ]);
     }
 }

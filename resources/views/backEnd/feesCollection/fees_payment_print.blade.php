@@ -32,7 +32,7 @@
                 <img src="{{url($setting->logo)}}" alt="{{url($setting->logo)}}"> 
             </td> 
             <td  style="width: 70%">  
-                <h3>{{$setting->school_name}}</h3>
+                <h3>{{$setting->church_name}}</h3>
                 <h4>{{$setting->address}}</h4>
             </td> 
         </tr> 
@@ -40,7 +40,7 @@
     <hr>
     <table class="school-table school-table-style" cellspacing="0" width="100%">
         <tr>
-                <td>@lang('student.student_name')</td>
+                <td>@lang('student.member_name')</td>
                 <td>{{$student->full_name}}</td>
                 <td>@lang('fees.roll_number')</td>
                 <td>{{$student->roll_no}}</td>
@@ -49,13 +49,13 @@
                 <td> @lang('student.father_name')</td>
                 <td>{{$student->parents->fathers_name}}</td>
                 <td>@lang('common.class')</td>
-                <td>{{$student->class->class_name}}</td>
+                <td>{{$student->class->age_group_name}}</td>
         </tr>
         <tr>
                 <td> @lang('common.section')</td>
-                <td>{{$student->section->section_name}}</td>
-                <td>@lang('student.admission_no')</td>
-                <td>{{$student->admission_no}}</td>
+                <td>{{$student->section->mgender_name}}</td>
+                <td>@lang('student.registration_no')</td>
+                <td>{{$student->registration_no}}</td>
         </tr>
     </table>
     <div class="text-center"> 

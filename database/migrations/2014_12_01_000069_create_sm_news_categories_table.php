@@ -19,32 +19,32 @@ class CreateSmNewsCategoriesTable extends Migration
             $table->string('category_name');
             $table->timestamps();
 
-            $table->unsignedBigInteger('school_id')->default(1)->unsigned();
-            // $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->unsignedBigInteger('church_id')->default(1)->unsigned();
+            // $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
         
         });
 
         DB::table('sm_news_categories')->insert([
             [
                 'category_name' => 'International',    //      1
-                'school_id' => '1',    //      1
+                'church_id' => '1',    //      1
             ],
             [
                 'category_name' => 'Our history',   //      3
-                'school_id' => '1',
+                'church_id' => '1',
             ],
             [
                 'category_name' => 'Our mission and vision',   //      3
-                'school_id' => '1',
+                'church_id' => '1',
             ],
             [
                 'category_name' => 'National',   //      2
-                'school_id' => '1',
+                'church_id' => '1',
 
             ],
             [
                 'category_name' => 'Sports',   //      3
-                'school_id' => '1',
+                'church_id' => '1',
             ],
         ]);
     }

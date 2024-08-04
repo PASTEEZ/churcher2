@@ -26,7 +26,7 @@ class SaasRouteController extends Controller
         $input =$request->all();
 
         $validator = Validator::make($input, [
-            'school_id' => "required|integer",
+            'church_id' => "required|integer",
         ]);
         if ($validator->fails()) {
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -35,7 +35,7 @@ class SaasRouteController extends Controller
 
         }
         try{
-            $routes = SmRoute::where('school_id', '=', $request->school_id)->get();
+            $routes = SmRoute::where('church_id', '=', $request->church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($routes, null);
@@ -59,7 +59,7 @@ class SaasRouteController extends Controller
         $validator = Validator::make($input, [
             'title' => 'required|max:200|unique:sm_routes,title',
             'far' => "required|integer",
-            'school_id' => "required|integer",
+            'church_id' => "required|integer",
             'created_by' => "required|integer"
         ]);
 
@@ -75,7 +75,7 @@ class SaasRouteController extends Controller
             $route = new SmRoute();
             $route->title = $request->title;
             $route->far = $request->far;
-            $route->school_id = $request->school_id;
+            $route->church_id = $request->church_id;
             $route->created_by=$request->created_by;
             $result = $route->save();
     
@@ -96,7 +96,7 @@ class SaasRouteController extends Controller
         
         try{
             $route = SmRoute::find($id);
-            $routes = SmRoute::where('school_id', '=', $request->school_id)->get();
+            $routes = SmRoute::where('church_id', '=', $request->church_id)->get();
     
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];

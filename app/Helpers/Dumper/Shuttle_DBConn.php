@@ -24,8 +24,8 @@ class Shuttle_DBConn
     public static function create($options): Shuttle_DBConn_Mysqli
     {
 
-        $class_name = \App\Helpers\Dumper\Shuttle_DBConn_Mysqli::class;
+        $age_group_name = \App\Helpers\Dumper\Shuttle_DBConn_Mysqli::class;
 
-        return new $class_name($options);
+        return new $age_group_name($options);
     }
 }

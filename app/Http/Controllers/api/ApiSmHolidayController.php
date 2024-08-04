@@ -27,7 +27,7 @@ class ApiSmHolidayController extends Controller
     {
         
         try{
-            $holidays = SmHoliday::where('academic_id', getAcademicId())->get();
+            $holidays = SmHoliday::where('church_year_id', getAcademicId())->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($holidays, null);
@@ -163,7 +163,7 @@ class ApiSmHolidayController extends Controller
         
         try{
             $editData = SmHoliday::find($id);
-            $holidays = SmHoliday::where('academic_id', getAcademicId())->get();
+            $holidays = SmHoliday::where('church_year_id', getAcademicId())->get();
     
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];

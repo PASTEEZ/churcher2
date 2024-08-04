@@ -82,11 +82,11 @@
                             <td>
 
                             @if($value->class != "")
-                                {{@$value->classes->class_name}}
+                                {{@$value->classes->age_group_name}}
                             @endif 
 
                             @if(@$value->section != "")
-                                ({{@$value->sections->section_name}})
+                                ({{@$value->sections->mgender_name}})
                             @endif
 
 

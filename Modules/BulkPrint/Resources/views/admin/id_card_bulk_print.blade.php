@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title> @if($role_id==2) @lang('student.student_id_card') @else @lang('hr.staff_ID') @endif</title>
+    <title> @if($role_id==2) @lang('student.member_id_card') @else @lang('hr.staff_ID') @endif</title>
     <link rel="stylesheet" href="{{asset('public/backEnd/')}}/vendors/css/bootstrap.css" />
     <!--<link rel="stylesheet" href="{{asset('public/backEnd/')}}/css/style.css" />-->
     <style media="print">
@@ -110,15 +110,15 @@
                                                 <div class="card_text" style="line-height:1.02; display: flex; align-items: center; justify-content: space-between; width: 100%; flex-direction: column;">
                                                     <div class="card_text_head " style="line-height:1.02; display: flex; align-items: center; justify-content: space-between; width: 100%; margin-top:25px; margin-bottom:10px">
                                                         <div class="card_text_left hId">
-                                                            @if($id_card->student_name==1)
+                                                            @if($id_card->member_name==1)
                                                                 <div id="hName">
                                                                     <h4 style="line-height:1.02; margin-top: 0; margin-bottom: 0px; font-size:11px; font-weight:600 ; text-transform: uppercase; color: #2656a6;">{{ $staff_student->full_name !=''? $staff_student->full_name :''}}</h4>
                                                                 </div>
                                                             @endif
-                                                            @if($id_card->admission_no==1 )
+                                                            @if($id_card->registration_no==1 )
                                                                 <div id="hAdmissionNumber">
                                                                     @if($role_id==2)
-                                                                        <h3 style="line-height:1.02; margin-top: 0; margin-bottom: 3px; font-size:10px; font-weight:500">@lang('student.admission_no') : {{$staff_student->admission_no}}</h3>
+                                                                        <h3 style="line-height:1.02; margin-top: 0; margin-bottom: 3px; font-size:10px; font-weight:500">@lang('student.registration_no') : {{$staff_student->registration_no}}</h3>
                                                                     @else 
                                                                         <h3 style="line-height:1.02; margin-top: 0; margin-bottom: 3px; font-size:10px; font-weight:500">@lang('hr.staff_id') : {{$staff_student->staff_no}}</h3>
                                                                     @endif
@@ -128,7 +128,7 @@
                                                                 <div id="hClass">
                                                                     <h3 style="line-height:1.02; margin-top: 0; margin-bottom: 3px; font-size:10px; font-weight:500">@lang('common.class') :
                                                                         @foreach($staff_student->getClassRecord as $record)
-                                                                            {{ $record->class->class_name}} ({{$record->section->section_name}}),
+                                                                            {{ $record->class->age_group_name}} ({{$record->section->mgender_name}}),
                                                                         @endforeach
                                                                     </h3>
                                                                 </div>
@@ -246,15 +246,15 @@
                                                 <div class="card_text" style="line-height:1.02; display: flex; align-items: center; justify-content: space-between; width: 100%; flex-direction: column;">
                                                     <div class="card_text_head" style="line-height:1.02; display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom:5px"> 
                                                         <div class="card_text_left vId">
-                                                            @if($id_card->student_name==1)
+                                                            @if($id_card->member_name==1)
                                                                 <div id="vName">
                                                                     <h3 style="line-height:1.02; margin-top: 0; margin-bottom: 3px; font-size:11px; font-weight:600 ; text-transform: uppercase; color: #2656a6;">{{$staff_student->full_name}}</h3>
                                                                 </div>
                                                             @endif
-                                                            @if($id_card->admission_no==1)
+                                                            @if($id_card->registration_no==1)
                                                                 <div id="vAdmissionNumber">
                                                                     @if($role_id==2)
-                                                                        <h4 style="line-height:1.02; margin-top: 0; margin-bottom: 3px; font-size:10px;">@lang('student.admission_no') : {{$staff_student->admission_no}}</h4>
+                                                                        <h4 style="line-height:1.02; margin-top: 0; margin-bottom: 3px; font-size:10px;">@lang('student.registration_no') : {{$staff_student->registration_no}}</h4>
                                                                     @else 
                                                                         <h4 style="line-height:1.02; margin-top: 0; margin-bottom: 3px; font-size:10px;">@lang('hr.staff_id') : {{$staff_student->staff_no}}</h4>
                                                                     @endif
@@ -264,7 +264,7 @@
                                                                 <div id="vClass">
                                                                     <h4 style="line-height:1.02; margin-top: 0; margin-bottom: 0; font-size:10px;">@lang('common.class') :
                                                                         @foreach($staff_student->getClassRecord as $record)
-                                                                            {{ $record->class->class_name}} ({{$record->section->section_name}}),
+                                                                            {{ $record->class->age_group_name}} ({{$record->section->mgender_name}}),
                                                                         @endforeach
                                                                     </h4>
                                                                 </div>
@@ -382,7 +382,7 @@
                                                 <div class="card_text" style="line-height:1.02; display: flex; align-items: center; justify-content: space-between; width: 100%; flex-direction: column;">
                                                     <div class="card_text_head " style="line-height:1.02; display: flex; align-items: center; justify-content: space-between; width: 100%; margin-top:25px; margin-bottom:10px">
                                                         <div class="card_text_left hId">
-                                                            @if($id_card->student_name==1)
+                                                            @if($id_card->member_name==1)
                                                                 <div id="gHName">
                                                                     <h4 style="line-height:1.02; margin-top: 0; margin-bottom: 0px; font-size:11px; font-weight:600 ; text-transform: uppercase; color: #2656a6;">InfixEdu</h4>
                                                                 </div>
@@ -467,7 +467,7 @@
                                                 <div class="card_text" style="line-height:1.02; display: flex; align-items: center; justify-content: space-between; width: 100%; flex-direction: column;">
                                                     <div class="card_text_head " style="line-height:1.02; display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom:0px"> 
                                                         <div class="card_text_left vId">
-                                                            @if($id_card->student_name==1)
+                                                            @if($id_card->member_name==1)
                                                                 <div id="gVName">
                                                                     <h3 style="line-height:1.02; margin-top: 0; margin-bottom: 3px; font-size:11px; font-weight:600 ; text-transform: uppercase; color: #2656a6;">{{$staff_student->guardians_name}}</h3>
                                                                 </div>

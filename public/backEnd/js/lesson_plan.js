@@ -80,9 +80,9 @@ $(document).ready(function() {
 
         var formData = {
             lesson_id: lesson_id,
-            class_id: $("#class_id").val(),
+            age_group_id: $("#age_group_id").val(),
             subject_id: $("#subject_id").val(),
-            section_id: $("#section_id").val()
+            mgender_id: $("#mgender_id").val()
         };
 
         // get lesson from subhect,class,seciton
@@ -139,8 +139,8 @@ changeLesson = () => {
     var url = $("#url").val();
 
     var formData = {
-        class_id: $('#class_id').val(),
-        section_id: $('#section_id').val(),
+        age_group_id: $('#age_group_id').val(),
+        mgender_id: $('#mgender_id').val(),
         subject_id: $('#subject_id').val(),
         lesson_id: $('#select_lesson').val(),
     };

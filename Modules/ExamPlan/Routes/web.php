@@ -22,7 +22,7 @@ Route::group(['middleware' => ['subdomain']], function () {
         Route::get('student-admit-card', 'StudentExamPlanController@admitCard')->name('admitCard');
         Route::post('student-admit-card-search', 'StudentExamPlanController@admitCardSearch')->name('admitCardSearch');
         Route::get('student-admit-card-download/{id}', 'StudentExamPlanController@admitCardDownload')->name('admitCardDownload');
-        Route::get('student-admit-card/{student_id}', 'StudentExamPlanController@admitCardParent')->name('admitCardParent');
+        Route::get('student-admit-card/{member_id}', 'StudentExamPlanController@admitCardParent')->name('admitCardParent');
 
     });
 });

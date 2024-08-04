@@ -88,7 +88,7 @@ class DateFactory
      *
      * @var string
      */
-    const DEFAULT_CLASS_NAME = Carbon::class;
+    const DEFAULT_age_group_name = Carbon::class;
 
     /**
      * The type (class) of dates that should be created.
@@ -197,7 +197,7 @@ class DateFactory
      */
     public function __call($method, $parameters)
     {
-        $defaultClassName = static::DEFAULT_CLASS_NAME;
+        $defaultClassName = static::DEFAULT_age_group_name;
 
         // Using callable to generate dates...
         if (static::$callable) {

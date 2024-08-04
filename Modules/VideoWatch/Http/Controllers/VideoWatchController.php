@@ -36,30 +36,30 @@ class VideoWatchController extends Controller
         $viewable_student_list=[];
 
         if ($content_info->available_for_all_classes==1) {
-            $students=SmStudent::where('school_id',Auth::user()->school_id)->select('id','user_id')
-            ->where('academic_id', getAcademicId())->get();
+            $students=SmStudent::where('church_id',Auth::user()->church_id)->select('id','user_id')
+            ->where('church_year_id', getAcademicId())->get();
             foreach ($students as $key => $value) {
                 $viewable_student_list[]=$value->user_id;
             }
             
         } else{
-            $students=SmStudent::where('school_id',Auth::user()->school_id)->select('id','user_id')
-            ->where('class_id',$content_info->class)
-            ->where('section_id',$content_info->section)
-            ->where('academic_id', getAcademicId())->get();
+            $students=SmStudent::where('church_id',Auth::user()->church_id)->select('id','user_id')
+            ->where('age_group_id',$content_info->class)
+            ->where('mgender_id',$content_info->section)
+            ->where('church_year_id', getAcademicId())->get();
             foreach ($students as $key => $value) {
                 $viewable_student_list[]=$value->user_id;
             }
         }
         $watchLogs = InfixVideoWatch::where('study_material_id',$id)->get();
         foreach ($watchLogs as $key => $value) {
-            $seen_students[]=$value->student_id;
+            $seen_students[]=$value->member_id;
         }
 
         $watchLogs = InfixVideoWatch::where('infix_video_watches.study_material_id',$id)
-        ->leftjoin('sm_students','sm_students.user_id','=','infix_video_watches.student_id')
+        ->leftjoin('sm_students','sm_students.user_id','=','infix_video_watches.member_id')
         ->leftjoin('sm_teacher_upload_contents','sm_teacher_upload_contents.id','=','infix_video_watches.study_material_id')
-        ->select('infix_video_watches.*','sm_students.id','full_name','admission_no','roll_no','content_title')
+        ->select('infix_video_watches.*','sm_students.id','full_name','registration_no','roll_no','content_title')
         ->get();
 
         $unseen_lists=[];
@@ -69,10 +69,10 @@ class VideoWatchController extends Controller
                 $student=SmStudent::where('user_id',$value)->first();
                 $unseen_lists[$value]['id']=$student->id;
                 $unseen_lists[$value]['full_name']=$student->full_name;
-                $unseen_lists[$value]['admission_no']=$student->admission_no;
+                $unseen_lists[$value]['registration_no']=$student->registration_no;
                 $unseen_lists[$value]['roll_no']=$student->roll_no;
-                $unseen_lists[$value]['class']=$student->class->class_name;
-                $unseen_lists[$value]['section']=$student->section->section_name;
+                $unseen_lists[$value]['class']=$student->class->age_group_name;
+                $unseen_lists[$value]['section']=$student->section->mgender_name;
             }
         }
     
@@ -88,13 +88,13 @@ class VideoWatchController extends Controller
     public function traceData(Request $request)
     {
        
-        $check_exist=InfixVideoWatch::where('student_id',$request->user_id)->where('study_material_id',$request->study_id)->first();
+        $check_exist=InfixVideoWatch::where('member_id',$request->user_id)->where('study_material_id',$request->study_id)->first();
         // if ($check_exist==null) {
         if (Auth::user()->role_id==2 && $check_exist==null) {
             date_default_timezone_set(timeZone());
 
             $watch_trace=new InfixVideoWatch();
-            $watch_trace->student_id=$request->user_id;
+            $watch_trace->member_id=$request->user_id;
             $watch_trace->study_material_id=$request->study_id;
             $watch_trace->time=date("h:i:sa");
             $watch_trace->save();

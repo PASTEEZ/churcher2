@@ -93,7 +93,7 @@
                                     <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="class_subject" name="class">
                                         <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                         @foreach($classes as $class)
-                                        <option value="{{$class->id}}" {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{$class->class_name}}</option>
+                                        <option value="{{$class->id}}" {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{$class->age_group_name}}</option>
                                         @endforeach
                                     </select>
                                     @if ($errors->has('class'))
@@ -156,7 +156,7 @@
                         <table class="display school-table school-table-style" cellspacing="0" width="100%" >
                             <thead>
                                 <tr>
-                                    <th rowspan="2" >@lang('student.admission_no').</th>
+                                    <th rowspan="2" >@lang('student.registration_no').</th>
                                     <th rowspan="2" >@lang('student.roll_no').</th>
                                     <th rowspan="2" >@lang('common.student')</th>
                                     <th colspan="{{@$number_of_exam_parts}}"> {{@$subjectName->subject_name}}</th>
@@ -172,18 +172,18 @@
                                 @php $colspan = 3; $counter = 0;  @endphp
                                 @foreach($students as $student)
                                 <tr>
-                                    <td>{{$student->student->admission_no}}</td>
+                                    <td>{{$student->student->registration_no}}</td>
                                     <td>{{@$student->roll_no}}</td>
                                     <td>{{@$student->student->full_name}}</td>
                                     @php $entry_form_count=0; @endphp
                                     @foreach($marks_entry_form as $part)
                                     @php
-                                        $search_mark = App\SmMarkStore::un_get_mark_by_part($student->student_id, $request, $exam_type, $subject_id, $part->id, $student->id);
+                                        $search_mark = App\SmMarkStore::un_get_mark_by_part($student->member_id, $request, $exam_type, $subject_id, $part->id, $student->id);
                                     @endphp
                                         <td>{{$search_mark}}</td>
                                     @endforeach
                                     <?php 
-                                        $teacher_remarks = App\SmMarkStore::un_teacher_remarks($student->student_id, $exam_type, $request, $subject_id, $student->id); 
+                                        $teacher_remarks = App\SmMarkStore::un_teacher_remarks($student->member_id, $exam_type, $request, $subject_id, $student->id); 
                                     ?>
                                     <td>{{$teacher_remarks}}</td>
                                 </tr>
@@ -210,7 +210,7 @@
                         <table class="display school-table school-table-style" cellspacing="0" width="100%" >
                             <thead>
                                 <tr>
-                                    <th rowspan="2" >@lang('student.admission_no').</th>
+                                    <th rowspan="2" >@lang('student.registration_no').</th>
                                     <th rowspan="2" >@lang('student.roll_no').</th>
                                     <th rowspan="2" >@lang('common.student')</th>
                                     <th colspan="{{@$number_of_exam_parts}}"> {{@$subjectNames->subject_name}}</th> 
@@ -226,10 +226,10 @@
                                 @php $colspan = 3; $counter = 0;  @endphp
                                 @foreach($students as $student)
                                 <tr>
-                                    <td>{{$student->admission_no}}
-                                        <input type="hidden" name="student_ids[]" value="{{@$student->id}}">
+                                    <td>{{$student->registration_no}}
+                                        <input type="hidden" name="member_ids[]" value="{{@$student->id}}">
                                         <input type="hidden" name="student_rolls[{{@$student->id}}]" value="{{@$student->roll_no}}">
-                                        <input type="hidden" name="student_admissions[{{@$student->id}}]" value="{{@$student->admission_no}}">
+                                        <input type="hidden" name="student_admissions[{{@$student->id}}]" value="{{@$student->registration_no}}">
                                     </td>
                                     <td>{{@$student->roll_no}}</td>
                                     <td>{{@$student->full_name}}</td>
@@ -248,8 +248,8 @@
                                     @endforeach
                                     <td>
                                         <div class="input-effect">
-                                            <input type="checkbox" id="subject_{{@$student->id}}_{{@$student->admission_no}}" class="common-checkbox" name="abs[{{@$student->id}}]" value="1">
-                                            <label for="subject_{{@$student->id}}_{{@$student->admission_no}}">@lang('common.yes')</label>
+                                            <input type="checkbox" id="subject_{{@$student->id}}_{{@$student->registration_no}}" class="common-checkbox" name="abs[{{@$student->id}}]" value="1">
+                                            <label for="subject_{{@$student->id}}_{{@$student->registration_no}}">@lang('common.yes')</label>
                                         </div>
                                             
                                     </td>
@@ -263,7 +263,7 @@
                         <table id="" class="school-table-data school-table shadow-none" cellspacing="0" width="100%">
                             <thead>
                                 <tr>
-                                    <th>@lang('student.admission_no')</th>
+                                    <th>@lang('student.registration_no')</th>
                                     <th>@lang('student.roll_no')</th>
                                     <th>@lang('exam.student')</th>
                                     <th>@lang('student.father_name')</th>
@@ -288,10 +288,10 @@
                                 @endphp
                                 @foreach($marks_registers as $marks_register)
                                 @php
-                                    $registerer_ids[] = $marks_register->student_id;
+                                    $registerer_ids[] = $marks_register->member_id;
                                 @endphp
                                 <tr>
-                                    <td>{{$marks_register->studentInfo !=""?$marks_register->studentInfo->admission_no:""}}</td>
+                                    <td>{{$marks_register->studentInfo !=""?$marks_register->studentInfo->registration_no:""}}</td>
                                     <td>{{$marks_register->studentInfo !=""?$marks_register->studentInfo->roll_no:""}}</td>
                                     <td>{{$marks_register->studentInfo !=""?$marks_register->studentInfo->full_name:""}}</td>
                                     <td>{{$marks_register->studentInfo !=""?$marks_register->studentInfo->parents->fathers_name:""}}</td>
@@ -303,7 +303,7 @@
                                     @endphp
                                     @foreach($results as $result)
                                     @php
-                                        $subjectDetails = App\SmMarksRegister::subjectDetails($marks_register->exam_id, $marks_register->class_id, $marks_register->section_id, $result->subject_id);
+                                        $subjectDetails = App\SmMarksRegister::subjectDetails($marks_register->exam_id, $marks_register->age_group_id, $marks_register->mgender_id, $result->subject_id);
                                         $grand_total_marks += $subjectDetails->full_mark;
 
                                         if($result->abs == 0){
@@ -332,7 +332,7 @@
                                 @foreach($all_students as $student)
                                     @if(!in_array($student->id, $registerer_ids))
                                         <tr>
-                                            <td>{{$student->admission_no}}</td>
+                                            <td>{{$student->registration_no}}</td>
                                             <td>{{$student->roll_no}}</td>
                                             <td>{{$student->full_name}}</td>
                                             <td>{{$student->parents !=""?$student->parents->fathers_name:""}}</td>

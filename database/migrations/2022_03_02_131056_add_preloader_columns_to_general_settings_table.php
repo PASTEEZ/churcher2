@@ -28,7 +28,7 @@ class AddPreloaderColumnsToGeneralSettingsTable extends Migration
             }
         });
 
-        $sql = ("INSERT INTO `infix_module_infos` (`id`, `module_id`, `parent_id`, `type`, `is_saas`, `name`, `route`, `lang_name`, `icon_class`, `active_status`, `created_by`, `updated_by`, `school_id`, `created_at`, `updated_at`) VALUES
+        $sql = ("INSERT INTO `infix_module_infos` (`id`, `module_id`, `parent_id`, `type`, `is_saas`, `name`, `route`, `lang_name`, `icon_class`, `active_status`, `created_by`, `updated_by`, `church_id`, `created_at`, `updated_at`) VALUES
         (2200, 18, 398, 2, 0,'Preloader Setting','setting.preloader','preloader_setting','',1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22');
          ");
         DB::insert($sql);

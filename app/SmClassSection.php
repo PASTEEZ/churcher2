@@ -19,14 +19,14 @@ class SmClassSection extends Model
     
     public function sectionName()
     {
-        return $this->belongsTo('App\SmSection', 'section_id', 'id')->withDefault();
+        return $this->belongsTo('App\SmSection', 'mgender_id', 'id')->withDefault();
     }
     public function students()
     {
-        return $this->hasMany('App\SmStudent', 'section_id', 'section_id');
+        return $this->hasMany('App\SmStudent', 'mgender_id', 'mgender_id');
     }
     public function sectionWithoutGlobal()
     {
-        return $this->belongsTo('App\SmSection', 'section_id', 'id')->withoutGlobalScopes()->withDefault();
+        return $this->belongsTo('App\SmSection', 'mgender_id', 'id')->withoutGlobalScopes()->withDefault();
     }
 }

@@ -35,16 +35,16 @@ class SmAuthController extends Controller
         // User::checkAuth();
     }
 
-    public function get_class_name(Request $request, $id)
+    public function get_age_group_name(Request $request, $id)
     {
-        $get_class_name = SmClass::select('class_name as name')->where('id', $id)->first();
-        return $get_class_name;
+        $get_age_group_name = SmClass::select('age_group_name as name')->where('id', $id)->first();
+        return $get_age_group_name;
     }
 
-    public function get_section_name(Request $request, $id)
+    public function get_mgender_name(Request $request, $id)
     {
-        $get_section_name = SmSection::select('section_name as name')->where('id', $id)->first();
-        return $get_section_name;
+        $get_mgender_name = SmSection::select('mgender_name as name')->where('id', $id)->first();
+        return $get_mgender_name;
     }
 
     public function get_teacher_name(Request $request, $id)
@@ -74,21 +74,21 @@ class SmAuthController extends Controller
     public function getLoginAccess(Request $request)
     {
         if ($request->value == "Student") {
-            $user = User::where('role_id', 2)->where('school_id', Auth::user()->school_id)->first();
+            $user = User::where('role_id', 2)->where('church_id', Auth::user()->church_id)->first();
         } elseif ($request->value == "Parents") {
-            $user = User::where('role_id', 3)->where('school_id', Auth::user()->school_id)->first();
+            $user = User::where('role_id', 3)->where('church_id', Auth::user()->church_id)->first();
         } elseif ($request->value == "Super Admin") {
-            $user = User::where('role_id', 1)->where('school_id', Auth::user()->school_id)->first();
+            $user = User::where('role_id', 1)->where('church_id', Auth::user()->church_id)->first();
         } elseif ($request->value == "Admin") {
-            $user = User::where('role_id', 5)->where('school_id', Auth::user()->school_id)->first();
+            $user = User::where('role_id', 5)->where('church_id', Auth::user()->church_id)->first();
         } elseif ($request->value == "Teacher") {
-            $user = User::where('role_id', 4)->where('school_id', Auth::user()->school_id)->first();
+            $user = User::where('role_id', 4)->where('church_id', Auth::user()->church_id)->first();
         } elseif ($request->value == "Accountant") {
-            $user = User::where('role_id', 6)->where('school_id', Auth::user()->school_id)->first();
+            $user = User::where('role_id', 6)->where('church_id', Auth::user()->church_id)->first();
         } elseif ($request->value == "Receptionist") {
-            $user = User::where('role_id', 7)->where('school_id', Auth::user()->school_id)->first();
+            $user = User::where('role_id', 7)->where('church_id', Auth::user()->church_id)->first();
         } elseif ($request->value == "Librarian") {
-            $user = User::where('role_id', 8)->where('school_id', Auth::user()->school_id)->first();
+            $user = User::where('role_id', 8)->where('church_id', Auth::user()->church_id)->first();
         }
         return response()->json($user);
     }
@@ -222,8 +222,8 @@ class SmAuthController extends Controller
                     if ($role_id == 2) {
                         $data['userDetails'] = DB::table('sm_students')->select('sm_students.*', 'sm_parents.*', 'sm_classes.*', 'sm_sections.*')
                             ->join('sm_parents', 'sm_parents.id', '=', 'sm_students.parent_id')
-                            ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.class_id')
-                            ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.section_id')
+                            ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.age_group_id')
+                            ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.mgender_id')
                             ->where('sm_students.user_id', $user->id)
                             ->first();
                         $data['religion'] = DB::table('sm_students')->select('sm_base_setups.base_setup_name as name')
@@ -240,7 +240,7 @@ class SmAuthController extends Controller
                             ->join('sm_staffs', 'sm_staffs.id', '=', 'sm_vehicles.driver_id')
                             ->where('sm_students.user_id', $user->id)
                             ->first();
-                        $data['system_settings'] = DB::table('sm_general_settings')->where('school_id', Auth::user()->school_id)->get();
+                        $data['system_settings'] = DB::table('sm_general_settings')->where('church_id', Auth::user()->church_id)->get();
                         $data['TTL_RTL_status'] = '1=RTL,2=TTL';
                     } else if ($role_id == 3) {
                         $data['userDetails'] = SmParent::where('user_id', $user->id)->first();
@@ -285,8 +285,8 @@ class SmAuthController extends Controller
                 $data['user'] = $user->toArray();
                 $data['userDetails'] = DB::table('sm_students')->select('sm_students.*', 'sm_parents.*', 'sm_classes.*', 'sm_sections.*')
                     ->join('sm_parents', 'sm_parents.id', '=', 'sm_students.parent_id')
-                    ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.class_id')
-                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.section_id')
+                    ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.age_group_id')
+                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.mgender_id')
                     ->where('sm_students.id', $user->id)
                     ->first();
                 $data['religion'] = DB::table('sm_students')->select('sm_base_setups.base_setup_name as name')

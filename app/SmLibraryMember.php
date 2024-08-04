@@ -36,6 +36,6 @@ class SmLibraryMember extends Model
     }
     public function scopeStatus($query)
     {
-        $query->where('school_id', auth()->user()->school_id)->where('academic_id', getAcademicId());
+        $query->where('church_id', auth()->user()->church_id)->where('church_year_id', getAcademicId());
     }
 }

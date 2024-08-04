@@ -40,7 +40,7 @@ class SmTeacherUploadContent extends Model
 
     public function unSection()
     {
-        return $this->belongsTo('App\SmSection', 'un_section_id', 'id')->withDefault();
+        return $this->belongsTo('App\SmSection', 'un_mgender_id', 'id')->withDefault();
     }
 
     public function unFaculty()
@@ -53,7 +53,7 @@ class SmTeacherUploadContent extends Model
     }
     public function unAcademic()
     {
-        return $this->belongsTo('Modules\University\Entities\UnAcademicYear', 'un_academic_id', 'id')->withDefault();
+        return $this->belongsTo('Modules\University\Entities\UnAcademicYear', 'un_church_year_id', 'id')->withDefault();
     }
     public function unSemester()
     {

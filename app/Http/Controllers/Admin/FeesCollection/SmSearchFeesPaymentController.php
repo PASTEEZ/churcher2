@@ -32,22 +32,22 @@ class SmSearchFeesPaymentController extends Controller
             if(auth()->user()->role_id ==1 || auth()->user()->role_id ==5){
                 $fees_payments = SmFeesPayment::with('recordDetail')
                                 ->where('active_status',1)
-                                ->where('school_id', auth()->user()->school_id)
+                                ->where('church_id', auth()->user()->church_id)
                                 ->orderby('id','DESC')
                                 ->whereNotNull('installment_payment_id')
                                 ->get();
             }else{
                 $fees_payments = SmFeesPayment::with('recordDetail')
                                 ->where('created_by',auth()->user()->id)
-                                ->where('school_id', auth()->user()->school_id)
+                                ->where('church_id', auth()->user()->church_id)
                                 ->where('active_status',1)
                                 ->orderby('id','DESC')
                                 ->whereNotNull('installment_payment_id')
                                 ->get();
             }
             $classes = SmClass::where('active_status', 1)
-                        ->where('school_id',Auth::user()->school_id)
-                        ->where('academic_id', getAcademicId())
+                        ->where('church_id',Auth::user()->church_id)
+                        ->where('church_year_id', getAcademicId())
                         ->get();
             return view('backEnd.feesCollection.search_fees_payment', compact('classes','fees_payments'));
         } catch (\Exception $e) {
@@ -63,14 +63,14 @@ class SmSearchFeesPaymentController extends Controller
         $date_to = date('Y-m-d', strtotime($request->date_to));
         try {
             $classes = SmClass::where('active_status', 1)
-                        ->where('school_id',Auth::user()->school_id)
-                        ->where('academic_id', getAcademicId())
+                        ->where('church_id',Auth::user()->church_id)
+                        ->where('church_year_id', getAcademicId())
                         ->get();
 
             $fees_payments = SmFeesPayment::query();
             $fees_payments = $fees_payments->when(directFees(), function($q){
                 $q->whereNotNull('installment_payment_id');
-            })->where('school_id',auth()->user()->school_id);
+            })->where('church_id',auth()->user()->church_id);
             if(moduleStatusCheck('University')){
                 $fees_payments->when($request->un_semester_label_id, function ($q) use ($request) {
                         $q->whereHas('studentInfo', function ($q) use($request){
@@ -82,8 +82,8 @@ class SmSearchFeesPaymentController extends Controller
 
             }else{
                 $fees_payments->whereHas('recordDetail', function ($q) use($request){
-                    return $q->where('class_id', $request->class)
-                            ->where('section_id', $request->section);
+                    return $q->where('age_group_id', $request->class)
+                            ->where('mgender_id', $request->section);
                     });
 
             }
@@ -92,7 +92,7 @@ class SmSearchFeesPaymentController extends Controller
                         $q->whereHas('studentInfo', function ($q) use($request){
                             return $q->where(function($q) use($request) {
                             return $q->where('full_name', 'like', '%' . @$request->keyword . '%')
-                            ->orWhere('admission_no', 'like', '%' . @$request->keyword . '%')
+                            ->orWhere('registration_no', 'like', '%' . @$request->keyword . '%')
                             ->orWhere('roll_no','like',  '%' . @$request->keyword . '%');
                         });
                 });
@@ -105,7 +105,7 @@ class SmSearchFeesPaymentController extends Controller
             });
             $fees_payments->when($request->date_from && $request->date_to, function ($query) use ($date_from, $date_to) {
                 $query->whereDate('payment_date', '>=', $date_from)->whereDate('payment_date', '<=', $date_to);
-            })->where('active_status', 1)->orderby('id', 'DESC')->where('school_id', Auth::user()->school_id);
+            })->where('active_status', 1)->orderby('id', 'DESC')->where('church_id', Auth::user()->church_id);
             if (auth()->user()->role_id != 1 && auth()->user()->role_id != 5) {
                 $fees_payments = $fees_payments->where('created_by', auth()->user()->id);
             }
@@ -129,20 +129,20 @@ class SmSearchFeesPaymentController extends Controller
                 }
             }
             $data['bank_info'] = SmPaymentGatewaySetting::where('gateway_name', 'Bank')
-                                ->where('school_id', Auth::user()->school_id)
+                                ->where('church_id', Auth::user()->church_id)
                                 ->first();
             $data['cheque_info'] = SmPaymentGatewaySetting::where('gateway_name', 'Cheque')
-                                ->where('school_id', Auth::user()->school_id)
+                                ->where('church_id', Auth::user()->church_id)
                                 ->first();
 
-            $banks = SmBankAccount::where('school_id', Auth::user()->school_id)->get();
+            $banks = SmBankAccount::where('church_id', Auth::user()->church_id)->get();
 
             $method['bank_info'] = SmPaymentMethhod::where('method', 'Bank')
-                                ->where('school_id', Auth::user()->school_id)
+                                ->where('church_id', Auth::user()->church_id)
                                 ->first();
 
             $method['cheque_info'] = SmPaymentMethhod::where('method', 'Cheque')
-                                ->where('school_id', Auth::user()->school_id)
+                                ->where('church_id', Auth::user()->church_id)
                                 ->first();
             return view('backEnd.feesCollection.edit_fees_payment_modal', compact('fees_payment','data','method','banks'));
         } catch (\Throwable $th) {

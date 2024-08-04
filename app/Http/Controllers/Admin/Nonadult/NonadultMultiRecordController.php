@@ -25,32 +25,32 @@ class StudentMultiRecordController extends Controller
         $data = [];
         
         if(!empty($request->all())) {
-            $record_student_ids  = StudentRecord::when($request->class_id, function($q) use($request) {
-                $q->where('class_id', $request->class_id);
-            })->when($request->section_id, function($q) use($request){
-                $q->where('section_id', $request->section_id);
-            })->when($request->academic_year, function($q) use($request){
-                $q->where('session_id', $request->academic_year);
+            $record_member_ids  = StudentRecord::when($request->age_group_id, function($q) use($request) {
+                $q->where('age_group_id', $request->age_group_id);
+            })->when($request->mgender_id, function($q) use($request){
+                $q->where('mgender_id', $request->mgender_id);
+            })->when($request->church_year, function($q) use($request){
+                $q->where('session_id', $request->church_year);
             }, function($q){
                 $q->where('session_id', getAcademicId());
             })->when($request->student, function ($q) use ($request) {
-                $q->where('student_id', $request->student);
-            })->pluck('student_id')->toArray();
+                $q->where('member_id', $request->student);
+            })->pluck('member_id')->toArray();
 
-            $students = SmStudent::whereIn('id', $record_student_ids)->where('active_status', 1)->get();
+            $students = SmStudent::whereIn('id', $record_member_ids)->where('active_status', 1)->get();
         }       
-        $selected['student_id'] = $request->student;
-        $selected['academic_year'] = $request->academic_year;
-        $selected['class_id'] = $request->class_id;
-        $selected['section_id'] = $request->section_id;
+        $selected['member_id'] = $request->student;
+        $selected['church_year'] = $request->church_year;
+        $selected['age_group_id'] = $request->age_group_id;
+        $selected['mgender_id'] = $request->mgender_id;
         
-        $sessions = SmAcademicYear::where('school_id', auth()->user()->school_id)->get();       
+        $sessions = SmAcademicYear::where('church_id', auth()->user()->church_id)->get();       
         $classes = SmClass::get();       
         return view('backEnd.studentInformation.multi_class_student', compact('sessions', 'students', 'classes', 'data', 'selected'));
     }
-    public function studentMultiRecord($student_id)
+    public function studentMultiRecord($member_id)
     {
-        $student = SmStudent::findOrFail($student_id);
+        $student = SmStudent::findOrFail($member_id);
         $classes = SmClass::get(); 
         return view('backEnd.studentInformation.inc._multiple_class_record', compact('student', 'classes'));
     }
@@ -117,22 +117,22 @@ class StudentMultiRecordController extends Controller
     {
         if ($request->is_default) {
             StudentRecord::when(moduleStatusCheck('University'), function ($query) {
-                $query->where('un_academic_id', getAcademicId());
+                $query->where('un_church_year_id', getAcademicId());
             }, function ($query) {
-                $query->where('academic_id', getAcademicId());
-            })->where('student_id', $request->student_id)
-            ->where('school_id', auth()->user()->school_id)->update([
+                $query->where('church_year_id', getAcademicId());
+            })->where('member_id', $request->member_id)
+            ->where('church_id', auth()->user()->church_id)->update([
                 'is_default' => 0,
             ]);
         }
         if (generalSetting()->multiple_roll == 0 && $request->roll_number) {
            
-            StudentRecord::where('student_id', $request->student_id)
-            ->where('school_id', auth()->user()->school_id)
+            StudentRecord::where('member_id', $request->member_id)
+            ->where('church_id', auth()->user()->church_id)
             ->when(moduleStatusCheck('University'), function ($query) {
-                $query->where('un_academic_id', getAcademicId());
+                $query->where('un_church_year_id', getAcademicId());
             }, function ($query) {
-                $query->where('academic_id', getAcademicId());
+                $query->where('church_year_id', getAcademicId());
             })->update([
                     'roll_no' => $request->roll_number,
                 ]);
@@ -142,10 +142,10 @@ class StudentMultiRecordController extends Controller
         if ($request->record_id) {
             $studentRecord = StudentRecord::with('studentDetail')->find($request->record_id);
             $groups = \Modules\Chat\Entities\Group::where([
-                'class_id' => $studentRecord->class_id,
-                'section_id' => $studentRecord->section_id,
-                'academic_id' => $studentRecord->academic_id,
-                'school_id' => $studentRecord->school_id
+                'age_group_id' => $studentRecord->age_group_id,
+                'mgender_id' => $studentRecord->mgender_id,
+                'church_year_id' => $studentRecord->church_year_id,
+                'church_id' => $studentRecord->church_id
                 ])->get();
             if($studentRecord->studentDetail){
                 $user = $studentRecord->studentDetail->user;
@@ -159,7 +159,7 @@ class StudentMultiRecordController extends Controller
             $studentRecord = new StudentRecord;
         }
 
-        $studentRecord->student_id = $request->student_id;
+        $studentRecord->member_id = $request->member_id;
         if ($request->roll_number) {
             $studentRecord->roll_no = $request->roll_number;
         }
@@ -170,36 +170,36 @@ class StudentMultiRecordController extends Controller
             $studentRecord->lead_id = $request->lead_id;
         }
         if (moduleStatusCheck('University')) {
-            $studentRecord->un_academic_id = $request->un_academic_id;
-            $studentRecord->un_section_id = $request->un_section_id;
+            $studentRecord->un_church_year_id = $request->un_church_year_id;
+            $studentRecord->un_mgender_id = $request->un_mgender_id;
             $studentRecord->un_session_id = $request->un_session_id;
             $studentRecord->un_department_id = $request->un_department_id;
             $studentRecord->un_faculty_id = $request->un_faculty_id;
             $studentRecord->un_semester_id = $request->un_semester_id;
             $studentRecord->un_semester_label_id = $request->un_semester_label_id;
         } else {
-            $studentRecord->class_id = $request->class;
-            $studentRecord->section_id = $request->section;
+            $studentRecord->age_group_id = $request->class;
+            $studentRecord->mgender_id = $request->section;
             $studentRecord->session_id = $request->session ?? getAcademicId();
         }
-        $studentRecord->school_id = Auth::user()->school_id;
-        $studentRecord->academic_id = $request->session ?? getAcademicId();
+        $studentRecord->church_id = Auth::user()->church_id;
+        $studentRecord->church_year_id = $request->session ?? getAcademicId();
         $studentRecord->save();
        
         if (moduleStatusCheck('University')) {
             $this->assignSubjectStudent($studentRecord, $pre_record);
         }
         if(directFees()){
-            $this->assignDirectFees($studentRecord->id, $studentRecord->class_id, $studentRecord->section_id,null);
+            $this->assignDirectFees($studentRecord->id, $studentRecord->age_group_id, $studentRecord->mgender_id,null);
         }
 
         $groups = \Modules\Chat\Entities\Group::where([
-            'class_id' => $request->class,
-            'section_id' => $request->section,
-            'academic_id' => $request->session,
-            'school_id' => auth()->user()->school_id
+            'age_group_id' => $request->class,
+            'mgender_id' => $request->section,
+            'church_year_id' => $request->session,
+            'church_id' => auth()->user()->church_id
             ])->get();
-        $student = SmStudent::where('school_id', auth()->user()->school_id)->find($request->student_id);
+        $student = SmStudent::where('church_id', auth()->user()->church_id)->find($request->member_id);
         if($student){
             $user = $student->user;
             foreach($groups as $group){
@@ -211,7 +211,7 @@ class StudentMultiRecordController extends Controller
     {
         try {
             $record = StudentRecord::find($record_id);           
-            $this->deleteRecordCondition( $record->student_id, $record->id, 'restore');            
+            $this->deleteRecordCondition( $record->member_id, $record->id, 'restore');            
             Toastr::success('Operation Successful', 'success');
             return redirect()->back();
         } catch (\Throwable $th) {
@@ -224,9 +224,9 @@ class StudentMultiRecordController extends Controller
         
         try {
             $record_id = $request->record_id;
-            $student_id = $request->student_id;
-            if ($record_id && $student_id) {
-                $this->deleteRecordCondition($student_id, $record_id, 'disable');
+            $member_id = $request->member_id;
+            if ($record_id && $member_id) {
+                $this->deleteRecordCondition($member_id, $record_id, 'disable');
             }
             $status = true;
             $message = __('student.Record Remove Successfully');
@@ -242,7 +242,7 @@ class StudentMultiRecordController extends Controller
     {
         try {
             $record = StudentRecord::find($request->id);           
-            $this->deleteRecordCondition( $record->student_id, $record->id, 'delete');
+            $this->deleteRecordCondition( $record->member_id, $record->id, 'delete');
             $record->delete();
             Toastr::success('Operation Successful', 'success');
             return redirect()->back();
@@ -252,17 +252,17 @@ class StudentMultiRecordController extends Controller
         }
         
     }
-    public function deleteRecordCondition(int $student_id, int $record_id, string $type = 'disable')
+    public function deleteRecordCondition(int $member_id, int $record_id, string $type = 'disable')
     {
         
         $tableWithRecordIdActiveStatus = $this->tableWithRecordIdActiveStatus();
         if ($type =='delete') {
             foreach($tableWithRecordIdActiveStatus as $table) {
                 if ((Schema::hasColumn($table, 'record_id'))) {
-                    $model = DB::table($table)->where('record_id', $record_id)->where('school_id', auth()->user()->school_id)->limit(1);
+                    $model = DB::table($table)->where('record_id', $record_id)->where('church_id', auth()->user()->church_id)->limit(1);
                 }
                 if ((Schema::hasColumn($table, 'student_record_id'))) {
-                    $model = DB::table($table)->where('student_record_id', $record_id)->where('school_id', auth()->user()->school_id)->limit(1);
+                    $model = DB::table($table)->where('student_record_id', $record_id)->where('church_id', auth()->user()->church_id)->limit(1);
                 }
             
                 if($model) {
@@ -284,24 +284,24 @@ class StudentMultiRecordController extends Controller
         if($type == 'disable') {
 
             $recordTemporary = StudentRecordTemporary::updateOrCreate([
-                'sm_student_id'=>$student_id,
+                'sm_member_id'=>$member_id,
                 'student_record_id'=>$record_id,
             ]);
             $recordTemporary->user_id = auth()->user()->id;
-            $recordTemporary->school_id = auth()->user()->school_id;
+            $recordTemporary->church_id = auth()->user()->church_id;
             $recordTemporary->save();
 
-            StudentRecord::where('student_id', $student_id)->where('id', $record_id)->update([
+            StudentRecord::where('member_id', $member_id)->where('id', $record_id)->update([
                 'active_status'=>0
             ]);
         }
         if ($type =='delete' || $type == 'restore') {
-            $model = StudentRecordTemporary::where('sm_student_id', $student_id)->where('student_record_id', $record_id)->first();
+            $model = StudentRecordTemporary::where('sm_member_id', $member_id)->where('student_record_id', $record_id)->first();
             if ($model) {
                 $model->delete();
             }
             if($type == 'restore') {
-                StudentRecord::where('student_id', $student_id)->where('id', $record_id)->update([
+                StudentRecord::where('member_id', $member_id)->where('id', $record_id)->update([
                     'active_status'=>1
                 ]);
             }
@@ -313,19 +313,19 @@ class StudentMultiRecordController extends Controller
     {
         $studentRecords = StudentRecord::with('studentDetail')
         ->where('active_status', 0)
-        ->where('school_id', auth()->user()->school_id)
-        ->where('academic_id', getAcademicId())->get();
+        ->where('church_id', auth()->user()->church_id)
+        ->where('church_year_id', getAcademicId())->get();
         return view("backEnd.studentInformation.back_up_student_record", compact('studentRecords'));
     }
     private function checkExitRecord(Request $request) : bool
     {
-        $exit = StudentRecord::where('class_id', $request->class)
-                    ->where('section_id', $request->section)                  
-                    ->where('student_id', $request->student_id)
+        $exit = StudentRecord::where('age_group_id', $request->class)
+                    ->where('mgender_id', $request->section)                  
+                    ->where('member_id', $request->member_id)
                     ->when($request->record_id, function($q) use($request) {
                         $q->where('id', '!=', $request->record_id);
                     })
-                    ->where('school_id', auth()->user()->school_id)
+                    ->where('church_id', auth()->user()->church_id)
                     ->first();
        
         if($exit) {
@@ -337,11 +337,11 @@ class StudentMultiRecordController extends Controller
     {
         if(!$request->roll_number && generalSetting()->multiple_roll == 0) return false;
 
-        $roll_number =  StudentRecord::where('class_id', $request->class)
-        ->where('section_id', $request->section)                  
+        $roll_number =  StudentRecord::where('age_group_id', $request->class)
+        ->where('mgender_id', $request->section)                  
         ->when($request->roll_number, function($q) use($request) {
             $q->where('roll_no', $request->roll_number);
-        })->where('school_id', auth()->user()->school_id)
+        })->where('church_id', auth()->user()->church_id)
         ->first(); 
         if($roll_number) {
             return true;

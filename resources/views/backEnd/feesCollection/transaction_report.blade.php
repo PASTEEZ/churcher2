@@ -53,7 +53,7 @@
                                 <select class="niceSelect w-100 bb form-control{{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                     <option data-display="@lang('common.select_class')" value="">@lang('common.select_class')</option>
                                     @foreach($classes as $class)
-                                        <option value="{{$class->id}}" {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{@$class->class_name}}</option>
+                                        <option value="{{$class->id}}" {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{@$class->age_group_name}}</option>
                                     @endforeach
                                 </select>
                                 @if ($errors->has('class'))
@@ -107,7 +107,7 @@
                         <table id="table_id" class="display school-table " cellspacing="0" width="100%">
                             <thead>
                                 <tr>
-                                    <th> @lang('student.admission_no')</th>
+                                    <th> @lang('student.registration_no')</th>
                                     <th> @lang('common.name')</th>
                                     <th> @lang('university::un.installment')</th>
                                     <th>@lang('fees.mode')</th>
@@ -127,7 +127,7 @@
                                 @foreach($fees_payments as $fees_payment)
                                     @if (!count($fees_payment->payments))
                                         <tr>
-                                            <td>{{$fees_payment->recordDetail->studentDetail !=""?$fees_payment->recordDetail->studentDetail->admission_no:""}}</td>
+                                            <td>{{$fees_payment->recordDetail->studentDetail !=""?$fees_payment->recordDetail->studentDetail->registration_no:""}}</td>
                                             <td>{{$fees_payment->recordDetail->studentDetail !=""?$fees_payment->recordDetail->studentDetail->full_name:""}}</td>
                                             <td>
                                                 {{@$fees_payment->installment->title}}
@@ -167,7 +167,7 @@
                                     @endif
                                     @foreach($fees_payment->payments as $payment)
                                         <tr>
-                                            <td>{{$fees_payment->recordDetail->studentDetail !=""?$fees_payment->recordDetail->studentDetail->admission_no:""}}</td>
+                                            <td>{{$fees_payment->recordDetail->studentDetail !=""?$fees_payment->recordDetail->studentDetail->registration_no:""}}</td>
                                             <td>{{$fees_payment->recordDetail->studentDetail !=""?$fees_payment->recordDetail->studentDetail->full_name:""}}</td>
                                             <td>
                                                 {{@$fees_payment->installment->title}}
@@ -228,7 +228,7 @@
                         <table id="table_id" class="display school-table " cellspacing="0" width="100%">
                             <thead>
                                 <tr>
-                                    <th> @lang('student.admission_no')</th>
+                                    <th> @lang('student.registration_no')</th>
                                     <th> @lang('common.name')</th>
                                     <th> @lang('fees.installment')</th>
                                     <th>@lang('fees.mode')</th>
@@ -248,7 +248,7 @@
                                 @foreach($fees_payments as $fees_payment)
                                    
                                         <tr>
-                                            <td>{{@$fees_payment->installmentAssign->recordDetail->studentDetail->admission_no}}</td>
+                                            <td>{{@$fees_payment->installmentAssign->recordDetail->studentDetail->registration_no}}</td>
                                             <td>{{$fees_payment->installmentAssign->recordDetail->studentDetail->full_name}}</td>
                                             <td>
                                                 {{@$fees_payment->installmentAssign->installment->title}}
@@ -346,7 +346,7 @@
                                         <td>{{$fees_payment->recordDetail->studentDetail !=""?$fees_payment->recordDetail->studentDetail->full_name:""}}</td>
                                         <td>
                                             @if($fees_payment->recordDetail->studentDetail!="" && $fees_payment->recordDetail->class!="")
-                                            {{$fees_payment->recordDetail->class->class_name}}
+                                            {{$fees_payment->recordDetail->class->age_group_name}}
                                             @endif
                                         </td>
                                         <td>{{$fees_payment->feesType!=""?$fees_payment->feesType->name:""}}</td>

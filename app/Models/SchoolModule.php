@@ -16,6 +16,6 @@ class SchoolModule extends Model
 
     public function school()
     {
-        return $this->belongsTo(SmSchool::class, 'school_id');
+        return $this->belongsTo(SmSchool::class, 'church_id');
     }
 }

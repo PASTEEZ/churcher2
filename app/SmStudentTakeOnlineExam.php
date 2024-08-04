@@ -11,7 +11,7 @@ class SmStudentTakeOnlineExam extends Model
     public static function submittedAnswer($exam_id, $s_id)
     {
         try {
-            return SmStudentTakeOnlineExam::where('online_exam_id', $exam_id)->where('student_id', $s_id)->first();
+            return SmStudentTakeOnlineExam::where('online_exam_id', $exam_id)->where('member_id', $s_id)->first();
         } catch (\Exception $e) {
             $data = [];
             return $data;

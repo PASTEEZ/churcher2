@@ -24,9 +24,9 @@ class SmRouteRequest extends FormRequest
      */
     public function rules()
     {
-        $school_id=auth()->user()->school_id;
+        $church_id=auth()->user()->church_id;
         return [
-            'title' => ['required', 'max:200', Rule::unique('sm_routes')->where('school_id', $school_id)->ignore($this->id) ],
+            'title' => ['required', 'max:200', Rule::unique('sm_routes')->where('church_id', $church_id)->ignore($this->id) ],
             'far' => "required"
         ];
     }

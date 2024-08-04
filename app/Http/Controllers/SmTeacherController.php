@@ -34,17 +34,17 @@ class SmTeacherController extends Controller
     public function uploadContentList(Request $request)
     {
         try {
-            $contentTypes = SmContentType::where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $contentTypes = SmContentType::where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
             if (teacherAccess()) {
                 $uploadContents = SmTeacherUploadContent::where(function ($q) {
                     $q->where('created_by', Auth::user()->id)->orWhere('available_for_admin', 1);
                 })
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
             } else {
-                $uploadContents = SmTeacherUploadContent::where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                $uploadContents = SmTeacherUploadContent::where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 // ->orderby('id','DESC')
                 ->get();
             }
@@ -64,8 +64,8 @@ class SmTeacherController extends Controller
     }
     public function uploadContentEdit($id)
     {
-        $editData = SmTeacherUploadContent::where('school_id', Auth::user()->school_id)
-        ->where('academic_id',getAcademicId())
+        $editData = SmTeacherUploadContent::where('church_id', Auth::user()->church_id)
+        ->where('church_year_id',getAcademicId())
         ->where('id',$id)
         ->first();
 
@@ -73,32 +73,32 @@ class SmTeacherController extends Controller
             Toastr::error('This Content added by other. you cannot Modify', 'Failed');
             return redirect()->back();
         }
-        $sections = SmSection::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id',Auth::user()->school_id)->get();
-        $contentTypes = SmContentType::where('academic_id', getAcademicId())->where('school_id',Auth::user()->school_id)->get();
+        $sections = SmSection::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id',Auth::user()->church_id)->get();
+        $contentTypes = SmContentType::where('church_year_id', getAcademicId())->where('church_id',Auth::user()->church_id)->get();
 
             if (teacherAccess()) {
                 $uploadContents = SmTeacherUploadContent::with('classes', 'Sections')->where(function ($q) {
                     $q->where('created_by', Auth::user()->id)->orWhere('available_for_admin', 1);
-                })->where('academic_id', getAcademicId())->where('school_id',Auth::user()->school_id)->get();
+                })->where('church_year_id', getAcademicId())->where('church_id',Auth::user()->church_id)->get();
             } else {
-                $uploadContents = SmTeacherUploadContent::where('academic_id', getAcademicId())
-                ->where('school_id',Auth::user()->school_id)
+                $uploadContents = SmTeacherUploadContent::where('church_year_id', getAcademicId())
+                ->where('church_id',Auth::user()->church_id)
                 ->get();
             }
 
              if (teacherAccess()) {
                 $teacher_info=SmStaff::where('user_id',Auth::user()->id)->first();
-                $classes= SmAssignSubject::where('teacher_id',$teacher_info->id)->join('sm_classes','sm_classes.id','sm_assign_subjects.class_id')
-                ->where('sm_assign_subjects.academic_id', getAcademicId())
+                $classes= SmAssignSubject::where('teacher_id',$teacher_info->id)->join('sm_classes','sm_classes.id','sm_assign_subjects.age_group_id')
+                ->where('sm_assign_subjects.church_year_id', getAcademicId())
                 ->where('sm_assign_subjects.active_status', 1)
-                ->where('sm_assign_subjects.school_id',Auth::user()->school_id)
-                ->select('sm_classes.id','class_name')
+                ->where('sm_assign_subjects.church_id',Auth::user()->church_id)
+                ->select('sm_classes.id','age_group_name')
                  ->groupBy('sm_classes.id')
                 ->get();
             } else {
                 $classes = SmClass::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id',Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id',Auth::user()->church_id)
                 ->get();
             }
         return view('backEnd.teacher.uploadContentList', compact('editData','contentTypes', 'classes','sections', 'uploadContents'));
@@ -111,7 +111,7 @@ class SmTeacherController extends Controller
             if (checkAdmin()) {
                 $ContentDetails = SmTeacherUploadContent::find($id);
             }else{
-                $ContentDetails = SmTeacherUploadContent::where('id',$id)->where('academic_id', getAcademicId())->where('school_id',Auth::user()->school_id)->first();
+                $ContentDetails = SmTeacherUploadContent::where('id',$id)->where('church_year_id', getAcademicId())->where('church_id',Auth::user()->church_id)->first();
             }
             
             return view('backEnd.teacher.uploadContentDetails', compact('ContentDetails'));
@@ -199,16 +199,16 @@ class SmTeacherController extends Controller
             $d = '2012';
 
             if($request->section == "all"){
-                $sections = SmClassSection::where('class_id', $request->class)               
-                ->where('school_id', Auth::user()->school_id)->get();
+                $sections = SmClassSection::where('age_group_id', $request->class)               
+                ->where('church_id', Auth::user()->church_id)->get();
                 foreach($sections as $section){
                         $uploadContents = new SmTeacherUploadContent();
                         $uploadContents->content_title = $request->content_title;
                         $uploadContents->content_type = $request->content_type;
-                        $uploadContents->school_id = Auth::user()->school_id;
-                        $uploadContents->academic_id = getAcademicId();
+                        $uploadContents->church_id = Auth::user()->church_id;
+                        $uploadContents->church_year_id = getAcademicId();
                         $uploadContents->class = $request->class;
-                        $uploadContents->section = $section->section_id;
+                        $uploadContents->section = $section->mgender_id;
                         $uploadContents->upload_date = date('Y-m-d', strtotime($request->upload_date));
                         $uploadContents->description = $request->description;
                         $uploadContents->source_url = $request->source_url;
@@ -222,8 +222,8 @@ class SmTeacherController extends Controller
                 $uploadContents = new SmTeacherUploadContent();
                 $uploadContents->content_title = $request->content_title;
                 $uploadContents->content_type = $request->content_type;
-                $uploadContents->school_id = Auth::user()->school_id;
-                $uploadContents->academic_id = getAcademicId();
+                $uploadContents->church_id = Auth::user()->church_id;
+                $uploadContents->church_year_id = getAcademicId();
     
                 foreach ($request->available_for as $value) {
                     if ($value == 'admin') {
@@ -263,16 +263,16 @@ class SmTeacherController extends Controller
             foreach ($request->available_for as $value) {
                 if ($value == 'admin') {
                     $roles = InfixRole::where('id', '=', 1) /* ->where('id', '!=', 2)->where('id', '!=', 3)->where('id', '!=', 9) */->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
                     foreach ($roles as $role) {
-                        $staffs = SmStaff::where('role_id', $role->id)->where('school_id',Auth::user()->school_id)->get();
+                        $staffs = SmStaff::where('role_id', $role->id)->where('church_id',Auth::user()->church_id)->get();
                         foreach ($staffs as $staff) {
                             $notification = new SmNotification;
                             $notification->user_id = $staff->user_id;
                             $notification->role_id = $role->id;
-                            $notification->school_id = Auth::user()->school_id;
-                            $notification->academic_id = getAcademicId();
+                            $notification->church_id = Auth::user()->church_id;
+                            $notification->church_year_id = getAcademicId();
                             if ($request->content_type == 'as') {
                                 $notification->url = 'assignment-list';
                             } elseif ($request->content_type == 'st') {
@@ -298,13 +298,13 @@ class SmTeacherController extends Controller
                 if ($value == 'student') {
                     if (isset($request->all_classes)) {
                         
-                        $students = SmStudent::select('id', 'user_id')->where('academic_id', getAcademicId())->where('school_id',Auth::user()->school_id)->get();
+                        $students = SmStudent::select('id', 'user_id')->where('church_year_id', getAcademicId())->where('church_id',Auth::user()->church_id)->get();
                         foreach ($students as $student) {
                             $notification = new SmNotification;
                             $notification->user_id = $student->user_id;
                             $notification->role_id = 2;
-                            $notification->school_id = Auth::user()->school_id;
-                            $notification->academic_id = getAcademicId();
+                            $notification->church_id = Auth::user()->church_id;
+                            $notification->church_year_id = getAcademicId();
                             if ($request->content_type == 'as') {
                                 $notification->url = 'student-assignment';
                             } elseif ($request->content_type == 'st') {
@@ -329,13 +329,13 @@ class SmTeacherController extends Controller
 
                     elseif ( (!is_null($request->class)) &&   ($request->section == '')) {
                        
-                        $students = SmStudent::select('id', 'user_id')->where('class_id', $request->class)->where('academic_id', getAcademicId())->where('school_id',Auth::user()->school_id)->get();
+                        $students = SmStudent::select('id', 'user_id')->where('age_group_id', $request->class)->where('church_year_id', getAcademicId())->where('church_id',Auth::user()->church_id)->get();
                         foreach ($students as $student) {
                             $notification = new SmNotification;
                             $notification->user_id = $student->user_id;
                             $notification->role_id = 2;
-                            $notification->school_id = Auth::user()->school_id;
-                            $notification->academic_id = getAcademicId();
+                            $notification->church_id = Auth::user()->church_id;
+                            $notification->church_year_id = getAcademicId();
                             if ($request->content_type == 'as') {
                                 $notification->url = 'student-assignment';
                             } elseif ($request->content_type == 'st') {
@@ -361,7 +361,7 @@ class SmTeacherController extends Controller
                     
                     else {
                        
-                        $students = SmStudent::select('id','user_id')->where('class_id', $request->class)->where('section_id', $request->section)->where('academic_id', getAcademicId())->where('school_id',Auth::user()->school_id)->get();
+                        $students = SmStudent::select('id','user_id')->where('age_group_id', $request->class)->where('mgender_id', $request->section)->where('church_year_id', getAcademicId())->where('church_id',Auth::user()->church_id)->get();
                         foreach ($students as $student) {
                             $notification = new SmNotification;
                             $notification->user_id = $student->user_id;
@@ -377,8 +377,8 @@ class SmTeacherController extends Controller
                             }
                             $notification->date = date('Y-m-d');
                             $notification->message = $purpose . ' '.app('translator')->get('common.uploaded');
-                            $notification->school_id = Auth::user()->school_id;
-                            $notification->academic_id = getAcademicId();
+                            $notification->church_id = Auth::user()->church_id;
+                            $notification->church_year_id = getAcademicId();
                             $notification->save();
                             try{
                                 $user=User::find($notification->user_id);
@@ -493,8 +493,8 @@ class SmTeacherController extends Controller
             $uploadContents = SmTeacherUploadContent::where('id',$request->id)->first();
             $uploadContents->content_title = $request->content_title;
             $uploadContents->content_type = $request->content_type;
-            $uploadContents->school_id = Auth::user()->school_id;
-            $uploadContents->academic_id = getAcademicId();
+            $uploadContents->church_id = Auth::user()->church_id;
+            $uploadContents->church_year_id = getAcademicId();
 
             if (in_array('admin',$request->available_for)) {
                 $uploadContents->available_for_admin = 1;
@@ -550,16 +550,16 @@ class SmTeacherController extends Controller
             foreach ($request->available_for as $value) {
                 if ($value == 'admin') {
                     $roles = InfixRole::where('id', '=', 1) /* ->where('id', '!=', 2)->where('id', '!=', 3)->where('id', '!=', 9) */->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
                     foreach ($roles as $role) {
-                        $staffs = SmStaff::where('role_id', $role->id)->where('school_id',Auth::user()->school_id)->get();
+                        $staffs = SmStaff::where('role_id', $role->id)->where('church_id',Auth::user()->church_id)->get();
                         foreach ($staffs as $staff) {
                             $notification = new SmNotification;
                             $notification->user_id = $staff->user_id;
                             $notification->role_id = $role->id;
-                            $notification->school_id = Auth::user()->school_id;
-                            $notification->academic_id = getAcademicId();
+                            $notification->church_id = Auth::user()->church_id;
+                            $notification->church_year_id = getAcademicId();
                             if ($request->content_type == 'as') {
                                 $notification->url = 'assignment-list';
                             } elseif ($request->content_type == 'st') {
@@ -591,13 +591,13 @@ class SmTeacherController extends Controller
                 }
                 if ($value == 'student') {
                     if (isset($request->all_classes)) {
-                        $students = SmStudent::select('id', 'user_id')->where('academic_id', getAcademicId())->where('school_id',Auth::user()->school_id)->get();
+                        $students = SmStudent::select('id', 'user_id')->where('church_year_id', getAcademicId())->where('church_id',Auth::user()->church_id)->get();
                         foreach ($students as $student) {
                             $notification = new SmNotification;
                             $notification->user_id = $student->id;
                             $notification->role_id = 2;
-                            $notification->school_id = Auth::user()->school_id;
-                            $notification->academic_id = getAcademicId();
+                            $notification->church_id = Auth::user()->church_id;
+                            $notification->church_year_id = getAcademicId();
                             if ($request->content_type == 'as') {
                                 $notification->url = 'student-assignment';
                             } elseif ($request->content_type == 'st') {
@@ -619,7 +619,7 @@ class SmTeacherController extends Controller
                             }
                         }
                     } else {
-                        $students = SmStudent::select('id')->where('class_id', $request->class)->where('section_id', $request->section)->where('academic_id', getAcademicId())->where('school_id',Auth::user()->school_id)->get();
+                        $students = SmStudent::select('id')->where('age_group_id', $request->class)->where('mgender_id', $request->section)->where('church_year_id', getAcademicId())->where('church_id',Auth::user()->church_id)->get();
                         foreach ($students as $student) {
                             $notification = new SmNotification;
                             $notification->user_id = $student->id;
@@ -635,8 +635,8 @@ class SmTeacherController extends Controller
                             }
                             $notification->date = date('Y-m-d');
                             $notification->message = $purpose . ' '.app('translator')->get('common.updated');
-                            $notification->school_id = Auth::user()->school_id;
-                            $notification->academic_id = getAcademicId();
+                            $notification->church_id = Auth::user()->church_id;
+                            $notification->church_year_id = getAcademicId();
                             $notification->save();
 
                             try{
@@ -697,13 +697,13 @@ class SmTeacherController extends Controller
 
             if (!teacherAccess()) {
 
-                    $uploadContents = SmTeacherUploadContent::where('content_type', 'as')->where('academic_id', getAcademicId())->where('school_id',Auth::user()->school_id)->get();
+                    $uploadContents = SmTeacherUploadContent::where('content_type', 'as')->where('church_year_id', getAcademicId())->where('church_id',Auth::user()->church_id)->get();
 
             } else {
 
                 $uploadContents = SmTeacherUploadContent::where(function ($q) {
                     $q->where('created_by', Auth::user()->id)->orWhere('available_for_admin', 1);
-                })->where('content_type', 'as')->where('academic_id', getAcademicId())->where('school_id',Auth::user()->school_id)->get();
+                })->where('content_type', 'as')->where('church_year_id', getAcademicId())->where('church_id',Auth::user()->church_id)->get();
             }
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -723,11 +723,11 @@ class SmTeacherController extends Controller
             if (teacherAccess()) {
                 $uploadContents = SmTeacherUploadContent::where(function ($q) {
                     $q->where('created_by', Auth::user()->id)->orWhere('available_for_admin', 1);
-                })->where('content_type', 'st')->where('academic_id', getAcademicId())->where('school_id',Auth::user()->school_id)->get();
+                })->where('content_type', 'st')->where('church_year_id', getAcademicId())->where('church_id',Auth::user()->church_id)->get();
             } else {
                 $uploadContents = SmTeacherUploadContent::where('content_type', 'st')
-                ->where('academic_id', getAcademicId())
-                ->where('school_id',Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id',Auth::user()->church_id)
                 ->get();
             }
 
@@ -747,11 +747,11 @@ class SmTeacherController extends Controller
             if (teacherAccess()) {
                 $uploadContents = SmTeacherUploadContent::where(function ($q) {
                     $q->where('created_by', Auth::user()->id)->orWhere('available_for_admin', 1);
-                })->where('content_type', 'sy')->where('academic_id', getAcademicId())->where('school_id',Auth::user()->school_id)->get();
+                })->where('content_type', 'sy')->where('church_year_id', getAcademicId())->where('church_id',Auth::user()->church_id)->get();
             } else {
                 $uploadContents = SmTeacherUploadContent::where('content_type', 'sy')
-                ->where('academic_id', getAcademicId())
-                ->where('school_id',Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id',Auth::user()->church_id)
                 ->get();
             }
 
@@ -772,11 +772,11 @@ class SmTeacherController extends Controller
             if (teacherAccess()) {
                 $uploadContents = SmTeacherUploadContent::where(function ($q) {
                     $q->where('created_by', Auth::user()->id)->orWhere('available_for_admin', 1);
-                })->where('content_type', 'ot')->Where('created_by', Auth::user()->id)->where('academic_id', getAcademicId())->where('school_id',Auth::user()->school_id)->get();
+                })->where('content_type', 'ot')->Where('created_by', Auth::user()->id)->where('church_year_id', getAcademicId())->where('church_id',Auth::user()->church_id)->get();
             } else {
                 $uploadContents = SmTeacherUploadContent::where('content_type', 'ot')
-                ->where('academic_id', getAcademicId())
-                ->where('school_id',Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id',Auth::user()->church_id)
                 ->get();
             }
 
@@ -798,7 +798,7 @@ class SmTeacherController extends Controller
              if (checkAdmin()) {
                 $uploadContent = SmTeacherUploadContent::find($id);
             }else{
-                $uploadContent = SmTeacherUploadContent::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+                $uploadContent = SmTeacherUploadContent::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
             }
 
 

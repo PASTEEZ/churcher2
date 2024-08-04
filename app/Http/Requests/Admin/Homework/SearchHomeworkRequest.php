@@ -28,14 +28,14 @@ class SearchHomeworkRequest extends FormRequest
             $rules += [
                 'un_session_id' => 'required',
                 'un_department_id' => 'required',
-                'un_academic_id' => 'required',
+                'un_church_year_id' => 'required',
                 'un_semester_id' => 'required',
                 'un_semester_label_id' => 'required',
                 'un_subject_id' => 'required'
             ];
         } else {
             $rules += [
-                'class_id' => 'required',
+                'age_group_id' => 'required',
                 'subject_id' => 'required'
             ];
         }

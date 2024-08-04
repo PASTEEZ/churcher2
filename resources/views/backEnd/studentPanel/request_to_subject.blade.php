@@ -65,7 +65,7 @@
                                 <form action="{{route('university.subject.assign.delete')}}" method="POST">
                                     @csrf
                                     <input type="hidden" name="un_subject_id" value="{{ $subject->subject->id }}">
-                                    <input type="hidden" name="student_id" value="{{ $record->student_id }}">
+                                    <input type="hidden" name="member_id" value="{{ $record->member_id }}">
                                     <input type="hidden" name="record_id" value="{{ $record->id }}">
                                     <input type="hidden" name="un_semester_label_id" value="{{ $subject->un_semester_label_id }}">
                                   
@@ -157,7 +157,7 @@
 
 
                 <input type="hidden" name="record_id" value="{{ $record->id }}">
-                <input type="hidden" name="student_id" value="{{ $record->student_id }}">
+                <input type="hidden" name="member_id" value="{{ $record->member_id }}">
                 <input type="hidden" name="request_label" id="" value="{{ $record->un_semester_label_id }}">
                
                 <div class="col-lg-12 mt-25 pl-0">

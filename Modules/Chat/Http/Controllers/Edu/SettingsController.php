@@ -60,13 +60,13 @@ class SettingsController extends Controller
     public function generate($type)
     {
         try {
-            $subjects = SmAssignSubject::where('school_id', auth()->user()->school_id)->get();
+            $subjects = SmAssignSubject::where('church_id', auth()->user()->church_id)->get();
             foreach ($subjects as $assignSubject){
                 event(new CreateClassGroupChat($assignSubject)); //subjectwise group
             }
 //            clasteacher to all student
 
-            $subject_teachers = SmClassTeacher::where('school_id', auth()->user()->school_id)->get();
+            $subject_teachers = SmClassTeacher::where('church_id', auth()->user()->church_id)->get();
             foreach ($subject_teachers as $st){
                 $assign_class_teacher_collection = SmAssignClassTeacher::find($st->assign_class_teacher_id);
                 event(new ClassTeacherGetAllStudent($assign_class_teacher_collection, $st));

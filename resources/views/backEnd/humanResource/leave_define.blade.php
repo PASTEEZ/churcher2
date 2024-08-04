@@ -116,10 +116,10 @@
                                                         <option data-display="@lang('common.select_class')" value="">@lang('common.select_class')</option>
                                                         @if(! isset($leave_define))
                                                             @foreach($classes as $class)
-                                                                <option value="{{$class->id}}"  {{( old("class") == $class->id ? "selected":"")}}>{{$class->class_name}}</option>    
+                                                                <option value="{{$class->id}}"  {{( old("class") == $class->id ? "selected":"")}}>{{$class->age_group_name}}</option>    
                                                             @endforeach
                                                         @else
-                                                            <option value="{{@$student->class_id}}"  selected>{{@$student->class->class_name}}</option>
+                                                            <option value="{{@$student->age_group_id}}"  selected>{{@$student->class->age_group_name}}</option>
                                                         @endif
                                                     </select>
                                                 </div>
@@ -127,7 +127,7 @@
                                                     <select class="w-100 bb niceSelect form-control{{ $errors->has('section') ? ' is-invalid' : '' }}" id="select_section_member" name="section">
                                                         <option data-display="@lang('common.select_section')" value="">@lang('common.select_section')</option>
                                                         @if(isset($leave_define))
-                                                            <option value="{{@$student->user_id}}"  selected >{{@$student->section->section_name}}</option>
+                                                            <option value="{{@$student->user_id}}"  selected >{{@$student->section->mgender_name}}</option>
                                                         @endif
                                                     </select>
                                                     <div class="pull-right loader loader_style" id="select_section_loader">

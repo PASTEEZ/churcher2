@@ -24,12 +24,12 @@ class SmMarkGradeRequest extends FormRequest
      */
     public function rules()
     {
-        $school_id=auth()->user()->school_id;
+        $church_id=auth()->user()->church_id;
         
         if(generalSetting()->result_type != 'mark'){
             return [
-                'grade_name' => ['required', 'max:50' , Rule::unique('sm_marks_grades')->where('school_id', $school_id)->ignore($this->id) ],
-                'gpa' => ['required', 'max:4', Rule::unique('sm_marks_grades')->where('school_id', $school_id)->ignore($this->id) ],
+                'grade_name' => ['required', 'max:50' , Rule::unique('sm_marks_grades')->where('church_id', $church_id)->ignore($this->id) ],
+                'gpa' => ['required', 'max:4', Rule::unique('sm_marks_grades')->where('church_id', $church_id)->ignore($this->id) ],
                 'percent_from' => "required|integer|min:0",
                 'percent_upto' => "required|integer|gt:percent_from|min:",
                 'grade_from' => "required|max:4|min:0",
@@ -38,7 +38,7 @@ class SmMarkGradeRequest extends FormRequest
             ];
         }else{
             return [
-                'grade_name' => ['required', 'max:50' , Rule::unique('sm_marks_grades')->where('school_id', $school_id)->ignore($this->id) ],
+                'grade_name' => ['required', 'max:50' , Rule::unique('sm_marks_grades')->where('church_id', $church_id)->ignore($this->id) ],
                 'percent_from' => "required|integer|min:0",
                 'percent_upto' => "required|integer|gt:percent_from|min:",
                 'description'=>'required'

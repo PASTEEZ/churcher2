@@ -43,7 +43,7 @@
                                             <label for="checkbox" class="mb-2">@lang('fees::feesModule.invoice_number_position')*</label>
                                             <select ata-tags="true" multiple id="e1" name="invoice_positions[]" style="width:300px" class="selectValue">
                                                 <option value="prefix">@lang('fees::feesModule.prefix') </option>
-                                                <option value="admission_no">@lang('student.admission_no')</option>
+                                                <option value="registration_no">@lang('student.registration_no')</option>
                                                 <option value="class">@lang('common.class')</option>
                                                 <option value="section">@lang('common.section')</option>
                                             </select>
@@ -147,7 +147,7 @@
                                     <div class="col-lg-12">
                                         <div class="input-effect">
                                             <input class="primary-input form-control{{ $errors->has('admission_limit') ? ' is-invalid' : '' }}" type="text" name="admission_limit" id="admission_limit" autocomplete="off" value="{{isset($invoiceSettings)? $invoiceSettings->admission_limit: old('admission_limit')}}">
-                                            <label>@lang('fees::feesModule.admission_no_limit')</label>
+                                            <label>@lang('fees::feesModule.registration_no_limit')</label>
                                             <span class="focus-border"></span>
                                         </div>
                                     </div>

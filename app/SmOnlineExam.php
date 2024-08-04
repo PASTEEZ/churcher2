@@ -18,17 +18,17 @@ class SmOnlineExam extends Model
     
     public function studentInfo()
     {
-        return $this->belongsTo('App\SmStudent', 'id', 'student_id');
+        return $this->belongsTo('App\SmStudent', 'id', 'member_id');
     }
 
     public function class()
     {
-        return $this->belongsTo('App\SmClass', 'class_id', 'id');
+        return $this->belongsTo('App\SmClass', 'age_group_id', 'id');
     }
 
     public function section()
     {
-        return $this->belongsTo('App\SmSection', 'section_id', 'id');
+        return $this->belongsTo('App\SmSection', 'mgender_id', 'id');
     }
 
     public function subject()
@@ -41,19 +41,19 @@ class SmOnlineExam extends Model
         return $this->hasMany('App\SmOnlineExamQuestionAssign', 'online_exam_id', 'id');
     }
 
-    public static function obtainedMarks($exam_id, $student_id, $record_id = null)
+    public static function obtainedMarks($exam_id, $member_id, $record_id = null)
     {
 
         try {
             if (moduleStatusCheck('OnlineExam')==true) {
                 $marks = InfixStudentTakeOnlineExam::select('status', 'student_done', 'total_marks')
-                ->where('online_exam_id', $exam_id)->where('student_id', $student_id)
+                ->where('online_exam_id', $exam_id)->where('member_id', $member_id)
                 ->where('student_record_id', $record_id)
                 ->first();
             } else {
                 $marks = SmStudentTakeOnlineExam::select('status', 'total_marks')
                 ->where('online_exam_id', $exam_id)
-                ->where('student_id', $student_id)
+                ->where('member_id', $member_id)
                 ->first();
             }
             return $marks;

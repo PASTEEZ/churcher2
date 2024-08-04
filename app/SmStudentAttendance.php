@@ -19,7 +19,7 @@ class SmStudentAttendance extends Model
     }
     public function studentInfo()
     {
-        return $this->belongsTo('App\SmStudent', 'student_id', 'id');
+        return $this->belongsTo('App\SmStudent', 'member_id', 'id');
     }
     public function scopemonthAttendances($query, $month)
     {

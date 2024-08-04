@@ -18,8 +18,8 @@ class CreateAdmitCardsTable extends Migration
             $table->integer('student_record_id');
             $table->integer('exam_type_id');
             $table->integer('created_by');
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->integer('academic_id')->nullable()->default(1)->unsigned();
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->integer('church_year_id')->nullable()->default(1)->unsigned();
             $table->timestamps();
         });
     }

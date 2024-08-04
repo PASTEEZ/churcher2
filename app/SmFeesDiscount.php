@@ -18,9 +18,9 @@ class SmFeesDiscount extends Model
         parent::boot();
         static::addGlobalScope(new StatusAcademicSchoolScope);
     }
-    public static function CheckAppliedDiscount($discount_id, $student_id, $record_id)
+    public static function CheckAppliedDiscount($discount_id, $member_id, $record_id)
     {
-        $check = SmFeesAssign::where('fees_discount_id', $discount_id)->where('record_id',$record_id)->where('student_id', $student_id)->first();
+        $check = SmFeesAssign::where('fees_discount_id', $discount_id)->where('record_id',$record_id)->where('member_id', $member_id)->first();
         if ($check) {
             # code...
             $assigned_fees_amount = $check->fees_amount + $check->applied_discount;
@@ -35,9 +35,9 @@ class SmFeesDiscount extends Model
         }
 
     }
-    public static function CheckAppliedYearlyDiscount($discount_id, $student_id)
+    public static function CheckAppliedYearlyDiscount($discount_id, $member_id)
     {
-        $check = SmFeesAssignDiscount::where('fees_discount_id', $discount_id)->where('student_id', $student_id)->first();
+        $check = SmFeesAssignDiscount::where('fees_discount_id', $discount_id)->where('member_id', $member_id)->first();
         if ($check) {
             return 'false';
         } else {

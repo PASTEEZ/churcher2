@@ -91,17 +91,17 @@
                                 @endif
 
                                 @if(@$value->classes != "" && $value->sections != "")
-                                    @lang('study.all_students_of') ({{@$value->classes->class_name.'->'.@$value->sections->section_name}})
+                                    @lang('study.all_students_of') ({{@$value->classes->age_group_name.'->'.@$value->sections->mgender_name}})
                                 @endif
                             </td>
                             <td>
 
                             @if(@$value->class != "")
-                                {{@$value->classes->class_name}}
+                                {{@$value->classes->age_group_name}}
                             @endif 
 
                             @if(@$value->section != "")
-                                ({{@$value->sections->section_name}})
+                                ({{@$value->sections->mgender_name}})
                             @endif
 
 

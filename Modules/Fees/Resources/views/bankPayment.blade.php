@@ -54,7 +54,7 @@
                                 <select class="niceSelect w-100 bb form-control{{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                     <option data-display="@lang('common.select_class')" value="">@lang('common.select_class')</option>
                                     @foreach($classes as $class)
-                                        <option value="{{$class->id}}" {{isset($class_id)? ($class_id == $class->id? 'selected': ''):'' }}>{{$class->class_name}}</option>
+                                        <option value="{{$class->id}}" {{isset($age_group_id)? ($age_group_id == $class->id? 'selected': ''):'' }}>{{$class->age_group_name}}</option>
                                     @endforeach
                                 </select>
                                 @if ($errors->has('class'))
@@ -66,9 +66,9 @@
                             <div class="col-lg-3 col-md-3" id="select_section_div">
                                 <select class="niceSelect w-100 bb form-control{{ $errors->has('section') ? ' is-invalid' : '' }}" id="select_section" name="section">
                                     <option data-display="@lang('common.select_section')" value="">@lang('common.select_section')</option>
-                                    @if (isset($class_id))
+                                    @if (isset($age_group_id))
                                         @foreach($class->classSections as $section)
-                                            <option value="{{$section->id}}" {{isset($section_id)? ($section_id == $section->id? 'selected': ''):'' }}>{{$section->sectionName->section_name}}</option>
+                                            <option value="{{$section->id}}" {{isset($mgender_id)? ($mgender_id == $section->id? 'selected': ''):'' }}>{{$section->sectionName->mgender_name}}</option>
                                         @endforeach
                                     @endif
                                 </select>
@@ -123,7 +123,7 @@
                             <table id="table_id" class="display school-table " cellspacing="0" width="100%">
                                 <thead>
                                 <tr>
-                                    <th>@lang('student.student_name')</th>
+                                    <th>@lang('student.member_name')</th>
                                     <th>@lang('fees::feesModule.view_transcation')</th>
                                     <th>@lang('common.date')</th>
                                     <th>@lang('fees::feesModule.amount')</th>

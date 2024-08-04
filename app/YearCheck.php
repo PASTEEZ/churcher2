@@ -12,11 +12,11 @@ class YearCheck extends Model
     public static function getYear()
     {
         try {
-            $year = SmGeneralSettings::where('school_id', Auth::user()->school_id)->first();
+            $year = SmGeneralSettings::where('church_id', Auth::user()->church_id)->first();
             if(moduleStatusCheck('University')){
-                return  $year->unacademic_Year->created_at->format('Y');
+                return  $year->unchurch_year->created_at->format('Y');
             }else{
-                return $year->academic_Year->year;
+                return $year->church_year->year;
             }
             
         } catch (\Exception $e) {
@@ -26,7 +26,7 @@ class YearCheck extends Model
     public static function getAcademicId()
     {
         try {
-            $year = SmGeneralSettings::where('school_id', Auth::user()->school_id)->first();
+            $year = SmGeneralSettings::where('church_id', Auth::user()->church_id)->first();
             return $year->session_id;
         } catch (\Exception $e) {
             return "1";
@@ -35,8 +35,8 @@ class YearCheck extends Model
     public static function AcStartDate()
     {
         try { 
-            $start_date = SmGeneralSettings::where('school_id',Auth::user()->school_id)->first(); 
-            return $start_date->academic_Year->starting_date;
+            $start_date = SmGeneralSettings::where('church_id',Auth::user()->church_id)->first(); 
+            return $start_date->church_year->starting_date;
         } catch (\Exception $e) {
             return date('Y');
         }
@@ -44,8 +44,8 @@ class YearCheck extends Model
     public static function AcEndDate()
     {
         try { 
-            $end_date = SmGeneralSettings::where('school_id',Auth::user()->school_id)->first(); 
-            return $end_date->academic_Year->ending_date;
+            $end_date = SmGeneralSettings::where('church_id',Auth::user()->church_id)->first(); 
+            return $end_date->church_year->ending_date;
         } catch (\Exception $e) {
             return date('Y');
         }

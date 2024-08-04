@@ -66,7 +66,7 @@
                                 <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                     <option data-display="@lang('student.select_class')*" value="">@lang('student.select_class') *</option>
                                     @foreach($classes as $class)
-                                    <option value="{{$class->id}}"  {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{$class->class_name}}</option>
+                                    <option value="{{$class->id}}"  {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{$class->age_group_name}}</option>
                                     @endforeach
                                 </select>
                                 @if ($errors->has('class'))
@@ -148,7 +148,7 @@
                     <div class="row">
                         <div class="col-lg-12 col-md-12 no-gutters">
                             <div class="main-title">
-                                <h3 class="mb-30">@lang('student.student_attendance') | <small>@lang('common.class'): {{$search_info['class_name']}}, @lang('common.section'): {{$search_info['section_name']}}, @lang('common.date'): {{dateConvert($search_info['date'])}}</small></h3>
+                                <h3 class="mb-30">@lang('student.student_attendance') | <small>@lang('common.class'): {{$search_info['age_group_name']}}, @lang('common.section'): {{$search_info['mgender_name']}}, @lang('common.date'): {{dateConvert($search_info['date'])}}</small></h3>
                             </div>
                         </div>
                     </div>
@@ -198,8 +198,8 @@
                                     @endif
                                     <tr>
                                         <th width="5%">@lang('common.sl')</th>
-                                        <th width="10%">@lang('student.admission_no')</th>
-                                        <th width="15%">@lang('student.student_name')</th>
+                                        <th width="10%">@lang('student.registration_no')</th>
+                                        <th width="15%">@lang('student.member_name')</th>
                                         <th width="12%">@lang('student.roll_number')</th>
                                         <th width="35%">@lang('student.attendance')</th>
                                         <th width="20%">@lang('common.note')</th>
@@ -210,7 +210,7 @@
                                     @php $count=1; @endphp
                                     @foreach($already_assigned_students as $already_assigned_student)
                                     <tr>
-                                        <td>{{$already_assigned_student->studentInfo->admission_no}}<input type="hidden" name="id[]" value="{{$already_assigned_student->studentInfo->id}}"></td>
+                                        <td>{{$already_assigned_student->studentInfo->registration_no}}<input type="hidden" name="id[]" value="{{$already_assigned_student->studentInfo->id}}"></td>
                                         <td>
                                             @if(!empty($already_assigned_student->studentInfo))
                                             {{$already_assigned_student->studentInfo->first_name.' '.$already_assigned_student->studentInfo->last_name}}
@@ -251,7 +251,7 @@
                                     @endforeach
                                     @foreach($new_students as $student)
                                     <tr>
-                                        <td>{{$student->admission_no}}<input type="hidden" name="id[]" value="{{$student->id}}"></td>
+                                        <td>{{$student->registration_no}}<input type="hidden" name="id[]" value="{{$student->id}}"></td>
                                         <td>{{$student->first_name.' '.$student->last_name}}</td>
                                         <td>{{$student->roll_no}}</td>
                                         <td>

@@ -19,7 +19,7 @@
     </section>
 
     <input type="hidden" id="url" value="{{ URL::to('/') }}">
-    <input type="hidden" id="student_id" value="{{ $student->id }}">
+    <input type="hidden" id="member_id" value="{{ $student->id }}">
     <section class="">
         <div class="container-fluid p-0 table-responsive">
             <div class="row">
@@ -32,10 +32,10 @@
                                 <a class="nav-link @if ($key == 0) active @endif "
                                     href="#tab{{ $key }}" role="tab" data-toggle="tab">
                                     @if (moduleStatusCheck('University'))
-                                        {{ $record->semesterLabel->name }} ({{ $record->unSection->section_name }}) -
+                                        {{ $record->semesterLabel->name }} ({{ $record->unSection->mgender_name }}) -
                                         {{ @$record->unAcademic->name }}
                                     @else
-                                        {{ $record->class->class_name }} ({{ $record->section->section_name }})
+                                        {{ $record->class->age_group_name }} ({{ $record->section->mgender_name }})
                                     @endif
                                 </a>
                             </li>
@@ -91,14 +91,14 @@
                                                 @php
                                                     $discount_amount = $fees_assigned->applied_discount;
                                                     $total_discount += $discount_amount;
-                                                    $student_id = $fees_assigned->student_id;
+                                                    $member_id = $fees_assigned->member_id;
                                                 @endphp
                                                 @php
-                                                    $paid = App\SmFeesAssign::discountSum($fees_assigned->student_id, $fees_assigned->feesGroupMaster->feesTypes->id, 'amount', $fees_assigned->record_id);
+                                                    $paid = App\SmFeesAssign::discountSum($fees_assigned->member_id, $fees_assigned->feesGroupMaster->feesTypes->id, 'amount', $fees_assigned->record_id);
                                                     $total_grand_paid += $paid;
                                                 @endphp
                                                 @php
-                                                    $fine = App\SmFeesAssign::discountSum($fees_assigned->student_id, $fees_assigned->feesGroupMaster->feesTypes->id, 'fine', $fees_assigned->record_id);
+                                                    $fine = App\SmFeesAssign::discountSum($fees_assigned->member_id, $fees_assigned->feesGroupMaster->feesTypes->id, 'fine', $fees_assigned->record_id);
                                                     $total_fine += $fine;
                                                 @endphp
                                                 @php
@@ -168,7 +168,7 @@
 
                                                         @if ($rest_amount = !0)
                                                             @php
-                                                                $already_add = App\SmBankPaymentSlip::where('student_id', $fees_assigned->student_id)
+                                                                $already_add = App\SmBankPaymentSlip::where('member_id', $fees_assigned->member_id)
                                                                     ->where('fees_type_id', $fees_assigned->feesGroupMaster->fees_type_id)
                                                                     ->first();
                                                             @endphp
@@ -184,7 +184,7 @@
                                                                                 <a class="dropdown-item modalLink"
                                                                                     data-modal-size="modal-lg"
                                                                                     title="{{ $fees_assigned->feesGroupMaster->feesGroups->name . ': ' . $fees_assigned->feesGroupMaster->feesTypes->name }}"
-                                                                                    href="{{ route('fees-generate-modal-child', [$fees_assigned->fees_amount, $fees_assigned->student_id, $fees_assigned->feesGroupMaster->fees_type_id, $fees_assigned->id, $fees_assigned->record_id]) }}">
+                                                                                    href="{{ route('fees-generate-modal-child', [$fees_assigned->fees_amount, $fees_assigned->member_id, $fees_assigned->feesGroupMaster->fees_type_id, $fees_assigned->id, $fees_assigned->record_id]) }}">
                                                                                     @lang('fees.add_bank_payment') </a>
                                                                             @endif
                                                                         @else
@@ -192,14 +192,14 @@
                                                                                 <a class="dropdown-item modalLink"
                                                                                     data-modal-size="modal-lg"
                                                                                     title="{{ $fees_assigned->feesGroupMaster->feesGroups->name . ': ' . $fees_assigned->feesGroupMaster->feesTypes->name }}"
-                                                                                    href="{{ route('fees-generate-modal-child', [$fees_assigned->fees_amount, $fees_assigned->student_id, $fees_assigned->feesGroupMaster->fees_type_id, $fees_assigned->id, $fees_assigned->record_id]) }}">
+                                                                                    href="{{ route('fees-generate-modal-child', [$fees_assigned->fees_amount, $fees_assigned->member_id, $fees_assigned->feesGroupMaster->fees_type_id, $fees_assigned->id, $fees_assigned->record_id]) }}">
                                                                                     @lang('fees.add_bank_payment')
                                                                                 </a>
                                                                                 @if ($already_add != '')
                                                                                     <a class="dropdown-item modalLink"
                                                                                         data-modal-size="modal-lg"
                                                                                         title="{{ $fees_assigned->feesGroupMaster->feesGroups->name . ': ' . $fees_assigned->feesGroupMaster->feesTypes->name }}"
-                                                                                        href="{{ route('fees-generate-modal-child-view', [$fees_assigned->student_id, $fees_assigned->feesGroupMaster->fees_type_id, $fees_assigned->id]) }}">
+                                                                                        href="{{ route('fees-generate-modal-child-view', [$fees_assigned->member_id, $fees_assigned->feesGroupMaster->fees_type_id, $fees_assigned->id]) }}">
                                                                                         @lang('common.view_bank_payment')
                                                                                     </a>
                                                                                     @if (@$already_add->approve_status == 0)
@@ -218,7 +218,7 @@
                                                                                     <a class="dropdown-item modalLink"
                                                                                         data-modal-size="modal-lg"
                                                                                         title="{{ $fees_assigned->feesGroupMaster->feesGroups->name . ': ' . $fees_assigned->feesGroupMaster->feesTypes->name }}"
-                                                                                        href="{{ route('fees-generate-modal-child-view', [$fees_assigned->student_id, $fees_assigned->feesGroupMaster->fees_type_id, $fees_assigned->id]) }}">
+                                                                                        href="{{ route('fees-generate-modal-child-view', [$fees_assigned->member_id, $fees_assigned->feesGroupMaster->fees_type_id, $fees_assigned->id]) }}">
                                                                                         @lang('common.view_bank_payment')
                                                                                     </a>
                                                                                 @else
@@ -234,7 +234,7 @@
                                                                             $is_paystack = DB::table('sm_payment_methhods')
                                                                                 ->where('method', 'Paystack')
                                                                                 ->where('active_status', 1)
-                                                                                ->where('school_id', Auth::user()->school_id)
+                                                                                ->where('church_id', Auth::user()->church_id)
                                                                                 ->first();
                                                                         @endphp
                                                                         @if (!empty($is_paystack) && $balance_amount != 0)
@@ -260,7 +260,7 @@
                                                                                     value="1">
                                                                                 <input type="hidden" name="fees_type_id"
                                                                                     value="{{ $fees_assigned->feesGroupMaster->fees_type_id }}">
-                                                                                <input type="hidden" name="student_id"
+                                                                                <input type="hidden" name="member_id"
                                                                                     value="{{ $student->id }}">
                                                                                 <input type="hidden" name="reference"
                                                                                     value="{{ Paystack::genTranxRef() }}">
@@ -279,7 +279,7 @@
                                                                             $is_active = DB::table('sm_payment_methhods')
                                                                                 ->where('method', 'Xendit')
                                                                                 ->where('active_status', 1)
-                                                                                ->where('school_id', Auth::user()->school_id)
+                                                                                ->where('church_id', Auth::user()->church_id)
                                                                                 ->first();
                                                                         @endphp
                                                                         @if (moduleStatusCheck('XenditPayment') == true && $balance_amount != 0 and $is_active)
@@ -293,8 +293,8 @@
                                                                                 <input type="hidden" name="fees_type_id"
                                                                                     id="fees_type_id"
                                                                                     value="{{ $fees_assigned->feesGroupMaster->fees_type_id }}">
-                                                                                <input type="hidden" name="student_id"
-                                                                                    id="student_id"
+                                                                                <input type="hidden" name="member_id"
+                                                                                    id="member_id"
                                                                                     value="{{ $student->id }}">
                                                                                 <input type="hidden" name="amount"
                                                                                     id="amount"
@@ -317,7 +317,7 @@
                                                                             @php
                                                                                 $is_khalti = DB::table('sm_payment_gateway_settings')
                                                                                     ->where('gateway_name', 'Khalti')
-                                                                                    ->where('school_id', Auth::user()->school_id)
+                                                                                    ->where('church_id', Auth::user()->church_id)
                                                                                     ->first('gateway_publisher_key');
                                                                             @endphp
                                                                             <div class="pay">
@@ -338,7 +338,7 @@
                                                                             $is_active = DB::table('sm_payment_methhods')
                                                                                 ->where('method', 'Raudhahpay')
                                                                                 ->where('active_status', 1)
-                                                                                ->where('school_id', Auth::user()->school_id)
+                                                                                ->where('church_id', Auth::user()->church_id)
                                                                                 ->first();
                                                                         @endphp
                                                                         @if (moduleStatusCheck('Raudhahpay') == true && $balance_amount != 0 and $is_active)
@@ -352,8 +352,8 @@
                                                                                 <input type="hidden" name="fees_type_id"
                                                                                     id="fees_type_id"
                                                                                     value="{{ $fees_assigned->feesGroupMaster->fees_type_id }}">
-                                                                                <input type="hidden" name="student_id"
-                                                                                    id="student_id"
+                                                                                <input type="hidden" name="member_id"
+                                                                                    id="member_id"
                                                                                     value="{{ $student->id }}">
                                                                                 <input type="hidden" name="amount"
                                                                                     id="amount"
@@ -392,7 +392,7 @@
                                                                                 <input type="hidden" name="real_amount"
                                                                                     id="real_amount"
                                                                                     value="{{ $fees_assigned->fees_amount }}">
-                                                                                <input type="hidden" name="student_id"
+                                                                                <input type="hidden" name="member_id"
                                                                                     value="{{ $student->id }}">
                                                                                 <input type="hidden" name="fees_type_id"
                                                                                     value="{{ $fees_assigned->feesGroupMaster->fees_type_id }}">
@@ -411,7 +411,7 @@
                                                                             $is_stripe = DB::table('sm_payment_methhods')
                                                                                 ->where('method', 'Stripe')
                                                                                 ->where('active_status', 1)
-                                                                                ->where('school_id', Auth::user()->school_id)
+                                                                                ->where('church_id', Auth::user()->church_id)
                                                                                 ->first();
                                                                         @endphp
                                                                         @if (!empty($is_stripe) && $balance_amount != 0)
@@ -429,7 +429,7 @@
                                                                             $is_active = DB::table('sm_payment_methhods')
                                                                                 ->where('method', 'RazorPay')
                                                                                 ->where('active_status', 1)
-                                                                                ->where('school_id', Auth::user()->school_id)
+                                                                                ->where('church_id', Auth::user()->church_id)
                                                                                 ->first();
                                                                         @endphp
                                                                         @if (moduleStatusCheck('RazorPay') == true && !empty($is_active) and $balance_amount != 0)
@@ -446,8 +446,8 @@
                                                                                 <input type="hidden" name="fees_type_id"
                                                                                     id="fees_type_id"
                                                                                     value="{{ $fees_assigned->feesGroupMaster->fees_type_id }}">
-                                                                                <input type="hidden" name="student_id"
-                                                                                    id="student_id"
+                                                                                <input type="hidden" name="member_id"
+                                                                                    id="member_id"
                                                                                     value="{{ $student->id }}">
                                                                                 <input type="hidden" name="amount"
                                                                                     id="amount"
@@ -508,7 +508,7 @@
                                                                                 "razorpay_payment_id": transaction.razorpay_payment_id,
                                                                                 "amount": <?php echo $rest_amount * 100; ?>,
                                                                                 "fees_type_id": <?php echo $fees_assigned->feesGroupMaster->fees_type_id; ?>,
-                                                                                "student_id": <?php echo $student->id; ?>
+                                                                                "member_id": <?php echo $student->id; ?>
                                                                             },
                                                                             complete: function(r) {
                                                                                 console.log('complete');
@@ -548,7 +548,7 @@
                                                     </td>
                                                 </tr>
                                                 @php
-                                                    $payments = App\SmFeesAssign::feesPayment($fees_assigned->feesGroupMaster->feesTypes->id, $fees_assigned->student_id, $fees_assigned->record_id);
+                                                    $payments = App\SmFeesAssign::feesPayment($fees_assigned->feesGroupMaster->feesTypes->id, $fees_assigned->member_id, $fees_assigned->record_id);
                                                     $i = 0;
                                                 @endphp
                                                 @foreach ($payments as $payment)
@@ -612,7 +612,7 @@
                                                     <td>
                                                         @if (in_array($fees_discount->id, $applied_discount))
                                                             @php
-                                                                $createdBy = App\SmFeesAssign::createdBy($student_id, $fees_discount->id, $fees_discount->record_id);
+                                                                $createdBy = App\SmFeesAssign::createdBy($member_id, $fees_discount->id, $fees_discount->record_id);
                                                             @endphp
                                                             @if ($createdBy != '')
                                                                 @php

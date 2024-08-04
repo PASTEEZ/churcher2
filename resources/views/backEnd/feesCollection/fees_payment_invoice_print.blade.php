@@ -114,7 +114,7 @@
         font-weight: 500;
         border-top: 1px dashed #ddd;
       }
-      .school_name{
+      .church_name{
         font-size: 14px;
         font-weight: 600;
         }
@@ -180,14 +180,14 @@
                     @endif
               </div>
               <div style="float:right; width:70%; text-aligh:left">
-                      <h4 class="school_name">{{$setting->school_name}}</h4>
+                      <h4 class="church_name">{{$setting->church_name}}</h4>
                       <p>{{$setting->address}}</p>
               </div>
                 <h4 class="fees_book_title" style="display:inline-block"></h4>
               <ul>
                 <li>
                   <p>
-                    @lang('student.admission_no'): {{@$student->studentDetail->admission_no}}
+                    @lang('student.registration_no'): {{@$student->studentDetail->registration_no}}
                   </p> 
                   <p>
                     @lang('common.date'): {{date('d/m/Y')}}
@@ -195,7 +195,7 @@
                 </li>
                 <li>
                   <p>
-                    @lang('student.student_name'): {{@$student->studentDetail->full_name}} 
+                    @lang('student.member_name'): {{@$student->studentDetail->full_name}} 
                   </p>
                 </li>
 
@@ -204,7 +204,7 @@
                     @if(moduleStatusCheck('University'))
                     @lang('university::un.department'): {{@$student->unDepartment->name}}
                     @else 
-                    @lang('common.class'): {{@$student->class->class_name}}
+                    @lang('common.class'): {{@$student->class->age_group_name}}
                     @endif 
                   </p> 
                   <p>
@@ -214,7 +214,7 @@
                 <li>
                   @if(@moduleStatusCheck('University'))
                   <p>
-                    @lang('common.section'): {{@$student->section->section_name}}
+                    @lang('common.section'): {{@$student->section->mgender_name}}
                   </p> 
                   @endif 
                   @if(moduleStatusCheck('University') || directFees())
@@ -240,14 +240,14 @@
                     @endif
                   </div>
                   <div style="float:right; width:70%; text-aligh:left">
-                    <h4 class="school_name">{{$setting->school_name}}</h4>
+                    <h4 class="church_name">{{$setting->church_name}}</h4>
                     <p>{{$setting->address}}</p>
                   </div>
                   <h4 class="fees_book_title" style="display:inline-block"></h4>
                   <ul>
                     <li>
                       <p>
-                        @lang('student.admission_no'): {{@$student->studentDetail->admission_no}}
+                        @lang('student.registration_no'): {{@$student->studentDetail->registration_no}}
                       </p> 
                       <p>
                         @lang('common.date'): {{date('d/m/Y')}}
@@ -255,7 +255,7 @@
                     </li>
                     <li>
                       <p>
-                        @lang('student.student_name'): {{@$student->studentDetail->full_name}} 
+                        @lang('student.member_name'): {{@$student->studentDetail->full_name}} 
                       </p>
                     </li>
                     <li>
@@ -263,7 +263,7 @@
                         @if(moduleStatusCheck('University'))
                         @lang('university::un.department'): {{@$student->unDepartment->name}}
                         @else 
-                        @lang('common.class'): {{@$student->class->class_name}}
+                        @lang('common.class'): {{@$student->class->age_group_name}}
                         @endif
                       </p> 
                       <p>
@@ -273,7 +273,7 @@
                     <li>
                       @if(moduleStatusCheck('University'))
                       <p>
-                        @lang('common.section'): {{@$student->section->section_name}}
+                        @lang('common.section'): {{@$student->section->mgender_name}}
                       </p> 
                       @endif 
                       @if(moduleStatusCheck('University') || directFees())
@@ -300,14 +300,14 @@
                     @endif
                 </div>
                 <div style="float:right; width:70%; text-aligh:left">
-                  <h4 class="school_name">{{$setting->school_name}}</h4>
+                  <h4 class="church_name">{{$setting->church_name}}</h4>
                   <p>{{$setting->address}}</p>
                 </div>
                 <h4 class="fees_book_title" style="display:inline-block"></h4>
                 <ul>
                   <li>
                     <p>
-                      @lang('student.admission_no'): {{@$student->studentDetail->admission_no}}
+                      @lang('student.registration_no'): {{@$student->studentDetail->registration_no}}
                     </p> 
                     <p>
                       @lang('common.date'): {{date('d/m/Y')}}
@@ -315,7 +315,7 @@
                   </li>
                   <li>
                     <p>
-                      @lang('student.student_name'): {{@$student->studentDetail->full_name}} 
+                      @lang('student.member_name'): {{@$student->studentDetail->full_name}} 
                     </p>
                   </li>
                   <li>
@@ -323,7 +323,7 @@
                       @if(moduleStatusCheck('University'))
                       @lang('university::un.department'): {{@$student->unDepartment->name}}
                       @else 
-                      @lang('common.class'): {{@$student->class->class_name}}
+                      @lang('common.class'): {{@$student->class->age_group_name}}
                       @endif
                     </p> 
                     <p>
@@ -333,7 +333,7 @@
                   <li>
                     @if(moduleStatusCheck('University'))
                     <p>
-                      @lang('common.section'): {{@$student->section->section_name}}
+                      @lang('common.section'): {{@$student->section->mgender_name}}
                     </p> 
                     @endif 
                     @if(moduleStatusCheck('University') || directFees())
@@ -773,12 +773,12 @@
             $grand_total += $fees_assigned->feesGroupMaster->amount; 
             $discount_amount = $fees_assigned->applied_discount;
               $total_discount += $discount_amount;
-              $student_id = $fees_assigned->student_id;
+              $member_id = $fees_assigned->member_id;
               //Sum of total paid amount of single fees type
-              $paid = \App\SmFeesAssign::feesPayment($fees_assigned->feesGroupMaster->feesTypes->id,$fees_assigned->student_id, $fees_assigned->record_id)->sum('amount');
+              $paid = \App\SmFeesAssign::feesPayment($fees_assigned->feesGroupMaster->feesTypes->id,$fees_assigned->member_id, $fees_assigned->record_id)->sum('amount');
               $total_grand_paid += $paid;
               //Sum of total fine for single fees type
-            $fine = \App\SmFeesAssign::feesPayment($fees_assigned->feesGroupMaster->feesTypes->id,$fees_assigned->student_id, $fees_assigned->record_id)->sum('fine');
+            $fine = \App\SmFeesAssign::feesPayment($fees_assigned->feesGroupMaster->feesTypes->id,$fees_assigned->member_id, $fees_assigned->record_id)->sum('fine');
             $total_fine += $fine;
             $total_paid = $discount_amount + $paid;
           @endphp

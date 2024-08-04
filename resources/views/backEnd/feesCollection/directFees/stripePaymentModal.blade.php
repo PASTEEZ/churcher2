@@ -11,7 +11,7 @@
         <div class="row">
             <div class="col-lg-12">
                 <input type="hidden" name="installment_id" value="{{$installment->id}}">
-                <input type="hidden" name="student_id" value="{{$installment->student_id}}">
+                <input type="hidden" name="member_id" value="{{$installment->member_id}}">
                 <input type="hidden" name="amount" value="{{$installment->amount}}">
                 <input type="hidden" name="record_id" value="{{$installment->record_id}}">
                 <input type="hidden" name="payment_method" value="5">

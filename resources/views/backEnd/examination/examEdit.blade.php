@@ -72,7 +72,7 @@
                                             <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class" disabled="">
                                                 <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                                 @foreach($classes as $class)
-                                                <option value="{{@$class->id}}"  {{ @$class->id == @$exam->class_id?'selected':''}}>{{@$class->class_name}}</option>
+                                                <option value="{{@$class->id}}"  {{ @$class->id == @$exam->age_group_id?'selected':''}}>{{@$class->age_group_name}}</option>
                                                 @endforeach
                                             </select>
                                             @if ($errors->has('class'))
@@ -85,7 +85,7 @@
                                             <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="section"  disabled="">
                                                 <option data-display="@lang('common.select_section') *" value="">@lang('common.select_section') *</option>
                                                 @foreach($sections as $section)
-                                                <option value="{{@$section->section_id}}" {{ @$section->section_id == @$exam->section_id?'selected':''}}>{{@$section->sectionName->section_name}}</option>
+                                                <option value="{{@$section->mgender_id}}" {{ @$section->mgender_id == @$exam->mgender_id?'selected':''}}>{{@$section->sectionName->mgender_name}}</option>
                                                 @endforeach
                                             </select>
                                             @if ($errors->has('class'))

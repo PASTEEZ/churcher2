@@ -13,17 +13,17 @@ class SmClassRoutine extends Model
     }
 
     public function class(){
-    	return $this->belongsTo('App\SmClass', 'class_id', 'id');
+    	return $this->belongsTo('App\SmClass', 'age_group_id', 'id');
     }
 
     public function section(){
-    	return $this->belongsTo('App\SmSection', 'section_id', 'id');
+    	return $this->belongsTo('App\SmSection', 'mgender_id', 'id');
     }
     
-    public static function teacherId($class_id, $section_id, $subject_id){
+    public static function teacherId($age_group_id, $mgender_id, $subject_id){
     	
         try {
-            return SmAssignSubject::where('class_id', $class_id)->where('section_id', $section_id)->where('subject_id', $subject_id)->first();
+            return SmAssignSubject::where('age_group_id', $age_group_id)->where('mgender_id', $mgender_id)->where('subject_id', $subject_id)->first();
         } catch (\Exception $e) {
             $data=[];
             return $data;

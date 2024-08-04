@@ -27,7 +27,7 @@ class ImportController extends Controller
         $data['roles'] = InfixRole::where('is_saas', 0)
             ->where('active_status', 1)
             ->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })
             ->whereNotIn('id', [1, 2, 3])
             ->orderBy('name', 'asc')
@@ -55,7 +55,7 @@ class ImportController extends Controller
 
                     if (isSubscriptionEnabled()) {
 
-                        $active_staff = SmStaff::where('school_id', Auth::user()->school_id)->where('active_status', 1)->count();
+                        $active_staff = SmStaff::where('church_id', Auth::user()->church_id)->where('active_status', 1)->count();
 
                         if (\Modules\Saas\Entities\SmPackagePlan::staff_limit() <= $active_staff) {
                             DB::commit();
@@ -65,7 +65,7 @@ class ImportController extends Controller
 
                         }
                     }
-                    $role_id = InfixRole::where('name', $singleStaff->role)->where('school_id', auth()->user()->school_id)->value('id') ?? null;
+                    $role_id = InfixRole::where('name', $singleStaff->role)->where('church_id', auth()->user()->church_id)->value('id') ?? null;
                    
                     $department_id = SmHumanDepartment::where('name', $singleStaff->department)->value('id') ?? null;
                     $designation_id = SmDesignation::where('title', $singleStaff->designation)->value('id') ?? null;
@@ -82,7 +82,7 @@ class ImportController extends Controller
                     $user->phone_number = $singleStaff->mobile;
                     $user->full_name = $singleStaff->first_name . ' ' . $singleStaff->last_name;
                     $user->password = Hash::make(123456);
-                    $user->school_id = Auth::user()->school_id;
+                    $user->church_id = Auth::user()->church_id;
                     $user->save();
 
                     if ($role_id == 5) {
@@ -103,7 +103,7 @@ class ImportController extends Controller
                         $staff->fathers_name = $singleStaff->fathers_name;
                         $staff->mothers_name = $singleStaff->mothers_name;
                         $staff->email = $singleStaff->email;
-                        $staff->school_id = Auth::user()->school_id;
+                        $staff->church_id = Auth::user()->church_id;
                         $staff->gender_id = $singleStaff->gender_id;
                         $staff->marital_status = $singleStaff->marital_status;
                         $staff->date_of_birth = date('Y-m-d', strtotime($singleStaff->date_of_birth));
@@ -167,7 +167,7 @@ class ImportController extends Controller
     }
     private function assignChatGroup($user)
     {
-        $groups = \Modules\Chat\Entities\Group::where('school_id', auth()->user()->school_id)->get();
+        $groups = \Modules\Chat\Entities\Group::where('church_id', auth()->user()->church_id)->get();
         foreach($groups as $group){
             createGroupUser($group, $user->id);
         }

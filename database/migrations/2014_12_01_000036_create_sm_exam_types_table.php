@@ -23,27 +23,27 @@ class CreateSmExamTypesTable extends Migration
 
             $table->integer('updated_by')->nullable()->default(1)->unsigned();
 
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
             
-            $table->integer('academic_id')->nullable()->default(1)->unsigned();
-            $table->foreign('academic_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
+            $table->integer('church_year_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_year_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
         });
 
         // DB::table('sm_exam_types')->insert([
 
         //     [
-        //         'school_id'=> 1,
+        //         'church_id'=> 1,
         //         'active_status'=> 1,
         //         'title' => 'First Term'
         //     ],
         //     [
-        //         'school_id'=> 1,
+        //         'church_id'=> 1,
         //         'active_status'=> 1,
         //         'title' => 'Second Term'
         //     ],
         //     [
-        //         'school_id'=> 1,
+        //         'church_id'=> 1,
         //         'active_status'=> 1,
         //         'title' => 'Third Term'
         //     ],

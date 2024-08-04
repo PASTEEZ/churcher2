@@ -62,7 +62,7 @@
                                 <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                     <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                     @foreach($classes as $class)
-                                    <option value="{{$class->id}}" {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{$class->class_name}}</option>
+                                    <option value="{{$class->id}}" {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{$class->age_group_name}}</option>
                                     @endforeach
                                 </select>
                                 @if ($errors->has('class'))
@@ -132,16 +132,16 @@
                                                     <div class="row">
                                                         <div class="col-lg-6">
                                                             <p class="mb-0">
-                                                                @lang('common.academic_year') : <span class="primary-color fw-500">2018-19</span>
+                                                                @lang('common.church_year') : <span class="primary-color fw-500">2018-19</span>
                                                             </p>
                                                             <p class="mb-0">
                                                                 @lang('common.year')Exam : <span class="primary-color fw-500">{{$exam->name}}</span>
                                                             </p>
                                                             <p class="mb-0">
-                                                                Class : <span class="primary-color fw-500">{{$class->class_name}}</span>
+                                                                Class : <span class="primary-color fw-500">{{$class->age_group_name}}</span>
                                                             </p>
                                                             <p class="mb-0">
-                                                                Section : <span class="primary-color fw-500">{{$section->section_name}}</span>
+                                                                Section : <span class="primary-color fw-500">{{$section->mgender_name}}</span>
                                                             </p>
                                                         </div>
                                                     </div>
@@ -182,11 +182,11 @@
                                                 @endphp
                                                 @foreach($marks_registers as $marks_register)
                                                 @php
-                                                    $registerer_ids[] = $marks_register->student_id;
+                                                    $registerer_ids[] = $marks_register->member_id;
                                                 @endphp
                                                 <tr>
                                                     <td>{{$marks_register->studentInfo->full_name}}</td>
-                                                    <td>{{$marks_register->studentInfo->admission_no}}</td>
+                                                    <td>{{$marks_register->studentInfo->registration_no}}</td>
                                                     @php
                                                         $results = $marks_register->marksRegisterChilds;
                                                         $grand_total = 0;
@@ -195,7 +195,7 @@
                                                     @endphp
                                                     @foreach($results as $result)
                                                     @php
-                                                        $subjectDetails = App\SmMarksRegister::subjectDetails($marks_register->exam_id, $marks_register->class_id, $marks_register->section_id, $result->subject_id);
+                                                        $subjectDetails = App\SmMarksRegister::subjectDetails($marks_register->exam_id, $marks_register->age_group_id, $marks_register->mgender_id, $result->subject_id);
                                                         $grand_total_marks += $subjectDetails->full_mark;
 
                                                         if($result->abs == 0){

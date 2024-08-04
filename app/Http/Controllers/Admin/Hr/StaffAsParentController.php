@@ -96,7 +96,7 @@ class StaffAsParentController extends Controller
 
         return $parent;
     }
-    public function staffParentStore($staff, $request, $academic_year)
+    public function staffParentStore($staff, $request, $church_year)
     {        
         $guardians_relation = $request->guardians_relation;
         $relation = $request->relation;
@@ -141,9 +141,9 @@ class StaffAsParentController extends Controller
             $parent->relation = $relation;
             $parent->guardians_photo = $staff->staff_photo;
             $parent->guardians_address = $request->guardians_address;
-            $parent->school_id = Auth::user()->school_id;
-            $parent->academic_id = $request->session;
-            $parent->created_at = $academic_year->year . '-01-01 12:00:00';
+            $parent->church_id = Auth::user()->church_id;
+            $parent->church_year_id = $request->session;
+            $parent->created_at = $church_year->year . '-01-01 12:00:00';
             $parent->save();
 
             return $parent->id;
@@ -190,16 +190,16 @@ class StaffAsParentController extends Controller
 
 
             //Session put activeLanguage
-            $systemLanguage = SmLanguage::where('school_id', Auth::user()->school_id)->get();
+            $systemLanguage = SmLanguage::where('church_id', Auth::user()->church_id)->get();
             session()->put('systemLanguage', $systemLanguage);
             //session put academic years
             
             if(moduleStatusCheck('University')){
-                $academic_years = Auth::check() ? UnAcademicYear::where('active_status', 1)->where('school_id', Auth::user()->school_id)->get() : '';
+                $church_years = Auth::check() ? UnAcademicYear::where('active_status', 1)->where('church_id', Auth::user()->church_id)->get() : '';
             }else{
-                $academic_years = Auth::check() ? SmAcademicYear::where('active_status', 1)->where('school_id', Auth::user()->school_id)->get() : '';
+                $church_years = Auth::check() ? SmAcademicYear::where('active_status', 1)->where('church_id', Auth::user()->church_id)->get() : '';
             }
-            session()->put('academic_years', $academic_years);
+            session()->put('church_years', $church_years);
             //session put sessions and selected language
 
 
@@ -208,13 +208,13 @@ class StaffAsParentController extends Controller
             if ($profile) {
                 session()->put('profile', $profile->staff_photo);
             }
-            $session_id = $profile && $profile->academic_id ? $profile->academic_id : generalSetting()->session_id;
+            $session_id = $profile && $profile->church_year_id ? $profile->church_year_id : generalSetting()->session_id;
            
 
             if(moduleStatusCheck('University')){
-                $session_id = generalSetting()->un_academic_id;
+                $session_id = generalSetting()->un_church_year_id;
                 if(!$session_id){
-                    $session = UnAcademicYear::where('school_id', Auth::user()->school_id)->where('active_status', 1)->first();
+                    $session = UnAcademicYear::where('church_id', Auth::user()->church_id)->where('active_status', 1)->first();
                 } else{
                     $session = UnAcademicYear::find($session_id);
                 }
@@ -224,7 +224,7 @@ class StaffAsParentController extends Controller
             }
             else{
                 if(!$session_id){
-                    $session = SmAcademicYear::where('school_id', Auth::user()->school_id)->where('active_status', 1)->first();
+                    $session = SmAcademicYear::where('church_id', Auth::user()->church_id)->where('active_status', 1)->first();
                 } else{
                     $session = SmAcademicYear::find($session_id);
                 }
@@ -233,7 +233,7 @@ class StaffAsParentController extends Controller
             }
 
             if(!$session){
-                $session = SmAcademicYear::where('school_id', Auth::user()->school_id)->first();
+                $session = SmAcademicYear::where('church_id', Auth::user()->church_id)->first();
             }
 
 
@@ -245,7 +245,7 @@ class StaffAsParentController extends Controller
             $dashboard_background = DB::table('sm_background_settings')->where([['is_default', 1], ['title', 'Dashboard Background']])->first();
             session()->put('dashboard_background', $dashboard_background);
 
-            $email_template = SmsTemplate::where('school_id',Auth::user()->school_id)->first();
+            $email_template = SmsTemplate::where('church_id',Auth::user()->church_id)->first();
             session()->put('email_template', $email_template);
 
             session(['role_id' => Auth::user()->role_id]);
@@ -253,12 +253,12 @@ class StaffAsParentController extends Controller
             $user_log = new SmUserLog();
             $user_log->user_id = Auth::user()->id;
             $user_log->role_id = Auth::user()->role_id;
-            $user_log->school_id = Auth::user()->school_id;
+            $user_log->church_id = Auth::user()->church_id;
             $user_log->ip_address = \Request::ip();
             if(moduleStatusCheck('University')){
-                $user_log->un_academic_id = getAcademicid();
+                $user_log->un_church_year_id = getAcademicid();
             }else{
-                $user_log->academic_id = getAcademicid() ?? 1;
+                $user_log->church_year_id = getAcademicid() ?? 1;
             }
             $user_log->user_agent = $agent->browser() . ', ' . $agent->platform();
             $user_log->save();

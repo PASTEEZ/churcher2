@@ -8,13 +8,13 @@ $setting_info = generalSetting();
             <div class="d-flex justify-content-center">
                 <div>
                 @if(! is_null($setting_info->logo))
-                        <img class="logo-img" src="{{ asset($setting_info->logo)}}" alt="{{$setting_info->school_name}}"> 
+                        <img class="logo-img" src="{{ asset($setting_info->logo)}}" alt="{{$setting_info->church_name}}"> 
                     @else
                             <img class="logo-img" src="{{ asset('public/uploads/settings/logo.png')}}" alt="logo"> 
                     @endif
                 </div>
                 <div class="ml-30">
-                    <h2>@if(isset($schoolDetails)){{$schoolDetails->school_name}} @endif</h2>
+                    <h2>@if(isset($schoolDetails)){{$schoolDetails->church_name}} @endif</h2>
                     <p class="mb-0">@if(isset($schoolDetails)){{$schoolDetails->address}} @endif</p>
                 </div>
             </div>

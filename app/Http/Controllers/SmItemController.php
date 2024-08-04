@@ -22,8 +22,8 @@ class SmItemController extends Controller
     {
 
         try{
-            $items = SmItem::where('school_id',Auth::user()->school_id)->orderby('id','DESC')->get();
-            $itemCategories = SmItemCategory::where('school_id',Auth::user()->school_id)->get();
+            $items = SmItem::where('church_id',Auth::user()->church_id)->orderby('id','DESC')->get();
+            $itemCategories = SmItemCategory::where('church_id',Auth::user()->church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -61,8 +61,8 @@ class SmItemController extends Controller
             $items->item_category_id = $request->category_name;
             $items->total_in_stock = 0;
             $items->description = $request->description;
-            $items->school_id = Auth::user()->school_id;
-            $items->academic_id = getAcademicId();
+            $items->church_id = Auth::user()->church_id;
+            $items->church_year_id = getAcademicId();
             $results = $items->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -94,10 +94,10 @@ class SmItemController extends Controller
              if (checkAdmin()) {
                 $editData = SmItem::find($id);
             }else{
-                $editData = SmItem::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+                $editData = SmItem::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
             }
-            $items = SmItem::where('school_id',Auth::user()->school_id)->get();
-            $itemCategories = SmItemCategory::where('school_id',Auth::user()->school_id)->get();
+            $items = SmItem::where('church_id',Auth::user()->church_id)->get();
+            $itemCategories = SmItemCategory::where('church_id',Auth::user()->church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -143,7 +143,7 @@ class SmItemController extends Controller
              if (checkAdmin()) {
                 $items = SmItem::find($id);
             }else{
-                $items = SmItem::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+                $items = SmItem::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
             }
             $items->item_name = $request->item_name;
             $items->item_category_id = $request->category_name;
@@ -197,7 +197,7 @@ class SmItemController extends Controller
                  if (checkAdmin()) {
                     $result = SmItem::destroy($id);
                 }else{
-                    $result = SmItem::where('id',$id)->where('school_id',Auth::user()->school_id)->delete();
+                    $result = SmItem::where('id',$id)->where('church_id',Auth::user()->church_id)->delete();
                 }
             if ($result) {
 

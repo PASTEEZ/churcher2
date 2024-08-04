@@ -25,7 +25,7 @@ class SmClassRoomRequest extends FormRequest
     public function rules()
     {
         return [
-            'room_no' => ['required', 'max:100' , Rule::unique('sm_class_rooms', 'room_no')->where('academic_id', getAcademicId())->where('school_id', auth()->user()->school_id)->ignore($this->id)],
+            'room_no' => ['required', 'max:100' , Rule::unique('sm_class_rooms', 'room_no')->where('church_year_id', getAcademicId())->where('church_id', auth()->user()->church_id)->ignore($this->id)],
             'capacity' => 'required'
         ];
     }

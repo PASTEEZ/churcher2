@@ -225,7 +225,7 @@
             flex-grow: 1;
             text-align: right;
         }
-        .line_grid .student_name{
+        .line_grid .member_name{
             font-weight: 500;
             font-size: 14px;
             color: var(--base_color);
@@ -241,7 +241,7 @@
             align-items: center;
             flex: 60px 0 0;
         }
-        .student_name_highlight{
+        .member_name_highlight{
             font-weight: 500;
             color: var(--base_color);
             line-height: 1.5;
@@ -456,7 +456,7 @@
                             <div class="logo_img">
                                 <div class="logo_thumb_upper">
                                     <div class="thumb_logo">
-                                        <img  src="{{asset('/')}}{{generalSetting()->logo }}" alt="{{generalSetting()->school_name}}">
+                                        <img  src="{{asset('/')}}{{generalSetting()->logo }}" alt="{{generalSetting()->church_name}}">
                                     </div>
                                     <h2>
                                         <p class="text-white">@lang('exam.exam') : {{$examInfo->title}}</p>
@@ -464,12 +464,12 @@
                                         @if(moduleStatusCheck('University'))
                                         <p class="text-white">@lang('university::un.semester') : {{$data['semester']}} - {{$data['semester_label']}} ({{$data['session']}})  </p>
                                         @else
-                                        <p class="text-white">@lang('common.class') : {{@$classInfo->class_name}} ({{@$sectionInfo->section_name}})</p>
+                                        <p class="text-white">@lang('common.class') : {{@$classInfo->age_group_name}} ({{@$sectionInfo->mgender_name}})</p>
                                         @endif 
                                     </h2>
                                 </div>
                                 <div class="company_info">
-                                    <h3>{{isset(generalSetting()->school_name)?generalSetting()->school_name:'Infix School Management ERP'}}</h3>
+                                    <h3>{{isset(generalSetting()->church_name)?generalSetting()->church_name:'Infix School Management ERP'}}</h3>
                                     <h5>{{isset(generalSetting()->address)?generalSetting()->address:'Infix School Address'}}</h5>
                                     <h5>@lang('common.email'): {{isset(generalSetting()->email)?generalSetting()->email:'admin@demo.com'}}, @lang('common.phone'): {{isset(generalSetting()->phone)?generalSetting()->phone:'+8801841412141 '}}</h5>
                                 </div>
@@ -488,8 +488,8 @@
         <table class="table border_table gray_header_table mb-0" >
             <thead>
                 <tr>
-                    <th class="name_field">@lang('common.student_name')</th>
-                    <th class="roll_field">@lang('student.admission_no')</th>
+                    <th class="name_field">@lang('common.member_name')</th>
+                    <th class="roll_field">@lang('student.registration_no')</th>
                     <th class="roll_field">@lang('student.roll_no')</th>
                     <th class="large_spanTh">@lang('exam.position')</th>
                     <th class="large_spanTh">@lang('exam.total_mark')</th>
@@ -511,7 +511,7 @@
                     @endphp
                     <tr>
                         <td>{{$data->studentRecords->student->full_name}}</td>
-                        <td>{{$data->studentRecords->student->admission_no}}</td>
+                        <td>{{$data->studentRecords->student->registration_no}}</td>
                         <td>{{$data->studentRecords->student->roll_no}}</td>
                         <td>{{$loop->iteration}}</td>
                         @if($exam_rule)

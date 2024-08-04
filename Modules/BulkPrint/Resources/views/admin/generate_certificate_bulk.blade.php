@@ -51,7 +51,7 @@
                             <label for="checkbox" class="mb-2">@lang('common.select_class')</label>
                             <select multiple id="multipleClass" name="certificateBulkClass[]" style="width:300px">
                                 @foreach($classes as $class)
-                                        <option value="{{@$class->id}}">{{@$class->class_name}}</option>
+                                        <option value="{{@$class->id}}">{{@$class->age_group_name}}</option>
                                 @endforeach
                             </select>
                             <div class="">

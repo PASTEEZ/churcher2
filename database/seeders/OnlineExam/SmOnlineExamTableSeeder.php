@@ -14,17 +14,17 @@ class SmOnlineExamTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run($school_id, $academic_id, $count=5)
+    public function run($church_id, $church_year_id, $count=5)
     {
         $faker = Faker::create();
         $i = 1;
 
-        $question_details = SmAssignSubject::where('school_id', $school_id)->where('academic_id', $academic_id)->get();
+        $question_details = SmAssignSubject::where('church_id', $church_id)->where('church_year_id', $church_year_id)->get();
         foreach ($question_details as $question_detail) {
             $store = new SmOnlineExam();
             $store->subject_id = $question_detail->subject_id;
-            $store->class_id = $question_detail->class_id;
-            $store->section_id = $question_detail->section_id;
+            $store->age_group_id = $question_detail->age_group_id;
+            $store->mgender_id = $question_detail->mgender_id;
             $store->title = $faker->realText($maxNbChars = 30, $indexSize = 1);
             $store->date = date('Y-m-d');
             $store->start_time = '10:00 AM';
@@ -34,8 +34,8 @@ class SmOnlineExamTableSeeder extends Seeder
             $store->instruction = $faker->realText($maxNbChars = 100, $indexSize = 1);
             $store->status = 1;
             $store->created_at = date('Y-m-d h:i:s');
-            $store->school_id = $school_id;
-            $store->academic_id = $academic_id;
+            $store->church_id = $church_id;
+            $store->church_year_id = $church_year_id;
             $store->save();
         }
     }

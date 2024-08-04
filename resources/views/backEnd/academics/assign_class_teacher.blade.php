@@ -59,9 +59,9 @@
                                             <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                             @foreach($classes as $class)
                                              @if(isset($assign_class_teacher)) 
-                                            <option value="{{ @$class->id}}" {{ @$class->id == @$assign_class_teacher->class_id? 'selected':''}}>{{ @$class->class_name}}</option>
+                                            <option value="{{ @$class->id}}" {{ @$class->id == @$assign_class_teacher->age_group_id? 'selected':''}}>{{ @$class->age_group_name}}</option>
                                             @else
-                                            <option value="{{ @$class->id}}">{{ @$class->class_name}}</option>
+                                            <option value="{{ @$class->id}}">{{ @$class->age_group_name}}</option>
                                             @endif
                                             @endforeach
                                         </select>
@@ -83,7 +83,7 @@
                                         <option data-display="@lang('common.select_section') *" value="">@lang('common.select_section') *</option>
                                         @if(isset($assign_class_teacher))
                                             @foreach($sections as $section)
-                                            <option value="{{ @$section->id}}" {{ @$section->id == @$assign_class_teacher->section_id? 'selected':''}}>{{ @$section->section_name}}</option>
+                                            <option value="{{ @$section->id}}" {{ @$section->id == @$assign_class_teacher->mgender_id? 'selected':''}}>{{ @$section->mgender_name}}</option>
                                             @endforeach
                                         @endif
                                     </select>
@@ -175,8 +175,8 @@
                             <tbody>
                                 @foreach($assign_class_teachers as $assign_class_teacher)
                                 <tr>
-                                    <td valign="top">{{@$assign_class_teacher->class !=""? @$assign_class_teacher->class->class_name:""}}</td>
-                                    <td valign="top">{{@$assign_class_teacher->section != ""? @$assign_class_teacher->section->section_name:""}}</td>
+                                    <td valign="top">{{@$assign_class_teacher->class !=""? @$assign_class_teacher->class->age_group_name:""}}</td>
+                                    <td valign="top">{{@$assign_class_teacher->section != ""? @$assign_class_teacher->section->mgender_name:""}}</td>
                                     <td valign="top">
                                         
                                             @php

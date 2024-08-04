@@ -45,7 +45,7 @@ window.paymentValue = $('#paymentMethodAddFees').val();
                                     if(rollno == null){
                                         rollno = '';
                                     }
-                                    let section = allStudent.section.section_name;
+                                    let section = allStudent.section.mgender_name;
                                     if(allStudent.student_detail.full_name){
                                         $("#selectStudent").append(
                                             $("<option>", {
@@ -598,7 +598,7 @@ window.paymentValue = $('#paymentMethodAddFees').val();
                 class : 'One',
                 section : 'A',
                 prefix : 'infixEdu',
-                admission_no : '123',
+                registration_no : '123',
             })
 
             if (!postionValueShow){
@@ -640,7 +640,7 @@ window.paymentValue = $('#paymentMethodAddFees').val();
             var url = $("#classToSectionRoute").val();
             var i = 0;
             var formData = {
-                class_id: $(this).val(),
+                age_group_id: $(this).val(),
             };
             
             $.ajax({
@@ -668,7 +668,7 @@ window.paymentValue = $('#paymentMethodAddFees').val();
                                 $("#feesSection").append(
                                     $("<option>", {
                                         value: section.id,
-                                        text: section.section_name,
+                                        text: section.mgender_name,
                                     })
                                 );
 
@@ -676,7 +676,7 @@ window.paymentValue = $('#paymentMethodAddFees').val();
                                     "<li data-value='" +
                                     section.id +
                                     "' class='option'>" +
-                                    section.section_name +
+                                    section.mgender_name +
                                     "</li>"
                                 );
                             });
@@ -709,10 +709,10 @@ window.paymentValue = $('#paymentMethodAddFees').val();
             $("#feesSection").on("change", function() {
                 var url = $("#sectionToStudentRoute").val();
                 var i = 0;
-                var class_id = $("#feesSelectClass").val();
+                var age_group_id = $("#feesSelectClass").val();
                 var formData = {
-                    section_id: $(this).val(),
-                    class_id: class_id,
+                    mgender_id: $(this).val(),
+                    age_group_id: age_group_id,
                 };
 
                 $.ajax({
@@ -722,8 +722,8 @@ window.paymentValue = $('#paymentMethodAddFees').val();
                     url: url,
 
                     beforeSend: function() {
-                        $('#student_section_loader').addClass('pre_loader');
-                        $('#student_section_loader').removeClass('loader');
+                        $('#member_gender_loader').addClass('pre_loader');
+                        $('#member_gender_loader').removeClass('loader');
                     },
 
                     success: function(data) {
@@ -737,7 +737,7 @@ window.paymentValue = $('#paymentMethodAddFees').val();
                                     if(rollno == null){
                                         rollno = '';
                                     }
-                                    let section = allStudent.section.section_name;
+                                    let section = allStudent.section.mgender_name;
                                     if(allStudent.student_detail.full_name){
                                         $("#selectStudent").append(
                                             $("<option>", {
@@ -760,8 +760,8 @@ window.paymentValue = $('#paymentMethodAddFees').val();
                     complete: function() {
                         i--;
                         if (i <= 0) {
-                            $('#student_section_loader').removeClass('pre_loader');
-                            $('#student_section_loader').addClass('loader');
+                            $('#member_gender_loader').removeClass('pre_loader');
+                            $('#member_gender_loader').addClass('loader');
                         }
                     }
                 });
@@ -773,7 +773,7 @@ window.paymentValue = $('#paymentMethodAddFees').val();
                 var url = $("#classToStudentRoute").val();
                 var i = 0;
                 var formData = {
-                    class_id: $(this).val(),
+                    age_group_id: $(this).val(),
                 };
 
                 $.ajax({
@@ -783,8 +783,8 @@ window.paymentValue = $('#paymentMethodAddFees').val();
                     url: url,
 
                     beforeSend: function() {
-                        $('#student_section_loader').addClass('pre_loader');
-                        $('#student_section_loader').removeClass('loader');
+                        $('#member_gender_loader').addClass('pre_loader');
+                        $('#member_gender_loader').removeClass('loader');
                     },
 
                     success: function(data) {
@@ -798,7 +798,7 @@ window.paymentValue = $('#paymentMethodAddFees').val();
                                     if(rollno == null){
                                         rollno = '';
                                     }
-                                    let section = allStudent.section.section_name;
+                                    let section = allStudent.section.mgender_name;
                                     if(allStudent.student_detail.full_name){
                                         $("#selectStudent").append(
                                             $("<option>", {
@@ -821,8 +821,8 @@ window.paymentValue = $('#paymentMethodAddFees').val();
                     complete: function() {
                         i--;
                         if (i <= 0) {
-                            $('#student_section_loader').removeClass('pre_loader');
-                            $('#student_section_loader').addClass('loader');
+                            $('#member_gender_loader').removeClass('pre_loader');
+                            $('#member_gender_loader').addClass('loader');
                         }
                     }
                 });

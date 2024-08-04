@@ -60,7 +60,7 @@ class SendAbsentNotification extends Command
     
                     $absent_student=SmSubjectAttendance::where('attendance_type','A')
                     ->where('attendance_date',date('Y-m-d'))
-                    ->leftjoin('sm_students','sm_students.id','=','sm_subject_attendances.student_id')
+                    ->leftjoin('sm_students','sm_students.id','=','sm_subject_attendances.member_id')
                     ->leftjoin('sm_parents','sm_parents.id','=','sm_students.parent_id')
                     ->select('sm_subject_attendances.*')
                     ->get();
@@ -69,25 +69,25 @@ class SendAbsentNotification extends Command
                     $parent_email=[];
                     $parent_mobile=[];
                     foreach ($absent_student as $key => $value) {
-                        $students[]=$value->student_id;
+                        $students[]=$value->member_id;
                         $parent_email[]=$value->guardians_email;
                         $parent_mobile[]=$value->guardians_mobile;
                     }
                 $absent_subject_list=SmSubjectAttendance::getAbsentSubjectList(1);
         
-                    $sms_template = SmsTemplate::where('school_id',Auth::user()->school_id)->first();
+                    $sms_template = SmsTemplate::where('church_id',Auth::user()->church_id)->first();
                     $template = $sms_template->student_absent_notification_sms;
         
-                    // Hi [fathers_name], Your child [student_name] absent for [number_of_subject] subjects. Those are [subject_list] on [date]. Thanks
+                    // Hi [fathers_name], Your child [member_name] absent for [number_of_subject] subjects. Those are [subject_list] on [date]. Thanks
             
-                    foreach (array_unique($students) as $key => $student_id) {
+                    foreach (array_unique($students) as $key => $member_id) {
         
-                        $absent_subjects=SmSubjectAttendance::getAbsentSubjectList($student_id);//Array
-                        $student_info=SmStudent::find($student_id);
+                        $absent_subjects=SmSubjectAttendance::getAbsentSubjectList($member_id);//Array
+                        $student_info=SmStudent::find($member_id);
                         $guardian_name=$student_info->parents->guardians_name;
                         $guardian_mobile=$student_info->parents->guardians_mobile;
         
-                        $sms_template = SmsTemplate::where('school_id',Auth::user()->school_id)->first();
+                        $sms_template = SmsTemplate::where('church_id',Auth::user()->church_id)->first();
                         $template = $sms_template->student_absent_notification_sms;
         
                         $chars = preg_split('/[\s,]+/', $template, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);

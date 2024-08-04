@@ -23,7 +23,7 @@ class AjaxController extends Controller
         $feesinvoice = FmFeesInvoice::find($request->invoiceId);
         $feesTranscations = FmFeesTransaction::where('fees_invoice_id', $request->invoiceId)
                         ->where('paid_status', 'approve')
-                        ->where('school_id', auth()->user()->school_id)
+                        ->where('church_id', auth()->user()->church_id)
                         ->get()->map(function ($value){
                             return [
                                 'date'=>dateConvert($value->created_at),
@@ -35,7 +35,7 @@ class AjaxController extends Controller
                             ];
                         });
         $paymentMethods = SmPaymentMethhod::whereIn('method', ['Cash','Cheque','Bank'])->get();
-        $banks = SmBankAccount::where('school_id', auth()->user()->school_id)->get();
+        $banks = SmBankAccount::where('church_id', auth()->user()->church_id)->get();
         return response()->json(compact('feesinvoice', 'feesTranscations','paymentMethods','banks'));
     }
 
@@ -43,9 +43,9 @@ class AjaxController extends Controller
     {
         try {
             $allStudents = StudentRecord::with('studentDetail','section')
-                        ->where('class_id', $request->classId)
-                        ->where('school_id', auth()->user()->school_id)
-                        ->where('academic_id', getAcademicId())
+                        ->where('age_group_id', $request->classId)
+                        ->where('church_id', auth()->user()->church_id)
+                        ->where('church_year_id', getAcademicId())
                         ->get();
             return response()->json([$allStudents]);
         } catch (\Exception $e) {
@@ -61,16 +61,16 @@ class AjaxController extends Controller
                 $groupId = substr($request->type,3);
                 $feesGroups = FmFeesType::where('fees_group_id',$groupId)
                             ->where('type','fees')
-                            ->where('school_id', auth()->user()->school_id)
-                            ->where('academic_id', getAcademicId())
+                            ->where('church_id', auth()->user()->church_id)
+                            ->where('church_year_id', getAcademicId())
                             ->get();
                 return  response()->json(compact('feesGroups'));
             }else{
                 $typeId = substr($request->type,3);
                 $feesType = FmFeesType::where('id',$typeId)
                             ->where('type','fees')
-                            ->where('school_id', auth()->user()->school_id)
-                            ->where('academic_id', getAcademicId())
+                            ->where('church_id', auth()->user()->church_id)
+                            ->where('church_year_id', getAcademicId())
                             ->first();
             return  response()->json(compact('feesType'));
             }   
@@ -83,24 +83,24 @@ class AjaxController extends Controller
     {
         try{
             if (teacherAccess()) {
-                $sectionIds = SmAssignSubject::where('class_id', '=', $request->class_id)
+                $sectionIds = SmAssignSubject::where('age_group_id', '=', $request->age_group_id)
                             ->where('teacher_id', auth()->user()->staff->id)
-                            ->where('school_id', auth()->user()->school_id)
-                            ->where('academic_id', getAcademicId())
-                            ->groupby(['class_id','section_id'])
+                            ->where('church_id', auth()->user()->church_id)
+                            ->where('church_year_id', getAcademicId())
+                            ->groupby(['age_group_id','mgender_id'])
                             ->withoutGlobalScope(StatusAcademicSchoolScope::class)
                             ->get();
             } else {
-                $sectionIds = SmClassSection::where('class_id', '=', $request->class_id)
-                                ->where('school_id', auth()->user()->school_id)
+                $sectionIds = SmClassSection::where('age_group_id', '=', $request->age_group_id)
+                                ->where('church_id', auth()->user()->church_id)
                                 ->withoutGlobalScope(StatusAcademicSchoolScope::class)
                                 ->get();
             }
             $promote_sections = [];
             foreach ($sectionIds as $sectionId) {
-                $promote_sections[] = SmSection::where('id', $sectionId->section_id)
+                $promote_sections[] = SmSection::where('id', $sectionId->mgender_id)
                                     ->withoutGlobalScope(StatusAcademicSchoolScope::class)
-                                    ->first(['id','section_name']);
+                                    ->first(['id','mgender_name']);
             }
             return response()->json([$promote_sections]);
         } catch (\Exception $e) {
@@ -112,10 +112,10 @@ class AjaxController extends Controller
     {
         try{
             $allStudents = StudentRecord::with('studentDetail','section')
-                            ->where('class_id', $request->class_id)
-                            ->where('section_id', $request->section_id)
-                            ->where('school_id', auth()->user()->school_id)
-                            ->where('academic_id', getAcademicId())
+                            ->where('age_group_id', $request->age_group_id)
+                            ->where('mgender_id', $request->mgender_id)
+                            ->where('church_id', auth()->user()->church_id)
+                            ->where('church_year_id', getAcademicId())
                             ->get();
             return response()->json([$allStudents]);
         } catch (\Exception $e) {
@@ -127,9 +127,9 @@ class AjaxController extends Controller
     {
         try{
             $allStudents = StudentRecord::with('studentDetail','section')
-                            ->where('class_id', $request->class_id)
-                            ->where('school_id', auth()->user()->school_id)
-                            ->where('academic_id', getAcademicId())
+                            ->where('age_group_id', $request->age_group_id)
+                            ->where('church_id', auth()->user()->church_id)
+                            ->where('church_year_id', getAcademicId())
                             ->get();
             return response()->json([$allStudents]);
         } catch (\Exception $e) {

@@ -26,7 +26,7 @@ class SmSchoolFactory extends Factory
         $i=$this->i++;
         return [
             
-            'school_name'=>$this->faker->colorName . $i,
+            'church_name'=>$this->faker->colorName . $i,
             'email'=>'school_'.$i.'@infixedu.com',
             'domain'=> 'school'.$i,
             'created_at' => date('Y-m-d h:i:s'),

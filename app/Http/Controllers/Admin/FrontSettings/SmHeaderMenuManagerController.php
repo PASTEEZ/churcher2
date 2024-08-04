@@ -22,13 +22,13 @@ class SmHeaderMenuManagerController extends Controller
     {
         try {
             
-            $pages = SmPage::where('school_id', app('school')->id)->where('is_dynamic', 1)->get();
-            $static_pages = SmPage::where('school_id', app('school')->id)->where('is_dynamic', 0)->get();
-            $courses = SmCourse::where('school_id', app('school')->id)->get();
-            $courseCategories = SmCourseCategory::where('school_id', app('school')->id)->get();
-            $news = SmNews::where('school_id', app('school')->id)->get();
-            $news_categories = SmNewsCategory::where('school_id', app('school')->id)->get();
-            $menus = SmHeaderMenuManager::where('school_id', app('school')->id)->where('parent_id', null)->orderBy('position')->get();
+            $pages = SmPage::where('church_id', app('school')->id)->where('is_dynamic', 1)->get();
+            $static_pages = SmPage::where('church_id', app('school')->id)->where('is_dynamic', 0)->get();
+            $courses = SmCourse::where('church_id', app('school')->id)->get();
+            $courseCategories = SmCourseCategory::where('church_id', app('school')->id)->get();
+            $news = SmNews::where('church_id', app('school')->id)->get();
+            $news_categories = SmNewsCategory::where('church_id', app('school')->id)->get();
+            $menus = SmHeaderMenuManager::where('church_id', app('school')->id)->where('parent_id', null)->orderBy('position')->get();
             return view('backEnd.frontSettings.headerMenuManager', compact('pages', 'static_pages', 'courses', 'courseCategories', 'news_categories', 'news', 'menus'));
         } catch (\Exception $e) {
        
@@ -48,7 +48,7 @@ class SmHeaderMenuManagerController extends Controller
                         'element_id' => $data,
                         'link' => $dpage->slug,
                         'position' => 387437,
-                        'school_id' => app('school')->id,
+                        'church_id' => app('school')->id,
                     ]);
                 }
             } elseif ($request->type == "sPages") {
@@ -60,7 +60,7 @@ class SmHeaderMenuManagerController extends Controller
                         'element_id' => $data,
                         'link' => $spage->slug,
                         'position' => 387437,
-                        'school_id' => app('school')->id,
+                        'church_id' => app('school')->id,
                     ]);
                 }
             } elseif ($request->type == "dCourse") {
@@ -71,7 +71,7 @@ class SmHeaderMenuManagerController extends Controller
                         'type' => $request->type,
                         'element_id' => $data,
                         'position' => 387437,
-                        'school_id' => app('school')->id,
+                        'church_id' => app('school')->id,
                     ]);
                 }
             } elseif ($request->type == "dCourseCategory") {
@@ -82,7 +82,7 @@ class SmHeaderMenuManagerController extends Controller
                         'type' => $request->type,
                         'element_id' => $data,
                         'position' => 387437,
-                        'school_id' => app('school')->id,
+                        'church_id' => app('school')->id,
                     ]);
                 }
             } elseif ($request->type == "dNews") {
@@ -93,7 +93,7 @@ class SmHeaderMenuManagerController extends Controller
                         'type' => $request->type,
                         'element_id' => $data,
                         'position' => 387437,
-                        'school_id' => app('school')->id,
+                        'church_id' => app('school')->id,
                     ]);
                 }
             } elseif ($request->type == "dNewsCategory") {
@@ -104,7 +104,7 @@ class SmHeaderMenuManagerController extends Controller
                         'type' => $request->type,
                         'element_id' => $data,
                         'position' => 387437,
-                        'school_id' => app('school')->id,
+                        'church_id' => app('school')->id,
                     ]);
                 }
             } elseif ($request->type == "customLink") {
@@ -113,7 +113,7 @@ class SmHeaderMenuManagerController extends Controller
                     'link' => $request->link,
                     'type' => $request->type,
                     'position' => 387437,
-                    'school_id' => app('school')->id,
+                    'church_id' => app('school')->id,
                 ]);
             }
             return $this->reloadWithData();
@@ -132,7 +132,7 @@ class SmHeaderMenuManagerController extends Controller
                     'element_id' => $request->page,
                     'show' => $request->content_show,
                     'is_newtab' => $request->is_newtab,
-                    'school_id' => app('school')->id,
+                    'church_id' => app('school')->id,
                 ]);
             } elseif ($request->type == "sPages") {
                 SmHeaderMenuManager::where('id', $request->id)->update([
@@ -141,7 +141,7 @@ class SmHeaderMenuManagerController extends Controller
                     'element_id' => $request->static_pages,
                     'show' => $request->content_show,
                     'is_newtab' => $request->is_newtab,
-                    'school_id' => app('school')->id,
+                    'church_id' => app('school')->id,
                 ]);
             } elseif ($request->type == "dCourse") {
                 SmHeaderMenuManager::where('id', $request->id)->update([
@@ -150,7 +150,7 @@ class SmHeaderMenuManagerController extends Controller
                     'element_id' => $request->course,
                     'show' => $request->content_show,
                     'is_newtab' => $request->is_newtab,
-                    'school_id' => app('school')->id,
+                    'church_id' => app('school')->id,
                 ]);
             } elseif ($request->type == "dCourseCategory") {
                 SmHeaderMenuManager::where('id', $request->id)->update([
@@ -159,7 +159,7 @@ class SmHeaderMenuManagerController extends Controller
                     'element_id' => $request->course_category,
                     'show' => $request->content_show,
                     'is_newtab' => $request->is_newtab,
-                    'school_id' => app('school')->id,
+                    'church_id' => app('school')->id,
                 ]);
             } elseif ($request->type == "dNews") {
                 SmHeaderMenuManager::where('id', $request->id)->update([
@@ -168,7 +168,7 @@ class SmHeaderMenuManagerController extends Controller
                     'element_id' => $request->news,
                     'show' => $request->content_show,
                     'is_newtab' => $request->is_newtab,
-                    'school_id' => app('school')->id,
+                    'church_id' => app('school')->id,
                 ]);
             } elseif ($request->type == "dNewsCategory") {
                 SmHeaderMenuManager::where('id', $request->id)->update([
@@ -177,7 +177,7 @@ class SmHeaderMenuManagerController extends Controller
                     'element_id' => $request->news_category,
                     'show' => $request->content_show,
                     'is_newtab' => $request->is_newtab,
-                    'school_id' => app('school')->id,
+                    'church_id' => app('school')->id,
                 ]);
             } elseif ($request->type == "customLink") {
                 SmHeaderMenuManager::where('id', $request->id)->update([
@@ -186,7 +186,7 @@ class SmHeaderMenuManagerController extends Controller
                     'type' => $request->type,
                     'show' => $request->content_show,
                     'is_newtab' => $request->is_newtab,
-                    'school_id' => app('school')->id,
+                    'church_id' => app('school')->id,
                 ]);
             }
             return $this->reloadWithData();
@@ -236,13 +236,13 @@ class SmHeaderMenuManagerController extends Controller
 
     private function reloadWithData()
     {
-        $pages = SmPage::where('is_dynamic', 1)->where('school_id', app('school')->id)->get();
-        $static_pages = SmPage::where('is_dynamic', 0)->where('school_id', app('school')->id)->get();
-        $courses = SmCourse::where('school_id', app('school')->id)->get();
-        $courseCategories = SmCourseCategory::where('school_id', app('school')->id)->get();
-        $news = SmNews::where('school_id', app('school')->id)->get();
-        $news_categories = SmNewsCategory::where('school_id', app('school')->id)->get();
-        $menus = SmHeaderMenuManager::where('parent_id', null)->where('school_id', app('school')->id)->orderBy('position')->get();
+        $pages = SmPage::where('is_dynamic', 1)->where('church_id', app('school')->id)->get();
+        $static_pages = SmPage::where('is_dynamic', 0)->where('church_id', app('school')->id)->get();
+        $courses = SmCourse::where('church_id', app('school')->id)->get();
+        $courseCategories = SmCourseCategory::where('church_id', app('school')->id)->get();
+        $news = SmNews::where('church_id', app('school')->id)->get();
+        $news_categories = SmNewsCategory::where('church_id', app('school')->id)->get();
+        $menus = SmHeaderMenuManager::where('parent_id', null)->where('church_id', app('school')->id)->orderBy('position')->get();
         return view('backEnd.frontSettings.headerSubmenuList', compact('pages', 'static_pages', 'courses', 'courseCategories', 'news_categories', 'news', 'menus'));
     }
 

@@ -42,7 +42,7 @@ class SmHourlyRateController extends Controller
             $hourly_rate = new SmHourlyRate();
             $hourly_rate->grade = $request->grade;
             $hourly_rate->rate = $request->rate;
-            $hourly_rate->academic_id = getAcademicId();
+            $hourly_rate->church_year_id = getAcademicId();
             $result = $hourly_rate->save();
             if($result){
                 Toastr::success('Operation successful', 'Success');

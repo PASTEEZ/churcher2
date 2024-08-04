@@ -51,7 +51,7 @@
                                             value="">@lang('common.select_class') *
                                     </option>
                                     @foreach($classes as $class)
-                                        <option value="{{@$class->id}}" {{isset($class_id) ? ($class_id == $class->id? 'selected':''):''}}>{{@$class->class_name}}</option>
+                                        <option value="{{@$class->id}}" {{isset($age_group_id) ? ($age_group_id == $class->id? 'selected':''):''}}>{{@$class->age_group_name}}</option>
                                     @endforeach
                                 </select>
                                 @if ($errors->has('class'))
@@ -99,7 +99,7 @@
                         </div>
                     </div>
                     <div class="col-lg-6 mb-30  col-md-6">
-                        <a href="{{route('exam-routine-print', [$class_id, $section_id,$exam_type_id])}}" class="primary-btn small fix-gr-bg pull-right" target="_blank"><i class="ti-printer"> </i> @lang('common.print')</a>
+                        <a href="{{route('exam-routine-print', [$age_group_id, $mgender_id,$exam_type_id])}}" class="primary-btn small fix-gr-bg pull-right" target="_blank"><i class="ti-printer"> </i> @lang('common.print')</a>
                     </div>
                 </div>
 
@@ -128,7 +128,7 @@
                                     <td>
                                         <strong> {{ $exam_routine->subject ? $exam_routine->subject->subject_name :'' }} </strong>  {{ $exam_routine->subject ? '('.$exam_routine->subject->subject_code .')':'' }}
                                     </td>
-                                    <td>{{ $exam_routine->class ? $exam_routine->class->class_name :'' }} {{ $exam_routine->section ? '('. $exam_routine->section->section_name .')':'' }}</td>
+                                    <td>{{ $exam_routine->class ? $exam_routine->class->age_group_name :'' }} {{ $exam_routine->section ? '('. $exam_routine->section->mgender_name .')':'' }}</td>
                                     <td>{{ $exam_routine->teacher ? $exam_routine->teacher->full_name :'' }}</td>
 
                                     <td> {{ date('h:i A', strtotime(@$exam_routine->start_time))  }} - {{ date('h:i A', strtotime(@$exam_routine->end_time))  }} </td>

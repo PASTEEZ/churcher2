@@ -160,9 +160,9 @@ class Caster
 
     public static function castPhpIncompleteClass(\__PHP_Incomplete_Class $c, array $a, Stub $stub, bool $isNested): array
     {
-        if (isset($a['__PHP_Incomplete_Class_Name'])) {
-            $stub->class .= '('.$a['__PHP_Incomplete_Class_Name'].')';
-            unset($a['__PHP_Incomplete_Class_Name']);
+        if (isset($a['__PHP_Incomplete_age_group_name'])) {
+            $stub->class .= '('.$a['__PHP_Incomplete_age_group_name'].')';
+            unset($a['__PHP_Incomplete_age_group_name']);
         }
 
         return $a;

@@ -125,16 +125,16 @@ class FeesReportController extends Controller
 
     private function allClass()
     {
-            $data['classes'] = SmClass::where('school_id', auth()->user()->school_id)
-                        ->where('academic_id', getAcademicId())
+            $data['classes'] = SmClass::where('church_id', auth()->user()->church_id)
+                        ->where('church_year_id', getAcademicId())
                         ->get();
             return $data;
     }
 
     private function feesSearch($request)
     {
-            $data['classes'] = SmClass::where('school_id', auth()->user()->school_id)
-                        ->where('academic_id', getAcademicId())
+            $data['classes'] = SmClass::where('church_id', auth()->user()->church_id)
+                        ->where('church_year_id', getAcademicId())
                         ->get();
             $rangeArr = $request->date_range ? explode('-', $request->date_range) : [date('m/d/Y'), date('m/d/Y')];
             if ($request->date_range) {
@@ -143,11 +143,11 @@ class FeesReportController extends Controller
             }
 
             $data['fees_dues']  = FmFeesInvoice::when($request->class, function ($query) use ($request) {
-                        $query->where('class_id', $request->class);
+                        $query->where('age_group_id', $request->class);
                     })
                     ->when($request->section, function ($query) use ($request) {
                         $query->whereHas('recordDetail', function($q) use($request){
-                            return $q->where('section_id', $request->section);
+                            return $q->where('mgender_id', $request->section);
                         });
                     })
                     ->when($request->student, function ($query) use ($request) {
@@ -162,8 +162,8 @@ class FeesReportController extends Controller
                         $query->whereDate('created_at', '>=', $date_from)
                             ->whereDate('created_at', '<=', $date_to);
                     })
-                    ->where('school_id', auth()->user()->school_id)
-                    ->where('academic_id', getAcademicId())
+                    ->where('church_id', auth()->user()->church_id)
+                    ->where('church_year_id', getAcademicId())
                     ->get();
 
             return $data;

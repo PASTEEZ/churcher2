@@ -10,8 +10,8 @@ class CreateAddSchoolNameVariableSmsTemplateTable extends Migration
     {
         $allDatas = SmsTemplate::all();
         foreach($allDatas as $allData){
-            $existsData = str_contains($allData->variable, "[school_name]");
-            $allData->variable = ($existsData) ? $allData->variable : $allData->variable.", [school_name]";
+            $existsData = str_contains($allData->variable, "[church_name]");
+            $allData->variable = ($existsData) ? $allData->variable : $allData->variable.", [church_name]";
             $allData->save();
         }
         
@@ -20,17 +20,17 @@ class CreateAddSchoolNameVariableSmsTemplateTable extends Migration
 
         $studentUpdate = SmsTemplate::find($templete->id);
         $studentUpdate->module = 'Fees';
-        $studentUpdate->variable = '[student_name], [dues_amount], [fees_name], [date], [school_name]';
+        $studentUpdate->variable = '[member_name], [dues_amount], [fees_name], [date], [church_name]';
         $studentUpdate->save();
 
         $parentUpdate = SmsTemplate::find($templete1->id);
         $parentUpdate->module = 'Fees';
-        $parentUpdate->variable = '[parent_name], [dues_amount], [fees_name], [date], [school_name]';
+        $parentUpdate->variable = '[parent_name], [dues_amount], [fees_name], [date], [church_name]';
         $parentUpdate->save();
     }
 
     public function down()
     {
-        Schema::dropIfExists('add_school_name_variable_sms_template');
+        Schema::dropIfExists('add_church_name_variable_sms_template');
     }
 }

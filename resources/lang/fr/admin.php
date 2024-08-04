@@ -236,7 +236,7 @@ return [
 
 "mobile" => "Mobile",
 
-"student_id_card" => "Carte d'identité de l'étudiant",
+"member_id_card" => "Carte d'identité de l'étudiant",
 
 "id_card_title" => "Titre de la carte d'ID",
 
@@ -274,7 +274,7 @@ return [
 
 "are_you_sure_to_remove" => "Etes-vous sûr de supprimer cet élément?",
 
-"admission_no" => "Droits d'entrée Non",
+"registration_no" => "Droits d'entrée Non",
 
 "fill_marks" => "Marques de remplissage",
 
@@ -414,7 +414,7 @@ return [
 
 "column_view" => "Vue de colonne",
 
-"student_name" => "Nom de l'étudiant",
+"member_name" => "Nom de l'étudiant",
 
 "manu" => "Menu",
 

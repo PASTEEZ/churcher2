@@ -293,7 +293,7 @@
                     $(".dateOfBirth").addClass('d-none');
                     $(".bloodGroup").addClass('d-none');
                 } else {
-                    $('.text').html('@lang('admin.admission_no')');
+                    $('.text').html('@lang('admin.registration_no')');
                     $('.hStaffId').html('Admission No : 001');
                     $('.vStaffId').html('Admission No : 001');
 

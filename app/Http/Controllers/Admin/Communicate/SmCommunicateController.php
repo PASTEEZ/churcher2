@@ -50,7 +50,7 @@ class SmCommunicateController extends Controller
     {
         try {
             $roles = InfixRole::select('*')->where('id', '!=', 1)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
             $classes = SmClass::get();
 
@@ -87,11 +87,11 @@ class SmCommunicateController extends Controller
                                 if ($role_id == 2) {
                                     $receiverDetails = SmStudent::select('email', 'full_name', 'mobile')
                                         ->where('active_status', 1)
-                                        ->where('academic_id', getAcademicId())
+                                        ->where('church_year_id', getAcademicId())
                                         ->get();
                                 } elseif ($role_id == 3) {
                                     $receiverDetails = SmParent::select('guardians_email as email', 'fathers_name as full_name', 'fathers_mobile as mobile')
-                                        ->where('academic_id', getAcademicId())
+                                        ->where('church_year_id', getAcademicId())
                                         ->get();
                                 } else {
                                     $receiverDetails = SmStaff::select('email', 'full_name', 'mobile')
@@ -127,20 +127,20 @@ class SmCommunicateController extends Controller
                                 if ($role_id == 2) {
                                     $receiverDetails = SmStudent::select('email', 'full_name', 'mobile')
                                         ->where('active_status', 1)
-                                        ->where('academic_id', getAcademicId())
-                                        ->where('school_id', Auth::user()->school_id)
+                                        ->where('church_year_id', getAcademicId())
+                                        ->where('church_id', Auth::user()->church_id)
                                         ->get();
 
                                 } elseif ($role_id == 3) {
                                     $receiverDetails = SmParent::select('guardians_email as email', 'fathers_name as full_name', 'fathers_mobile as mobile')
-                                        ->where('school_id', Auth::user()->school_id)
-                                        ->where('academic_id', getAcademicId())
+                                        ->where('church_id', Auth::user()->church_id)
+                                        ->where('church_year_id', getAcademicId())
                                         ->get();
                                 } else {
                                     $receiverDetails = SmStaff::select('email', 'full_name', 'mobile')
                                         ->where('role_id', $role_id)
                                         ->where('active_status', 1)
-                                        ->where('school_id', Auth::user()->school_id)
+                                        ->where('church_id', Auth::user()->church_id)
                                         ->get();
                                 }
 
@@ -242,18 +242,18 @@ class SmCommunicateController extends Controller
                     } else {
                         if ($request->send_through == 'E') {
                             return $request;
-                            $class_id = $request->class_id;
+                            $age_group_id = $request->age_group_id;
                             $selectedSections = $request->message_to_section;
                             $to_email = [];
                             $to_mobile = [];
                             foreach ($selectedSections as $key => $value) {
-                                $student_ids = StudentRecord::where('class_id', $class_id)
-                                                ->where('section_id', $value)
-                                                ->where('academic_id', getAcademicId())
-                                                ->where('school_id', auth()->user()->school_id)
-                                                ->pluck('student_id')->unique();
+                                $member_ids = StudentRecord::where('age_group_id', $age_group_id)
+                                                ->where('mgender_id', $value)
+                                                ->where('church_year_id', getAcademicId())
+                                                ->where('church_id', auth()->user()->church_id)
+                                                ->pluck('member_id')->unique();
                                 $students = SmStudent::select('email', 'full_name', 'mobile')
-                                    ->whereIn('id', $student_ids)
+                                    ->whereIn('id', $member_ids)
                                     ->where('active_status', 1)
                                     ->get();
 
@@ -275,16 +275,16 @@ class SmCommunicateController extends Controller
                             Toastr::success('Operation successful', 'Success');
                             return redirect()->back();
                         } else {
-                            $class_id = $request->class_id;
+                            $age_group_id = $request->age_group_id;
                             $selectedSections = $request->message_to_section;
                             foreach ($selectedSections as $key => $value) {
-                                $student_ids = StudentRecord::where('class_id', $class_id)
-                                                ->where('section_id', $value)
-                                                ->where('academic_id', getAcademicId())
-                                                ->where('school_id', auth()->user()->school_id)
-                                                ->pluck('student_id')->unique();
+                                $member_ids = StudentRecord::where('age_group_id', $age_group_id)
+                                                ->where('mgender_id', $value)
+                                                ->where('church_year_id', getAcademicId())
+                                                ->where('church_id', auth()->user()->church_id)
+                                                ->pluck('member_id')->unique();
                                 $students = SmStudent::select('email', 'full_name', 'mobile')
-                                    ->whereIn('id', $student_ids)
+                                    ->whereIn('id', $member_ids)
                                     ->where('active_status', 1)
                                     ->get();
 
@@ -328,7 +328,7 @@ class SmCommunicateController extends Controller
         try {
             if ($request->id == 2) {
                 $allStudents = SmStudent::where('active_status', '=', 1)
-                            ->where('school_id', Auth::user()->school_id)
+                            ->where('church_id', Auth::user()->church_id)
                             ->get();
                 $students = [];
                 foreach ($allStudents as $allStudent) {
@@ -338,14 +338,14 @@ class SmCommunicateController extends Controller
             }
 
             if ($request->id == 3) {
-                $Parents = SmParent::where('school_id', Auth::user()->school_id)
+                $Parents = SmParent::where('church_id', Auth::user()->church_id)
                     ->get();
                 return response()->json([$Parents]);
             }
 
             if ($request->id != 2 and $request->id != 3) {
                 $allStaffs = SmStaff::whereRole($request->id)
-                            ->where('school_id', Auth::user()->school_id)
+                            ->where('church_id', Auth::user()->church_id)
                             ->where('active_status', '=', 1)
                             ->get();
                 $staffs = [];
@@ -364,9 +364,9 @@ class SmCommunicateController extends Controller
     public function emailSmsLog()
     {
         try {
-            $emailSmsLogs = SmEmailSmsLog::where('academic_id', getAcademicId())
+            $emailSmsLogs = SmEmailSmsLog::where('church_year_id', getAcademicId())
                 ->orderBy('id', 'DESC')
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
             // return getAcademicId();
             return view('backEnd.communicate.emailSmsLog', compact('emailSmsLogs'));

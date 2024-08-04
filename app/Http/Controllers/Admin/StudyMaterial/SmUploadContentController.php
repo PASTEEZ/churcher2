@@ -45,7 +45,7 @@ class SmUploadContentController extends Controller
                         $q->where('created_by', Auth::user()->id)->orWhere('available_for_admin', 1);
                     });
             }
-            $uploadContents = $uploadContents->where('school_id', Auth::user()->school_id)
+            $uploadContents = $uploadContents->where('church_id', Auth::user()->church_id)
                                             ->where('course_id', '=', null)
                                             ->where('chapter_id', '=', null)
                                             ->where('lesson_id', '=', null)
@@ -95,7 +95,7 @@ class SmUploadContentController extends Controller
                 }elseif(moduleStatusCheck('University') && $request->un_session_id) {
                     $rules ['un_session_id'] ='required';
                     $rules ['un_department_id'] ='required';
-                    $rules ['un_academic_id'] ='required';
+                    $rules ['un_church_year_id'] ='required';
                     $rules ['un_semester_id'] ='required';
                     $rules ['un_semester_label_id'] ='required';
                 }
@@ -114,7 +114,7 @@ class SmUploadContentController extends Controller
         }
         $request->validate($rules);
         try {
-            $student_ids = SmStudentReportController::classSectionStudent($request);
+            $member_ids = SmStudentReportController::classSectionStudent($request);
             $destination='public/uploads/upload_contents/';
             if ($request->section == "all") {
 
@@ -123,12 +123,12 @@ class SmUploadContentController extends Controller
                     if($request->un_session_id){
                         $labels = UnSemesterLabel::find($request->un_semester_label_id);
                         $sections = $labels->labelSections;
-                        if(is_null($request->un_section_id)){
+                        if(is_null($request->un_mgender_id)){
                             foreach($sections as $section){
                                 $uploadContents = new SmTeacherUploadContent();
                                 $uploadContents->content_title = $request->content_title;
                                 $uploadContents->content_type = $request->content_type;
-                                $uploadContents->school_id = Auth::user()->school_id;
+                                $uploadContents->church_id = Auth::user()->church_id;
                                 $uploadContents->upload_date = date('Y-m-d', strtotime($request->upload_date));
                                 $uploadContents->description = $request->description;
                                 $uploadContents->source_url = $request->source_url;
@@ -137,14 +137,14 @@ class SmUploadContentController extends Controller
                                 $results = $uploadContents->save();
                                 $interface = App::make(UnCommonRepositoryInterface::class);
                                 $interface->storeUniversityData($uploadContents, $request);
-                                $uploadContents->un_section_id = $section->id;
+                                $uploadContents->un_mgender_id = $section->id;
                                 $uploadContents->save();
                             }
                         }else{
                             $uploadContents = new SmTeacherUploadContent();
                             $uploadContents->content_title = $request->content_title;
                             $uploadContents->content_type = $request->content_type;
-                            $uploadContents->school_id = Auth::user()->school_id;
+                            $uploadContents->church_id = Auth::user()->church_id;
                             $uploadContents->upload_date = date('Y-m-d', strtotime($request->upload_date));
                             $uploadContents->description = $request->description;
                             $uploadContents->source_url = $request->source_url;
@@ -159,14 +159,14 @@ class SmUploadContentController extends Controller
                         $uploadContents = new SmTeacherUploadContent();
                         $uploadContents->content_title = $request->content_title;
                         $uploadContents->content_type = $request->content_type;
-                        $uploadContents->school_id = Auth::user()->school_id;
+                        $uploadContents->church_id = Auth::user()->church_id;
                         $uploadContents->upload_date = date('Y-m-d', strtotime($request->upload_date));
                         foreach ($request->available_for as $value) {
                             if ($value == 'admin') {
                                 $uploadContents->available_for_admin = 1;
                             }
                         }
-                        $uploadContents->un_academic_id = getAcademicId();
+                        $uploadContents->un_church_year_id = getAcademicId();
                         $uploadContents->description = $request->description;
                         $uploadContents->source_url = $request->source_url;
                         $uploadContents->upload_file = fileUpload($request->content_file, $destination);
@@ -177,8 +177,8 @@ class SmUploadContentController extends Controller
                     $uploadContents = new SmTeacherUploadContent();
                     $uploadContents->content_title = $request->content_title;
                     $uploadContents->content_type = $request->content_type;
-                    $uploadContents->school_id = Auth::user()->school_id;
-                    $uploadContents->academic_id = getAcademicId();
+                    $uploadContents->church_id = Auth::user()->church_id;
+                    $uploadContents->church_year_id = getAcademicId();
                     foreach ($request->available_for as $value) {
                         if ($value == 'admin') {
                             $uploadContents->available_for_admin = 1;
@@ -223,19 +223,19 @@ class SmUploadContentController extends Controller
             foreach ($request->available_for as $value) {
                 if ($value == 'admin') {
                     $roles = InfixRole::where('id', '=', 1) /* ->where('id', '!=', 2)->where('id', '!=', 3)->where('id', '!=', 9) */->where(function ($q) {
-                        $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                        $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
                     })->get();
                     foreach ($roles as $role) {
-                        $staffs = SmStaff::where('role_id', $role->id)->where('school_id', Auth::user()->school_id)->get();
+                        $staffs = SmStaff::where('role_id', $role->id)->where('church_id', Auth::user()->church_id)->get();
                         foreach ($staffs as $staff) {
                             $notification = new SmNotification;
                             $notification->user_id = $staff->user_id;
                             $notification->role_id = $role->id;
-                            $notification->school_id = Auth::user()->school_id;
+                            $notification->church_id = Auth::user()->church_id;
                             if(moduleStatusCheck('University')){
-                                $notification->un_academic_id = getAcademicId();
+                                $notification->un_church_year_id = getAcademicId();
                             }else{
-                                $notification->academic_id = getAcademicId();
+                                $notification->church_year_id = getAcademicId();
                             }
                             if ($request->content_type == 'as') {
                                 $notification->url = 'assignment-list';
@@ -261,16 +261,16 @@ class SmUploadContentController extends Controller
                 }
                 if (($value == 'student') && ($request->status != 'lmsStudyMaterial') ) {
                     if (isset($request->all_classes)) {
-                        $students = SmStudent::select('id', 'user_id')->where('school_id', Auth::user()->school_id)->get();
+                        $students = SmStudent::select('id', 'user_id')->where('church_id', Auth::user()->church_id)->get();
                         foreach ($students as $student) {
                             $notification = new SmNotification;
                             $notification->user_id = $student->user_id;
                             $notification->role_id = 2;
-                            $notification->school_id = Auth::user()->school_id;
+                            $notification->church_id = Auth::user()->church_id;
                             if(moduleStatusCheck('University')){
-                                $notification->un_academic_id = getAcademicId();
+                                $notification->un_church_year_id = getAcademicId();
                             }else{
-                                $notification->academic_id = getAcademicId();
+                                $notification->church_year_id = getAcademicId();
                             }
                             if ($request->content_type == 'as') {
                                 $notification->url = 'student-assignment';
@@ -293,16 +293,16 @@ class SmUploadContentController extends Controller
                             }
                         }
                     } elseif ((!is_null($request->class)) &&   ($request->section == '')) {
-                        $students = SmStudent::select('id', 'user_id')->whereIn('id', $student_ids)->where('school_id', Auth::user()->school_id)->get();
+                        $students = SmStudent::select('id', 'user_id')->whereIn('id', $member_ids)->where('church_id', Auth::user()->church_id)->get();
                         foreach ($students as $student) {
                             $notification = new SmNotification;
                             $notification->user_id = $student->user_id;
                             $notification->role_id = 2;
-                            $notification->school_id = Auth::user()->school_id;
+                            $notification->church_id = Auth::user()->church_id;
                             if(moduleStatusCheck('University')){
-                                $notification->un_academic_id = getAcademicId();
+                                $notification->un_church_year_id = getAcademicId();
                             }else{
-                                $notification->academic_id = getAcademicId();
+                                $notification->church_year_id = getAcademicId();
                             }
                             if ($request->content_type == 'as') {
                                 $notification->url = 'student-assignment';
@@ -325,7 +325,7 @@ class SmUploadContentController extends Controller
                             }
                         }
                     } else {
-                        $students = SmStudent::select('id', 'user_id')->whereIn('id', $student_ids)->where('school_id', Auth::user()->school_id)->get();
+                        $students = SmStudent::select('id', 'user_id')->whereIn('id', $member_ids)->where('church_id', Auth::user()->church_id)->get();
                         foreach ($students as $student) {
                             $notification = new SmNotification;
                             $notification->user_id = $student->user_id;
@@ -341,11 +341,11 @@ class SmUploadContentController extends Controller
                             }
                             $notification->date = date('Y-m-d');
                             $notification->message = $purpose . ' '.app('translator')->get('common.uploaded');
-                            $notification->school_id = Auth::user()->school_id;
+                            $notification->church_id = Auth::user()->church_id;
                             if(moduleStatusCheck('University')){
-                                $notification->un_academic_id = getAcademicId();
+                                $notification->un_church_year_id = getAcademicId();
                             }else{
-                                $notification->academic_id = getAcademicId();
+                                $notification->church_year_id = getAcademicId();
                             }
                             $notification->save();
                             try {
@@ -392,8 +392,8 @@ class SmUploadContentController extends Controller
 
     public function uploadContentEdit($id)
     {
-        $editData = SmTeacherUploadContent::where('school_id', Auth::user()->school_id)
-        ->where('academic_id', getAcademicId())
+        $editData = SmTeacherUploadContent::where('church_id', Auth::user()->church_id)
+        ->where('church_year_id', getAcademicId())
         ->where('id', $id)
         ->first();
 
@@ -401,16 +401,16 @@ class SmUploadContentController extends Controller
             Toastr::error('This Content added by other. you cannot Modify', 'Failed');
             return redirect()->back();
         }
-        $sections = SmSection::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-        $contentTypes = SmContentType::where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+        $sections = SmSection::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+        $contentTypes = SmContentType::where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
         if (teacherAccess()) {
                 $uploadContents = SmTeacherUploadContent::with('classes', 'sections')->where(function ($q) {
                     $q->where('created_by', Auth::user()->id)->orWhere('available_for_admin', 1);
-                })->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+                })->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
         } else {
-                $uploadContents = SmTeacherUploadContent::with('classes', 'sections')->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                $uploadContents = SmTeacherUploadContent::with('classes', 'sections')->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
         }
 
@@ -442,8 +442,8 @@ class SmUploadContentController extends Controller
                 $ContentDetails = SmTeacherUploadContent::find($id);
             } else {
                 $ContentDetails = SmTeacherUploadContent::where('id', $id)
-                                ->where('academic_id', getAcademicId())
-                                ->where('school_id', Auth::user()->school_id)
+                                ->where('church_year_id', getAcademicId())
+                                ->where('church_id', Auth::user()->church_id)
                                 ->first();
             }
             
@@ -531,11 +531,11 @@ class SmUploadContentController extends Controller
             $uploadContents = SmTeacherUploadContent::where('id', $request->id)->first();
             $uploadContents->content_title = $request->content_title;
             $uploadContents->content_type = $request->content_type;
-            $uploadContents->school_id = Auth::user()->school_id;
+            $uploadContents->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $uploadContents->un_academic_id = getAcademicId();
+                $uploadContents->un_church_year_id = getAcademicId();
             }else{
-                $uploadContents->academic_id = getAcademicId();
+                $uploadContents->church_year_id = getAcademicId();
             }
             if (in_array('admin', $request->available_for)) {
                 $uploadContents->available_for_admin = 1;
@@ -596,19 +596,19 @@ class SmUploadContentController extends Controller
             foreach ($request->available_for as $value) {
                 if ($value == 'admin') {
                     $roles = InfixRole::where('id', '=', 1) /* ->where('id', '!=', 2)->where('id', '!=', 3)->where('id', '!=', 9) */->where(function ($q) {
-                        $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                        $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
                     })->get();
                     foreach ($roles as $role) {
-                        $staffs = SmStaff::where('role_id', $role->id)->where('school_id', Auth::user()->school_id)->get();
+                        $staffs = SmStaff::where('role_id', $role->id)->where('church_id', Auth::user()->church_id)->get();
                         foreach ($staffs as $staff) {
                             $notification = new SmNotification;
                             $notification->user_id = $staff->user_id;
                             $notification->role_id = $role->id;
-                            $notification->school_id = Auth::user()->school_id;
+                            $notification->church_id = Auth::user()->church_id;
                             if(moduleStatusCheck('University')){
-                                $notification->un_academic_id = getAcademicId();
+                                $notification->un_church_year_id = getAcademicId();
                             }else{
-                                $notification->academic_id = getAcademicId();
+                                $notification->church_year_id = getAcademicId();
                             }
                             if ($request->content_type == 'as') {
                                 $notification->url = 'assignment-list';
@@ -636,16 +636,16 @@ class SmUploadContentController extends Controller
                 }
                 if ($value == 'student') {
                     if (isset($request->all_classes)) {
-                        $students = SmStudent::select('id', 'user_id')->where('academic_id', getAcademicId())->where('school_id',Auth::user()->school_id)->get();
+                        $students = SmStudent::select('id', 'user_id')->where('church_year_id', getAcademicId())->where('church_id',Auth::user()->church_id)->get();
                         foreach ($students as $student) {
                             $notification = new SmNotification;
                             $notification->user_id = $student->id;
                             $notification->role_id = 2;
-                            $notification->school_id = Auth::user()->school_id;
+                            $notification->church_id = Auth::user()->church_id;
                             if(moduleStatusCheck('University')){
-                                $notification->un_academic_id = getAcademicId();
+                                $notification->un_church_year_id = getAcademicId();
                             }else{
-                                $notification->academic_id = getAcademicId();
+                                $notification->church_year_id = getAcademicId();
                             }
                             if ($request->content_type == 'as') {
                                 $notification->url = 'student-assignment';
@@ -671,12 +671,12 @@ class SmUploadContentController extends Controller
                             }
                         }
                     } else {
-                        $student_ids = StudentRecord::where('class_id', $request->class)->when($request->section, function($q) use($request){
-                            return $q->where('section_id', $request->section);
-                        })->where('academic_id', getAcademicId())->where('school_id',Auth::user()->school_id)->pluck('student_id')->unique()->toArray();
+                        $member_ids = StudentRecord::where('age_group_id', $request->class)->when($request->section, function($q) use($request){
+                            return $q->where('mgender_id', $request->section);
+                        })->where('church_year_id', getAcademicId())->where('church_id',Auth::user()->church_id)->pluck('member_id')->unique()->toArray();
 
                         
-                        $students = SmStudent::select('id')->whereIn('id', $student_ids)->get();
+                        $students = SmStudent::select('id')->whereIn('id', $member_ids)->get();
                         foreach ($students as $student) {
                             $notification = new SmNotification;
                             $notification->user_id = $student->id;
@@ -692,11 +692,11 @@ class SmUploadContentController extends Controller
                             }
                             $notification->date = date('Y-m-d');
                             $notification->message = $purpose . ' '.app('translator')->get('common.updated');
-                            $notification->school_id = Auth::user()->school_id;
+                            $notification->church_id = Auth::user()->church_id;
                             if(moduleStatusCheck('University')){
-                                $notification->un_academic_id = getAcademicId();
+                                $notification->un_church_year_id = getAcademicId();
                             }else{
-                                $notification->academic_id = getAcademicId();
+                                $notification->church_year_id = getAcademicId();
                             }
                             $notification->save();
 
@@ -763,11 +763,11 @@ class SmUploadContentController extends Controller
 
             if (!teacherAccess()) {
                     $uploadContents = SmTeacherUploadContent::where('content_type', 'as')
-                    ->where('academic_id', getAcademicId())
+                    ->where('church_year_id', getAcademicId())
                     ->where('course_id', '=', null)
                     ->where('chapter_id', '=', null)
                     ->where('lesson_id', '=', null)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->get();
             } else {
                 $uploadContents = SmTeacherUploadContent::where(function ($q) {
@@ -776,8 +776,8 @@ class SmUploadContentController extends Controller
                 ->where('course_id', '=', null)
                 ->where('chapter_id', '=', null)
                 ->where('lesson_id', '=', null)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
             }
 
@@ -794,11 +794,11 @@ class SmUploadContentController extends Controller
             if (teacherAccess()) {
                 $uploadContents = SmTeacherUploadContent::where(function ($q) {
                     $q->where('created_by', Auth::user()->id)->orWhere('available_for_admin', 1);
-                })->where('content_type', 'st')->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+                })->where('content_type', 'st')->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
             } else {
                 $uploadContents = SmTeacherUploadContent::where('content_type', 'st')
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
             }
 
@@ -822,8 +822,8 @@ class SmUploadContentController extends Controller
                 ->where('course_id', '=', null)
                 ->where('chapter_id', '=', null)
                 ->where('lesson_id', '=', null)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
             } else {
                 $uploadContents = SmTeacherUploadContent::with('classes', 'sections')
@@ -831,8 +831,8 @@ class SmUploadContentController extends Controller
                 ->where('course_id', '=', null)
                 ->where('chapter_id', '=', null)
                 ->where('lesson_id', '=', null)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
             }
             return view('backEnd.teacher.syllabusList', compact('uploadContents'));
@@ -854,8 +854,8 @@ class SmUploadContentController extends Controller
                 ->where('chapter_id', '=', null)
                 ->where('lesson_id', '=', null)
                 ->Where('created_by', Auth::user()->id)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
             } else {
                 $uploadContents = SmTeacherUploadContent::with('classes', 'sections')
@@ -863,8 +863,8 @@ class SmUploadContentController extends Controller
                 ->where('course_id', '=', null)
                 ->where('chapter_id', '=', null)
                 ->where('lesson_id', '=', null)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
             }
 
@@ -882,7 +882,7 @@ class SmUploadContentController extends Controller
             if (checkAdmin()) {
                 $uploadContent = SmTeacherUploadContent::find($id);
             } else {
-                $uploadContent = SmTeacherUploadContent::where('id', $id)->where('school_id', Auth::user()->school_id)->first();
+                $uploadContent = SmTeacherUploadContent::where('id', $id)->where('church_id', Auth::user()->church_id)->first();
             }
             if (checkAdmin() || $uploadContent->created_by == Auth::user()->id) {
                 if (file_exists($uploadContent->upload_file)) {

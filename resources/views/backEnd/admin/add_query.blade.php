@@ -331,7 +331,7 @@
                         <div class="single-meta">
                             <div class="d-flex justify-content-between">
                                 <div class="name">
-                                    @lang('university::un.academic_year'):
+                                    @lang('university::un.church_year'):
                                 </div>
                                 <div class="value">
                                     {{@$admission_query->unAcademic->name}}
@@ -365,7 +365,7 @@
                                     @lang('common.class'):
                                 </div>
                                 <div class="value">
-                                    {{@$admission_query->class != ""? @$admission_query->class->class_name:""}}
+                                    {{@$admission_query->class != ""? @$admission_query->class->age_group_name:""}}
                                 </div>
                             </div>
                         </div>

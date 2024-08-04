@@ -117,10 +117,10 @@
                                                                              
                                             <div class="student_rec_card">
                                                 <div class="student_rec_header d-flex align-items-center justify-content-between mb-3">
-                                                    <h5 class="mb-0 text-white">{{ $student->full_name }} {{ $student->admission_no ? '('.$student->admission_no.')':'' }}</h5>
-                                                    <button class="primary-btn small fix-gr-bg addMore" type="button" data-student_id = "{{ $student->id }}"><i class="ti-plus"></i> {{ __('common.add') }}</button>
+                                                    <h5 class="mb-0 text-white">{{ $student->full_name }} {{ $student->registration_no ? '('.$student->registration_no.')':'' }}</h5>
+                                                    <button class="primary-btn small fix-gr-bg addMore" type="button" data-member_id = "{{ $student->id }}"><i class="ti-plus"></i> {{ __('common.add') }}</button>
                                                 </div>
-                                                <input type="hidden" id="student_id" name="student_id" value="{{ $student->id }}">
+                                                <input type="hidden" id="member_id" name="member_id" value="{{ $student->id }}">
                                                 <input type="hidden" id="div_button" value="{{ generalSetting()->multiple_roll == 1 ? 'col-3' : 'col-4' }}">
                                                 <input type="hidden" id="div_count" value="{{ $student->id.$student->studentRecords->count() + 1 }}">
                                                 <input type="hidden" name="deafult" id="default_{{ $student->id }}">
@@ -133,7 +133,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="student_rec_footer d-flex align-items-center justify-content-center">
-                                                    <button class="primary-btn small fix-gr-bg updateStudentRecord" type="submit" data-student_id="{{ $student->id }}"
+                                                    <button class="primary-btn small fix-gr-bg updateStudentRecord" type="submit" data-member_id="{{ $student->id }}"
                                                         data-loading-text="<i class='fa fa-spinner fa-spin '></i> Updating...">
                                                         <i class="ti-check"></i> {{ __('common.update') }}</button>
                                                 </div>
@@ -164,7 +164,7 @@
                         <form action="{{route('student.multi-record-delete')}}" method="POST">
                             @csrf
                             <input type="hidden" id="remove_record_id">
-                            <input type="hidden" id="remove_student_id">
+                            <input type="hidden" id="remove_member_id">
                             <button type="submit" class="primary-btn fix-gr-bg" id="removeBtnSubmit">@lang('common.delete')</button>
                         </form>
                     </div>
@@ -179,11 +179,11 @@
         $(document).ready(function() {
            
             $(document).on('click', '.addMore', function() {
-                let student_id = $(this).data('student_id');
+                let member_id = $(this).data('member_id');
                 let div_count  = parseInt($('#div_count').val());
                 let div_button  = $('#div_button').val();
               console.log('add more click');
-                var div = `<div class="row mb-4 align-items-end" id="div_id_${student_id}${div_count}">
+                var div = `<div class="row mb-4 align-items-end" id="div_id_${member_id}${div_count}">
                            
                             <div class="${div_button}">
                                 <div class="input-effect">
@@ -194,7 +194,7 @@
                                             @isset($classes)
                                                 @foreach ($classes as $class)
                                                     <option value="{{ $class->id }}">
-                                                        {{ $class->class_name }}
+                                                        {{ $class->age_group_name }}
                                                     </option>
                                                 @endforeach
                                             @endisset
@@ -229,7 +229,7 @@
                                 </div>
                             </div>
                             <div class="col-3">
-                                <input type="checkbox" name="new_record[${div_count}][default]" id="is_default_${div_count}" data-row_id="${div_count}" data-student_id="${student_id}"class="common-checkbox is_default is_default_${student_id} form-control{{ @$errors->has('is_default') ? ' is-invalid' : '' }}">
+                                <input type="checkbox" name="new_record[${div_count}][default]" id="is_default_${div_count}" data-row_id="${div_count}" data-member_id="${member_id}"class="common-checkbox is_default is_default_${member_id} form-control{{ @$errors->has('is_default') ? ' is-invalid' : '' }}">
                                 <label for="is_default_${div_count}">@lang('common.default')</label>
                             </div>
                             @if (generalSetting()->multiple_roll == 1)
@@ -257,10 +257,10 @@
                             @endif
                             <div class="col-1 text-right">
                                 <button class="primary-btn small fix-gr-bg icon-only removrButton"
-                                data-student_id = "${student_id}" data-div_id = "${div_count}"><i class="ti-trash"></i></button>
+                                data-member_id = "${member_id}" data-div_id = "${div_count}"><i class="ti-trash"></i></button>
                             </div>
                             </div>`;
-                $('#appendDiv_'+student_id).append(div);
+                $('#appendDiv_'+member_id).append(div);
                 $('#div_count').val(div_count + 1);
                 $('.niceSelect').niceSelect('destroy');        
                 $(".niceSelect").niceSelect();            
@@ -269,8 +269,8 @@
                 var submit_btn = $(this).find("button[type=submit]");
                 event.preventDefault();
                 var url = $("#url").val();
-                var student_id = $(this).data('student_id');
-                var formData = $("#form_"+student_id).serialize();
+                var member_id = $(this).data('member_id');
+                var formData = $("#form_"+member_id).serialize();
            
                 $.ajax({
                     type: "POST",                   
@@ -282,7 +282,7 @@
                     },
                     success: function(data) {
                         if (data.status == true) {
-                            reload(student_id);                          
+                            reload(member_id);                          
                             toastr.success(data.message, 'Success');                           
                         } else {
                             toastr.error(data.message, 'Error'); 
@@ -299,47 +299,47 @@
             });
             $(document).on('click', '.is_default', function(){
                 let row_id = $(this).data('row_id');
-                let student_id = $(this).data('student_id');
-                $('.is_default_'+student_id).prop('checked', false);
+                let member_id = $(this).data('member_id');
+                $('.is_default_'+member_id).prop('checked', false);
                 $('#is_default_'+row_id).prop('checked', true);
-                $("#default_"+student_id).val(row_id);
+                $("#default_"+member_id).val(row_id);
             });
             $(document).on('click', '.removrButton', function(){
                 let div_id = $(this).data('div_id');
-                let student_id = $(this).data('student_id');
+                let member_id = $(this).data('member_id');
                 let record_id = $(this).data('record_id');
 
-                if (record_id && student_id) {
+                if (record_id && member_id) {
                     $("#deleteRecord").modal('show');
                     $("#remove_record_id").val(record_id);
-                    $("#remove_student_id").val(student_id);
+                    $("#remove_member_id").val(member_id);
                 } else {
-                    $('#div_id_'+student_id+div_id).remove();
+                    $('#div_id_'+member_id+div_id).remove();
                 }
             });                
             $(document).on('click', '#removeBtnSubmit', function(event){
                 event.preventDefault();
-                let student_id = $("#remove_student_id").val();
+                let member_id = $("#remove_member_id").val();
                 let record_id = $("#remove_record_id").val();
                 var url = $("#url").val();
-                console.log(student_id, record_id);
+                console.log(member_id, record_id);
                 $.ajax({
                     type:"POST",
-                    data:{student_id:student_id, record_id:record_id},
+                    data:{member_id:member_id, record_id:record_id},
                     dataType:"json",
                     url:url+'/student-record-delete',
                     success:function(data){
                         if(data.status == true){
                             toastr.success(data.message, 'Success');
-                            $('#div_id_'+student_id+record_id).remove();
+                            $('#div_id_'+member_id+record_id).remove();
                             $("#deleteRecord").modal('hide');
                             $("#remove_record_id").val('');
-                            $("#remove_student_id").val('');
+                            $("#remove_member_id").val('');
                         }else {
                             toastr.error(data.message, 'Error');
                             $("#deleteRecord").modal('hide');
                             $("#remove_record_id").val('');
-                            $("#remove_student_id").val('');
+                            $("#remove_member_id").val('');
                         }
                     },
                     error:function(data) {
@@ -384,7 +384,7 @@
                                   target_select.append(
                                        $("<option>", {
                                            value: className.id,
-                                           text: className.class_name,
+                                           text: className.age_group_name,
                                        })
                                    );
                                });
@@ -436,7 +436,7 @@
                                   target_select.append(
                                        $("<option>", {
                                            value: section.id,
-                                           text: section.section_name,
+                                           text: section.mgender_name,
                                        })
                                    );
                                });
@@ -456,18 +456,18 @@
                    });
                }
            );
-           function reload(student_id){
+           function reload(member_id){
             var url = $("#url").val();
             $.ajax({
                 type:'GET',
-                data:{student_id:student_id},
+                data:{member_id:member_id},
                 dataType:"html",
-                url: url +"/student-multi-record/"+student_id,
+                url: url +"/student-multi-record/"+member_id,
 
                 success:function(data){
-                    $('#appendDiv_'+student_id).html('');
-                    $('#student_rec_content_'+student_id).html(data);
-                    $('#form_'+student_id+' .niceSelect').niceSelect();
+                    $('#appendDiv_'+member_id).html('');
+                    $('#student_rec_content_'+member_id).html(data);
+                    $('#form_'+member_id+' .niceSelect').niceSelect();
                 },
                 error:function(error){
                     console.log(error);

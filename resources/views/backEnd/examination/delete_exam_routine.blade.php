@@ -4,7 +4,7 @@
 
 <div class="mt-40 d-flex justify-content-between">
     <button type="button" class="primary-btn tr-bg" data-dismiss="modal">@lang('common.cancel')</button>
-    <a href="{{route('delete-exam-routine',[$assigned_id,$section_id_all])}}" class="text-light">
+    <a href="{{route('delete-exam-routine',[$assigned_id,$mgender_id_all])}}" class="text-light">
     <button class="primary-btn fix-gr-bg" type="submit">@lang('common.delete')</button>
      </a>
 </div>

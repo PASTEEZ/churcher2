@@ -19,11 +19,11 @@ class FixingThemeTable extends Migration
         $schools = SmSchool::all();
         $default_themes = ['Default', 'Lawn Green'];
         foreach ($schools as $school) {
-            $user = User::where('school_id', $school->id)->first();
+            $user = User::where('church_id', $school->id)->first();
             foreach($default_themes as $key=>$item) {
                 $theme = Theme::updateOrCreate([
                     'title'=>$item,
-                    'school_id'=>$school->id
+                    'church_id'=>$school->id
                 ]);
                 if($item == 'Lawn Green') {
                     $theme->path_main_style = 'lawngreen_version/style.css';
@@ -40,7 +40,7 @@ class FixingThemeTable extends Migration
                 $theme->background_image = asset('/public/backEnd/img/body-bg.jpg');
                 $theme->is_system = true;
                 $theme->created_by = $user? $user->id : 1;
-                $theme->school_id = $school->id;
+                $theme->church_id = $school->id;
                 $theme->save();
             }
 

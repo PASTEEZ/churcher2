@@ -165,18 +165,18 @@
         <div class="seat-item">
             <div class="seat-list">
                 <div class="text-center">
-                    @if($setting->school_name )
-                        <h3 class="text-center">{{generalSetting()->school_name}}</h3>
+                    @if($setting->church_name )
+                        <h3 class="text-center">{{generalSetting()->church_name}}</h3>
                     @endif
-                    @if($setting->exam_name || $setting->academic_year)
+                    @if($setting->exam_name || $setting->church_year)
                         <button class="btn">
-                            @if($setting->exam_name || $setting->academic_year)
+                            @if($setting->exam_name || $setting->church_year)
                                 {{$seat_plan->examType->title}}
-                                @if($setting->academic_year)
+                                @if($setting->church_year)
                                     -
                                 @endif
                             @endif
-                            @if($setting->academic_year)
+                            @if($setting->church_year)
                                 {{@$seat_plan->academicYear->year}}
                             @endif
                             @if(@$seat_plan->studentRecord->studentDetail->category->category_name)
@@ -188,22 +188,22 @@
                 </div>
                 <div class="seat-user">
                     <div class="seat-left" @if(!$setting->student_photo) style="max-width: 100%; padding-right: 0px;" @endif>
-                        @if($setting->student_name)
+                        @if($setting->member_name)
                             <h2>{{@$seat_plan->studentRecord->studentDetail->full_name}}</h2>
                         @endif
                         <ul>
                             @if($setting->class_section)
-                                <li>{{@$seat_plan->studentRecord->class->class_name}}
-                                    ({{@$seat_plan->studentRecord->section->section_name}})
+                                <li>{{@$seat_plan->studentRecord->class->age_group_name}}
+                                    ({{@$seat_plan->studentRecord->section->mgender_name}})
                                 </li>
                             @endif
                             @if($setting->roll_no)
                                 <li>@lang('student.roll_number')
                                     : {{@$seat_plan->studentRecord->studentDetail->roll_no}}</li>
                             @endif
-                            @if($setting->admission_no)
-                                <li>@lang('student.admission_no')
-                                    : {{@$seat_plan->studentRecord->studentDetail->admission_no}}</li>
+                            @if($setting->registration_no)
+                                <li>@lang('student.registration_no')
+                                    : {{@$seat_plan->studentRecord->studentDetail->registration_no}}</li>
                             @endif
                         </ul>
                     </div>
@@ -228,21 +228,21 @@
         <div class="single_seat d-flex">
             <div class="single_seat_left flex-fill">
                 <div class="seat_head">
-                    @if($setting->school_name )
-            <h3 class="text-center">{{generalSetting()->school_name}}</h3>
+                    @if($setting->church_name )
+            <h3 class="text-center">{{generalSetting()->church_name}}</h3>
 
         @endif
         <div class="exam_name text-center text-capitalize">
 @if($setting->exam_name)
             {{$seat_plan->examType->title}}
         @endif
-        @if($setting->academic_year)
+        @if($setting->church_year)
             {{@$seat_plan->academicYear->year}}
         @endif
 
         </div>
-@if($setting->student_name)
-            <h4 class="student_name text-uppercase">{{@$seat_plan->studentRecord->studentDetail->full_name}}</h4>
+@if($setting->member_name)
+            <h4 class="member_name text-uppercase">{{@$seat_plan->studentRecord->studentDetail->full_name}}</h4>
 
         @endif
         @if(isset($seat_plan->studentRecord->studentDetail->category))
@@ -266,15 +266,15 @@
         </div>
         <div class="student_info d-flex flex-column">
 @if($setting->class_section)
-            <span>{{@$seat_plan->studentRecord->class->class_name}}({{@$seat_plan->studentRecord->section->section_name}})</span>
+            <span>{{@$seat_plan->studentRecord->class->age_group_name}}({{@$seat_plan->studentRecord->section->mgender_name}})</span>
 
         @endif
         @if($setting->roll_no)
             <span>@lang('student.roll_number') : {{@$seat_plan->studentRecord->studentDetail->roll_no}}</span>
 
         @endif
-        @if($setting->admission_no)
-            <span>@lang('student.admission_no') : {{@$seat_plan->studentRecord->studentDetail->admission_no}}</span>
+        @if($setting->registration_no)
+            <span>@lang('student.registration_no') : {{@$seat_plan->studentRecord->studentDetail->registration_no}}</span>
 
         @endif
         </div>

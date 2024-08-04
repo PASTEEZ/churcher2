@@ -134,7 +134,7 @@ hr{
                                 <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                     <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                     @foreach($classes as $class)
-                                    <option value="{{$class->id}}" {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{$class->class_name}}</option>
+                                    <option value="{{$class->id}}" {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{$class->age_group_name}}</option>
                                     @endforeach
                                 </select>
                                 @if ($errors->has('class'))
@@ -187,9 +187,9 @@ hr{
 @php
     $generalSetting= generalSetting();;
     if(!empty($generalSetting)){
-        $school_name =$generalSetting->school_name;
+        $church_name =$generalSetting->church_name;
         $site_title =$generalSetting->site_title;
-        $school_code =$generalSetting->school_code;
+        $church_code =$generalSetting->church_code;
         $address =$generalSetting->address;
         $phone =$generalSetting->phone; 
         $email =$generalSetting->email; 
@@ -225,10 +225,10 @@ hr{
                                         <div class="card-header">
                                             <div class="d-flex">
                                                 <div class="offset-2 col-lg-2">
-                                                    <img class="logo-img" src="{{ generalSetting()->logo }}" alt="{{ generalSetting()->school_name }}">
+                                                    <img class="logo-img" src="{{ generalSetting()->logo }}" alt="{{ generalSetting()->church_name }}">
                                                 </div>
                                                 <div class="col-lg-6 ml-30">
-                                                    <h3 class="text-white"> {{isset(generalSetting()->school_name)?generalSetting()->school_name:'Infix School Management ERP'}} </h3>
+                                                    <h3 class="text-white"> {{isset(generalSetting()->church_name)?generalSetting()->church_name:'Infix School Management ERP'}} </h3>
                                                     <p class="text-white mb-0"> {{isset(generalSetting()->address)?generalSetting()->address:'Infix School Address'}} </p>
                                                     <p class="text-white mb-0">
                                                         @lang('common.email'): {{isset($email)?$email:'admin@demo.com'}} ,
@@ -248,24 +248,24 @@ hr{
                                                     <h3>{{  $studentDetails->full_name }}</h3>
                                                     <div class="row">
                                                         <div class="col-lg-3">
-                                                            <p class="mb-0 d-flex">@lang('common.academic_year'): 
+                                                            <p class="mb-0 d-flex">@lang('common.church_year'): 
                                                                 <span class="primary-color fw-500">{{generalSetting()->session_year}}</span>
                                                             </p>
                                                             <p class="mb-0 d-flex">@lang('student.roll') : 
                                                                 <span class="primary-color fw-500">{{$studentDetails->roll_no}}</span>
                                                             </p>
-                                                            <p class="mb-0"> @lang('student.admission_no'):
-                                                                <span class="primary-color fw-500"> {{$studentDetails->admission_no}}</span> 
+                                                            <p class="mb-0"> @lang('student.registration_no'):
+                                                                <span class="primary-color fw-500"> {{$studentDetails->registration_no}}</span> 
                                                             </p>
                                                         </div>
                                                         <div class="col-lg-3">
                                                             <p class="mb-0"> @lang('common.class') : 
-                                                                <span class="primary-color fw-500">{{ $studentDetails->class_name }}</span>
+                                                                <span class="primary-color fw-500">{{ $studentDetails->age_group_name }}</span>
                                                             </p>
                                                         </div>
                                                         <div class="col-lg-3">
                                                             <p class="mb-0">@lang('common.section') : 
-                                                                <span class="primary-color fw-500">{{ $studentDetails->section_name }}</span>
+                                                                <span class="primary-color fw-500">{{ $studentDetails->mgender_name }}</span>
                                                             </p>
                                                         </div>
                                                     </div>
@@ -273,7 +273,7 @@ hr{
                                                 <div class="col-lg-4 text-black"> 
                                                         @php 
                                                             $marks_grade=DB::table('sm_marks_grades')
-                                                            ->where('academic_id', getAcademicId())
+                                                            ->where('church_year_id', getAcademicId())
                                                             ->get(); 
                                                         @endphp
                                                             @if(@$marks_grade)

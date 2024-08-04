@@ -31,8 +31,8 @@ class SmStudentCategoryController extends Controller
         try {
             $student_type = new SmStudentCategory();
             $student_type->category_name = $request->category;
-            $student_type->school_id = Auth::user()->school_id;
-            $student_type->academic_id = getAcademicId();
+            $student_type->church_id = Auth::user()->church_id;
+            $student_type->church_year_id = getAcademicId();
             $student_type->save();
             Toastr::success('Operation successful', 'Success');
             return redirect()->back();

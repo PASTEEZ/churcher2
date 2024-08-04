@@ -19,7 +19,7 @@ class SmComplaintTypeController extends Controller
     public function index()
     {
         try {
-            $room_types = SmRoomType::where('school_id',Auth::user()->school_id)->get();
+            $room_types = SmRoomType::where('church_id',Auth::user()->church_id)->get();
             return view('backEnd.admin.complaint_type', compact('room_types'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');

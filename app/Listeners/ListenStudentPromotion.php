@@ -34,7 +34,7 @@ class ListenStudentPromotion
     {
         $student_info = json_decode($event->student_promotion->student_info);
 
-        $subjects = SmAssignSubject::where('section_id',$event->student_promotion->previous_section_id)->get();
+        $subjects = SmAssignSubject::where('mgender_id',$event->student_promotion->previous_mgender_id)->get();
 
         foreach (array_unique($subjects->pluck('teacher_id')->toArray()) as $id){
             $exist = BlockUser::where(function ($query) use ($student_info, $id){

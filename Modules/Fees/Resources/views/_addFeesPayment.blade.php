@@ -44,14 +44,14 @@
                     <div class="white-box radius-t-y-0">
                         <div class="single-meta mt-10">
                             <div class="d-flex justify-content-between">
-                                <div class="name">@lang('student.student_name')</div>
+                                <div class="name">@lang('student.member_name')</div>
                                 <div class="value">{{$invoiceInfo->studentInfo->full_name}}</div>
                             </div>
                         </div>
                         <div class="single-meta">
                             <div class="d-flex justify-content-between">
                                 <div class="name">@lang('student.admission_number')</div>
-                                <div class="value">{{$invoiceInfo->studentInfo->admission_no}}</div>
+                                <div class="value">{{$invoiceInfo->studentInfo->registration_no}}</div>
                             </div>
                         </div>
                         <div class="single-meta">
@@ -63,13 +63,13 @@
                         <div class="single-meta">
                             <div class="d-flex justify-content-between">
                                 <div class="name">@lang('common.class')</div>
-                                <div class="value">{{$invoiceInfo->recordDetail->class->class_name}}</div>
+                                <div class="value">{{$invoiceInfo->recordDetail->class->age_group_name}}</div>
                             </div>
                         </div>
                         <div class="single-meta">
                             <div class="d-flex justify-content-between">
                                 <div class="name"> @lang('common.section')</div>
-                                <div class="value">{{$invoiceInfo->recordDetail->section->section_name}}</div>
+                                <div class="value">{{$invoiceInfo->recordDetail->section->mgender_name}}</div>
                             </div>
                         </div>
                         @if (isset($role) && $role =='admin')
@@ -266,7 +266,7 @@
                         </div>
 
                         @if (moduleStatusCheck('MercadoPago') == true)
-                            {{-- @include('mercadopago::form.userForm',['student_id' => $invoiceInfo->recordDetail->id, 'invoice_id' => $invoiceInfo->id,'fees'=>true]) --}}
+                            {{-- @include('mercadopago::form.userForm',['member_id' => $invoiceInfo->recordDetail->id, 'invoice_id' => $invoiceInfo->id,'fees'=>true]) --}}
                         @endif
                         <div class="row mt-40">
                             <div class="col-lg-12 text-center">
@@ -313,7 +313,7 @@
                                     @if (isset($invoiceInfo))
                                         <input type="hidden" name="invoice_id" value="{{$invoiceInfo->id}}">
                                         <input type="hidden" class="weaverType" value="amount">
-                                        <input type="hidden" name="student_id" value="{{$invoiceInfo->recordDetail->id}}">
+                                        <input type="hidden" name="member_id" value="{{$invoiceInfo->recordDetail->id}}">
                                         @foreach ($invoiceDetails as $key=>$invoiceDetail)
                                             <tr>
                                                 <td></td>

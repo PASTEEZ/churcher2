@@ -37,7 +37,7 @@
                             <div class="add-visitor">
                                 <div class="row mt-25">
                                     <div class="col-lg-12 mb-20">
-                                        <span class="text-primary">[student_name] [parent_name] [due_amount] [fees_name] [due_date] [school_name]</span>
+                                        <span class="text-primary">[member_name] [parent_name] [due_amount] [fees_name] [due_date] [church_name]</span>
                                     </div>
                                     <div class="col-lg-8">
                                         
@@ -75,7 +75,7 @@
                                 </div>
                                 <div class="row mt-25">
                                     <div class="col-lg-12 mb-20">
-                                        <span class="text-primary">[student_name] [parent_name] [number_of_subject] [subject_list] [due_date]</span>
+                                        <span class="text-primary">[member_name] [parent_name] [number_of_subject] [subject_list] [due_date]</span>
                                     </div>
                                     <div class="col-lg-8">
                                         

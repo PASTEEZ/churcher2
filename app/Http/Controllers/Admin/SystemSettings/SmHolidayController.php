@@ -45,8 +45,8 @@ class SmHolidayController extends Controller
             $holidays->to_date = date('Y-m-d', strtotime($request->to_date));
             $holidays->created_by = Auth::user()->id;
             $holidays->upload_image_file = fileUpload($request->upload_file_name,$destination);
-            $holidays->school_id = Auth::user()->school_id;
-            $holidays->academic_id = getAcademicId();
+            $holidays->church_id = Auth::user()->church_id;
+            $holidays->church_year_id = getAcademicId();
             $results = $holidays->save();
 
             Toastr::success('Operation successful', 'Success');
@@ -63,7 +63,7 @@ class SmHolidayController extends Controller
 
         try{
             $editData = SmHoliday::find($id);            
-            $holidays = SmHoliday::where('academic_id', getAcademicId())->where('school_id',Auth::user()->school_id)->get();
+            $holidays = SmHoliday::where('church_year_id', getAcademicId())->where('church_id',Auth::user()->church_id)->get();
 
           
             return view('backEnd.holidays.holidaysList', compact('editData', 'holidays'));

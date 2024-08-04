@@ -14,14 +14,14 @@ class SmExamAttendance extends Model
     }
     public function class()
     {
-        return $this->belongsTo('App\SmClass', 'class_id', 'id');
+        return $this->belongsTo('App\SmClass', 'age_group_id', 'id');
     }
     public function section()
     {
-        return $this->belongsTo('App\SmSection', 'section_id', 'id');
+        return $this->belongsTo('App\SmSection', 'mgender_id', 'id');
     }
 
     // public function scopesClassSection($query){
-    //     return $query->where('class_id',request()->class_id)->where('section_id',request()->section_id)->where('subject_id',request()->subject_id);
+    //     return $query->where('age_group_id',request()->age_group_id)->where('mgender_id',request()->mgender_id)->where('subject_id',request()->subject_id);
     // }
 }

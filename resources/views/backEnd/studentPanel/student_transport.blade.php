@@ -38,7 +38,7 @@
                                         <div class="single-meta mt-10">
                                             <div class="d-flex justify-content-between">
                                                 <div class="name">
-                                                    @lang('student.student_name')
+                                                    @lang('student.member_name')
                                                 </div>
                                                 <div class="value">
                                                    {{$student_detail->first_name.' '.$student_detail->last_name}}
@@ -48,10 +48,10 @@
                                         <div class="single-meta">
                                             <div class="d-flex justify-content-between">
                                                 <div class="name">
-                                                    @lang('student.admission_no')
+                                                    @lang('student.registration_no')
                                                 </div>
                                                 <div class="value">
-                                                    {{$student_detail->admission_no}}
+                                                    {{$student_detail->registration_no}}
                                                 </div>
                                             </div>
                                         </div>
@@ -62,10 +62,10 @@
                                                 </div>
                                                 <div class="value">
                                                     @if($student_detail->defaultClass!="")
-                                                        {{@$student_detail->defaultClass->class->class_name}}
-                                                        {{-- ({{@$academic_year->year}}) --}}
+                                                        {{@$student_detail->defaultClass->class->age_group_name}}
+                                                        {{-- ({{@$church_year->year}}) --}}
                                                     @elseif ($student_detail->studentRecord !="")  
-                                                    {{@$student_detail->studentRecord->class->class_name}}
+                                                    {{@$student_detail->studentRecord->class->age_group_name}}
                                                     @endif
                                                 </div>
                                             </div>
@@ -78,10 +78,10 @@
                                                 <div class="value">
                                                     
                                                     @if($student_detail->defaultClass!="")
-                                                    {{@$student_detail->defaultClass->section->section_name}}
+                                                    {{@$student_detail->defaultClass->section->mgender_name}}
                                                    
                                                     @elseif ($student_detail->studentRecord !="")  
-                                                    {{@$student_detail->studentRecord->section->section_name}}
+                                                    {{@$student_detail->studentRecord->section->mgender_name}}
                                                     @endif
                                                 </div>
                                             </div>

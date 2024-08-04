@@ -23,9 +23,9 @@ class CreateSmCurrenciesTable extends Migration
             $table->string('symbol')->nullable()->collation('utf8mb4_unicode_ci');
             $table->timestamps();
 
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
-            $table->integer('academic_id')->nullable()->unsigned();
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_year_id')->nullable()->unsigned();
         });
         $currencies = [
             [1, 'Leke', 'ALL', 'Lek'],

@@ -208,7 +208,7 @@ return [
 
 "topic" => "Rubrique",
 
-"select_academic_year" => "Sélectionner une année universitaire",
+"select_church_year" => "Sélectionner une année universitaire",
 
 "calendar" => "Calendrier",
 

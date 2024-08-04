@@ -174,9 +174,9 @@
                                                 <option data-display="@lang('common.select_class')" value="">@lang('common.select_class')</option>
                                                     @foreach($classes as $class)
                                                         @if(isset($fees_master))
-                                                            <option value="{{$class->id}}"  {{( $fees_master->class_id == $class->id ? "selected":"")}}>{{$class->class_name}}</option> 
+                                                            <option value="{{$class->id}}"  {{( $fees_master->age_group_id == $class->id ? "selected":"")}}>{{$class->age_group_name}}</option> 
                                                         @else 
-                                                            <option value="{{$class->id}}"  {{( old("class") == $class->id ? "selected":"")}}>{{$class->class_name}}</option> 
+                                                            <option value="{{$class->id}}"  {{( old("class") == $class->id ? "selected":"")}}>{{$class->age_group_name}}</option> 
                                                         @endif    
                                                     @endforeach
                                             </select>
@@ -187,14 +187,14 @@
                                             @endif
                                         </div>
                                         <div class="col-lg-12 mb-30" id="select_section__member_div">
-                                            <select class="w-100 bb niceSelect form-control{{ $errors->has('section') ? ' is-invalid' : '' }}" id="select_section_member" name="section_id">
+                                            <select class="w-100 bb niceSelect form-control{{ $errors->has('section') ? ' is-invalid' : '' }}" id="select_section_member" name="mgender_id">
                                                 <option data-display="@lang('fees.all_section')" value="all_section">@lang('fees.all_section')</option>
                                                 @if(isset($fees_master))
                                                 
-                                                    @if(is_null($fees_master->section_id))
+                                                    @if(is_null($fees_master->mgender_id))
                                                         <option selected value="all_section">@lang('fees.all_section')</option>
                                                     @else 
-                                                        <option value="{{@$fees_master->section_id}}"  selected >{{@$fees_master->section->section_name}}</option>
+                                                        <option value="{{@$fees_master->mgender_id}}"  selected >{{@$fees_master->section->mgender_name}}</option>
                                                     @endif 
                                                 @endif
                                             </select>

@@ -25,7 +25,7 @@ class SmChartOfAccountRequest extends FormRequest
     public function rules()
     {
         return [
-            'head' => ['required', 'min:2' , Rule::unique('sm_chart_of_accounts', 'head')->where('academic_id', getAcademicId())->where('school_id', auth()->user()->school_id)->ignore($this->id)],
+            'head' => ['required', 'min:2' , Rule::unique('sm_chart_of_accounts', 'head')->where('church_year_id', getAcademicId())->where('church_id', auth()->user()->church_id)->ignore($this->id)],
             'type' => 'required',
         ];
     }

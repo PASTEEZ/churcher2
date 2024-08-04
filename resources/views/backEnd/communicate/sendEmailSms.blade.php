@@ -161,11 +161,11 @@
                                                 @else
                                                     <div class="row mb-35">
                                                         <div class="col-lg-12">
-                                                            <select class="niceSelect w-100 bb form-control{{ $errors->has('role_id') ? ' is-invalid' : '' }}" name="class_id" id="class_id_email_sms">
+                                                            <select class="niceSelect w-100 bb form-control{{ $errors->has('role_id') ? ' is-invalid' : '' }}" name="age_group_id" id="age_group_id_email_sms">
                                                                 <option data-display="@lang('common.class')  *" value="">@lang('common.class') *</option>
                                                                 @if(isset($classes))
                                                                     @foreach($classes as $value)
-                                                                        <option value="{{@$value->id}}">{{@$value->class_name}}</option>
+                                                                        <option value="{{@$value->id}}">{{@$value->age_group_name}}</option>
                                                                     @endforeach
                                                                 @endif
                                                             </select>

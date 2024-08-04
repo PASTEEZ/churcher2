@@ -282,7 +282,7 @@ database/migrations/2021_12_15_134114_create_sm_student_registration_fields_tabl
 database/migrations/2022_01_04_105604_create_student_records_table.php
 database/migrations/2022_01_05_111544_lead_fees_table.php
 database/migrations/2022_01_05_134245_add_phone_number_to_users_table.php
-database/migrations/2022_01_07_033733_add_class_section_id_to_sm_student_attendances_table.php
+database/migrations/2022_01_07_033733_add_class_mgender_id_to_sm_student_attendances_table.php
 database/migrations/2022_01_07_054910_add_class_section_record_id_to_sm_subject_attendances_table.php
 database/migrations/2022_01_07_145639_add_record_id_to_sm_fees_assign_discounts_table.php
 database/migrations/2022_01_10_040855_add_class_section_record_id_to_sm_exam_attendance_children_table.php
@@ -526,7 +526,7 @@ database/seeders/sm_student_documentsSeeder.php
 database/seeders/sm_student_excel_formatsSeeder.php
 database/seeders/sm_student_groupsSeeder.php
 database/seeders/sm_student_homeworksSeeder.php
-database/seeders/sm_student_id_cardsSeeder.php
+database/seeders/sm_member_id_cardsSeeder.php
 database/seeders/sm_student_promotionsSeeder.php
 database/seeders/sm_student_take_online_exam_questionsSeeder.php
 database/seeders/sm_student_take_online_examsSeeder.php
@@ -600,7 +600,7 @@ resources/views/backEnd/admin/certificate/create_certificate.blade.php
 resources/views/backEnd/admin/certificate/generate_certificate.blade.php
 resources/views/backEnd/admin/certificate/view_certificate.blade.php
 resources/views/backEnd/admin/generate_certificate.blade.php
-resources/views/backEnd/admin/idCard/student_id_card_print_bulk.blade.php
+resources/views/backEnd/admin/idCard/member_id_card_print_bulk.blade.php
 resources/views/backEnd/admin/phone_call.blade.php
 resources/views/backEnd/admin/student_certificate.blade.php
 resources/views/backEnd/admin/student_certificate_old.blade.php

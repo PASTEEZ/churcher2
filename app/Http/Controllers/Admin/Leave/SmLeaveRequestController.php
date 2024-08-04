@@ -33,9 +33,9 @@ class SmLeaveRequestController extends Controller
 
 
             if ($user) {
-                $my_leaves = SmLeaveDefine::with('leaveType')->where('user_id', $user->id)->where('role_id', $user->role_id)->where('school_id', Auth::user()->school_id)->get();
+                $my_leaves = SmLeaveDefine::with('leaveType')->where('user_id', $user->id)->where('role_id', $user->role_id)->where('church_id', Auth::user()->church_id)->get();
                 $apply_leaves = SmLeaveRequest::with('leaveDefine')->where('role_id', $user->role_id)->where('active_status', 1)
-                    ->where('school_id', Auth::user()->school_id)->has('leaveDefine')->where('staff_id', Auth::user()->id)->get();
+                    ->where('church_id', Auth::user()->church_id)->has('leaveDefine')->where('staff_id', Auth::user()->id)->get();
                 
                 $leave_types = $my_leaves->where('active_status', 1);
             }
@@ -65,8 +65,8 @@ class SmLeaveRequestController extends Controller
             if ($request->file('attach_file') != "") {
                 $apply_leave->file = fileUpload($request->attach_file, $path);
             }
-            $apply_leave->school_id = auth()->user()->school_id;
-            $apply_leave->academic_id = getAcademicId();
+            $apply_leave->church_id = auth()->user()->church_id;
+            $apply_leave->church_year_id = getAcademicId();
             $apply_leave->save();
 
             $staffInfo = SmStaff::where('user_id', auth()->user()->id)->first();
@@ -92,9 +92,9 @@ class SmLeaveRequestController extends Controller
         try {
             $user = Auth::user();
             if ($user) {
-                $my_leaves = SmLeaveDefine::where('user_id', $user->id)->where('role_id', $user->role_id)->where('school_id', Auth::user()->school_id)->get();
-                $apply_leaves = SmLeaveRequest::where('role_id', $user->role_id)->where('active_status', 1)->where('school_id', Auth::user()->school_id)->get();
-                $leave_types = SmLeaveDefine::where('role_id', $user->role_id)->where('active_status', 1)->where('school_id', Auth::user()->school_id)->get();
+                $my_leaves = SmLeaveDefine::where('user_id', $user->id)->where('role_id', $user->role_id)->where('church_id', Auth::user()->church_id)->get();
+                $apply_leaves = SmLeaveRequest::where('role_id', $user->role_id)->where('active_status', 1)->where('church_id', Auth::user()->church_id)->get();
+                $leave_types = SmLeaveDefine::where('role_id', $user->role_id)->where('active_status', 1)->where('church_id', Auth::user()->church_id)->get();
             }
 
             $apply_leave = SmLeaveRequest::find($id);

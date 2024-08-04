@@ -36,38 +36,38 @@ class DatatableQueryController extends Controller
          
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
-            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->withoutGlobalScope(StatusAcademicSchoolScope::class)->get();
-            $sessions = SmAcademicYear::where('school_id', Auth::user()->school_id)->get();
-            $academic_year = $request->academic_year;
-            $class_id = $request->class;
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->withoutGlobalScope(StatusAcademicSchoolScope::class)->get();
+            $sessions = SmAcademicYear::where('church_id', Auth::user()->church_id)->get();
+            $church_year = $request->church_year;
+            $age_group_id = $request->class;
             $name = $request->name;
             $roll_no = $request->roll_no;
             $section = $request->section;
             $data['un_session_id']= $request->un_session_id ;
-            $data['un_academic_id']= $request->un_academic_id ;
+            $data['un_church_year_id']= $request->un_church_year_id ;
             $data['un_faculty_id']= $request->un_faculty_id;
             $data['un_department_id']= $request->un_department_id;
             $data['un_semester_id']= $request->un_semester_id;
             $data['un_semester_label_id']= $request->un_semester_label_id;
-            $data['un_section_id']= $request->un_section_id;
+            $data['un_mgender_id']= $request->un_mgender_id;
            
-            return view('backEnd.studentInformation.student_details', compact('classes', 'class_id', 'name', 'roll_no', 'sessions', 'section', 'academic_year','data'));
+            return view('backEnd.studentInformation.student_details', compact('classes', 'age_group_id', 'name', 'roll_no', 'sessions', 'section', 'church_year','data'));
         }
 
         if ($request->ajax()) {
              
         
             $records = StudentRecord::query();
-            $records->where('school_id',auth()->user()->school_id)->whereIn('class_id', [3, 4, 5]);
-            $records->when(moduleStatusCheck('University') && $request->filled('un_academic_id'), function ($u_query) use ($request) {
-                $u_query->where('un_academic_id', $request->un_academic_id);
+            $records->where('church_id',auth()->user()->church_id)->whereIn('age_group_id', [3, 4, 5]);
+            $records->when(moduleStatusCheck('University') && $request->filled('un_church_year_id'), function ($u_query) use ($request) {
+                $u_query->where('un_church_year_id', $request->un_church_year_id);
                 }, function ($query) use ($request) {
-                    $query->when($request->academic_year, function ($query) use ($request) {
-                    $query->where('academic_id', $request->academic_year);
+                    $query->when($request->church_year, function ($query) use ($request) {
+                    $query->where('church_year_id', $request->church_year);
                     });
             });
             
-           $student_records = $records->where('is_promote', 0)->whereHas('student')->get(['student_id'])->unique('student_id')->toArray();
+           $student_records = $records->where('is_promote', 0)->whereHas('student')->get(['member_id'])->unique('member_id')->toArray();
 
           $all_students =  SmStudent::whereIn('id',$student_records)
                                 ->where('active_status', 1)
@@ -89,18 +89,18 @@ class DatatableQueryController extends Controller
                              
 
             $students = SmStudent::with(['gender', 'studentRecords' => function ($q) use ($request) {
-                return $q->when(moduleStatusCheck('University') && $request->filled('un_academic_id'), function ($u_query) use ($request) {
-                        $u_query->where('un_academic_id', $request->un_academic_id);
+                return $q->when(moduleStatusCheck('University') && $request->filled('un_church_year_id'), function ($u_query) use ($request) {
+                        $u_query->where('un_church_year_id', $request->un_church_year_id);
                     }, function ($query) use ($request) {
-                       $query->when($request->academic_year, function ($query) use ($request) {
-                            $query->where('academic_id', $request->academic_year);
+                       $query->when($request->church_year, function ($query) use ($request) {
+                            $query->where('church_year_id', $request->church_year);
                         });
                     })
                     ->when(moduleStatusCheck('University') && $request->filled('un_faculty_id'), function ($u_query) use ($request) {
                         $u_query->where('un_faculty_id', $request->un_faculty_id);
                     }, function ($query) use ($request) {
                         $query->when($request->class, function ($query) use ($request) {
-                            $query->where('class_id', $request->class);
+                            $query->where('age_group_id', $request->class);
                         });
                     })
 
@@ -108,24 +108,24 @@ class DatatableQueryController extends Controller
                         $u_query->where('un_department_id', $request->un_department_id);
                     }, function ($query) use ($request) {
                         $query->when($request->section, function ($query) use ($request) {
-                            $query->where('section_id', $request->section);
+                            $query->where('mgender_id', $request->section);
                         });
                     })
                     ->where('is_promote', 0)
-                    ->when(!$request->academic_year && moduleStatusCheck('University')==false, function ($query) use ($request) {
-                        $query->where('academic_id', getAcademicId());
+                    ->when(!$request->church_year && moduleStatusCheck('University')==false, function ($query) use ($request) {
+                        $query->where('church_year_id', getAcademicId());
                     });
 
             }])->select('sm_students.*');
             $students->where('sm_students.active_status', 1);
 
              
-            $students = $students->where('sm_students.school_id', Auth::user()->school_id)
+            $students = $students->where('sm_students.church_id', Auth::user()->church_id)
                 ->with(array('parents' => function ($query) {
                     $query->select('id', 'fathers_name');
                 }))
                 ->with(array('sm_sections' => function ($query) {
-                    $query->select('id', 'section_name');
+                    $query->select('id', 'mgender_name');
                 }))
                 ->with(array('category' => function ($query) {
                     $query->select('id', 'category_name');
@@ -142,7 +142,7 @@ class DatatableQueryController extends Controller
                
 
                 ->addColumn('full_name', function ($row) {
-                    $full_name_link = '<a target="_blank" href="'. route('student_view', [$row->id]) . '">' . $row->first_name .' '. $row->last_name . '</a>';
+                    $full_name_link = '<a target="_blank" href="'. route('student_view', [$row->id]) . '">' . $row->first_name .' '. $row->middle_name .' '. $row->last_name .  '</a>';
                     return $full_name_link;
                 })
                 
@@ -157,7 +157,7 @@ class DatatableQueryController extends Controller
                     $class_sec=[];
                     foreach ($row->studentRecords as $classSec) {
                       
-                            $class_sec[] = $classSec->class->class_name;
+                            $class_sec[] = $classSec->class->age_group_name;
                        
                     }
 
@@ -169,7 +169,7 @@ class DatatableQueryController extends Controller
                     $m_gender=[];
                     foreach ($row->studentRecords as $classSec) {
                         
-                            $m_gender[] =  $classSec->section->section_name;
+                            $m_gender[] =  $classSec->section->mgender_name;
                       
                     }
 
@@ -218,42 +218,42 @@ class DatatableQueryController extends Controller
          
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
-            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->withoutGlobalScope(StatusAcademicSchoolScope::class)->get();
-            $sessions = SmAcademicYear::where('school_id', Auth::user()->school_id)->get();
-            $academic_year = $request->academic_year;
-            $class_id = $request->class;
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->withoutGlobalScope(StatusAcademicSchoolScope::class)->get();
+            $sessions = SmAcademicYear::where('church_id', Auth::user()->church_id)->get();
+            $church_year = $request->church_year;
+            $age_group_id = $request->class;
             $name = $request->name;
             $roll_no = $request->roll_no;
             $section = $request->section;
             $data['un_session_id']= $request->un_session_id ;
-            $data['un_academic_id']= $request->un_academic_id ;
+            $data['un_church_year_id']= $request->un_church_year_id ;
             $data['un_faculty_id']= $request->un_faculty_id;
             $data['un_department_id']= $request->un_department_id;
             $data['un_semester_id']= $request->un_semester_id;
             $data['un_semester_label_id']= $request->un_semester_label_id;
-            $data['un_section_id']= $request->un_section_id;
+            $data['un_mgender_id']= $request->un_mgender_id;
            
-            return view('backEnd.studentInformation.csmember_details', compact('classes', 'class_id', 'name', 'roll_no', 'sessions', 'section', 'academic_year','data'));
+            return view('backEnd.studentInformation.csmember_details', compact('classes', 'age_group_id', 'name', 'roll_no', 'sessions', 'section', 'church_year','data'));
         }
 
         if ($request->ajax()) {
              //$students = DB::table('sm_jymembers')
-               // ->where('academic_id', getAcademicId())
+               // ->where('church_year_id', getAcademicId())
            
                $records = StudentRecord::query();
-            $records->where('school_id',auth()->user()->school_id)->where('class_id',1);
-            $records->when(moduleStatusCheck('University') && $request->filled('un_academic_id'), function ($u_query) use ($request) {
-                $u_query->where('un_academic_id', $request->un_academic_id);
+            $records->where('church_id',auth()->user()->church_id)->where('age_group_id',1);
+            $records->when(moduleStatusCheck('University') && $request->filled('un_church_year_id'), function ($u_query) use ($request) {
+                $u_query->where('un_church_year_id', $request->un_church_year_id);
                 }, function ($query) use ($request) {
-                    $query->when($request->academic_year, function ($query) use ($request) {
-                    $query->where('academic_id', $request->academic_year);
+                    $query->when($request->church_year, function ($query) use ($request) {
+                    $query->where('church_year_id', $request->church_year);
                     });
             })
             ->when(moduleStatusCheck('University') && $request->filled('un_faculty_id'), function ($u_query) use ($request) {
                 $u_query->where('un_faculty_id', $request->un_faculty_id);
             }, function ($query) use ($request) {
                 $query->when($request->class, function ($query) use ($request) {
-                    $query->where('class_id', $request->class);
+                    $query->where('age_group_id', $request->class);
                 });
             })
             
@@ -261,11 +261,11 @@ class DatatableQueryController extends Controller
                 $u_query->where('un_department_id', $request->un_department_id);
             }, function ($query) use ($request) {
                 $query->when($request->section, function ($query) use ($request) {
-                    $query->where('section_id', $request->section);
+                    $query->where('mgender_id', $request->section);
                 });
             })
-            ->when(!$request->academic_year && moduleStatusCheck('University')==false, function ($query) use ($request) {
-                $query->where('academic_id', getAcademicId());
+            ->when(!$request->church_year && moduleStatusCheck('University')==false, function ($query) use ($request) {
+                $query->where('church_year_id', getAcademicId());
             })
             
             ->when( moduleStatusCheck('University') && $request->filled('un_session_id'), function ($query) use ($request) {
@@ -276,7 +276,7 @@ class DatatableQueryController extends Controller
                 $query->where('un_semester_label_id', $request->un_semester_label_id);
             });
             
-           $student_records = $records->where('is_promote', 0)->whereHas('student')->get(['student_id'])->unique('student_id')->toArray();
+           $student_records = $records->where('is_promote', 0)->whereHas('student')->get(['member_id'])->unique('member_id')->toArray();
 
           $all_students =  SmStudent::whereIn('id',$student_records)
                                 ->where('active_status', 1)
@@ -297,18 +297,18 @@ class DatatableQueryController extends Controller
                              
 
             $students = SmStudent::with(['gender', 'studentRecords' => function ($q) use ($request) {
-                return $q->when(moduleStatusCheck('University') && $request->filled('un_academic_id'), function ($u_query) use ($request) {
-                        $u_query->where('un_academic_id', $request->un_academic_id);
+                return $q->when(moduleStatusCheck('University') && $request->filled('un_church_year_id'), function ($u_query) use ($request) {
+                        $u_query->where('un_church_year_id', $request->un_church_year_id);
                     }, function ($query) use ($request) {
-                       $query->when($request->academic_year, function ($query) use ($request) {
-                            $query->where('academic_id', $request->academic_year);
+                       $query->when($request->church_year, function ($query) use ($request) {
+                            $query->where('church_year_id', $request->church_year);
                         });
                     })
                     ->when(moduleStatusCheck('University') && $request->filled('un_faculty_id'), function ($u_query) use ($request) {
                         $u_query->where('un_faculty_id', $request->un_faculty_id);
                     }, function ($query) use ($request) {
                         $query->when($request->class, function ($query) use ($request) {
-                            $query->where('class_id', $request->class);
+                            $query->where('age_group_id', $request->class);
                         });
                     })
 
@@ -316,19 +316,19 @@ class DatatableQueryController extends Controller
                         $u_query->where('un_department_id', $request->un_department_id);
                     }, function ($query) use ($request) {
                         $query->when($request->section, function ($query) use ($request) {
-                            $query->where('section_id', $request->section);
+                            $query->where('mgender_id', $request->section);
                         });
                     })
                     ->where('is_promote', 0)
-                    ->when(!$request->academic_year && moduleStatusCheck('University')==false, function ($query) use ($request) {
-                        $query->where('academic_id', getAcademicId());
+                    ->when(!$request->church_year && moduleStatusCheck('University')==false, function ($query) use ($request) {
+                        $query->where('church_year_id', getAcademicId());
                     });
 
             }])->select('sm_students.*');
             $students->where('sm_students.active_status', 1);
 
          
-            $students = $students->where('sm_students.school_id', Auth::user()->school_id)
+            $students = $students->where('sm_students.church_id', Auth::user()->church_id)
                 ->with(array('parents' => function ($query) {
                     $query->select('id', 'fathers_name');
                 }))
@@ -373,7 +373,7 @@ class DatatableQueryController extends Controller
                     $class_sec=[];
                     foreach ($row->studentRecords as $classSec) {
                       
-                            $class_sec[] = $classSec->class->class_name;
+                            $class_sec[] = $classSec->class->age_group_name;
                        
                     }
 
@@ -386,7 +386,7 @@ class DatatableQueryController extends Controller
                     $m_gender=[];
                     foreach ($row->studentRecords as $classSec) {
                         
-                            $m_gender[] =  $classSec->section->section_name;
+                            $m_gender[] =  $classSec->section->mgender_name;
                       
                     }
 
@@ -431,42 +431,42 @@ class DatatableQueryController extends Controller
          
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
-            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->withoutGlobalScope(StatusAcademicSchoolScope::class)->get();
-            $sessions = SmAcademicYear::where('school_id', Auth::user()->school_id)->get();
-            $academic_year = $request->academic_year;
-            $class_id = $request->class;
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->withoutGlobalScope(StatusAcademicSchoolScope::class)->get();
+            $sessions = SmAcademicYear::where('church_id', Auth::user()->church_id)->get();
+            $church_year = $request->church_year;
+            $age_group_id = $request->class;
             $name = $request->name;
             $roll_no = $request->roll_no;
             $section = $request->section;
             $data['un_session_id']= $request->un_session_id ;
-            $data['un_academic_id']= $request->un_academic_id ;
+            $data['un_church_year_id']= $request->un_church_year_id ;
             $data['un_faculty_id']= $request->un_faculty_id;
             $data['un_department_id']= $request->un_department_id;
             $data['un_semester_id']= $request->un_semester_id;
             $data['un_semester_label_id']= $request->un_semester_label_id;
-            $data['un_section_id']= $request->un_section_id;
+            $data['un_mgender_id']= $request->un_mgender_id;
            
-            return view('backEnd.studentInformation.jymember_details', compact('classes', 'class_id', 'name', 'roll_no', 'sessions', 'section', 'academic_year','data'));
+            return view('backEnd.studentInformation.jymember_details', compact('classes', 'age_group_id', 'name', 'roll_no', 'sessions', 'section', 'church_year','data'));
         }
 
         if ($request->ajax()) {
              //$students = DB::table('sm_jymembers')
-               // ->where('academic_id', getAcademicId())
+               // ->where('church_year_id', getAcademicId())
            
                $records = StudentRecord::query();
-            $records->where('school_id',auth()->user()->school_id)->where('class_id',2);
-            $records->when(moduleStatusCheck('University') && $request->filled('un_academic_id'), function ($u_query) use ($request) {
-                $u_query->where('un_academic_id', $request->un_academic_id);
+            $records->where('church_id',auth()->user()->church_id)->where('age_group_id',2);
+            $records->when(moduleStatusCheck('University') && $request->filled('un_church_year_id'), function ($u_query) use ($request) {
+                $u_query->where('un_church_year_id', $request->un_church_year_id);
                 }, function ($query) use ($request) {
-                    $query->when($request->academic_year, function ($query) use ($request) {
-                    $query->where('academic_id', $request->academic_year);
+                    $query->when($request->church_year, function ($query) use ($request) {
+                    $query->where('church_year_id', $request->church_year);
                     });
             })
             ->when(moduleStatusCheck('University') && $request->filled('un_faculty_id'), function ($u_query) use ($request) {
                 $u_query->where('un_faculty_id', $request->un_faculty_id);
             }, function ($query) use ($request) {
                 $query->when($request->class, function ($query) use ($request) {
-                    $query->where('class_id', $request->class);
+                    $query->where('age_group_id', $request->class);
                 });
             })
             
@@ -474,11 +474,11 @@ class DatatableQueryController extends Controller
                 $u_query->where('un_department_id', $request->un_department_id);
             }, function ($query) use ($request) {
                 $query->when($request->section, function ($query) use ($request) {
-                    $query->where('section_id', $request->section);
+                    $query->where('mgender_id', $request->section);
                 });
             })
-            ->when(!$request->academic_year && moduleStatusCheck('University')==false, function ($query) use ($request) {
-                $query->where('academic_id', getAcademicId());
+            ->when(!$request->church_year && moduleStatusCheck('University')==false, function ($query) use ($request) {
+                $query->where('church_year_id', getAcademicId());
             })
             
             ->when( moduleStatusCheck('University') && $request->filled('un_session_id'), function ($query) use ($request) {
@@ -489,7 +489,7 @@ class DatatableQueryController extends Controller
                 $query->where('un_semester_label_id', $request->un_semester_label_id);
             });
             
-           $student_records = $records->where('is_promote', 0)->whereHas('student')->get(['student_id'])->unique('student_id')->toArray();
+           $student_records = $records->where('is_promote', 0)->whereHas('student')->get(['member_id'])->unique('member_id')->toArray();
 
           $all_students =  SmStudent::whereIn('id',$student_records)
                                 ->where('active_status', 1)
@@ -510,18 +510,18 @@ class DatatableQueryController extends Controller
                              
 
             $students = SmStudent::with(['gender', 'studentRecords' => function ($q) use ($request) {
-                return $q->when(moduleStatusCheck('University') && $request->filled('un_academic_id'), function ($u_query) use ($request) {
-                        $u_query->where('un_academic_id', $request->un_academic_id);
+                return $q->when(moduleStatusCheck('University') && $request->filled('un_church_year_id'), function ($u_query) use ($request) {
+                        $u_query->where('un_church_year_id', $request->un_church_year_id);
                     }, function ($query) use ($request) {
-                       $query->when($request->academic_year, function ($query) use ($request) {
-                            $query->where('academic_id', $request->academic_year);
+                       $query->when($request->church_year, function ($query) use ($request) {
+                            $query->where('church_year_id', $request->church_year);
                         });
                     })
                     ->when(moduleStatusCheck('University') && $request->filled('un_faculty_id'), function ($u_query) use ($request) {
                         $u_query->where('un_faculty_id', $request->un_faculty_id);
                     }, function ($query) use ($request) {
                         $query->when($request->class, function ($query) use ($request) {
-                            $query->where('class_id', $request->class);
+                            $query->where('age_group_id', $request->class);
                         });
                     })
 
@@ -529,19 +529,19 @@ class DatatableQueryController extends Controller
                         $u_query->where('un_department_id', $request->un_department_id);
                     }, function ($query) use ($request) {
                         $query->when($request->section, function ($query) use ($request) {
-                            $query->where('section_id', $request->section);
+                            $query->where('mgender_id', $request->section);
                         });
                     })
                     ->where('is_promote', 0)
-                    ->when(!$request->academic_year && moduleStatusCheck('University')==false, function ($query) use ($request) {
-                        $query->where('academic_id', getAcademicId());
+                    ->when(!$request->church_year && moduleStatusCheck('University')==false, function ($query) use ($request) {
+                        $query->where('church_year_id', getAcademicId());
                     });
 
             }])->select('sm_students.*');
             $students->where('sm_students.active_status', 1);
 
          
-            $students = $students->where('sm_students.school_id', Auth::user()->school_id)
+            $students = $students->where('sm_students.church_id', Auth::user()->church_id)
                 ->with(array('parents' => function ($query) {
                     $query->select('id', 'fathers_name');
                 }))
@@ -586,7 +586,7 @@ class DatatableQueryController extends Controller
                     $class_sec=[];
                     foreach ($row->studentRecords as $classSec) {
                       
-                            $class_sec[] = $classSec->class->class_name;
+                            $class_sec[] = $classSec->class->age_group_name;
                        
                     }
 
@@ -598,7 +598,7 @@ class DatatableQueryController extends Controller
                     $m_gender=[];
                     foreach ($row->studentRecords as $classSec) {
                         
-                            $m_gender[] =  $classSec->section->section_name;
+                            $m_gender[] =  $classSec->section->mgender_name;
                       
                     }
 
@@ -637,7 +637,7 @@ class DatatableQueryController extends Controller
 
     public function incomeList(Request $request)
     {
-        $add_incomes = SmAddIncome::with('incomeHeads', 'paymentMethod')->where('active_status', '=', 1)->where('school_id', Auth::user()->school_id)->get();
+        $add_incomes = SmAddIncome::with('incomeHeads', 'paymentMethod')->where('active_status', '=', 1)->where('church_id', Auth::user()->church_id)->get();
         return Datatables::of($add_incomes)
             ->addIndexColumn()
             ->addColumn('date', function ($row) {
@@ -671,7 +671,7 @@ class DatatableQueryController extends Controller
 
     public function emailSmsLogAjax()
     {
-        $emailSmsLogs = SmEmailSmsLog::where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->latest()->get();
+        $emailSmsLogs = SmEmailSmsLog::where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->latest()->get();
         return Datatables::of($emailSmsLogs)
             ->addIndexColumn()
             ->addColumn('date', function ($row) {
@@ -693,8 +693,8 @@ class DatatableQueryController extends Controller
     public function userLogAjax(Request $request)
     {
 
-        $user_logs = SmUserLog::where('academic_id', getAcademicId())
-            ->where('school_id', Auth::user()->school_id)
+        $user_logs = SmUserLog::where('church_year_id', getAcademicId())
+            ->where('church_id', Auth::user()->church_id)
             ->orderBy('id', 'desc')
             ->with(array('role' => function ($query) {
                 $query->select('id', 'name');
@@ -721,7 +721,7 @@ class DatatableQueryController extends Controller
 
     public function bankPaymentSlipAjax()
     {
-        $bank_slips = SmBankPaymentSlip::with('studentInfo', 'feesType')->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->orderBy('approve_status', 'asc')->latest()->get();
+        $bank_slips = SmBankPaymentSlip::with('studentInfo', 'feesType')->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->orderBy('approve_status', 'asc')->latest()->get();
 
         return Datatables::of($bank_slips)
             ->addIndexColumn()
@@ -795,8 +795,8 @@ class DatatableQueryController extends Controller
 
         if (!teacherAccess()) {
             $uploadContents = SmTeacherUploadContent::where('content_type', 'as')
-                            ->where('academic_id', getAcademicId())
-                            ->where('school_id', Auth::user()->school_id)
+                            ->where('church_year_id', getAcademicId())
+                            ->where('church_id', Auth::user()->church_id)
                             ->where('course_id', '=', null)
                             ->where('chapter_id', '=', null)
                             ->where('lesson_id', '=', null)
@@ -809,8 +809,8 @@ class DatatableQueryController extends Controller
             ->where('course_id', '=', null)
             ->where('chapter_id', '=', null)
             ->where('lesson_id', '=', null)
-            ->where('academic_id', getAcademicId())
-            ->where('school_id', Auth::user()->school_id)
+            ->where('church_year_id', getAcademicId())
+            ->where('church_id', Auth::user()->church_id)
             ->get();
         }
         return Datatables::of($uploadContents)
@@ -844,15 +844,15 @@ class DatatableQueryController extends Controller
                     $avaiable .= app('translator')->get('study.all_classes_student').', ';
                 }
                 if ($row->classes != "" && $row->sections != "") {
-                    $avaiable .= (app('translator')->get('study.all_students_of') . " " . $row->classes->class_name . '->' . @$row->sections->section_name).', ';
+                    $avaiable .= (app('translator')->get('study.all_students_of') . " " . $row->classes->age_group_name . '->' . @$row->sections->mgender_name).', ';
                 }
 
                 if ($row->classes != "" && $row->section == null) {
-                    $avaiable .= (app('translator')->get('study.all_students_of') . " " . $row->classes->class_name . '->' . app('translator')->get('study.all_sections')) .', ';
+                    $avaiable .= (app('translator')->get('study.all_students_of') . " " . $row->classes->age_group_name . '->' . app('translator')->get('study.all_sections')) .', ';
                 }
 
                 if(moduleStatusCheck('University')){
-                    $avaiable .= app('translator')->get('study.all_students_of') . " " . @$row->semesterLabel->name  . '(' . @$row->unSection->section_name .'-' . @$row->undepartment->name . ')';
+                    $avaiable .= app('translator')->get('study.all_students_of') . " " . @$row->semesterLabel->name  . '(' . @$row->unSection->mgender_name .'-' . @$row->undepartment->name . ')';
                 }
 
                 return $avaiable;
@@ -865,17 +865,17 @@ class DatatableQueryController extends Controller
                     return $semLabel . '(' .$academ. ')';
                 }else{
                     if (($row->class != "") && ($row->section != "")) {
-                        $classes = $row->classes->class_name;
-                        $sections = $row->sections->section_name;
+                        $classes = $row->classes->age_group_name;
+                        $sections = $row->sections->mgender_name;
                         return $classes . '(' . $sections . ')';
                     } elseif (($row->class != "") && ($row->section == null)) {
-                        $classes = $row->classes->class_name;
+                        $classes = $row->classes->age_group_name;
                         $nullsections = app('translator')->get('common.all_sections');
                         return $classes . '(' . $nullsections . ')';
                     } elseif ($row->section != "") {
-                        return $sections = $row->sections->section_name;
+                        return $sections = $row->sections->mgender_name;
                     } elseif ($row->class != "") {
-                        return $classes = $row->classes->class_name;
+                        return $classes = $row->classes->age_group_name;
                     }
 
                 }
@@ -907,8 +907,8 @@ class DatatableQueryController extends Controller
     {
 
         $leave_defines = SmLeaveDefine::with('role', 'user')->where('active_status', 1)
-            ->where('school_id', Auth::user()->school_id)
-            ->where('academic_id', getAcademicId())
+            ->where('church_id', Auth::user()->church_id)
+            ->where('church_year_id', getAcademicId())
             ->with(array('role' => function ($query) {
                 $query->select('id', 'name');
             }))
@@ -957,9 +957,9 @@ class DatatableQueryController extends Controller
                     ->where('course_id', '=', null)
                     ->where('chapter_id', '=', null)
                     ->where('lesson_id', '=', null)
-                    ->where('academic_id', getAcademicId())
-                    ->where('school_id', Auth::user()
-                        ->school_id)->get();
+                    ->where('church_year_id', getAcademicId())
+                    ->where('church_id', Auth::user()
+                        ->church_id)->get();
             } else {
                 $uploadContents = SmTeacherUploadContent::where(function ($q) {
                     $q->where('created_by', Auth::user()->id)->orWhere('available_for_admin', 1);
@@ -967,8 +967,8 @@ class DatatableQueryController extends Controller
                 ->where('course_id', '=', null)
                 ->where('chapter_id', '=', null)
                 ->where('lesson_id', '=', null)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
             }
             // return  $uploadContents;
@@ -1003,15 +1003,15 @@ class DatatableQueryController extends Controller
                         $avaiable .= app('translator')->get('study.all_classes_student').', ';
                     }
                     if ($row->classes != "" && $row->sections != "") {
-                        $avaiable .= (app('translator')->get('study.all_students_of') . " " . $row->classes->class_name . '->' . @$row->sections->section_name).', ';
+                        $avaiable .= (app('translator')->get('study.all_students_of') . " " . $row->classes->age_group_name . '->' . @$row->sections->mgender_name).', ';
                     }
 
                     if ($row->classes != "" && $row->section == null) {
-                        $avaiable .= (app('translator')->get('study.all_students_of') . " " . $row->classes->class_name . '->' . app('translator')->get('study.all_sections')) .', ';
+                        $avaiable .= (app('translator')->get('study.all_students_of') . " " . $row->classes->age_group_name . '->' . app('translator')->get('study.all_sections')) .', ';
                     }
 
                     if(moduleStatusCheck('University')){
-                        $avaiable .= app('translator')->get('study.all_students_of') . " " . @$row->semesterLabel->name  . '(' . @$row->unSection->section_name .'-' . @$row->undepartment->name . ')';
+                        $avaiable .= app('translator')->get('study.all_students_of') . " " . @$row->semesterLabel->name  . '(' . @$row->unSection->mgender_name .'-' . @$row->undepartment->name . ')';
                     }
 
                     return $avaiable;
@@ -1026,17 +1026,17 @@ class DatatableQueryController extends Controller
                         return $semLabel . '(' .$academ. ')';
                     }else{
                         if (($row->class != "") && ($row->section != "")) {
-                            $classes = $row->classes->class_name;
-                            $sections = $row->sections->section_name;
+                            $classes = $row->classes->age_group_name;
+                            $sections = $row->sections->mgender_name;
                             return $classes . '(' . $sections . ')';
                         } elseif (($row->class != "") && ($row->section == null)) {
-                            $classes = $row->classes->class_name;
+                            $classes = $row->classes->age_group_name;
                             $nullsections = app('translator')->get('study.all_sections');
                             return $classes . '(' . $nullsections . ')';
                         } elseif ($row->section != "") {
-                            return $sections = $row->sections->section_name;
+                            return $sections = $row->sections->mgender_name;
                         } elseif ($row->class != "") {
-                            return $classes = $row->classes->class_name;;
+                            return $classes = $row->classes->age_group_name;;
                         }
                 }
                 })

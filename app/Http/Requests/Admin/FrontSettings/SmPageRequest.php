@@ -27,7 +27,7 @@ class SmPageRequest extends FormRequest
         $maxFileSize =generalSetting()->file_size*1024;
         return [
             'title' => 'required',
-            'slug' => ['required', Rule::unique('sm_pages', 'slug')->where('school_id', auth()->user()->school_id)->ignore($this->id)],
+            'slug' => ['required', Rule::unique('sm_pages', 'slug')->where('church_id', auth()->user()->church_id)->ignore($this->id)],
             'details' => 'required',
             'sub_title'=>'nullable',
             'header_image' => 'nullable|dimensions:min_width=1420,min_height=450|max:'.$maxFileSize,

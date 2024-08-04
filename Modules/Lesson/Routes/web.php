@@ -18,9 +18,9 @@ Route::group(['middleware' => ['subdomain']], function () {
         Route::get('lesson', 'SmLessonController@addLesson')->name('lesson.addLesson');
         Route::post('lesson', 'SmLessonController@storeLesson')->name('lesson.storelesson')->middleware('userRolePermission:802');
 
-        Route::get('lesson-edit/{class_id}/{section_id}/{subject_id}', 'SmLessonController@editLesson')->name('lesson-edit')->middleware('userRolePermission:803');
+        Route::get('lesson-edit/{age_group_id}/{mgender_id}/{subject_id}', 'SmLessonController@editLesson')->name('lesson-edit')->middleware('userRolePermission:803');
 
-        Route::get('un-lesson-edit/{session_id}/{faculty_id}/{department_id}/{academic_id}/{semester_id}/{semester_label_id}/{subject_id}', 'SmLessonController@editLessonForUniVersity')->name('un-lesson-edit')->middleware('userRolePermission:803');
+        Route::get('un-lesson-edit/{session_id}/{faculty_id}/{department_id}/{church_year_id}/{semester_id}/{semester_label_id}/{subject_id}', 'SmLessonController@editLessonForUniVersity')->name('un-lesson-edit')->middleware('userRolePermission:803');
         Route::post('lesson-update', 'SmLessonController@updateLesson')->name('lesson-update')->middleware('userRolePermission:803');
         Route::delete('lesson-delete/{id}', 'SmLessonController@deleteLesson')->name('lesson-delete')->middleware('userRolePermission:804');
         Route::get('lesson-item-delete/{id}', 'SmLessonController@deleteLessonItem')->name('lesson-item-delete')->middleware('userRolePermission:804');

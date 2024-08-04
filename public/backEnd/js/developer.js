@@ -1660,9 +1660,9 @@
         $("#selectTab").val(selectTab);
         $("#initialselectTab").val();
     });
-    // get all section by class_id selection in email sms part
+    // get all section by age_group_id selection in email sms part
     $(document).ready(function() {
-        $("#class_id_email_sms").on("change", function() {
+        $("#age_group_id_email_sms").on("change", function() {
             $("#checkbox_section").prop("checked", false);
 
 
@@ -1687,10 +1687,10 @@
                                 $("#selectSectionss").append(
                                     $("<option>", {
                                         value: section.id,
-                                        text: section.section_name,
+                                        text: section.mgender_name,
                                     })
                                 );
-                                // $("#selectSectionsDiv ul").append("<li data-value='"+section.id+"' class='option'>"+section.section_name+"</li>");
+                                // $("#selectSectionsDiv ul").append("<li data-value='"+section.id+"' class='option'>"+section.mgender_name+"</li>");
                             });
                         } else {
                             $("#selectSectionsDiv .current").html("SELECT SECTION *");
@@ -1741,7 +1741,7 @@
     });
 
 
-    // get all section by class_id selection in homework part
+    // get all section by age_group_id selection in homework part
     $(document).ready(function() {
         $("#subjectSelecttHomeworkDiv").on("change", function() {
             $("#checkbox_section").prop("checked", false);
@@ -1750,7 +1750,7 @@
             var subejct_id = $("#subjectSelect").val();
             // alert('ok');
             var formData = {
-                class_id: $("#classSelectStudentHomeWork").val(),
+                age_group_id: $("#classSelectStudentHomeWork").val(),
                 subject_id: $("#subjectSelect").val(),
             };
             console.log(formData);
@@ -1771,10 +1771,10 @@
                                 $("#selectSectionss").append(
                                     $("<option>", {
                                         value: section.id,
-                                        text: section.section_name,
+                                        text: section.mgender_name,
                                     })
                                 );
-                                // $("#selectSectionsDiv ul").append("<li data-value='"+section.id+"' class='option'>"+section.section_name+"</li>");
+                                // $("#selectSectionsDiv ul").append("<li data-value='"+section.id+"' class='option'>"+section.mgender_name+"</li>");
                             });
                         } else {
                             $("#selectSectionsDiv .current").html("SELECT SECTION *");

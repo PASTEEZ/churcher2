@@ -6,7 +6,7 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'AddClassSectionIdToSmStudentAttendancesTable' => $baseDir . '/database/migrations/2022_01_07_033733_add_class_section_id_to_sm_student_attendances_table.php',
+    'AddClassSectionIdToSmStudentAttendancesTable' => $baseDir . '/database/migrations/2022_01_07_033733_add_class_mgender_id_to_sm_student_attendances_table.php',
     'AddClassSectionRecordIdToSmExamAttendanceChildrenTable' => $baseDir . '/database/migrations/2022_01_10_040855_add_class_section_record_id_to_sm_exam_attendance_children_table.php',
     'AddClassSectionRecordIdToSmSubjectAttendancesTable' => $baseDir . '/database/migrations/2022_01_07_054910_add_class_section_record_id_to_sm_subject_attendances_table.php',
     'AddClassSectionSubjectIdToChatGroupsTable' => $baseDir . '/database/migrations/2022_06_18_100950_add_class_section_subject_id_to_chat_groups_table.php',
@@ -31,7 +31,7 @@ return array(
     'AddRecordIdToSmFeesAssignDiscountsTable' => $baseDir . '/database/migrations/2022_01_07_145639_add_record_id_to_sm_fees_assign_discounts_table.php',
     'AddRecordIdToSmMarkStoresTable' => $baseDir . '/database/migrations/2022_01_10_064243_add_record_id_to_sm_mark_stores_table.php',
     'AddRecordIdToSmResultStoresTable' => $baseDir . '/database/migrations/2022_01_10_064541_add_record_id_to_sm_result_stores_table.php',
-    'AddSchoolIdToTables' => $baseDir . '/database/migrations/2021_08_08_103123_add_school_id_to_tables.php',
+    'AddSchoolIdToTables' => $baseDir . '/database/migrations/2021_08_08_103123_add_church_id_to_tables.php',
     'AddTimeToSmClassRoutineUpdatesTable' => $baseDir . '/database/migrations/2021_09_21_115204_add_time_to_sm_class_routine_updates_table.php',
     'AddTypeToSmSmsGatewaysTable' => $baseDir . '/database/migrations/2022_12_23_115027_add_type_to_sm_sms_gateways_table.php',
     'AddTypesToSmNewsCategoriesTable' => $baseDir . '/database/migrations/2021_08_14_074012_add_types_to_sm_news_categories_table.php',
@@ -1031,7 +1031,7 @@ return array(
     'Craftsys\\Msg91\\Support\\Validator' => $vendorDir . '/craftsys/msg91-php/src/Support/Validator.php',
     'Craftsys\\Msg91\\URLs' => $vendorDir . '/craftsys/msg91-php/src/URLs.php',
     'Create100percentMarkModificationTable' => $baseDir . '/database/migrations/2022_06_22_151732_create_100percent_mark_modification_table.php',
-    'CreateAddSchoolNameVariableSmsTemplateTable' => $baseDir . '/database/migrations/2022_06_16_095332_create_add_school_name_variable_sms_template_table.php',
+    'CreateAddSchoolNameVariableSmsTemplateTable' => $baseDir . '/database/migrations/2022_06_16_095332_create_add_church_name_variable_sms_template_table.php',
     'CreateAddSmsFunctionTable' => $baseDir . '/database/migrations/2022_06_23_134725_create_add_sms_function_table.php',
     'CreateAddXtraColumnSmTemporaryMeritlistsTable' => $baseDir . '/database/migrations/2023_03_13_071949_create_add_xtra_column_sm_temporary_meritlists_table.php',
     'CreateAllExamWisePositionsTable' => $baseDir . '/database/migrations/2023_03_10_123138_create_all_exam_wise_positions_table.php',
@@ -1230,7 +1230,7 @@ return array(
     'CreateSmStudentExcelFormatsTable' => $baseDir . '/database/migrations/2019_01_21_063031_create_sm_student_excel_formats_table.php',
     'CreateSmStudentGroupsTable' => $baseDir . '/database/migrations/2014_12_01_000020_create_sm_student_groups_table.php',
     'CreateSmStudentHomeworksTable' => $baseDir . '/database/migrations/2014_12_01_000058_create_sm_student_homeworks_table.php',
-    'CreateSmStudentIdCardsTable' => $baseDir . '/database/migrations/2019_02_17_124203_create_sm_student_id_cards_table.php',
+    'CreateSmStudentIdCardsTable' => $baseDir . '/database/migrations/2019_02_17_124203_create_sm_member_id_cards_table.php',
     'CreateSmStudentPromotionsTable' => $baseDir . '/database/migrations/2014_12_01_000056_create_sm_student_promotions_table.php',
     'CreateSmStudentRegistrationFieldsTable' => $baseDir . '/database/migrations/2021_12_15_134114_create_sm_student_registration_fields_table.php',
     'CreateSmStudentTakeOnlineExamQuestionsTable' => $baseDir . '/database/migrations/2019_02_02_112719_create_sm_student_take_online_exam_questions_table.php',

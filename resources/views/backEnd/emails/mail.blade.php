@@ -71,7 +71,7 @@ $email_template = App\SmsTemplate::where('id',1)->first();
 											<tr>
 												<td align="center" class="m_img_mc_fix">
 													<a href="" target="_blank">
-														<img align="center" src="{{asset(generalSetting()->logo)}}" alt="{{asset(generalSetting()->school_name)}}" border="0" style="max-width:90px;">
+														<img align="center" src="{{asset(generalSetting()->logo)}}" alt="{{asset(generalSetting()->church_name)}}" border="0" style="max-width:90px;">
 													</a>
 												</td>
 											</tr>

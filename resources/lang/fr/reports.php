@@ -224,7 +224,7 @@ return [
 
 "birth_certificate_number" => "Numéro de certificat de naissance",
 
-"academic_year" => "Année universitaire",
+"church_year" => "Année universitaire",
 
 "select_teacher" => "Sélectionner l'enseignant",
 

@@ -254,10 +254,10 @@
         <!-- admit_card_wrapper_header  -->
         <div class="admit_card_wrapper_header d-flex">
             <div class="logo_img">
-                <img src="{{ asset(generalSetting()->logo)}}" alt="{{generalSetting()->school_name}}">
+                <img src="{{ asset(generalSetting()->logo)}}" alt="{{generalSetting()->church_name}}">
             </div>
             <div class="admit_card_wrapper_content flex-fill d-flex align-items-center flex-column">
-                <h3>{{generalSetting()->school_name}}</h3>
+                <h3>{{generalSetting()->church_name}}</h3>
                 @if($setting->school_address)
                     <p>{{generalSetting()->address}}</p>
                     <p>@lang('common.email') : {{generalSetting()->email}} , @lang('common.phone')
@@ -278,7 +278,7 @@
         <div class="admid_card_wrapper_body">
             <div class="student_info">
                 <div class="single_student_information d-flex align-items-center">
-                    @if($setting->student_name)
+                    @if($setting->member_name)
                         <div class="student_grid_box d-flex align-items-center flex-fill">
                             <span class="sep_name">@lang('common.name')</span>
                             <span>:</span>
@@ -287,8 +287,8 @@
                     @endif
 
                     @if($setting->class_section)
-                        <p class="m-0">@lang('student.class') - {{@$admitcard->studentRecord->class->class_name}}
-                            ({{@$admitcard->studentRecord->section->section_name}}
+                        <p class="m-0">@lang('student.class') - {{@$admitcard->studentRecord->class->age_group_name}}
+                            ({{@$admitcard->studentRecord->section->mgender_name}}
                             ) {{@$admitcard->studentRecordacademic->year}}</p>
                     @endif
                 </div>

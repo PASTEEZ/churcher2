@@ -33,14 +33,14 @@ class staffRequest extends FormRequest
         if (!$id) {
             $id = $this->staff_id;
         }
-        $school_id = auth()->user()->school_id;
+        $church_id = auth()->user()->church_id;
         if ($id) {
-            $staff = SmStaff::withOutGlobalScopes()->where('school_id', $school_id)->findOrFail($id);
+            $staff = SmStaff::withOutGlobalScopes()->where('church_id', $church_id)->findOrFail($id);
         }
 
-        $academic_id = getAcademicId();
+        $church_year_id = getAcademicId();
 
-        $field = SmStaffRegistrationField::where('school_id', $school_id);
+        $field = SmStaffRegistrationField::where('church_id', $church_id);
         if($staff && auth()->user()->staff->id == $staff->id){
             $field = $field->where('staff_edit', 1)->where('is_required', 1);
         } else{
@@ -50,12 +50,12 @@ class staffRequest extends FormRequest
         $field = $field->pluck('field_name')
             ->toArray();
       
-        $school_id=auth()->user()->school_id;
+        $church_id=auth()->user()->church_id;
 
         return [
             'staff_no' => [Rule::requiredIf(function () use ($field) {
                 return in_array('staff_no', $field);
-            }), 'integer', Rule::unique('sm_staffs', 'staff_no')->where('school_id', $school_id)->ignore($id) ],
+            }), 'integer', Rule::unique('sm_staffs', 'staff_no')->where('church_id', $church_id)->ignore($id) ],
             'role_id' => [Rule::requiredIf(function () use ($field) {
                 return in_array('role_id', $field);
             }),'integer'],

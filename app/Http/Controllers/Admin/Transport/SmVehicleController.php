@@ -38,11 +38,11 @@ class SmVehicleController extends Controller
             $assign_vehicle->made_year = $request->year_made;   
             $assign_vehicle->driver_id = $request->driver_id;
             $assign_vehicle->note = $request->note;
-            $assign_vehicle->school_id = Auth::user()->school_id;
+            $assign_vehicle->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $assign_vehicle->un_academic_id = getAcademicId();
+                $assign_vehicle->un_church_year_id = getAcademicId();
             }else{
-                $assign_vehicle->academic_id = getAcademicId();
+                $assign_vehicle->church_year_id = getAcademicId();
             }
             $assign_vehicle->save();
 
@@ -59,7 +59,7 @@ class SmVehicleController extends Controller
         try {
             $drivers = SmStaff::whereRole(9)->get();        
             $assign_vehicle = SmVehicle::find($id);
-            $assign_vehicles = SmVehicle::where('school_id', Auth::user()->school_id)->get();
+            $assign_vehicles = SmVehicle::where('church_id', Auth::user()->church_id)->get();
             return view('backEnd.transport.vehicle', compact('assign_vehicle', 'assign_vehicles', 'drivers'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -79,7 +79,7 @@ class SmVehicleController extends Controller
             $assign_vehicle->driver_id = $request->driver_id;
             $assign_vehicle->note = $request->note;
             if(moduleStatusCheck('University')){
-                $assign_vehicle->un_academic_id = getAcademicId();
+                $assign_vehicle->un_church_year_id = getAcademicId();
             }
             $assign_vehicle->save();
 

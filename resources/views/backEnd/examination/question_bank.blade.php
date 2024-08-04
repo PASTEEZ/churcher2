@@ -84,13 +84,13 @@
                                 </div>
                                 <div class="row mt-25">
                                     <div class="col-lg-12">
-                                        <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="class_id_email_sms" name="class">
+                                        <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="age_group_id_email_sms" name="class">
                                             <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                             @foreach($classes as $class)
                                                 @if(isset($bank))
-                                                <option value="{{$class->id}}" {{$bank->class_id == $class->id? 'selected': ''}}>{{$class->class_name}}</option>
+                                                <option value="{{$class->id}}" {{$bank->age_group_id == $class->id? 'selected': ''}}>{{$class->age_group_name}}</option>
                                                 @else
-                                                <option value="{{$class->id}}" {{old('class')!=''? (old('class') == $class->id? 'selected':''):''}}>{{$class->class_name}}</option>
+                                                <option value="{{$class->id}}" {{old('class')!=''? (old('class') == $class->id? 'selected':''):''}}>{{$class->age_group_name}}</option>
                                                 @endif
 
                                             @endforeach
@@ -127,7 +127,7 @@
                                                 <option data-display="@lang('common.select_section') *" value="">@lang('common.select_section') *</option>
                                                     @foreach($sections as $section)
                                                     @if(isset($bank))
-                                                        <option value="{{$section->id}}" {{$bank->section_id == $section->id? 'selected': ''}}>{{$section->section_name}}</option>  
+                                                        <option value="{{$section->id}}" {{$bank->mgender_id == $section->id? 'selected': ''}}>{{$section->mgender_name}}</option>  
                                                     @endif
                                                     @endforeach
                                             </select>
@@ -499,7 +499,7 @@
                                 <tr>
 
                                     <td>{{($bank->questionGroup)!=''?$bank->questionGroup->title:''}}</td>
-                                    <td>{{($bank->class)!=''?$bank->class->class_name:''}} ({{($bank->section)!=''?$bank->section->section_name:''}})</td>
+                                    <td>{{($bank->class)!=''?$bank->class->age_group_name:''}} ({{($bank->section)!=''?$bank->section->mgender_name:''}})</td>
                                     <td>{{$bank->question}}</td>
                                     <td>
                                         @if($bank->type == "M")

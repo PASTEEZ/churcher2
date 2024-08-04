@@ -18,7 +18,7 @@ class CreateAbsentNotificationTimeSetupsTable extends Migration
             $table->string('time_from')->nullable();
             $table->string('time_to')->nullable();
             $table->integer('active_status')->default(1);
-            $table->integer('school_id')->default(1);
+            $table->integer('church_id')->default(1);
 
             $table->timestamps();
         });

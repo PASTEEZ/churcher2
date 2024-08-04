@@ -19,7 +19,7 @@ class SmItemCategoryController extends Controller
     public function index(Request $request)
     {
         try{
-            $itemCategories = SmItemCategory::where('school_id',Auth::user()->school_id)->get();      
+            $itemCategories = SmItemCategory::where('church_id',Auth::user()->church_id)->get();      
             return view('backEnd.inventory.itemCategoryList', compact('itemCategories'));
         }catch (\Exception $e) {
            Toastr::error('Operation Failed', 'Failed');
@@ -32,11 +32,11 @@ class SmItemCategoryController extends Controller
         try{
             $categories = new SmItemCategory();
             $categories->category_name = $request->category_name;
-            $categories->school_id = Auth::user()->school_id;
+            $categories->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $categories->un_academic_id = getAcademicId();
+                $categories->un_church_year_id = getAcademicId();
             }else{
-                $categories->academic_id = getAcademicId();
+                $categories->church_year_id = getAcademicId();
             }
             $categories->save();
 
@@ -54,9 +54,9 @@ class SmItemCategoryController extends Controller
             if (checkAdmin()) {
                 $editData = SmItemCategory::find($id);
             }else{
-                $editData = SmItemCategory::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+                $editData = SmItemCategory::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
             }
-            $itemCategories = SmItemCategory::where('school_id',Auth::user()->school_id)->get();
+            $itemCategories = SmItemCategory::where('church_id',Auth::user()->church_id)->get();
             return view('backEnd.inventory.itemCategoryList', compact('itemCategories', 'editData'));
         }catch (\Exception $e) {
            Toastr::error('Operation Failed', 'Failed');
@@ -71,11 +71,11 @@ class SmItemCategoryController extends Controller
             if (checkAdmin()) {
                 $categories = SmItemCategory::find($id);
             }else{
-                $categories = SmItemCategory::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+                $categories = SmItemCategory::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
             }
             $categories->category_name = $request->category_name;
             if(moduleStatusCheck('University')){
-                $categories->un_academic_id = getAcademicId();
+                $categories->un_church_year_id = getAcademicId();
             }
             $categories->update();
 
@@ -107,7 +107,7 @@ class SmItemCategoryController extends Controller
                 if (checkAdmin()) {
                    SmItemCategory::destroy($id);
                 }else{
-                   SmItemCategory::where('id',$id)->where('school_id',Auth::user()->school_id)->delete();
+                   SmItemCategory::where('id',$id)->where('church_id',Auth::user()->church_id)->delete();
                 }
                 Toastr::success('Operation successful', 'Success');
                 return redirect()->back();

@@ -260,7 +260,7 @@ return [
 
 "birth_certificate_number" => "Número de certificado de nacimiento",
 
-"academic_year" => "Año académico",
+"church_year" => "Año académico",
 
 "select_teacher" => "Seleccionar profesor",
 

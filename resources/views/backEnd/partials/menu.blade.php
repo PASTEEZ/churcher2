@@ -150,12 +150,12 @@
                                 <input type="hidden" name="url" id="url" value="{{url('/')}}">
                                 <select class="niceSelect infix_session" id="infix_session">
 
-                                    <option data-display="Academic Year" value="0">@lang('common.academic_year') </option>
-                                    @foreach (academicYears() as $academic_year)
+                                    <option data-display="Academic Year" value="0">@lang('common.church_year') </option>
+                                    @foreach (academicYears() as $church_year)
                                             @if(moduleStatusCheck('University'))
-                                            <option value="{{ @$academic_year->id }}" {{ getAcademicId()==@$academic_year->id?'selected':''}}>{{ @$academic_year->name }}  </option>
+                                            <option value="{{ @$church_year->id }}" {{ getAcademicId()==@$church_year->id?'selected':''}}>{{ @$church_year->name }}  </option>
                                             @else
-                                            <option value="{{ @$academic_year->id }}" {{ getAcademicId()==@$academic_year->id?'selected':''}}>{{ @$academic_year->year }} [{{@$academic_year->title}}] </option>
+                                            <option value="{{ @$church_year->id }}" {{ getAcademicId()==@$church_year->id?'selected':''}}>{{ @$church_year->year }} [{{@$church_year->title}}] </option>
                                             @endif
 
                                     @endforeach

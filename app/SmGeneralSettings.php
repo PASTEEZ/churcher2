@@ -32,14 +32,14 @@ class SmGeneralSettings extends Model
     {
         return $this->belongsTo('App\SmSession', 'session_id', 'id');
     }
-    public function academic_Year()
+    public function church_year()
     {
-        return $this->belongsTo('App\SmAcademicYear', 'academic_id', 'id');
+        return $this->belongsTo('App\SmAcademicYear', 'church_year_id', 'id');
     }
 
-    public function unacademic_Year()
+    public function unchurch_year()
     {
-        return $this->belongsTo('Modules\University\Entities\UnAcademicYear', 'un_academic_id', 'id');
+        return $this->belongsTo('Modules\University\Entities\UnAcademicYear', 'un_church_year_id', 'id');
     }
 
     public function languages()
@@ -115,31 +115,31 @@ class SmGeneralSettings extends Model
             $class          = SmClass::find($InputClassId);
             $section        = SmSection::find($InputSectionId);
             $exam           = SmExamType::find($InputExamId);
-            $is_data = DB::table('sm_mark_stores')->where([['class_id', $InputClassId], ['section_id', $InputSectionId], ['exam_term_id', $InputExamId]])->first();
+            $is_data = DB::table('sm_mark_stores')->where([['age_group_id', $InputClassId], ['mgender_id', $InputSectionId], ['exam_term_id', $InputExamId]])->first();
             if (empty($is_data)) {
                 return $data = 0;
                 Toastr::error('Your result is not found!', 'Failed');
                 return redirect()->back();
                 // return redirect()->back()->with('message-danger', 'Your result is not found!');
             }
-            $exams = SmExamType::where('active_status', 1)->where('academic_id', getAcademicId())->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->get();
-            $subjects = SmSubject::where('active_status', 1)->where('academic_id', getAcademicId())->get();
-            $assign_subjects = SmAssignSubject::where('class_id', $class->id)->where('section_id', $section->id)->where('academic_id', getAcademicId())->get();
-            $class_name = $class->class_name;
+            $exams = SmExamType::where('active_status', 1)->where('church_year_id', getAcademicId())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', getAcademicId())->get();
+            $subjects = SmSubject::where('active_status', 1)->where('church_year_id', getAcademicId())->get();
+            $assign_subjects = SmAssignSubject::where('age_group_id', $class->id)->where('mgender_id', $section->id)->where('church_year_id', getAcademicId())->get();
+            $age_group_name = $class->age_group_name;
             $exam_name = $exam->title;
 
-            $eligible_subjects       = SmAssignSubject::where('class_id', $InputClassId)->where('section_id', $InputSectionId)->where('academic_id', getAcademicId())->get();
+            $eligible_subjects       = SmAssignSubject::where('age_group_id', $InputClassId)->where('mgender_id', $InputSectionId)->where('church_year_id', getAcademicId())->get();
 
-            $examStudents=SmExamAttendanceChild::where('academic_id', getAcademicId())->where('school_id',auth()->user()->school_id)->get();
+            $examStudents=SmExamAttendanceChild::where('church_year_id', getAcademicId())->where('church_id',auth()->user()->church_id)->get();
             $examStudentsids=[];
 
             foreach($examStudents as $e_student){
-                $examStudentsids[]=$e_student->student_id;
+                $examStudentsids[]=$e_student->member_id;
             }
             // check exam attendance and whereIn
 
-            $eligible_students       = SmStudent::whereIn('id',$examStudentsids)->where('class_id', $InputClassId)->where('section_id', $InputSectionId)->get();
+            $eligible_students       = SmStudent::whereIn('id',$examStudentsids)->where('age_group_id', $InputClassId)->where('mgender_id', $InputSectionId)->get();
 
 
             //all subject list in a specific class/section
@@ -153,9 +153,9 @@ class SmGeneralSettings extends Model
 
                     $getMark            =  SmResultStore::where([
                         ['exam_type_id',   $InputExamId],
-                        ['class_id',       $InputClassId],
-                        ['section_id',     $InputSectionId],
-                        ['student_id',     $SingleStudent->id],
+                        ['age_group_id',       $InputClassId],
+                        ['mgender_id',     $InputSectionId],
+                        ['member_id',     $SingleStudent->id],
                         ['subject_id',     $subject->subject_id]
                     ])->first();
                     if ($getMark == "") {
@@ -180,30 +180,30 @@ class SmGeneralSettings extends Model
 
                 $results                =  SmResultStore::where([
                     ['exam_type_id',   $InputExamId],
-                    ['class_id',       $InputClassId],
-                    ['section_id',     $InputSectionId],
-                    ['student_id',     $SingleStudent->id]
-                ])->where('academic_id', getAcademicId())->get();
+                    ['age_group_id',       $InputClassId],
+                    ['mgender_id',     $InputSectionId],
+                    ['member_id',     $SingleStudent->id]
+                ])->where('church_year_id', getAcademicId())->get();
                 $is_absent                =  SmResultStore::where([
                     ['exam_type_id',   $InputExamId],
-                    ['class_id',       $InputClassId],
-                    ['section_id',     $InputSectionId],
+                    ['age_group_id',       $InputClassId],
+                    ['mgender_id',     $InputSectionId],
                     ['is_absent',      1],
-                    ['student_id',     $SingleStudent->id]
-                ])->where('academic_id', getAcademicId())->get();
+                    ['member_id',     $SingleStudent->id]
+                ])->where('church_year_id', getAcademicId())->get();
 
                 $total_gpa_point        =  SmResultStore::where([
                     ['exam_type_id',   $InputExamId],
-                    ['class_id',       $InputClassId],
-                    ['section_id',     $InputSectionId],
-                    ['student_id',     $SingleStudent->id]
+                    ['age_group_id',       $InputClassId],
+                    ['mgender_id',     $InputSectionId],
+                    ['member_id',     $SingleStudent->id]
                 ])->sum('total_gpa_point');
 
                 $total_marks            =  SmResultStore::where([
                     ['exam_type_id',   $InputExamId],
-                    ['class_id',       $InputClassId],
-                    ['section_id',     $InputSectionId],
-                    ['student_id',     $SingleStudent->id]
+                    ['age_group_id',       $InputClassId],
+                    ['mgender_id',     $InputSectionId],
+                    ['member_id',     $SingleStudent->id]
                 ])->sum('total_marks');
 
                 $sum_of_mark = ($total_marks == 0) ? 0 : $total_marks;
@@ -212,23 +212,23 @@ class SmGeneralSettings extends Model
                 $total_GPA = ($total_gpa_point == 0) ? 0 : $total_gpa_point / $results->count();
                 $exart_gp_point = number_format($total_GPA, 2, '.', '');            //get gpa results
                 $full_name          =   $SingleStudent->full_name;                 //get name
-                $admission_no       =   $SingleStudent->admission_no;           //get admission no
-                $student_id       =   $SingleStudent->id;           //get admission no
-                $is_existing_data = SmTemporaryMeritlist::where([['admission_no', $admission_no], ['class_id', $InputClassId], ['section_id', $InputSectionId], ['exam_id', $InputExamId]])->first();
+                $registration_no       =   $SingleStudent->registration_no;           //get admission no
+                $member_id       =   $SingleStudent->id;           //get admission no
+                $is_existing_data = SmTemporaryMeritlist::where([['registration_no', $registration_no], ['age_group_id', $InputClassId], ['mgender_id', $InputSectionId], ['exam_id', $InputExamId]])->first();
                 if (empty($is_existing_data)) {
                     $insert_results                     = new SmTemporaryMeritlist();
                 } else {
                     $insert_results                     = SmTemporaryMeritlist::find($is_existing_data->id);
                 }
-                $insert_results->student_name       = $full_name;
-                $insert_results->admission_no       = $admission_no;
+                $insert_results->member_name       = $full_name;
+                $insert_results->registration_no       = $registration_no;
                 $insert_results->subjects_string    = $subject_strings;
                 $insert_results->marks_string       = $marks_string;
                 $insert_results->total_marks        = $sum_of_mark;
                 $insert_results->average_mark       = $average_mark;
                 $insert_results->gpa_point          = $exart_gp_point;
                 $insert_results->iid                = $iid;
-                $insert_results->student_id         = $student_id;
+                $insert_results->member_id         = $member_id;
                 $markGrades = SmMarksGrade::where([['from', '<=', $exart_gp_point], ['up', '>=', $exart_gp_point]])->first();
 
                 if ($is_absent == "") {
@@ -236,8 +236,8 @@ class SmGeneralSettings extends Model
                 } else {
                     $insert_results->result             = 'F';
                 }
-                $insert_results->section_id         = $InputSectionId;
-                $insert_results->class_id           = $InputClassId;
+                $insert_results->mgender_id         = $InputSectionId;
+                $insert_results->age_group_id           = $InputClassId;
                 $insert_results->exam_id            = $InputExamId;
                 $insert_results->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
                 $arrCheck = explode(",", $marks_string);
@@ -252,7 +252,7 @@ class SmGeneralSettings extends Model
                 $total_marks = 0;
                 $average = 0;
                 $exart_gp_point = 0;
-                $admission_no = 0;
+                $registration_no = 0;
                 $full_name = "";
             } //end loop eligible_students
 
@@ -261,14 +261,14 @@ class SmGeneralSettings extends Model
                 return $data = 0;
             } else
                 $subjectlist = explode(',', $first_data->subjects_string);
-            $allresult_data = SmTemporaryMeritlist::where('iid', $iid)->orderBy('gpa_point', 'desc')->where('academic_id', getAcademicId())->get();
+            $allresult_data = SmTemporaryMeritlist::where('iid', $iid)->orderBy('gpa_point', 'desc')->where('church_year_id', getAcademicId())->get();
             $merit_serial = 1;
             foreach ($allresult_data as $row) {
                 $D = SmTemporaryMeritlist::where('iid', $iid)->where('id', $row->id)->first();
                 $D->merit_order = $merit_serial++;
                 $D->save();
             }
-            $allresult_data = SmTemporaryMeritlist::where('iid', $iid)->orderBy('merit_order', 'asc')->where('academic_id', getAcademicId())->get();
+            $allresult_data = SmTemporaryMeritlist::where('iid', $iid)->orderBy('merit_order', 'asc')->where('church_year_id', getAcademicId())->get();
             $data['iid'] = $iid;
             $data['exams'] = $exams;
             $data['classes'] = $classes;
@@ -279,7 +279,7 @@ class SmGeneralSettings extends Model
             $data['subjectlist'] = $subjectlist;
             $data['allresult_data'] = $allresult_data;
             $data['eligible_students'] = $eligible_students;
-            $data['class_name'] = $class_name;
+            $data['age_group_name'] = $age_group_name;
             $data['assign_subjects'] = $assign_subjects;
             $data['exam_name'] = $exam_name;
             $data['InputClassId'] = $InputClassId;
@@ -326,7 +326,7 @@ class SmGeneralSettings extends Model
 
     public function unAcademic()
     {
-        return $this->belongsTo('Modules\University\Entities\UnAcademicYear', 'un_academic_id', 'id')->withDefault();
+        return $this->belongsTo('Modules\University\Entities\UnAcademicYear', 'un_church_year_id', 'id')->withDefault();
     }
 
 

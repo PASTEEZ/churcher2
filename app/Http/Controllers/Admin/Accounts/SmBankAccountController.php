@@ -47,11 +47,11 @@ class SmBankAccountController extends Controller
             $bank_account->active_status = 1;
             $bank_account->created_by=auth()->user()->id;
             if(moduleStatusCheck('University')){
-                $bank_account->un_academic_id = getAcademicId();
+                $bank_account->un_church_year_id = getAcademicId();
             }else{
-                $bank_account->academic_id = getAcademicId();
+                $bank_account->church_year_id = getAcademicId();
             }
-            $bank_account->school_id = Auth::user()->school_id;
+            $bank_account->church_id = Auth::user()->church_id;
             $bank_account->save();
 
             $add_income = new SmAddIncome();
@@ -61,11 +61,11 @@ class SmBankAccountController extends Controller
             $add_income->item_sell_id = $bank_account->id;
             $add_income->active_status = 1;
             $add_income->created_by = Auth()->user()->id;
-            $add_income->school_id = Auth::user()->school_id;
+            $add_income->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $add_income->un_academic_id = getAcademicId();
+                $add_income->un_church_year_id = getAcademicId();
             }else{
-                $add_income->academic_id = getAcademicId();
+                $add_income->church_year_id = getAcademicId();
             }
             $add_income->save();
 
@@ -106,9 +106,9 @@ class SmBankAccountController extends Controller
             $bank_account->opening_balance = $request->opening_balance;
             $bank_account->note = $request->note;
             if(moduleStatusCheck('University')){
-                $bank_account->un_academic_id = getAcademicId();
+                $bank_account->un_church_year_id = getAcademicId();
             }else{
-                $bank_account->academic_id = getAcademicId();
+                $bank_account->church_year_id = getAcademicId();
             }
             $bank_account->save();
 

@@ -22,7 +22,7 @@ class StripePayment{
     public function handle($data)
     {
       
-        $payment_setting = SmPaymentGatewaySetting::where('gateway_name', 'Stripe')->where('school_id', Auth::user()->school_id)->first();
+        $payment_setting = SmPaymentGatewaySetting::where('gateway_name', 'Stripe')->where('church_id', Auth::user()->church_id)->first();
 
         Stripe::setApiKey($payment_setting->gateway_secret_key);
 
@@ -51,7 +51,7 @@ class StripePayment{
                 if(Auth::user()->role_id == 2){
                     return redirect()->to(url('student-fees'));
                 }else{
-                    return redirect()->to(url('parent-fees'.'/'.$installment->student_id));
+                    return redirect()->to(url('parent-fees'.'/'.$installment->member_id));
                 }
             }
             
@@ -69,16 +69,16 @@ class StripePayment{
                     }
 
                    $fees_payment = new SmFeesPayment();
-                   $fees_payment->student_id = $installment->student_id;
+                   $fees_payment->member_id = $installment->member_id;
                    $fees_payment->fees_discount_id = !empty($request->fees_discount_id) ? $request->fees_discount_id : "";
                    $fees_payment->discount_amount = !empty($request->applied_amount) ? $request->applied_amount : 0;
                    $fees_payment->amount = $paid_amount;
                    $fees_payment->payment_date = date('Y-m-d');
                    $fees_payment->payment_mode = $data['method'];
                    $fees_payment->created_by = Auth::id();
-                   $fees_payment->school_id = Auth::user()->school_id;
+                   $fees_payment->church_id = Auth::user()->church_id;
                    $fees_payment->record_id = $installment->record_id;
-                   $fees_payment->academic_id = getAcademicid();
+                   $fees_payment->church_year_id = getAcademicid();
                    $fees_payment->direct_fees_installment_assign_id = $installment->id;
                
                     $payment_mode_name=ucwords($data['method']);
@@ -90,7 +90,7 @@ class StripePayment{
 
                     $payable_amount =  discountFees($installment->id);
                     $sub_payment = $installment->payments->sum('paid_amount');
-                    $last_inovoice = DireFeesInstallmentChildPayment::where('school_id',auth()->user()->school_id)->max('invoice_no');
+                    $last_inovoice = DireFeesInstallmentChildPayment::where('church_id',auth()->user()->church_id)->max('invoice_no');
 
                     $new_subPayment = new DireFeesInstallmentChildPayment();
                     $new_subPayment->direct_fees_installment_assign_id = $installment->id;
@@ -102,11 +102,11 @@ class StripePayment{
                     $new_subPayment->active_status = 1;
                     $new_subPayment->discount_amount = 0;
                     $new_subPayment->fees_type_id =  $installment->fees_type_id;
-                    $new_subPayment->student_id = $installment->student_id;
+                    $new_subPayment->member_id = $installment->member_id;
                     $new_subPayment->record_id = $installment->record_id;
                     $new_subPayment->created_by = Auth::user()->id;
                     $new_subPayment->updated_by =  Auth::user()->id;
-                    $new_subPayment->school_id = Auth::user()->school_id;
+                    $new_subPayment->church_id = Auth::user()->church_id;
                     $new_subPayment->balance_amount = ( $payable_amount - ($sub_payment + $paid_amount) ); 
                     $new_subPayment->save();
                     $fees_payment->installment_payment_id = $new_subPayment->id;
@@ -130,8 +130,8 @@ class StripePayment{
                    $add_income->income_head_id = $income_head->income_head_id;
                    $add_income->payment_method_id = $payment_setting->id;
                    $add_income->created_by = Auth()->user()->id;
-                   $add_income->school_id = Auth::user()->school_id;
-                   $add_income->academic_id = getAcademicId();
+                   $add_income->church_id = Auth::user()->church_id;
+                   $add_income->church_year_id = getAcademicId();
                    $add_income->save();
                    $after_paid -= ( $paid_amount);
                 }
@@ -140,7 +140,7 @@ class StripePayment{
             if(Auth::user()->role_id == 2){
                 return redirect()->to(url('student-fees'));
             }else{
-                return redirect()->to(url('parent-fees'.'/'.$installment->student_id));
+                return redirect()->to(url('parent-fees'.'/'.$installment->member_id));
             }
        } 
 
@@ -151,8 +151,8 @@ class StripePayment{
             $addPayment->user_id= $data['user_id'];
             $addPayment->type= $data['wallet_type'];
             $addPayment->status = 'approve';
-            $addPayment->school_id= Auth::user()->school_id;
-            $addPayment->academic_id= getAcademicId();
+            $addPayment->church_id= Auth::user()->church_id;
+            $addPayment->church_year_id= getAcademicId();
             $result = $addPayment->save();
                 if($result){
                     $user = User::find($addPayment->user_id);
@@ -163,7 +163,7 @@ class StripePayment{
                     $compact['full_name'] =  $user->full_name;
                     $compact['method'] =  $addPayment->payment_method;
                     $compact['create_date'] =  date('Y-m-d');
-                    $compact['school_name'] =  $gs->school_name;
+                    $compact['church_name'] =  $gs->church_name;
                     $compact['current_balance'] =  $user->wallet_balance;
                     $compact['add_balance'] =  $data['amount'];
 
@@ -198,14 +198,14 @@ class StripePayment{
             $result = $sub_payment->save();
             if($result && $installment){
                 $fees_payment = new SmFeesPayment();
-                $fees_payment->student_id = $installment->student_id;
+                $fees_payment->member_id = $installment->member_id;
                 $fees_payment->amount = $sub_payment->amount;
                 $fees_payment->payment_date = date('Y-m-d', strtotime($sub_payment->payment_date));
                 $fees_payment->payment_mode = $sub_payment->payment_mode;
                 $fees_payment->created_by = Auth::user()->id;
-                $fees_payment->school_id = Auth::user()->school_id;
+                $fees_payment->church_id = Auth::user()->church_id;
                 $fees_payment->record_id = $sub_payment->record_id;
-                $fees_payment->academic_id = getAcademicid();
+                $fees_payment->church_year_id = getAcademicid();
                 $fees_payment->installment_payment_id = $sub_payment->id;
                 if(($all_sub_payment + $sub_payment->amount) == $payable_amount){
                     $installment->active_status = 1;
@@ -226,14 +226,14 @@ class StripePayment{
                 $add_income->income_head_id = $income_head->income_head_id;
                 $add_income->payment_method_id = @$payment_setting->id;
                 $add_income->created_by = Auth()->user()->id;
-                $add_income->school_id = Auth::user()->school_id;
-                $add_income->academic_id = getAcademicId();
+                $add_income->church_id = Auth::user()->church_id;
+                $add_income->church_year_id = getAcademicId();
                 $add_income->save();
                 $fees_payment->save();
                 if(Auth::user()->role_id == 2){
                     return redirect()->to(url('student-fees'));
                 }else{
-                    return redirect()->to(url('parent-fees'.'/'.$installment->student_id));
+                    return redirect()->to(url('parent-fees'.'/'.$installment->member_id));
                 }
 
         }

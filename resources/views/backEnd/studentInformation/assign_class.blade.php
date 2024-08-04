@@ -104,7 +104,7 @@
                                 @foreach ($student_records as $record)
                                     <tr class="d-flex">
                                         <td class="{{ $div }}">
-                                            {{ moduleStatusCheck('University') ? $record->unFaculty->name :  $record->class->class_name}}
+                                            {{ moduleStatusCheck('University') ? $record->unFaculty->name :  $record->class->age_group_name}}
                                             @if($record->is_default) 
                                                 <span class="badge fix-gr-bg">
                                                     {{ __('common.default') }}
@@ -112,7 +112,7 @@
                                             @endif
                                         </td>
                                         <td class="{{ $div }}">
-                                            {{ moduleStatusCheck('University') ? $record->unDepartment->name : $record->section->section_name }}
+                                            {{ moduleStatusCheck('University') ? $record->unDepartment->name : $record->section->mgender_name }}
                                         </td>
                                         @if(generalSetting()->multiple_roll==1)
                                             <td class="{{ $div }}">{{ $record->roll_no }}</td>
@@ -125,7 +125,7 @@
                                         @else
                                            @lang('student.edit_assign_class')
                                         @endif"
-                                           href="{{route('student_assign_edit', [@$record->student_id,@$record->id])}}"><span class="ti-pencil"></span></a>
+                                           href="{{route('student_assign_edit', [@$record->member_id,@$record->id])}}"><span class="ti-pencil"></span></a>
                                         <a href="#" class="primary-btn icon-only fix-gr-bg" data-toggle="modal" data-target="#deleteRecord_{{ $record->id }}">
                                             <span class="ti-trash"></span>
                                         </a>
@@ -155,7 +155,7 @@
                                             name="type">
                                         <label
                                             for="record{{ @$record->id }}">{{ __('student.Skip the trash and permanently delete the record') }}</label>
-                                                <input type="hidden" name="student_id" value="{{ $record->student_id }}">
+                                                <input type="hidden" name="member_id" value="{{ $record->member_id }}">
                                                 <input type="hidden" name="record_id" value="{{ $record->id }}">
                                             <div class="mt-40 d-flex justify-content-between">
                                                 <button type="button" class="primary-btn tr-bg" data-dismiss="modal">@lang('common.cancel')</button>
@@ -207,13 +207,13 @@
                         {{ Form::open(['class' => 'form-horizontal', 'files' => true, 'route' => 'student.record.store','method' => 'POST']) }}
                       
                            
-                            <input type="hidden" name="student_id" value="{{ $student_detail->id }}">
+                            <input type="hidden" name="member_id" value="{{ $student_detail->id }}">
                             @if(!moduleStatusCheck('University'))
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="input-effect sm2_mb_20 md_mb_20">
-                                        <select class="niceSelect w-100 bb form-control{{ $errors->has('session') ? ' is-invalid' : '' }}" name="session" id="academic_year">
-                                            <option data-display="@lang('common.academic_year') *" value="">@lang('common.academic_year') *</option>
+                                        <select class="niceSelect w-100 bb form-control{{ $errors->has('session') ? ' is-invalid' : '' }}" name="session" id="church_year">
+                                            <option data-display="@lang('common.church_year') *" value="">@lang('common.church_year') *</option>
                                             @foreach($sessions as $session)
                                             <option value="{{$session->id}}" {{old('session') == $session->id? 'selected': ''}}>{{$session->year}}[{{$session->title}}]</option>
                                             @endforeach
@@ -330,7 +330,7 @@
 @push('script')
 <script>
      $(document).ready(function() {
-        $("#assign_class_academic_year").on(
+        $("#assign_class_church_year").on(
             "change",
             function() {
                 var url = $("#url").val();
@@ -365,7 +365,7 @@
                                 $("#classSelectStudent").append(
                                     $("<option>", {
                                         value: className.id,
-                                        text: className.class_name,
+                                        text: className.age_group_name,
                                     })
                                 );
                             });

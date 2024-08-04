@@ -40,7 +40,7 @@
                             <div class="row">
                                 <div class="col-lg-4">
                                     <select class="niceSelect w-100 bb form-control{{ $errors->has('current_session') ? ' is-invalid' : '' }}" name="current_session" id="current_session">
-                                        <option data-display="@lang('student.select_academic_year') *" value="">@lang('student.select_academic_year') *</option>
+                                        <option data-display="@lang('student.select_church_year') *" value="">@lang('student.select_church_year') *</option>
                                         @foreach($sessions as $session)
                                         <option value="{{$session->id}}" {{isset($current_session)? ($current_session == $session->id? 'selected':''):''}}>{{@$session->year}} [{{@$session->title}}]  </option>
                                         @endforeach
@@ -56,7 +56,7 @@
                                     <select class="niceSelect w-100 bb form-control{{ $errors->has('current_class') ? ' is-invalid' : '' }}" id="c_select_class" name="current_class">
                                         <option data-display="@lang('student.select_current_class') *" value="">@lang('student.select_current_class') *</option>
                                         @foreach($classes as $class)
-                                        <option value="{{$class->id}}" {{isset($current_class)? ($current_class == $class->id? 'selected':''):''}}>{{$class->class_name}}</option>
+                                        <option value="{{$class->id}}" {{isset($current_class)? ($current_class == $class->id? 'selected':''):''}}>{{$class->age_group_name}}</option>
                                         @endforeach
                                     </select>
                                      @if ($errors->has('current_class'))
@@ -117,7 +117,7 @@
                                             <input type="checkbox" id="checkAll" class="common-checkbox" name="checkAll">
                                             <label for="checkAll">@lang('common.all')</label>
                                         </th>
-                                        <th>@lang('student.admission_no')</th>
+                                        <th>@lang('student.registration_no')</th>
                                         <th>@lang('common.class')/@lang('common.section')</th>
                                         <th>@lang('common.name')</th>
                                     </tr>
@@ -130,9 +130,9 @@
                                             <input type="checkbox" id="student.{{$student->id}}" class="common-checkbox" name="student_checked[]" value="{{$student->id}}">
                                             <label for="student.{{$student->id}}"></label>
                                         </td>
-                                        <td>{{$student->admission_no}}</td>
+                                        <td>{{$student->registration_no}}</td>
                                         <input type="hidden" name="id[]" value="{{$student->id}}">
-                                        <td>{{$student->class !=""?$student->class->class_name:""}}</td>
+                                        <td>{{$student->class !=""?$student->class->age_group_name:""}}</td>
                                         <td>{{@$student->studentinfo ? $student->studentinfo->first_name .' '.$student->studentinfo->last_name : $student->first_name .' '.$student->last_name}}</td>
                                      
                                         <td style="display:none">
@@ -156,7 +156,7 @@
                                             <div class="row mt-30">
                                                 <div class="col-lg-3">
                                                     <select class="niceSelect w-100 bb promote_session form-control{{ $errors->has('promote_session') ? ' is-invalid' : '' }}" name="promote_session" id="promote_session">
-                                                        <option data-display="@lang('common.select_academic_year') *" value="">@lang('common.select_academic_year') *</option>
+                                                        <option data-display="@lang('common.select_church_year') *" value="">@lang('common.select_church_year') *</option>
                                                         @foreach($Upsessions as $session)
                                                         @if (@$current_session != $session->id)
                                                           <option value="{{$session->id}}" {{( old("promote_session") == $session->id ? "selected":"")}}>{{$session->year}} [{{@$session->title}}]</option>

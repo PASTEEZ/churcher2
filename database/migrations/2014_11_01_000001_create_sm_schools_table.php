@@ -16,13 +16,13 @@ class CreateSmSchoolsTable extends Migration
     {
         Schema::create('sm_schools', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('school_name', 200)->nullable();
+            $table->string('church_name', 200)->nullable();
             $table->tinyInteger('created_by')->default(1);
             $table->tinyInteger('updated_by')->default(1);
             $table->string('email', 200)->nullable();
             $table->text('address', 200)->nullable();
             $table->string('phone', 20)->nullable();
-            $table->string('school_code', 200)->nullable();
+            $table->string('church_code', 200)->nullable();
             $table->boolean('is_email_verified')->default(0);
             $table->date('starting_date')->nullable();
             $table->date('ending_date')->nullable();
@@ -36,7 +36,7 @@ class CreateSmSchoolsTable extends Migration
 
         DB::table('sm_schools')->insert([
             [
-                'school_name' => 'InfixEdu',
+                'church_name' => 'InfixEdu',
                 'created_by' => 1,
                 'updated_by' => 1,
                 'active_status' => 1,

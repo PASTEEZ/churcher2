@@ -23,14 +23,14 @@ class DirectFeesApiController extends Controller
 
         $student_record = StudentRecord::find($record_id);
         $data = [];
-        $invoice = FeesInvoice::where('school_id', $student_record->school_id)->first();
+        $invoice = FeesInvoice::where('church_id', $student_record->church_id)->first();
         $data['prefix'] = @$invoice->prefix; 
         $data['start_form'] = @$invoice->start_form - 1;
         if(moduleStatusCheck('University')){
-           $data['feesInstallments'] = UnFeesInstallmentAssign::where('un_academic_id',$student_record->un_academic_id)->where('un_semester_label_id', $student_record->un_semester_label_id)->where('record_id', $student_record->id)->get();
+           $data['feesInstallments'] = UnFeesInstallmentAssign::where('un_church_year_id',$student_record->un_church_year_id)->where('un_semester_label_id', $student_record->un_semester_label_id)->where('record_id', $student_record->id)->get();
         }
         elseif(directFees()){
-            $data['feesInstallments'] = DirectFeesInstallmentAssign::with('payments','installment')->where('academic_id',$student_record->academic_id)->where('record_id', $student_record->id)->get();
+            $data['feesInstallments'] = DirectFeesInstallmentAssign::with('payments','installment')->where('church_year_id',$student_record->church_year_id)->where('record_id', $student_record->id)->get();
         }
         return response()->json([
             'data' => $data
@@ -41,16 +41,16 @@ class DirectFeesApiController extends Controller
 
         $data = [];
         $student_record = StudentRecord::find($record_id);
-        $invoice = FeesInvoice::where('school_id', $student_record->school_id)->first();
+        $invoice = FeesInvoice::where('church_id', $student_record->church_id)->first();
         $data['prefix'] = @$invoice->prefix; 
         $data['start_form'] = @$invoice->start_form - 1;
-        $data['banks'] = SmBankAccount::withOutGlobalScope(ActiveStatusSchoolScope::class)->where('school_id', $student_record->school_id)->get(['id','bank_name']);
+        $data['banks'] = SmBankAccount::withOutGlobalScope(ActiveStatusSchoolScope::class)->where('church_id', $student_record->church_id)->get(['id','bank_name']);
   
         if(moduleStatusCheck('University')){
-            $feesInstallments = UnFeesInstallmentAssign::where('un_academic_id',$student_record->un_academic_id)->where('un_semester_label_id', $student_record->un_semester_label_id)->where('record_id', $student_record->id)->get();
+            $feesInstallments = UnFeesInstallmentAssign::where('un_church_year_id',$student_record->un_church_year_id)->where('un_semester_label_id', $student_record->un_semester_label_id)->where('record_id', $student_record->id)->get();
         }
         elseif(directFees()){
-            $feesInstallments = DirectFeesInstallmentAssign::with('payments')->where('academic_id',$student_record->academic_id)->where('record_id', $student_record->id)->get();
+            $feesInstallments = DirectFeesInstallmentAssign::with('payments')->where('church_year_id',$student_record->church_year_id)->where('record_id', $student_record->id)->get();
         }
         $data['total_amount'] = $feesInstallments->sum('amount');
         $data['total_paid'] = $feesInstallments->sum('paid_amount');
@@ -66,15 +66,15 @@ class DirectFeesApiController extends Controller
         $request_amount = $request->amount;
         $bank_id = $request->bank_id;
         $student_record = StudentRecord::find($record_id);
-        $student_id = $student_record->student_id;
+        $member_id = $student_record->member_id;
         $after_paid = $request_amount;
 
         if(moduleStatusCheck('University')){
-            $feesInstallments = UnFeesInstallmentAssign::where('un_academic_id',$student_record->un_academic_id)->where('un_semester_label_id', $student_record->un_semester_label_id)->where('record_id', $student_record->id)->get();
+            $feesInstallments = UnFeesInstallmentAssign::where('un_church_year_id',$student_record->un_church_year_id)->where('un_semester_label_id', $student_record->un_semester_label_id)->where('record_id', $student_record->id)->get();
             $installments = UnFeesInstallmentAssign::where('record_id', $record_id)->get();
         }
         elseif(directFees()){
-            $feesInstallments = DirectFeesInstallmentAssign::with('payments')->where('academic_id',$student_record->academic_id)->where('record_id', $student_record->id)->get();
+            $feesInstallments = DirectFeesInstallmentAssign::with('payments')->where('church_year_id',$student_record->church_year_id)->where('record_id', $student_record->id)->get();
             $installments = DirectFeesInstallmentAssign::where('record_id', $record_id)->get();
         }
 
@@ -140,14 +140,14 @@ class DirectFeesApiController extends Controller
                 $payment->amount = $paid_amount;
                 $payment->note = $request->note;
                 $payment->slip = $fileName;
-                $payment->student_id = $student_record->student_id;
+                $payment->member_id = $student_record->member_id;
                 $payment->payment_mode = $request->payment_mode;
                 if($payment_method->id==3){
                     $payment->bank_id = $request->bank_id;
                 }
-                $payment->academic_id = $student_record->academic_id;
+                $payment->church_year_id = $student_record->church_year_id;
                 if(moduleStatusCheck('University')){
-                    $payment->un_academic_id= getAcademicId();
+                    $payment->un_church_year_id= getAcademicId();
                     $payment->un_fees_installment_id  = $installment->id;
                     $payment->un_semester_label_id = $student_record->un_semester_label_id;
                     $installment = UnFeesInstallmentAssign::find($installment->id);
@@ -164,7 +164,7 @@ class DirectFeesApiController extends Controller
                     $payable_amount =  discountFeesAmount($installment->id);
                     $sub_payment = $installment->payments->sum('paid_amount');
                 
-                    $last_inovoice = UnFeesInstallAssignChildPayment::where('school_id',auth()->user()->school_id)->max('invoice_no');
+                    $last_inovoice = UnFeesInstallAssignChildPayment::where('church_id',auth()->user()->church_id)->max('invoice_no');
                     $new_subPayment = new UnFeesInstallAssignChildPayment();
                     $new_subPayment->un_fees_installment_assign_id = $installment->id;
                     $new_subPayment->invoice_no = ( $last_inovoice + 1 ) ?? 1;
@@ -178,23 +178,23 @@ class DirectFeesApiController extends Controller
                     $new_subPayment->bank_id = $request->bank_id;
                     $new_subPayment->discount_amount = 0;
                     $new_subPayment->fees_type_id =  $installment->fees_type_id;
-                    $new_subPayment->student_id = $student_record->student_id;
+                    $new_subPayment->member_id = $student_record->member_id;
                     $new_subPayment->record_id = $request->record_id;
                     $new_subPayment->un_semester_label_id = $student_record->un_semester_label_id;;
-                    $new_subPayment->un_academic_id = getAcademicId();
+                    $new_subPayment->un_church_year_id = getAcademicId();
                     $new_subPayment->created_by = Auth::user()->id;
                     $new_subPayment->updated_by =  Auth::user()->id;
-                    $new_subPayment->school_id = Auth::user()->school_id;
+                    $new_subPayment->church_id = Auth::user()->church_id;
                     $new_subPayment->balance_amount = ($payable_amount - ($sub_payment + $paid_amount)); 
                     $new_subPayment->save();
                     $payment->child_payment_id = $new_subPayment->id;
 
                 }
                 elseif(directFees()){
-                    $payment->class_id = $student_record->class_id;
-                    $payment->section_id = $student_record->section_id;
+                    $payment->age_group_id = $student_record->age_group_id;
+                    $payment->mgender_id = $student_record->mgender_id;
                     $payment->record_id = $student_record->id;
-                    $payment->school_id = $student_record->school_id;
+                    $payment->church_id = $student_record->church_id;
                     $installment = DirectFeesInstallmentAssign::find($installment->id);
                     $installment->payment_date =  $newformat;
                     $installment->payment_mode = $request->payment_mode;
@@ -208,7 +208,7 @@ class DirectFeesApiController extends Controller
                     $payable_amount =  discountFees($installment->id);
                     $sub_payment = $installment->payments->sum('paid_amount');
                 
-                    $last_inovoice = DireFeesInstallmentChildPayment::where('school_id',auth()->user()->school_id)->max('invoice_no');
+                    $last_inovoice = DireFeesInstallmentChildPayment::where('church_id',auth()->user()->church_id)->max('invoice_no');
                     $new_subPayment = new DireFeesInstallmentChildPayment();
                     $new_subPayment->direct_fees_installment_assign_id = $installment->id;
                     $new_subPayment->invoice_no = ( $last_inovoice +1 ) ?? 1;
@@ -222,9 +222,9 @@ class DirectFeesApiController extends Controller
                     $new_subPayment->bank_id = $request->bank_id;
                     $new_subPayment->discount_amount = 0;
                     $new_subPayment->fees_type_id =  $installment->fees_type_id;
-                    $new_subPayment->student_id = $student_record->student_id;
+                    $new_subPayment->member_id = $student_record->member_id;
                     $new_subPayment->record_id = $record_id;
-                    $new_subPayment->school_id = $student_record->school_id;
+                    $new_subPayment->church_id = $student_record->church_id;
                     $new_subPayment->balance_amount = ( $payable_amount - ($sub_payment + $paid_amount) ); 
                     $new_subPayment->save();
                     $payment->child_payment_id = $new_subPayment->id;

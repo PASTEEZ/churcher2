@@ -27,7 +27,7 @@ class SmNoticeController extends Controller
             $roles = InfixRole::when((generalSetting()->with_guardian !=1), function ($query) {
                 $query->where('id', '!=', 3);
             })->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
             return view('backEnd.communicate.sendMessage', compact('roles'));
         } catch (\Exception $e) {
@@ -56,11 +56,11 @@ class SmNoticeController extends Controller
             $noticeData->publish_on = date('Y-m-d', strtotime($request->publish_on));
             $noticeData->inform_to = $roles_array;
             $noticeData->created_by = Auth::user()->id;
-            $noticeData->school_id = Auth::user()->school_id;
+            $noticeData->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $noticeData->un_academic_id = getAcademicId();
+                $noticeData->un_church_year_id = getAcademicId();
             }else{
-                $noticeData->academic_id = getAcademicId();
+                $noticeData->church_year_id = getAcademicId();
             }
             $noticeData->save();
             if ($request->role != null) {
@@ -73,11 +73,11 @@ class SmNoticeController extends Controller
                         $notidication->date = $noticeData->notice_date;
                         $notidication->user_id = $user->id;
                         $notidication->url = "notice-list";
-                        $notidication->school_id = Auth::user()->school_id;
+                        $notidication->church_id = Auth::user()->church_id;
                         if(moduleStatusCheck('University')){
-                            $notidication->un_academic_id = getAcademicId();
+                            $notidication->un_church_year_id = getAcademicId();
                         }else{
-                            $notidication->academic_id = getAcademicId();
+                            $notidication->church_year_id = getAcademicId();
                         }
                         $notidication->save();
                     }
@@ -108,7 +108,7 @@ class SmNoticeController extends Controller
     public function administratorNotice(Request $request)
     {
         try {
-            $allNotices = SmAdministratorNotice::where('inform_to', Auth::user()->school_id)
+            $allNotices = SmAdministratorNotice::where('inform_to', Auth::user()->church_id)
                         ->where('active_status', 1)
                         ->get();
           
@@ -124,7 +124,7 @@ class SmNoticeController extends Controller
 
         try {
             $roles = InfixRole::where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
             $noticeDataDetails = SmNoticeBoard::find($notice_id);
             return view('backEnd.communicate.editSendMessage', compact('noticeDataDetails', 'roles'));
@@ -175,11 +175,11 @@ class SmNoticeController extends Controller
                         $notidication->date = $noticeData->notice_date;
                         $notidication->user_id = $user->id;
                         $notidication->url = "notice-list";
-                        $notidication->school_id = Auth::user()->school_id;
+                        $notidication->church_id = Auth::user()->church_id;
                         if(moduleStatusCheck('University')){
-                            $notidication->un_academic_id = getAcademicId();
+                            $notidication->un_church_year_id = getAcademicId();
                         }else{
-                            $notidication->academic_id = getAcademicId();
+                            $notidication->church_year_id = getAcademicId();
                         }
                         $notidication->save();
                     }

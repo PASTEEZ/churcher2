@@ -12,7 +12,7 @@ class SmResultStore extends Model
 {
     use HasFactory;
     public function studentInfo(){
-    	return $this->belongsTo('App\SmStudent', 'student_id', 'id');
+    	return $this->belongsTo('App\SmStudent', 'member_id', 'id');
     }
     public function exam(){
         return $this->belongsTo(SmExamType::class, 'exam_type_id');
@@ -22,11 +22,11 @@ class SmResultStore extends Model
         return $this->belongsTo('App\SmSubject', 'subject_id', 'id');
     }
     public function class(){
-        return $this->belongsTo('App\SmClass', 'class_id', 'id');
+        return $this->belongsTo('App\SmClass', 'age_group_id', 'id');
     }
      public function section()
     {
-        return $this->belongsTo('App\SmSection', 'section_id', 'id');
+        return $this->belongsTo('App\SmSection', 'mgender_id', 'id');
     }
 
      public function studentRecord()
@@ -40,8 +40,8 @@ class SmResultStore extends Model
             ['from', '<=', $gpa], 
             ['up', '>=', $gpa]]
             )
-            ->where('school_id',Auth::user()->school_id)
-            ->where('academic_id', getAcademicId())
+            ->where('church_id',Auth::user()->church_id)
+            ->where('church_year_id', getAcademicId())
             ->first();
             return $mark;
     } catch (\Exception $e) {
@@ -51,14 +51,14 @@ class SmResultStore extends Model
 
 
     }
-    public static function  GetResultBySubjectId($class_id, $section_id, $subject_id,$exam_id,$student_id){
+    public static function  GetResultBySubjectId($age_group_id, $mgender_id, $subject_id,$exam_id,$member_id){
     	
         try {
             $data = SmMarkStore::withOutGlobalScopes()->where([
-                ['class_id',$class_id],
-                ['section_id',$section_id],
+                ['age_group_id',$age_group_id],
+                ['mgender_id',$mgender_id],
                 ['exam_term_id',$exam_id],
-                ['student_record_id',$student_id],
+                ['student_record_id',$member_id],
                 ['subject_id',$subject_id]
             ])->get();
             return $data;
@@ -68,14 +68,14 @@ class SmResultStore extends Model
         }
     }
 
-    public static function  un_GetResultBySubjectId($subject_id, $exam_id, $student_id, $request){
+    public static function  un_GetResultBySubjectId($subject_id, $exam_id, $member_id, $request){
 
         try {
             $SmMarkStore = SmMarkStore::query();
             $data = universityFilter($SmMarkStore, $request)
             ->where([
                 ['exam_term_id',$exam_id],
-                ['student_id',$student_id],
+                ['member_id',$member_id],
                 ['un_subject_id',$subject_id]
             ])->get();
             return $data;
@@ -85,14 +85,14 @@ class SmResultStore extends Model
         }
     }
 
-    public static function  GetFinalResultBySubjectId($class_id, $section_id, $subject_id,$exam_id,$student_id){
+    public static function  GetFinalResultBySubjectId($age_group_id, $mgender_id, $subject_id,$exam_id,$member_id){
         
         try {
             $data = SmResultStore::where([
-                ['class_id',$class_id],
-                ['section_id',$section_id],
+                ['age_group_id',$age_group_id],
+                ['mgender_id',$mgender_id],
                 ['exam_type_id',$exam_id],
-                ['student_record_id',$student_id],
+                ['student_record_id',$member_id],
                 ['subject_id',$subject_id]
                 ])->first();
 
@@ -103,14 +103,14 @@ class SmResultStore extends Model
         }
     }
 
-    public static function  un_GetFinalResultBySubjectId($subject_id, $exam_id, $student_id, $request)
+    public static function  un_GetFinalResultBySubjectId($subject_id, $exam_id, $member_id, $request)
     {
         try {
             $SmResultStore = SmResultStore::query();
             $data = universityFilter($SmResultStore, $request)
             ->where([
                 ['exam_type_id',$exam_id],
-                ['student_id',$student_id],
+                ['member_id',$member_id],
                 ['un_subject_id',$subject_id]
                 ])->first();
 
@@ -121,12 +121,12 @@ class SmResultStore extends Model
         }
     }
 
-    public static function termBaseMark($class_id, $section_id, $subject_id,$exam_id,$student_id){
+    public static function termBaseMark($age_group_id, $mgender_id, $subject_id,$exam_id,$member_id){
         $data = SmResultStore::where([
-            ['class_id',$class_id],
-            ['section_id',$section_id],
+            ['age_group_id',$age_group_id],
+            ['mgender_id',$mgender_id],
             ['exam_type_id',$exam_id],
-            ['student_record_id',$student_id],
+            ['student_record_id',$member_id],
             ['subject_id',$subject_id]
             ])
             ->groupBy('exam_type_id')
@@ -134,13 +134,13 @@ class SmResultStore extends Model
             return $data;
     }
 
-    public static function un_termBaseMark($subject_id, $exam_id, $student_id, $request){
+    public static function un_termBaseMark($subject_id, $exam_id, $member_id, $request){
 
         $SmResultStore = SmResultStore::query();
             $data = universityFilter($SmResultStore, $request)
             ->where([
                 ['exam_type_id',$exam_id],
-                ['student_id',$student_id],
+                ['member_id',$member_id],
                 ['un_subject_id',$subject_id]
             ])
             ->groupBy('exam_type_id')

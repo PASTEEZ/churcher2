@@ -27,9 +27,9 @@ class SmSectionController extends Controller
 
         try {
       
-       $academic_year=SmAcademicYear::where('school_id',Auth::user()->school_id)->where('id', getAcademicId())->first();
+       $church_year=SmAcademicYear::where('church_id',Auth::user()->church_id)->where('id', getAcademicId())->first();
             
-            $sections = SmSection::where('active_status', '=', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $sections = SmSection::where('active_status', '=', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
              //return $sections;
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($sections, null);
@@ -43,8 +43,8 @@ class SmSectionController extends Controller
     public function store(Request $request)
     {
        
-        $academic_year=SmAcademicYear::where('school_id',Auth::user()->school_id)->where('id', getAcademicId())->first();
-        if ($academic_year==null) {
+        $church_year=SmAcademicYear::where('church_id',Auth::user()->church_id)->where('id', getAcademicId())->first();
+        if ($church_year==null) {
             Toastr::warning('Create Financial year first', 'Warning');
             return redirect()->back();
         }
@@ -53,7 +53,7 @@ class SmSectionController extends Controller
         $validator = Validator::make($input, [                                                 
             'name' => "required|max:200"
         ]);
-        $is_duplicate = SmSection::where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->where('section_name', $request->name)->first();
+        $is_duplicate = SmSection::where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->where('mgender_name', $request->name)->first();
         if ($is_duplicate) {
             Toastr::error('Duplicate section name found!', 'Failed');
             return redirect()->back()->withErrors($validator)->withInput();
@@ -77,10 +77,10 @@ class SmSectionController extends Controller
                     if ($branchs != '') {
                         foreach ($branchs as $branch) {
                             $smbranchSection = new BranchSection();
-                            $smbranchSection->section_id = $branch;
+                            $smbranchSection->mgender_id = $branch;
                              $smbranchSection->branch_id = $branch;
                             $smbranchSection->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
-                            $smbranchSection->school_id = Auth::user()->school_id;
+                            $smbranchSection->church_id = Auth::user()->church_id;
 
                              //check MultiBranch module and superadmin
                 // if( moduleStatusCheck('MultiBranch')){
@@ -91,7 +91,7 @@ class SmSectionController extends Controller
                 //     }
                 
                 //  }
-                            $smbranchSection->academic_id = getAcademicId();
+                            $smbranchSection->church_year_id = getAcademicId();
                             $smbranchSection->save();
                         }
                     }
@@ -99,10 +99,10 @@ class SmSectionController extends Controller
     }
         try {
             $section = new SmSection();
-            $section->section_name = $request->name;
+            $section->mgender_name = $request->name;
             $section->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
-            $section->school_id = Auth::user()->school_id;
-            $section->academic_id = getAcademicId();
+            $section->church_id = Auth::user()->church_id;
+            $section->church_year_id = getAcademicId();
             $result = $section->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -130,9 +130,9 @@ class SmSectionController extends Controller
              if (checkAdmin()) {
                 $section = SmSection::find($id);
             }else{
-                $section = SmSection::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+                $section = SmSection::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
             }
-            $sections = SmSection::where('active_status', '=', 1)->orderBy('id', 'desc')->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $sections = SmSection::where('active_status', '=', 1)->orderBy('id', 'desc')->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -154,7 +154,7 @@ class SmSectionController extends Controller
             'name' => "required|max:200"
         ]);
 
-        $is_duplicate = SmSection::where('school_id', Auth::user()->school_id)->where('academic_id', getAcademicId())->where('section_name', $request->name)->where('id','!=', $request->id)->first();
+        $is_duplicate = SmSection::where('church_id', Auth::user()->church_id)->where('church_year_id', getAcademicId())->where('mgender_name', $request->name)->where('id','!=', $request->id)->first();
         if ($is_duplicate) {
             Toastr::error('Duplicate section name found!', 'Failed');
             return redirect()->back()->withErrors($validator)->withInput();
@@ -174,9 +174,9 @@ class SmSectionController extends Controller
             if (checkAdmin()) {
                 $section = SmSection::find($request->id);
             }else{
-                $section = SmSection::where('id',$request->id)->where('school_id',Auth::user()->school_id)->first();
+                $section = SmSection::where('id',$request->id)->where('church_id',Auth::user()->church_id)->first();
             }
-            $section->section_name = $request->name;
+            $section->mgender_name = $request->name;
             $result = $section->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -203,12 +203,12 @@ class SmSectionController extends Controller
     public function delete(Request $request, $id)
     {
         try {
-            $tables = SmClassSection::where('section_id',$id)->first();
+            $tables = SmClassSection::where('mgender_id',$id)->first();
                 if ($tables == null) {
                       if (checkAdmin()) {
                         $delete_query = SmSection::destroy($request->id);
                     }else{
-                        $delete_query = SmSection::where('id',$request->id)->where('school_id',Auth::user()->school_id)->delete();
+                        $delete_query = SmSection::where('id',$request->id)->where('church_id',Auth::user()->church_id)->delete();
                     }
                         if ($delete_query) {
                             Toastr::success('Operation successful', 'Success');

@@ -100,7 +100,7 @@ class RolePermissionController extends Controller
                 $query->where('id', '!=', 3);
             })->where('active_status', '=', 1)
                 ->where(function ($q) {
-                    $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                    $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
                 })
                 ->where('id', '!=', 1)
                 ->orderBy('id', 'desc')
@@ -126,7 +126,7 @@ class RolePermissionController extends Controller
             $role = new InfixRole();
             $role->name = $request->name;
             $role->type = 'User Defined';
-            $role->school_id = Auth::user()->school_id;
+            $role->church_id = Auth::user()->church_id;
             $role->save();
 
             Toastr::success('Operation successful', 'Success');
@@ -144,7 +144,7 @@ class RolePermissionController extends Controller
             $role = InfixRole::find($id);
             $roles = InfixRole::where('is_saas',0)->where('active_status', '=', 1)
                 ->where(function ($q) {
-                    $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                    $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
                 })
                 ->where('id', '!=', 1)
                 ->orderBy('id', 'desc')
@@ -206,7 +206,7 @@ class RolePermissionController extends Controller
            
             DB::statement('SET FOREIGN_KEY_CHECKS=0;');
             $role = InfixRole::where('is_saas',0)->where('id',$id)->first();
-            $assign_modules = InfixPermissionAssign::where('school_id',Auth::user()->school_id)->where('role_id', $id)->get();
+            $assign_modules = InfixPermissionAssign::where('church_id',Auth::user()->church_id)->where('role_id', $id)->get();
            
 
             $already_assigned = [];
@@ -332,7 +332,7 @@ class RolePermissionController extends Controller
         try {
             Schema::disableForeignKeyConstraints();
             DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-            InfixPermissionAssign::where('school_id', Auth::user()->school_id)->where('role_id', $request->role_id)->delete();
+            InfixPermissionAssign::where('church_id', Auth::user()->church_id)->where('role_id', $request->role_id)->delete();
             
             if ($request->module_id) {
                     
@@ -341,7 +341,7 @@ class RolePermissionController extends Controller
                     $assign = new InfixPermissionAssign();
                     $assign->module_id = $module;
                     $assign->role_id = $request->role_id;
-                    $assign->school_id = Auth::user()->school_id;
+                    $assign->church_id = Auth::user()->church_id;
                     $assign->save();
                 }
             }

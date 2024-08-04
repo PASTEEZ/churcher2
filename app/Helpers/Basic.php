@@ -64,10 +64,10 @@ if (!function_exists('activeStyle')) {
             return $active_style;
         } else {
             $active_style = auth()->check() ? Theme::where('id', auth()->user()->style_id)->first() :
-                Theme::where('school_id', 1)->where('is_default', 1)->first();
+                Theme::where('church_id', 1)->where('is_default', 1)->first();
 
             if ($active_style == null) {
-                $active_style = Theme::where('school_id', 1)->where('is_default', 1)->first();
+                $active_style = Theme::where('church_id', 1)->where('is_default', 1)->first();
             }
             
             session()->put('active_style', $active_style);
@@ -99,7 +99,7 @@ if(!function_exists('currency_format')) {
 
         $code = generalSetting()->currency ?? 'USD';
         
-        $format = SmCurrency::where('code', $code)->where('school_id', generalSetting()->school_id)->first();
+        $format = SmCurrency::where('code', $code)->where('church_id', generalSetting()->church_id)->first();
         
         if(!$format) return $amount;
 
@@ -120,73 +120,73 @@ if(!function_exists('currency_format')) {
     }
 }
 if(!function_exists('classes')) {
-    function classes(int $academic_year = null)
+    function classes(int $church_year = null)
     {
         return SmClass::withOutGlobalScopes()
-        ->when($academic_year, function($q) use($academic_year){
-            $q->where('academic_id', $academic_year);
+        ->when($church_year, function($q) use($church_year){
+            $q->where('church_year_id', $church_year);
         }, function($q){
-            $q->where('academic_id', getAcademicId());
-        })->where('school_id', auth()->user()->school_id)
+            $q->where('church_year_id', getAcademicId());
+        })->where('church_id', auth()->user()->church_id)
         ->where('active_status', 1)->get();
     }
 }
 if(!function_exists('sections')) {
-    function sections(int $class_id, int $academic_year = null)
+    function sections(int $age_group_id, int $church_year = null)
     {
-       return  SmClassSection::withOutGlobalScopes()->where('class_id', $class_id)
-                            ->where('school_id', auth()->user()->school_id)
-                            ->when($academic_year, function($q) use($academic_year){
-                                $q->where('academic_id', $academic_year);
+       return  SmClassSection::withOutGlobalScopes()->where('age_group_id', $age_group_id)
+                            ->where('church_id', auth()->user()->church_id)
+                            ->when($church_year, function($q) use($church_year){
+                                $q->where('church_year_id', $church_year);
                             }, function($q){
-                                $q->where('academic_id', getAcademicId());
-                            })->groupBy(['class_id', 'section_id'])->get();
+                                $q->where('church_year_id', getAcademicId());
+                            })->groupBy(['age_group_id', 'mgender_id'])->get();
 
     }
 }
 if(!function_exists('subjects')) {
-    function subjects(int $class_id, int $section_id, int $academic_year = null)
+    function subjects(int $age_group_id, int $mgender_id, int $church_year = null)
     {
          $subjects = SmAssignSubject::withOutGlobalScopes()
-         ->where('class_id', $class_id)
-         ->where('section_id', $section_id)
-         ->where('school_id', auth()->user()->school_id)
-         ->when($academic_year, function($q) use($academic_year){
-            $q->where('academic_id', $academic_year);
+         ->where('age_group_id', $age_group_id)
+         ->where('mgender_id', $mgender_id)
+         ->where('church_id', auth()->user()->church_id)
+         ->when($church_year, function($q) use($church_year){
+            $q->where('church_year_id', $church_year);
         }, function($q){
-            $q->where('academic_id', getAcademicId());
-        })->groupBy(['class_id', 'section_id', 'subject_id'])->get(); 
+            $q->where('church_year_id', getAcademicId());
+        })->groupBy(['age_group_id', 'mgender_id', 'subject_id'])->get(); 
         
         return $subjects;
 
     }
 }
 if(!function_exists('students')) {
-    function students(int $class_id, int $section_id = null, int $academic_year = null)
+    function students(int $age_group_id, int $mgender_id = null, int $church_year = null)
     {
-         $student_ids = StudentRecord::where('class_id', $class_id)
-         ->when($section_id, function($q) use($section_id){
-            $q->where('section_id', $section_id);
-         })->when('academic_year', function($q) use($academic_year) {
-            $q->where('academic_id', $academic_year);
-         })->where('school_id', auth()->user()->school_id)->pluck('student_id')->unique()->toArray();
+         $member_ids = StudentRecord::where('age_group_id', $age_group_id)
+         ->when($mgender_id, function($q) use($mgender_id){
+            $q->where('mgender_id', $mgender_id);
+         })->when('church_year', function($q) use($church_year) {
+            $q->where('church_year_id', $church_year);
+         })->where('church_id', auth()->user()->church_id)->pluck('member_id')->unique()->toArray();
 
-         $students = SmStudent::withOutGlobalScopes()->whereIn('id', $student_ids)->get();
+         $students = SmStudent::withOutGlobalScopes()->whereIn('id', $member_ids)->get();
         
         return $students;
 
     }
 }
 if(!function_exists('classSubjects')) {
-    function classSubjects($class_id = null) {
+    function classSubjects($age_group_id = null) {
         $subjects = SmAssignSubject::query();
         if (teacherAccess()) {
             $subjects->where('teacher_id', auth()->user()->staff->id) ;
         }
-        if ($class_id !="all_class") {
-            $subjects->where('class_id', '=', $class_id);
+        if ($age_group_id !="all_class") {
+            $subjects->where('age_group_id', '=', $age_group_id);
         } else {
-            $subjects->groupBy('class_id');
+            $subjects->groupBy('age_group_id');
         }
         $subjectIds = $subjects->groupBy('subject_id')->get()->pluck(['subject_id'])->toArray();        
 
@@ -194,18 +194,18 @@ if(!function_exists('classSubjects')) {
     }
 }
 if(!function_exists('subjectSections')) {
-    function subjectSections($class_id = null, $subject_id =null) {
-        if(!$class_id || !$subject_id) return null;
-        $sectionIds = SmAssignSubject::where('class_id', $class_id)
+    function subjectSections($age_group_id = null, $subject_id =null) {
+        if(!$age_group_id || !$subject_id) return null;
+        $sectionIds = SmAssignSubject::where('age_group_id', $age_group_id)
         ->where('subject_id', '=', $subject_id)                         
-        ->where('school_id', auth()->user()->school_id)
+        ->where('church_id', auth()->user()->church_id)
         ->when(teacherAccess(), function($q) {
             $q->where('teacher_id',auth()->user()->staff->id);
         })
-        ->groupby(['class_id','section_id'])
-        ->pluck('section_id')
+        ->groupby(['age_group_id','mgender_id'])
+        ->pluck('mgender_id')
         ->toArray();
-        return SmSection::whereIn('id',$sectionIds)->get(['id','section_name']);
+        return SmSection::whereIn('id',$sectionIds)->get(['id','mgender_name']);
 
     }
 }

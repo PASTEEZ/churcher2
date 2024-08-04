@@ -24,9 +24,9 @@ class SmVehicleRequest extends FormRequest
      */
     public function rules()
     {
-        $school_id=auth()->user()->school_id;
+        $church_id=auth()->user()->church_id;
         return [
-            'vehicle_number' => ['required', 'max:200', Rule::unique('sm_vehicles', 'vehicle_no')->where('school_id', $school_id)->ignore($this->id) ],
+            'vehicle_number' => ['required', 'max:200', Rule::unique('sm_vehicles', 'vehicle_no')->where('church_id', $church_id)->ignore($this->id) ],
             'vehicle_model' => "required|max:200",
             'year_made' => "sometimes|nullable|max:10",
             'note' => "sometimes|nullable",

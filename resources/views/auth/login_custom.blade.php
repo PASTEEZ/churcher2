@@ -1,5 +1,5 @@
 <?php
-$setting = App\SmGeneralSettings::where('school_id', Auth::user()->school_id)->first();
+$setting = App\SmGeneralSettings::where('church_id', Auth::user()->church_id)->first();
 if(isset($setting->copyright_text)){ generalSetting()->copyright_text = $setting->copyright_text; }else{ generalSetting()->copyright_text = 'Copyright © 2020 All rights reserved | This application is made with by Codethemes'; }
 if(isset($setting->logo)) { generalSetting()->logo = $setting->logo; } else{ generalSetting()->logo = 'public/uploads/settings/logo.png'; }
 

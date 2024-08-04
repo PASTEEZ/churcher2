@@ -28,58 +28,58 @@ class MemberDataController extends Controller
             // Determine the new status and prefix based on age
             if ($age < 12) {
                 $newStatus = '1'; // 1 for Children's Service
-                $prefix = 'PMCS';
+                $prefix = 'PCGA';
             } elseif ($age >= 12 && $age <= 18) {
                 $newStatus = '2'; // 2 for Junior Youth (J.Y.)
-                $prefix = 'PMJY';
+                $prefix = 'PCGA';
             } elseif ($age >= 18 && $age <= 30) {
                 $newStatus = '3'; // 3 for Young People's Guild (Y.P.G.)
-                $prefix = 'PMCB';
+                $prefix = 'PCGA';
             } elseif ($age >= 31 && $age <= 40) {
                 $newStatus = '4'; // 4 for Young Adults Fellowship
-                $prefix = 'PMCB';
+                $prefix = 'PCGA';
             } else {
                 $newStatus = '5'; // 5 for Men's and Women's Fellowship
-                $prefix = 'PMCB';
+                $prefix = 'PCGA';
             }
 
-            // Update admission_no in SmStudent model
-            $newMemberId = $prefix . substr($change_member_id->admission_no, 4);
-            $change_member_id->admission_no = $newMemberId;
+            // Update registration_no in SmStudent model
+            $newMemberId = $prefix . substr($change_member_id->registration_no, 4);
+            $change_member_id->registration_no = $newMemberId;
             $change_member_id->save(); // Save the changes
 
 
                 // Debugging: Log the values for verification
              //   info("Member ID: {$member->id}, Age: $age, New Status: $newStatus, New Admission No: $newMemberId");
 
-                // Update class_id in student_records table
+                // Update age_group_id in student_records table
                 $updatedRecords = DB::table('student_records')
-                    ->where('student_id', $member->id)
-                    ->update(['class_id' => $newStatus]);
+                    ->where('member_id', $member->id)
+                    ->update(['age_group_id' => $newStatus]);
     
                 // Debugging: Log the number of updated records
                // info("Updated student_records: $updatedRecords");
-            // Update class_id in student_records table
+            // Update age_group_id in student_records table
  
 
-            // Update admission_no in sm_students table
+            // Update registration_no in sm_students table
             DB::table('sm_students')
                 ->where('id', $member->id)
-                ->update(['admission_no' => $newMemberId]);
+                ->update(['registration_no' => $newMemberId]);
         }
 
         try {
             $classes = SmClass::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
-            $students = SmStudent::where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+            $students = SmStudent::where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             $sessions = SmAcademicYear::where('active_status', 1)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             return view('backEnd.studentInformation.student_details', compact('classes', 'sessions'));

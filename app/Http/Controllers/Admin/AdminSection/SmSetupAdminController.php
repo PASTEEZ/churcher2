@@ -36,11 +36,11 @@ class SmSetupAdminController extends Controller
             $setup->type = $request->type;
             $setup->name = $request->name;
             $setup->description = $request->description;
-            $setup->school_id = Auth::user()->school_id;
+            $setup->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $setup->un_academic_id = getAcademicId();
+                $setup->un_church_year_id = getAcademicId();
             }else{
-                $setup->academic_id = getAcademicId();
+                $setup->church_year_id = getAcademicId();
             }
             $setup->save();
 
@@ -73,7 +73,7 @@ class SmSetupAdminController extends Controller
             $setup->name = $request->name;
             $setup->description = $request->description;
             if(moduleStatusCheck('University')){
-                $setup->un_academic_id = getAcademicId();
+                $setup->un_church_year_id = getAcademicId();
             }
             $setup->save();
 

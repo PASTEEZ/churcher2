@@ -16,7 +16,7 @@ class UpdateRecordIdToFmFeesInvoicesTable extends Migration
         $feesInvoices = \Modules\Fees\Entities\FmFeesInvoice::whereNull('record_id')->get();
 
         foreach($feesInvoices as $invoice){
-            $record = \App\Models\StudentRecord::where('school_id', $invoice->school_id)->where('academic_id', $invoice->academic_id)->where('class_id', $invoice->class_id)->where('student_id', $invoice->student_id)->first();
+            $record = \App\Models\StudentRecord::where('church_id', $invoice->church_id)->where('church_year_id', $invoice->church_year_id)->where('age_group_id', $invoice->age_group_id)->where('member_id', $invoice->member_id)->first();
             if($record){
                 $invoice->record_id = $record->id;
                 $invoice->save();

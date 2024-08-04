@@ -3,8 +3,8 @@
 @lang('reports.online_exam_report')
 @endsection
 @section('mainContent')
-<input type="text" hidden value="{{ @$clas->class_name }}" id="cls">
-<input type="text" hidden value="{{ @$sec->section_name }}" id="sec">
+<input type="text" hidden value="{{ @$clas->age_group_name }}" id="cls">
+<input type="text" hidden value="{{ @$sec->mgender_name }}" id="sec">
 <section class="sms-breadcrumb mb-40 white-box">
     <div class="container-fluid">
         <div class="row justify-content-between">
@@ -51,7 +51,7 @@
                                 <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                     <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                     @foreach($classes as $class)
-                                    <option value="{{$class->id}}" {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{$class->class_name}}</option>
+                                    <option value="{{$class->id}}" {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{$class->age_group_name}}</option>
                                     @endforeach
                                 </select>
                                 @if ($errors->has('class'))
@@ -63,10 +63,10 @@
                             <div class="col-lg-4 mt-30-md md_mb_20" id="select_section_div">
                                 <select class="w-100 bb niceSelect form-control{{ $errors->has('section') ? ' is-invalid' : '' }} select_section" id="select_section" name="section">
                                     <option data-display="@lang('common.select_section') *" value="">@lang('common.select_section') *</option>
-                                    @if(isset($class_id))
+                                    @if(isset($age_group_id))
                                     @foreach ($class->classSection as $section)
                                     <option value="{{ $section->sectionName->id }}" {{ old('section')==$section->sectionName->id ? 'selected' : '' }} >
-                                        {{ $section->sectionName->section_name }}</option>
+                                        {{ $section->sectionName->mgender_name }}</option>
                                     @endforeach
                                 @endif
                                 </select>
@@ -109,7 +109,7 @@
                 <table id="table_id_tt" class="display school-table school-table-style" cellspacing="0" width="100%">
                     <thead>
                         <tr>
-                            <th>@lang('student.admission_no')</th>
+                            <th>@lang('student.registration_no')</th>
                             <th>@lang('student.student')</th>
                             <th>@lang('common.class_Sec')</th>
                             <th>@lang('exam.exam')</th>
@@ -123,19 +123,19 @@
                 
                             @foreach($students as $student)
                             <tr>
-                                <td>{{$student->admission_no}}</td>
+                                <td>{{$student->registration_no}}</td>
                                 <td>{{$student->full_name}}</td>
                                 <td>
 
-                                   @php if(!empty($student->recordClass)){ echo $student->recordClass->class->class_name; }else { echo ''; } @endphp
+                                   @php if(!empty($student->recordClass)){ echo $student->recordClass->class->age_group_name; }else { echo ''; } @endphp
 
-                                            @if($section_id==null)
+                                            @if($mgender_id==null)
 
                                                 (@foreach ($student->recordClasses as $section)
-                                                        {{$section->section->section_name}},
+                                                        {{$section->section->mgender_name}},
                                                 @endforeach)
                                             @else
-                                            ({{$student->recordSection != ""? $student->recordSection->section->section_name:""}})
+                                            ({{$student->recordSection != ""? $student->recordSection->section->mgender_name:""}})
                                             @endif
 
                                 </td>

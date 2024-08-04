@@ -8,11 +8,11 @@
 
                 <input type="hidden" name="url" id="url" value="{{URL::to('/')}}">
                 <input type="hidden" name="exam_period_id" id="exam_period_id" value="{{ @$exam_period_id}}">
-                <input type="hidden" name="class_id" id="class_id" value="{{ @$class_id}}">
-                <input type="hidden" name="section_id" id="section_id" value="{{ @$section_id}}">
+                <input type="hidden" name="age_group_id" id="age_group_id" value="{{ @$age_group_id}}">
+                <input type="hidden" name="mgender_id" id="mgender_id" value="{{ @$mgender_id}}">
                 <input type="hidden" name="exam_term_id" id="exam_term_id" value="{{ @$exam_term_id}}">
                 <input type="hidden" name="subject_id" id="subject_id" value="{{ @$subject_id}}">
-                <input type="hidden" name="section_id_all" id="section_id_all" value="{{ @$section_id_all}}">
+                <input type="hidden" name="mgender_id_all" id="mgender_id_all" value="{{ @$mgender_id_all}}">
                 
 
 

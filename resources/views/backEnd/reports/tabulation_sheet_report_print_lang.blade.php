@@ -234,7 +234,7 @@
                 flex-grow: 1;
                 text-align: right;
             }
-            .line_grid .student_name{
+            .line_grid .member_name{
                 font-weight: 500;
                 font-size: 14px;
                 color: var(--base_color);
@@ -250,7 +250,7 @@
                 align-items: center;
                 flex: 60px 0 0;
             }
-            .student_name_highlight{
+            .member_name_highlight{
                 font-weight: 500;
                 color: var(--base_color);
                 line-height: 1.5;
@@ -643,7 +643,7 @@
                 flex-grow: 1;
                 text-align: right;
             }
-            .line_grid .student_name{
+            .line_grid .member_name{
                 font-weight: 500;
                 font-size: 14px;
                 color: var(--base_color);
@@ -659,7 +659,7 @@
                 align-items: center;
                 flex: 60px 0 0;
             }
-            .student_name_highlight{
+            .member_name_highlight{
                 font-weight: 500;
                 color: var(--base_color);
                 line-height: 1.5;
@@ -870,10 +870,10 @@
                                     <td>
                                         <div class="logo_img">
                                             <div class="thumb_logo">
-                                                <img  src="{{asset('/')}}{{generalSetting()->logo }}" alt="{{generalSetting()->school_name}}">
+                                                <img  src="{{asset('/')}}{{generalSetting()->logo }}" alt="{{generalSetting()->church_name}}">
                                             </div>
                                             <div class="company_info">
-                                                <h3>{{isset(generalSetting()->school_name)?generalSetting()->school_name:'Infix School Management ERP'}}</h3>
+                                                <h3>{{isset(generalSetting()->church_name)?generalSetting()->church_name:'Infix School Management ERP'}}</h3>
                                                 <h5>{{isset(generalSetting()->address)?generalSetting()->address:'Infix School Address'}}</h5>
                                                 <h5>@lang('common.email'): {{isset(generalSetting()->email)?generalSetting()->email:'admin@demo.com'}}, @lang('common.phone'): {{isset(generalSetting()->phone)?generalSetting()->phone:'+8801841412141'}}</h5>
                                             </div>
@@ -893,9 +893,9 @@
                                                     <td>
                                                         <p class="line_grid" >
                                                             <span>
-                                                                <span>@lang('student.student_name')</span><span>:</span>
+                                                                <span>@lang('student.member_name')</span><span>:</span>
                                                             </span>
-                                        {{$tabulation_details['student_name']}}
+                                        {{$tabulation_details['member_name']}}
                                     </p>
                                 </td>
                                 <td>
@@ -903,7 +903,7 @@
                                                             <span>
                                                                 <span>@lang('common.search')</span><span>:</span>
                                                             </span>
-                                        {{$tabulation_details['student_class']}}
+                                        {{$tabulation_details['member_group']}}
                                     </p>
                                 </td>
                             </tr>
@@ -921,7 +921,7 @@
                                                             <span>
                                                                 <span>@lang('common.section')</span><span>:</span>
                                                             </span>
-                                        {{$tabulation_details['student_section']}}
+                                        {{$tabulation_details['member_gender']}}
                                     </p>
                                 </td>
                             </tr>
@@ -929,9 +929,9 @@
                                 <td>
                                     <p class="line_grid" >
                                                             <span>
-                                                                <span>@lang('student.admission_no')</span><span>:</span>
+                                                                <span>@lang('student.registration_no')</span><span>:</span>
                                                             </span>
-                                        {{$tabulation_details['student_admission_no']}}
+                                        {{$tabulation_details['member_registration_no']}}
                                     </p>
                                 </td>
                                 <td>
@@ -959,7 +959,7 @@
                                 @php
                                     $subject_ID     = $subject->subject_id;
                                     $subject_Name   = $subject->subject->subject_name;
-                                    $mark_parts      = App\SmAssignSubject::getNumberOfPart($subject_ID, $class_id, $section_id, $exam_term_id);
+                                    $mark_parts      = App\SmAssignSubject::getNumberOfPart($subject_ID, $age_group_id, $mgender_id, $exam_term_id);
                                 @endphp
                                 <th colspan="{{count($mark_parts)+1}}" class="subject-list"> {{$subject_Name}}</th>
                             @endforeach
@@ -978,7 +978,7 @@
                                 @php
                                     $subject_ID     = $subject->subject_id;
                                     $subject_Name   = $subject->subject->subject_name;
-                                    $mark_parts     = App\SmAssignSubject::getNumberOfPart($subject_ID, $class_id, $section_id, $exam_term_id);
+                                    $mark_parts     = App\SmAssignSubject::getNumberOfPart($subject_ID, $age_group_id, $mgender_id, $exam_term_id);
                                 @endphp
                                 @foreach($mark_parts as $sigle_part)
                                     <th>{{$sigle_part->exam_title}} ({{$sigle_part->exam_mark}})</th>
@@ -1003,7 +1003,7 @@
                                 $marks_by_students = 0; 
                                 $main_subject_total_gpa = 0; 
                                 $Optional_subject_count = 0; 
-                                $optional_subject=App\SmOptionalSubjectAssign::where('student_id','=',$student->id)->where('session_id','=',$student->session_id)->first();
+                                $optional_subject=App\SmOptionalSubjectAssign::where('member_id','=',$student->id)->where('session_id','=',$student->session_id)->first();
                                 $opt_sub_gpa=0;
                                 $optional_subject_gpa=0;
                             @endphp
@@ -1012,11 +1012,11 @@
                                     @php
                                         $subject_ID     = $subject->subject_id;
                                         $subject_Name   = $subject->subject->subject_name;
-                                        $mark_parts     = App\SmAssignSubject::getMarksOfPart($student->id, $subject_ID, $class_id, $section_id, $exam_term_id);
+                                        $mark_parts     = App\SmAssignSubject::getMarksOfPart($student->id, $subject_ID, $age_group_id, $mgender_id, $exam_term_id);
                                         $subject_count= 0;
                                         $optional_subject_marks=DB::table('sm_optional_subject_assigns')
                                         ->join('sm_mark_stores','sm_mark_stores.subject_id','=','sm_optional_subject_assigns.subject_id')
-                                        ->where('sm_optional_subject_assigns.student_id','=',$student->id)
+                                        ->where('sm_optional_subject_assigns.member_id','=',$student->id)
                                         ->first();
                                     @endphp
                                     @foreach($mark_parts as $sigle_part)
@@ -1024,7 +1024,7 @@
                                     @endforeach
                                     <td class="total">
                                         @php
-                                            $tola_mark_by_subject = App\SmAssignSubject::getSumMark($student->id, $subject_ID, $class_id, $section_id, $exam_term_id);
+                                            $tola_mark_by_subject = App\SmAssignSubject::getSumMark($student->id, $subject_ID, $age_group_id, $mgender_id, $exam_term_id);
                                             $marks_by_students  = $marks_by_students + $tola_mark_by_subject;
                                         @endphp
                                         {{$tola_mark_by_subject}}
@@ -1035,8 +1035,8 @@
                                                 $mark_grade = App\SmMarksGrade::where([
                                                             ['percent_from', '<=', $persentage], 
                                                             ['percent_upto', '>=', $persentage]])
-                                                            ->where('academic_id', getAcademicId())
-                                                            ->where('school_id',Auth::user()->school_id)
+                                                            ->where('church_year_id', getAcademicId())
+                                                            ->where('church_id',Auth::user()->church_id)
                                                             ->first();
                     
                                                 $mark_grade_gpa=0;
@@ -1209,7 +1209,7 @@
                             @php
                                 $subject_ID     = $subject->subject_id;
                                 $subject_Name   = $subject->subject->subject_name;
-                                $mark_parts      = App\SmAssignSubject::getNumberOfPart($subject_ID, $class_id, $section_id, $exam_term_id);
+                                $mark_parts      = App\SmAssignSubject::getNumberOfPart($subject_ID, $age_group_id, $mgender_id, $exam_term_id);
                             @endphp
                             <th colspan="{{count($mark_parts)+1}}" class="subject-list"> {{$subject_Name}}</th>
                         @endforeach
@@ -1228,7 +1228,7 @@
                             @php
                                 $subject_ID     = $subject->subject_id;
                                 $subject_Name   = $subject->subject->subject_name;
-                                $mark_parts     = App\SmAssignSubject::getNumberOfPart($subject_ID, $class_id, $section_id, $exam_term_id);
+                                $mark_parts     = App\SmAssignSubject::getNumberOfPart($subject_ID, $age_group_id, $mgender_id, $exam_term_id);
                             @endphp
                             @foreach($mark_parts as $sigle_part)
                                 <th>{{$sigle_part->exam_title}} ({{$sigle_part->exam_mark}})</th>
@@ -1253,7 +1253,7 @@
                             $marks_by_students = 0;
                             $main_subject_total_gpa = 0;
                             $Optional_subject_count = 0;
-                            $optional_subject=App\SmOptionalSubjectAssign::where('student_id','=',$student->id)->where('session_id','=',$student->session_id)->first();
+                            $optional_subject=App\SmOptionalSubjectAssign::where('member_id','=',$student->id)->where('session_id','=',$student->session_id)->first();
                             $opt_sub_gpa=0;
                             $optional_subject_gpa=0;
                         @endphp
@@ -1262,11 +1262,11 @@
                                 @php
                                     $subject_ID     = $subject->subject_id;
                                     $subject_Name   = $subject->subject->subject_name;
-                                    $mark_parts     = App\SmAssignSubject::getMarksOfPart($student->id, $subject_ID, $class_id, $section_id, $exam_term_id);
+                                    $mark_parts     = App\SmAssignSubject::getMarksOfPart($student->id, $subject_ID, $age_group_id, $mgender_id, $exam_term_id);
                                     $subject_count= 0;
                                     $optional_subject_marks=DB::table('sm_optional_subject_assigns')
                                     ->join('sm_mark_stores','sm_mark_stores.subject_id','=','sm_optional_subject_assigns.subject_id')
-                                    ->where('sm_optional_subject_assigns.student_id','=',$student->id)
+                                    ->where('sm_optional_subject_assigns.member_id','=',$student->id)
                                     ->first();
                                 @endphp
                                 @foreach($mark_parts as $sigle_part)
@@ -1274,7 +1274,7 @@
                                 @endforeach
                                 <td class="total">
                                     @php
-                                        $tola_mark_by_subject = App\SmAssignSubject::getSumMark($student->id, $subject_ID, $class_id, $section_id, $exam_term_id);
+                                        $tola_mark_by_subject = App\SmAssignSubject::getSumMark($student->id, $subject_ID, $age_group_id, $mgender_id, $exam_term_id);
                                         $marks_by_students  = $marks_by_students + $tola_mark_by_subject;
                                     @endphp
                                     {{$tola_mark_by_subject}}
@@ -1465,7 +1465,7 @@
                                     <div class="logo_img">
                                         <div class="logo_thumb_upper">
                                             <div class="thumb_logo">
-                                                <img  src="{{asset('/')}}{{generalSetting()->logo }}" alt="{{generalSetting()->school_name}}">
+                                                <img  src="{{asset('/')}}{{generalSetting()->logo }}" alt="{{generalSetting()->church_name}}">
                                             </div>
                                             <h2>
                                                 @lang('common.search') : {{$tabulation_details['class']}}
@@ -1474,7 +1474,7 @@
                                             </h2>
                                         </div>
                                         <div class="company_info">
-                                            <h3>{{isset(generalSetting()->school_name)?generalSetting()->school_name:'Infix School Management ERP'}}</h3>
+                                            <h3>{{isset(generalSetting()->church_name)?generalSetting()->church_name:'Infix School Management ERP'}}</h3>
                                             <h5>{{isset(generalSetting()->address)?generalSetting()->address:'Infix School Address'}}</h5>
                                             <h5>@lang('exam.email'): {{isset(generalSetting()->email)?generalSetting()->email:'admin@demo.com'}}, @lang('exam.phone'): {{isset(generalSetting()->phone)?generalSetting()->phone:'+8801841412141 '}}</h5>
                         </div>
@@ -1488,7 +1488,7 @@
                                                     <div class="logo_img">
                                                         <div class="logo_thumb_upper">
                                                             <div class="thumb_logo">
-                                                                <img  src="{{asset('/')}}{{generalSetting()->logo }}" alt="{{generalSetting()->school_name}}">
+                                                                <img  src="{{asset('/')}}{{generalSetting()->logo }}" alt="{{generalSetting()->church_name}}">
                                                             </div>
                                                             <h2>
                                                                 @lang('common.class') : {{$tabulation_details['class']}}
@@ -1497,7 +1497,7 @@
                                                             </h2>
                                                         </div>
                                                         <div class="company_info">
-                                                            <h3>{{isset(generalSetting()->school_name)?generalSetting()->school_name:'Infix School Management ERP'}}</h3>
+                                                            <h3>{{isset(generalSetting()->church_name)?generalSetting()->church_name:'Infix School Management ERP'}}</h3>
                                                             <h5>{{isset(generalSetting()->address)?generalSetting()->address:'Infix School Address'}}</h5>
                                                             <h5>@lang('common.email'): {{isset(generalSetting()->email)?generalSetting()->email:'admin@demo.com'}}, @lang('common.phone'): {{isset(generalSetting()->phone)?generalSetting()->phone:'+8801841412141 '}}</h5>
                                                         </div>
@@ -1528,7 +1528,7 @@
                                                 @php
                                                     $subject_ID     = $subject->subject_id;
                                                     $subject_Name   = $subject->subject->subject_name;
-                                                    $mark_parts      = App\SmAssignSubject::getNumberOfPart($subject_ID, $class_id, $section_id, $exam_term_id);
+                                                    $mark_parts      = App\SmAssignSubject::getNumberOfPart($subject_ID, $age_group_id, $mgender_id, $exam_term_id);
                                                 @endphp
                                                 <th colspan="{{count($mark_parts)+1}}" class="subject-list"> {{$subject_Name}}</th>
                                             @endforeach
@@ -1547,7 +1547,7 @@
                                             @php
                                                 $subject_ID     = $subject->subject_id;
                                                 $subject_Name   = $subject->subject->subject_name;
-                                                $mark_parts     = App\SmAssignSubject::getNumberOfPart($subject_ID, $class_id, $section_id, $exam_term_id);
+                                                $mark_parts     = App\SmAssignSubject::getNumberOfPart($subject_ID, $age_group_id, $mgender_id, $exam_term_id);
                                             @endphp
                                             @foreach($mark_parts as $sigle_part)
                                                 <th>{{$sigle_part->exam_title}}</th>

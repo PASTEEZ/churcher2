@@ -60,7 +60,7 @@
                                        <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class" disabled="">
                                         <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                         @foreach($classes as $class)                                      
-                                        <option value="{{@$class->id}}"  {{ @$class->id == @$topic->class_id?'selected':''}}>{{@$class->class_name}}</option>
+                                        <option value="{{@$class->id}}"  {{ @$class->id == @$topic->age_group_id?'selected':''}}>{{@$class->age_group_name}}</option>
                                         @endforeach
                                     </select>
                                     @if ($errors->has('class'))
@@ -79,7 +79,7 @@
                                             <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_section" name="section" disabled="">
                                             <option data-display="@lang('common.select_section') *" value="">@lang('common.select_section') *</option>
                                             @foreach($sections as $section)
-                                            <option value="{{@$section->id}}" {{ @$section->id == @$topic->section_id?'selected':''}}>{{@$section->section_name}}</option>
+                                            <option value="{{@$section->id}}" {{ @$section->id == @$topic->mgender_id?'selected':''}}>{{@$section->mgender_name}}</option>
                                             @endforeach
                                         </select>
                                                 @if ($errors->has('section'))
@@ -265,8 +265,8 @@
                                         <tr>
                                             <td>{{$count++}}</td>
 
-                                            <td>{{$data->class !=""?$data->class->class_name:""}}</td>
-                                            <td>{{$data->section !=""?$data->section->section_name:""}}</td>
+                                            <td>{{$data->class !=""?$data->class->age_group_name:""}}</td>
+                                            <td>{{$data->section !=""?$data->section->mgender_name:""}}</td>
                                             <td>{{$data->subject !=""?$data->subject->subject_name:""}}</td>
                                            
                                             <td>{{$data->lesson !=""?$data->lesson->lesson_title:""}}

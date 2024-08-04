@@ -12,9 +12,9 @@ Route::group(['middleware' => ['XSS', 'subdomain']], function () {
         Route::get('parent-fees/{id}', ['as' => 'parent_fees', 'uses' => 'Parent\SmFeesController@childrenFees'])->middleware('userRolePermission:71');
         Route::get('parent-class-routine/{id}', ['as' => 'parent_class_routine', 'uses' => 'Parent\SmParentPanelController@classRoutine'])->middleware('userRolePermission:72');
         Route::get('parent-attendance/{id}', ['as' => 'parent_attendance', 'uses' => 'Parent\SmParentPanelController@attendance'])->middleware('userRolePermission:75');
-        Route::get('my-child-attendance/print/{student_id}/{id}/{month}/{year}/', 'Parent\SmParentPanelController@attendancePrint')->name('my_child_attendance_print');
+        Route::get('my-child-attendance/print/{member_id}/{id}/{month}/{year}/', 'Parent\SmParentPanelController@attendancePrint')->name('my_child_attendance_print');
         Route::get('parent-homework/{id}', ['as' => 'parent_homework', 'uses' => 'Parent\SmParentPanelController@homework'])->middleware('userRolePermission:73');
-        Route::get('parent-homework-view/{class_id}/{section_id}/{homework}', ['as' => 'parent_homework_view', 'uses' => 'Parent\SmParentPanelController@homeworkView'])->middleware('userRolePermission:74');
+        Route::get('parent-homework-view/{age_group_id}/{mgender_id}/{homework}', ['as' => 'parent_homework_view', 'uses' => 'Parent\SmParentPanelController@homeworkView'])->middleware('userRolePermission:74');
         
 
         Route::get('university/parent-homework-view/{sem_label_id}/{homework}', ['as' => 'un_student_homework_view', 'uses' => 'Parent\SmParentPanelController@unStudentHomeworkView']);
@@ -41,7 +41,7 @@ Route::group(['middleware' => ['XSS', 'subdomain']], function () {
         Route::post('parent-examination-schedule', ['as' => 'parent_exam_schedule_search', 'uses' => 'Parent\SmParentPanelController@examinationScheduleSearch']);
 
                 //abunayem
-        Route::get('parent-routine-print/{class_id}/{section_id}/{exam_period_id}', 'Parent\SmParentPanelController@examRoutinePrint')->name('parent-routine-print');
+        Route::get('parent-routine-print/{age_group_id}/{mgender_id}/{exam_period_id}', 'Parent\SmParentPanelController@examRoutinePrint')->name('parent-routine-print');
 
         // Student Library Book list
         Route::get('parent-library', ['as' => 'parent_library', 'uses' => 'Parent\SmParentPanelController@parentBookList'])->middleware('userRolePermission:89');

@@ -19,7 +19,7 @@ class MultipleCourseMigrationFixingMigration extends Migration
         $fees = \App\SmFeesAssign::withOutGlobalScope(StatusAcademicSchoolScope::class)->get();
 
         foreach ($fees as $fee) {
-            $record = \App\Models\StudentRecord::where(['student_id' => $fee->student_id, 'school_id' => $fee->school_id, 'academic_id' => $fee->academic_id])->first();
+            $record = \App\Models\StudentRecord::where(['member_id' => $fee->member_id, 'church_id' => $fee->church_id, 'church_year_id' => $fee->church_year_id])->first();
             $fee->record_id = optional($record)->id;
             $fee->save();
         }
@@ -27,7 +27,7 @@ class MultipleCourseMigrationFixingMigration extends Migration
         $fees = \App\SmFeesPayment::all();
 
         foreach ($fees as $fee) {
-            $record = \App\Models\StudentRecord::where(['student_id' => $fee->student_id, 'school_id' => $fee->school_id, 'academic_id' => $fee->academic_id])->first();
+            $record = \App\Models\StudentRecord::where(['member_id' => $fee->member_id, 'church_id' => $fee->church_id, 'church_year_id' => $fee->church_year_id])->first();
             $fee->record_id = optional($record)->id;
             $fee->save();
         }
@@ -36,7 +36,7 @@ class MultipleCourseMigrationFixingMigration extends Migration
         $feeDiscounts = \App\SmFeesAssignDiscount::withOutGlobalScope(StatusAcademicSchoolScope::class)->get();
 
         foreach ($feeDiscounts as $feefeeDiscount) {
-            $record = \App\Models\StudentRecord::where(['student_id' => $feefeeDiscount->student_id, 'school_id' => $feefeeDiscount->school_id, 'academic_id' => $feefeeDiscount->academic_id])->first();
+            $record = \App\Models\StudentRecord::where(['member_id' => $feefeeDiscount->member_id, 'church_id' => $feefeeDiscount->church_id, 'church_year_id' => $feefeeDiscount->church_year_id])->first();
             $feefeeDiscount->record_id = optional($record)->id;
             $feefeeDiscount->save();
         }
@@ -45,7 +45,7 @@ class MultipleCourseMigrationFixingMigration extends Migration
         $onlineExams = SmStudentTakeOnlineExam::all();
 
         foreach ($onlineExams as $onlineExam) {
-            $record = \App\Models\StudentRecord::where(['student_id' => $onlineExam->student_id, 'school_id' => $onlineExam->school_id, 'academic_id' => $onlineExam->academic_id])->first();
+            $record = \App\Models\StudentRecord::where(['member_id' => $onlineExam->member_id, 'church_id' => $onlineExam->church_id, 'church_year_id' => $onlineExam->church_year_id])->first();
             $onlineExam->record_id = optional($record)->id;
             $onlineExam->save();
         }
@@ -55,7 +55,7 @@ class MultipleCourseMigrationFixingMigration extends Migration
         $attendances = \App\SmStudentAttendance::withOutGlobalScope(AcademicSchoolScope::class)->get();
 
         foreach ($attendances as $attendance) {
-            $record = \App\Models\StudentRecord::where(['student_id' => $attendance->student_id, 'school_id' => $attendance->school_id, 'academic_id' => $attendance->academic_id, 'class_id' => $attendance->class_id, 'section_id' => $attendance->section_id])->first();
+            $record = \App\Models\StudentRecord::where(['member_id' => $attendance->member_id, 'church_id' => $attendance->church_id, 'church_year_id' => $attendance->church_year_id, 'age_group_id' => $attendance->age_group_id, 'mgender_id' => $attendance->mgender_id])->first();
             $attendance->student_record_id = optional($record)->id;
             $attendance->save();
         }
@@ -63,7 +63,7 @@ class MultipleCourseMigrationFixingMigration extends Migration
         $subjectAttendances = \App\SmSubjectAttendance::all();
 
         foreach ($subjectAttendances as $attendance) {
-            $record = \App\Models\StudentRecord::where(['student_id' => $attendance->student_id, 'school_id' => $attendance->school_id, 'academic_id' => $attendance->academic_id, 'class_id' => $attendance->class_id, 'section_id' => $attendance->section_id])->first();
+            $record = \App\Models\StudentRecord::where(['member_id' => $attendance->member_id, 'church_id' => $attendance->church_id, 'church_year_id' => $attendance->church_year_id, 'age_group_id' => $attendance->age_group_id, 'mgender_id' => $attendance->mgender_id])->first();
             $attendance->student_record_id = optional($record)->id;
             $attendance->save();
         }
@@ -72,7 +72,7 @@ class MultipleCourseMigrationFixingMigration extends Migration
         $examAttendances = \App\SmExamAttendanceChild::all();
 
         foreach ($examAttendances as $examAttendance) {
-            $record = \App\Models\StudentRecord::where(['student_id' => $examAttendance->student_id, 'school_id' => $examAttendance->school_id, 'academic_id' => $examAttendance->academic_id, 'class_id' => $examAttendance->class_id, 'section_id' => $examAttendance->section_id])->first();
+            $record = \App\Models\StudentRecord::where(['member_id' => $examAttendance->member_id, 'church_id' => $examAttendance->church_id, 'church_year_id' => $examAttendance->church_year_id, 'age_group_id' => $examAttendance->age_group_id, 'mgender_id' => $examAttendance->mgender_id])->first();
             $examAttendance->student_record_id = optional($record)->id;
             $examAttendance->save();
         }
@@ -80,7 +80,7 @@ class MultipleCourseMigrationFixingMigration extends Migration
         $datas = \App\SmResultStore::all();
 
         foreach ($datas as $data) {
-            $record = \App\Models\StudentRecord::where(['student_id' => $data->student_id, 'school_id' => $data->school_id, 'academic_id' => $data->academic_id, 'class_id' => $data->class_id, 'section_id' => $data->section_id])->first();
+            $record = \App\Models\StudentRecord::where(['member_id' => $data->member_id, 'church_id' => $data->church_id, 'church_year_id' => $data->church_year_id, 'age_group_id' => $data->age_group_id, 'mgender_id' => $data->mgender_id])->first();
             $data->student_record_id = optional($record)->id;
             $data->save();
         }
@@ -89,18 +89,18 @@ class MultipleCourseMigrationFixingMigration extends Migration
         $datas = \App\SmMarkStore::withOutGlobalScope(AcademicSchoolScope::class)->get();
 
         foreach ($datas as $data) {
-            $record = \App\Models\StudentRecord::where(['student_id' => $data->student_id, 'school_id' => $data->school_id, 'academic_id' => $data->academic_id, 'class_id' => $data->class_id, 'section_id' => $data->section_id])->first();
+            $record = \App\Models\StudentRecord::where(['member_id' => $data->member_id, 'church_id' => $data->church_id, 'church_year_id' => $data->church_year_id, 'age_group_id' => $data->age_group_id, 'mgender_id' => $data->mgender_id])->first();
             $data->student_record_id = optional($record)->id;
             $data->save();
         }
 
         $schools = \App\SmSchool::all();
         foreach($schools as $school){
-            $setting = \App\SmGeneralSettings::where('school_id', $school->id)->first();
+            $setting = \App\SmGeneralSettings::where('church_id', $school->id)->first();
 
-            if($setting && !$setting->academic_id){
-                $academic_year = \App\SmAcademicYear::where('school_id', $school->id)->first();
-                $setting->academic_id = $academic_year ? $academic_year->id : null;
+            if($setting && !$setting->church_year_id){
+                $church_year = \App\SmAcademicYear::where('church_id', $school->id)->first();
+                $setting->church_year_id = $church_year ? $church_year->id : null;
                 $setting->save();
             }
         }

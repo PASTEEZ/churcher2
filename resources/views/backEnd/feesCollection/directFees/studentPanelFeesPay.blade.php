@@ -71,7 +71,7 @@
                                                 @csrf
                                                 <input type="hidden" name="installment_id" id="installment_id" value="{{$feesInstallment->id}}"/>
                                                 <input type="hidden" name="amount" id="amount" value="{{ discountFeesAmount($feesInstallment->id) * 1000}}"/>
-                                                <input type="hidden" name="student_id" id="student_id" value="{{@$student->id}}">
+                                                <input type="hidden" name="member_id" id="member_id" value="{{@$student->id}}">
                                                 <input type="hidden" name="payment_mode" id="payment_mode" value="{{$payment_gateway->id}}">
                                                 <input type="hidden" name="amount" id="amount" value="{{ discountFeesAmount($feesInstallment->id) * 1000}}"/>
                                                 <input type="hidden" name="record_id" value="{{$record->id}}">
@@ -89,7 +89,7 @@
                                             @php
                                                 $is_khalti = DB::table('sm_payment_gateway_settings')
                                                             ->where('gateway_name','Khalti')
-                                                            ->where('school_id', Auth::user()->school_id)
+                                                            ->where('church_id', Auth::user()->church_id)
                                                             ->first('gateway_publisher_key');
                                             @endphp
                                             <div class="pay">
@@ -128,7 +128,7 @@
                                         @php
                                             $is_paypal = DB::table('sm_payment_methhods')
                                                         ->where('method','PayPal')
-                                                        ->where('school_id', Auth::user()->school_id)
+                                                        ->where('church_id', Auth::user()->church_id)
                                                         ->where('active_status',1)
                                                         ->first();
                                         @endphp
@@ -138,7 +138,7 @@
                                                 <input type="hidden" name="installment_id" id="assign_id" value="{{$feesInstallment->id}}">
                                                 <input type="hidden" name="url" id="url" value="{{URL::to('/')}}">
                                                 <input type="hidden" name="real_amount" id="real_amount" value="{{discountFeesAmount($feesInstallment->id)}}">
-                                                <input type="hidden" name="student_id" value="{{$student->id}}">
+                                                <input type="hidden" name="member_id" value="{{$student->id}}">
                                                 <input type="hidden" name="record_id" value="{{@$record->id}}">
                                                 <button type="submit" class=" dropdown-item">
                                                     @lang('fees.pay_with_paypal')
@@ -151,7 +151,7 @@
                                         @php
                                             $is_paystack = DB::table('sm_payment_methhods')
                                                         ->where('method','Paystack')
-                                                        ->where('school_id', Auth::user()->school_id)
+                                                        ->where('church_id', Auth::user()->church_id)
                                                         ->where('active_status',1)
                                                         ->first();
                                         @endphp
@@ -167,7 +167,7 @@
                                                 <input type="hidden" name="orderID" value="{{$feesInstallment->id}}">
                                                 <input type="hidden" name="amount" value="{{ discountFeesAmount($feesInstallment->id) * 100}}">
                                                 <input type="hidden" name="quantity" value="1">
-                                                <input type="hidden" name="student_id" value="{{$student->id}}">
+                                                <input type="hidden" name="member_id" value="{{$student->id}}">
                                                 <input type="hidden" name="payment_mode" value="{{@$payment_gateway->id}}">
                                                 <input type="hidden" name="reference" value="{{ Paystack::genTranxRef() }}">
                                                 <input type="hidden" name="key" value="{{ @$paystack_info->gateway_secret_key }}">
@@ -184,7 +184,7 @@
                                             $is_stripe = DB::table('sm_payment_methhods')
                                                         ->where('method','Stripe')
                                                         ->where('active_status',1)
-                                                        ->where('school_id', Auth::user()->school_id)
+                                                        ->where('church_id', Auth::user()->church_id)
                                                         ->first();
                                         @endphp
                                         @if(!empty($is_stripe))
@@ -202,14 +202,14 @@
                                             $is_active = DB::table('sm_payment_methhods')
                                                         ->where('method','RazorPay')
                                                         ->where('active_status',1)
-                                                        ->where('school_id', Auth::user()->school_id)
+                                                        ->where('church_id', Auth::user()->church_id)
                                                         ->first();
                                         @endphp
                                         @if(moduleStatusCheck('RazorPay') == TRUE and !empty($is_active))
                                             <form id="rzp-footer-form_{{$key}}" action="{!!route('razorpay/dopayment')!!}" method="POST" style="width: 100%; text-align: center">
                                                 @csrf
                                                 <input type="hidden" name="amount" id="amount" value="{{discountFeesAmount($feesInstallment->id) * 100}}"/>
-                                                <input type="hidden" name="student_id" id="student_id" value="{{$student->id}}">
+                                                <input type="hidden" name="member_id" id="member_id" value="{{$student->id}}">
                                                 <input type="hidden" name="payment_mode" id="payment_mode" value="{{$payment_gateway->id}}">
                                                 <input type="hidden" name="amount" id="amount" value="{{discountFeesAmount($feesInstallment->id)}}"/>
                                                 <div class="pay">
@@ -228,7 +228,7 @@
                                                 <input type="hidden" name="amount" id="amount" value="{{discountFeesAmount($feesInstallment->id)}}"/>
                                                 <input type="hidden" name="installment_id" id="assign_id" value="{{$feesInstallment->id}}">
                                                 <input type="hidden" name="fees_type_id" id="fees_type_id" value="{{$feesInstallment->id}}">
-                                                <input type="hidden" name="student_id" id="student_id" value="{{$student->id}}">
+                                                <input type="hidden" name="member_id" id="member_id" value="{{$student->id}}">
                                                 <input type="hidden" name="record_id" id="record_id" value="{{$record->id}}">
                                                 <input type="hidden" name="payment_method" id="payment_mode" value="5">
                                                 <input type="hidden" name="amount" id="amount" value="{{discountFeesAmount($feesInstallment->id)}}"/>
@@ -282,7 +282,7 @@
                                                 "_token": "{{ csrf_token() }}",
                                                 "razorpay_payment_id": transaction.razorpay_payment_id,
                                                 "amount": <?php echo discountFeesAmount($feesInstallment->id) * 100; ?>,
-                                                "student_id": <?php echo $student->id; ?>,
+                                                "member_id": <?php echo $student->id; ?>,
                                                 "record_id": <?php echo $record->id; ?>
                                             },
                                             complete: function (r) {

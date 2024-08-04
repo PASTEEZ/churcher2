@@ -40,11 +40,11 @@ class SmPostalReceiveController extends Controller
             $postal_receive->to_title = $request->to_title;
             $postal_receive->file = $fileName;
             $postal_receive->created_by=Auth::user()->id;
-            $postal_receive->school_id = Auth::user()->school_id;
+            $postal_receive->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $postal_receive->un_academic_id = getAcademicId();
+                $postal_receive->un_church_year_id = getAcademicId();
             }else{
-                $postal_receive->academic_id = getAcademicId();
+                $postal_receive->church_year_id = getAcademicId();
             }
             $postal_receive->save();
 
@@ -81,7 +81,7 @@ class SmPostalReceiveController extends Controller
             $postal_receive->to_title = $request->to_title;
             $postal_receive->file = fileUpdate($postal_receive->file,$request->file,$destination);
             if(moduleStatusCheck('University')){
-                $postal_receive->un_academic_id = getAcademicId();
+                $postal_receive->un_church_year_id = getAcademicId();
             }
             $postal_receive->save();
 

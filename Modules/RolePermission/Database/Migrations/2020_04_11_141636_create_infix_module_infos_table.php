@@ -30,8 +30,8 @@ class CreateInfixModuleInfosTable extends Migration
             $table->integer('updated_by')->nullable()->default(1)->unsigned();
             $table->foreign('updated_by')->references('id')->on('users')->onDelete('cascade');
 
-            $table->integer('school_id')->nullable()->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_id')->nullable()->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
 
             $table->integer('type')->nullable()->comment('1 for module, 2 for module link, 3 for module links crud');
 
@@ -43,7 +43,7 @@ class CreateInfixModuleInfosTable extends Migration
         DB::table('infix_module_infos')->truncate();
         DB::statement('SET foreign_key_checks=1');
 
-        $sql = ("INSERT INTO `infix_module_infos` (`id`, `module_id`, `parent_id`, `type`, `is_saas`, `name`, `route`, `lang_name`, `icon_class`, `active_status`, `created_by`, `updated_by`, `school_id`, `created_at`, `updated_at`) VALUES
+        $sql = ("INSERT INTO `infix_module_infos` (`id`, `module_id`, `parent_id`, `type`, `is_saas`, `name`, `route`, `lang_name`, `icon_class`, `active_status`, `created_by`, `updated_by`, `church_id`, `created_at`, `updated_at`) VALUES
         (1, 1, 0, '1', 0,'Dashboard','','dashboard','flaticon-speedometer', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22'),
         (2, 1, 1, '3', 0,'➡ Number of Student','','','', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22'),
         (3, 1, 1, '3', 0,'➡ Number of Teacher','','','', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22'),
@@ -164,7 +164,7 @@ class CreateInfixModuleInfosTable extends Migration
         (43, 2, 41, '3', 0,'Edit','','','', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22'),
         (44, 2, 41, '3', 0,'Delete','','','', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22'),
 
-        (45, 2, 11, '2', 0,'Student ID Card','student-id-card','student_id_card','', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22'),
+        (45, 2, 11, '2', 0,'Student ID Card','student-id-card','member_id_card','', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22'),
         (46, 2, 45, '3', 0,'Add','','','', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22'),
         (47, 2, 45, '3', 0,'Edit','','','', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22'),
         (48, 2, 45, '3', 0,'Delete','','','', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22'),
@@ -847,7 +847,7 @@ class CreateInfixModuleInfosTable extends Migration
         (430, 18, 428, '3', 0,'Edit','','','', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22'),
         (431, 18, 428, '3', 0,'Delete','','','', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22'),
 
-        (432, 18, 398, '2', 0,'Academic Year','academic-year','academic_year','', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22'),
+        (432, 18, 398, '2', 0,'Academic Year','academic-year','church_year','', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22'),
         (433, 18, 432, '3', 0,'Add','','','', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22'),
         (434, 18, 432, '3', 0,'Edit','','','', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22'),
         (435, 18, 432, '3', 0,'Delete','','','', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22'),
@@ -1076,7 +1076,7 @@ class CreateInfixModuleInfosTable extends Migration
         
         -- Bulk Print
         (920, 36, 0, '1', 0,'Bulk Print','','bulk_print','flaticon-analysis', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22'),
-        (921, 36, 920, '2', 0,'Student Id Card','student-id-card-bulk-print','student_id_card','', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22'),
+        (921, 36, 920, '2', 0,'Student Id Card','student-id-card-bulk-print','member_id_card','', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22'),
         (922, 36, 920, '2', 0,'Student Certificate','certificate-bulk-print','student_certificate','', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22'),
         (923, 36, 920, '2', 0,'Staff Id Card','staff-id-card-bulk-print','staff_id_card','', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22'),
         (924, 36, 920, '2', 0,'PayrollBulk Print','payroll-bulk-print','payroll_bulk_print','', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22'),

@@ -123,7 +123,7 @@
                         <img class="logo-img" src="{{ url('/')}}/{{generalSetting()->logo }}" alt="">
                     </th>
                     <th colspan="2">
-                        <h3 class="text-white"> {{isset(generalSetting()->school_name)?generalSetting()->school_name:'Infix School Management ERP'}} </h3>
+                        <h3 class="text-white"> {{isset(generalSetting()->church_name)?generalSetting()->church_name:'Infix School Management ERP'}} </h3>
                         <p class="text-white mb-0" style="padding-right:10px !important;"> {{isset(generalSetting()->address)?generalSetting()->address:'Infix School Address'}} </p>
                     </th>
 
@@ -134,10 +134,10 @@
                 <tr>
                     <td  style=" padding:10px; vertical-align:top;">
 
-                        <p class="mb-0" style="padding-right:10px !important; font-size:11px;"> @lang('common.academic_year') : <span class="primary-color fw-500">{{@generalSetting()->academic_Year->year ?? ''}}</span> </p>
+                        <p class="mb-0" style="padding-right:10px !important; font-size:11px;"> @lang('common.church_year') : <span class="primary-color fw-500">{{@generalSetting()->church_year->year ?? ''}}</span> </p>
                         {{-- <p class="mb-0" style="padding-right:10px !important; font-size:11px;"> @lang('exam.exam') : <span class="primary-color fw-500">{{@$exam_name}}</span> </p> --}}
-                        <p class="mb-0" style="padding-right:10px !important; font-size:11px;"> @lang('common.class') : <span class="primary-color fw-500">{{@$class_name}}</span> </p>
-                        <p class="mb-0" style="padding-right:10px !important; font-size:11px;"> @lang('common.section') : <span class="primary-color fw-500">{{@$section->section_name}}</span> </p>
+                        <p class="mb-0" style="padding-right:10px !important; font-size:11px;"> @lang('common.class') : <span class="primary-color fw-500">{{@$age_group_name}}</span> </p>
+                        <p class="mb-0" style="padding-right:10px !important; font-size:11px;"> @lang('common.section') : <span class="primary-color fw-500">{{@$section->mgender_name}}</span> </p>
                     </td>
                     <td  style="  padding:10px; vertical-align:top;">
                         <p style="font-weight: 700;">@lang('exam.subjects_list')</p>
@@ -150,7 +150,7 @@
                         </div>
                     </td>
                     <td  style=" padding:10px; vertical-align:top;">
-                         @php $marks_grade=DB::table('sm_marks_grades')->where('academic_id', getAcademicId())->orderBy('gpa','desc')->get(); @endphp
+                         @php $marks_grade=DB::table('sm_marks_grades')->where('church_year_id', getAcademicId())->orderBy('gpa','desc')->get(); @endphp
                                                     @if(@$marks_grade)
                                                         <table class="table  table-bordered table-striped " id="grade_table">
                                                             <thead>
@@ -190,7 +190,7 @@
               <thead>
                 <tr>
                   <th colspan="" class="full_width" >@lang('common.sl')</th>
-                  <th colspan="" class="full_width" >@lang('student.admission_no')</th>
+                  <th colspan="" class="full_width" >@lang('student.registration_no')</th>
                   <th colspan="" class="full_width" >@lang('common.student')</th>
                   <th colspan="" class="full_width" >@lang('exam.first_term') ({{ $custom_result_setup->percentage1 }}%)</th>
                   <th colspan="" class="full_width" >@lang('exam.second_term') ({{ $custom_result_setup->percentage2 }}%)</th>
@@ -204,7 +204,7 @@
                   @foreach($customresult as $row)
                 <tr>
                  <td >{{$count++}}</td>
-                <td >{{@$row->admission_no}}</td>
+                <td >{{@$row->registration_no}}</td>
                 <td >{{@$row->full_name}}</td>
                 <td >{{@$row->gpa1}}</td>
                 <td >{{@$row->gpa2}}</td>

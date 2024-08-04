@@ -51,7 +51,7 @@ class CreateExamReportPrintUpdateTable extends Migration
             $permission->active_status = 1;
             $permission->created_by = 1;
             $permission->updated_by = 1;
-            $permission->school_id = 1;
+            $permission->church_id = 1;
             $permission->save();
         }
     }

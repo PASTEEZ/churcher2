@@ -17,11 +17,11 @@ class CreateStudentRecordsTable extends Migration
 
             $table->id();
             
-            $table->integer('class_id')->nullable()->unsigned();
-            $table->foreign('class_id')->references('id')->on('sm_classes')->onDelete('cascade');
+            $table->integer('age_group_id')->nullable()->unsigned();
+            $table->foreign('age_group_id')->references('id')->on('sm_classes')->onDelete('cascade');
 
-            $table->integer('section_id')->nullable()->unsigned();
-            $table->foreign('section_id')->references('id')->on('sm_sections')->onDelete('cascade');
+            $table->integer('mgender_id')->nullable()->unsigned();
+            $table->foreign('mgender_id')->references('id')->on('sm_sections')->onDelete('cascade');
 
             $table->string('roll_no')->nullable();          
             $table->boolean('is_promote')->nullable()->default(0);
@@ -30,14 +30,14 @@ class CreateStudentRecordsTable extends Migration
             $table->integer('session_id')->nullable()->unsigned();
             $table->foreign('session_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
 
-            $table->integer('school_id')->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_id')->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
             
-            $table->integer('academic_id')->nullable()->unsigned();
-            $table->foreign('academic_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
+            $table->integer('church_year_id')->nullable()->unsigned();
+            $table->foreign('church_year_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
 
-            $table->integer('student_id')->nullable()->unsigned();
-            $table->foreign('student_id')->references('id')->on('sm_students')->onDelete('cascade');
+            $table->integer('member_id')->nullable()->unsigned();
+            $table->foreign('member_id')->references('id')->on('sm_students')->onDelete('cascade');
             
             $table->timestamps();
         });

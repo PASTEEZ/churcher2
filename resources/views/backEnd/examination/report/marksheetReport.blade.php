@@ -177,7 +177,7 @@
                                 <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                     <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class')*</option>
                                     @foreach($classes as $class)
-                                        <option value="{{$class->id}}" {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{$class->class_name}}</option>
+                                        <option value="{{$class->id}}" {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{$class->age_group_name}}</option>
                                     @endforeach
                                 </select>
                                 @if ($errors->has('class'))
@@ -259,11 +259,11 @@
                 vertical-align: middle;
             }
 
-            .student_name, .subject-list {
+            .member_name, .subject-list {
                 line-height: 12px;
             }
 
-            .student_name b {
+            .member_name b {
                 min-width: 20%;
             }
 
@@ -423,15 +423,15 @@
                             <div class="card-header">
                                 <div class="row align-items-center">
                                     <div class="col-lg-4">
-                                        <img class="logo-img" src="{{ generalSetting()->logo }}" alt="{{ generalSetting()->school_name }}">
+                                        <img class="logo-img" src="{{ generalSetting()->logo }}" alt="{{ generalSetting()->church_name }}">
                                     </div>
                                     <div class="col-lg-4">
                                         <h3 class="text-white">@lang('exam.exam') : {{$examInfo->title}}</h3>
                                         <h3 class="text-white">@lang('exam.subject') : {{$subjectInfo->subject_name}}</h3>
-                                        <h3 class="text-white">@lang('common.class') : {{$classInfo->class_name}} ({{$sectionInfo->section_name}})</h3>
+                                        <h3 class="text-white">@lang('common.class') : {{$classInfo->age_group_name}} ({{$sectionInfo->mgender_name}})</h3>
                                     </div>
                                     <div class=" col-lg-4 text-left text-lg-right mt-30-md">
-                                        <h3 class="text-white"> {{isset(generalSetting()->school_name)?generalSetting()->school_name:'Infix School Management ERP'}} </h3>
+                                        <h3 class="text-white"> {{isset(generalSetting()->church_name)?generalSetting()->church_name:'Infix School Management ERP'}} </h3>
                                         <p class="text-white mb-0"> {{isset(generalSetting()->address)?generalSetting()->address:'Infix School Adress'}} </p>
                                         <p class="text-white mb-0">
                                             @lang('common.email'): {{isset(generalSetting()->email)?generalSetting()->email:'admin@demo.com'}} ,
@@ -464,8 +464,8 @@
                                                     <table class="mt-30 mb-20 table table-bordered w-100 scrolled_table">
                                                         <thead>
                                                             <tr>
-                                                                <th class="name_field">@lang('common.student_name')</th>
-                                                                <th class="roll_field">@lang('student.admission_no')</th>
+                                                                <th class="name_field">@lang('common.member_name')</th>
+                                                                <th class="roll_field">@lang('student.registration_no')</th>
                                                                 <th class="roll_field">@lang('student.roll_no')</th>
                                                                 <th class="large_spanTh">@lang('exam.position')</th>
                                                                 <th class="large_spanTh">@lang('exam.total_mark')</th>
@@ -485,7 +485,7 @@
                                                                 
                                                                 <tr> 
                                                                     <td>{{$data->studentRecords->student->full_name}}</td>
-                                                                    <td>{{$data->studentRecords->student->admission_no}}</td>
+                                                                    <td>{{$data->studentRecords->student->registration_no}}</td>
                                                                     <td>{{$data->studentRecords->student->roll_no}}</td>
                                                                     <td>{{$loop->iteration}}</td>
 
@@ -539,7 +539,7 @@
                     var url = $("#url").val();
                     var i = 0;
                     let semester_id = $(this).val();
-                    let academic_id = $('#select_academic').val();  
+                    let church_year_id = $('#select_academic').val();  
                     let session_id = $('#select_session').val();
                     let faculty_id = $('#select_faculty').val();
                     let department_id = $('#select_dept').val();
@@ -578,7 +578,7 @@
 
                         return ;
                     }
-                    if (academic_id =='') {
+                    if (church_year_id =='') {
                         setTimeout(function() {
                             toastr.error(
                             "Academic Not Found",
@@ -599,7 +599,7 @@
 
                     var formData = {
                         semester_id : semester_id,
-                        academic_id : academic_id,
+                        church_year_id : church_year_id,
                         session_id : session_id,
                         faculty_id : faculty_id,
                         department_id : department_id,

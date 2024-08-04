@@ -40,16 +40,16 @@
                 <span style="font-size:14px !important;margin-right:10px;" align="left"
                 class="text-white">@lang('exam.exam'): {{ @$exam_type}} </span>
              <span style="font-size:14px !important;margin-right:10px;" align="left"
-                class="text-white">@lang('common.class'): {{ @$class_name}} </span>
+                class="text-white">@lang('common.class'): {{ @$age_group_name}} </span>
              <span style="font-size:14px !important;;margin-right:10px;" align="left"
-                class="text-white">@lang('common.section'): {{ @$section_name}} </span>
+                class="text-white">@lang('common.section'): {{ @$mgender_name}} </span>
              <span style="font-size:14px !important;" align="left"
-                class="text-white">@lang('common.academic_year') : {{ @$academic_year->title}} ({{ @$academic_year->year}}) </span>
+                class="text-white">@lang('common.church_year') : {{ @$church_year->title}} ({{ @$church_year->year}}) </span>
                </td>
             <td style="text-aligh:center">               
                  
                     <h3 style="font-size:20px !important; margin: 5px 0 0 0"
-                    class="text-white"> {{isset(generalSetting()->school_name)?generalSetting()->school_name:'Infix School Management ERP'}} </h3>
+                    class="text-white"> {{isset(generalSetting()->church_name)?generalSetting()->church_name:'Infix School Management ERP'}} </h3>
                     <p style="font-size:16px !important;margin:0px"
                     class="text-white mb-0"> {{isset(generalSetting()->address)?generalSetting()->address:'Infix School Address'}} </p>
                   
@@ -81,7 +81,7 @@
                 <td>
                   <strong> {{ $item->subject ? $item->subject->subject_name :'' }} </strong> 
                 </td>
-                <td>{{ $item->class ? $item->class->class_name :'' }} {{ $item->section ? '('. $item->section->section_name .')':'' }}</td>
+                <td>{{ $item->class ? $item->class->age_group_name :'' }} {{ $item->section ? '('. $item->section->mgender_name .')':'' }}</td>
                 <td>{{ $item->teacher ? $item->teacher->full_name :'' }}</td>
                
                 <td> {{ date('h:i A', strtotime(@$item->start_time))  }} - {{ date('h:i A', strtotime(@$item->end_time))  }} </td>

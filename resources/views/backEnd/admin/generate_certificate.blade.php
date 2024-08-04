@@ -39,8 +39,8 @@
                                         @lang('common.select_class') *</option>
                                     @foreach ($classes as $class)
                                         <option value="{{ @$class->id }}"
-                                            {{ isset($class_id) ? ($class_id == $class->id ? 'selected' : '') : '' }}>
-                                            {{ @$class->class_name }}</option>
+                                            {{ isset($age_group_id) ? ($age_group_id == $class->id ? 'selected' : '') : '' }}>
+                                            {{ @$class->age_group_name }}</option>
                                     @endforeach
                                 </select>
                                 @if ($errors->has('class'))
@@ -126,7 +126,7 @@
                                                     value="">
                                                 <label for="checkAll">@lang('admin.all')</label>
                                             </th>
-                                            <th>@lang('admin.admission_no')</th>
+                                            <th>@lang('admin.registration_no')</th>
                                             <th>@lang('admin.name')</th>
                                             <th>@lang('admin.class_Sec')</th>
 
@@ -146,10 +146,10 @@
                                                         name="student_checked[]" value="{{ @$record->id }}">
                                                     <label for="student.{{ @$record->id }}"></label>
                                                 </td>
-                                                <td>{{ @$record->student->admission_no }}</td>
+                                                <td>{{ @$record->student->registration_no }}</td>
                                                 <td>{{ @$record->student->full_name }}</td>
-                                                <td>{{ @$record->class != '' ? @$record->class->class_name : '' }}
-                                                    ({{ @$record->section != '' ? @$record->section->section_name : '' }})
+                                                <td>{{ @$record->class != '' ? @$record->class->age_group_name : '' }}
+                                                    ({{ @$record->section != '' ? @$record->section->mgender_name : '' }})
                                                 </td>
 
                                                 <td>{{ @$record->student->parents != '' ? @$record->student->parents->fathers_name : '' }}

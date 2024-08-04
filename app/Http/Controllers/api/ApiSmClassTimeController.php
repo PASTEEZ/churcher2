@@ -210,10 +210,10 @@ class ApiSmClassTimeController extends Controller
     {
        
        try{
-        $class_id_key = 'class_period_id';
+        $age_group_id_key = 'class_period_id';
         $exam_id_key = 'exam_period_id';
 
-        $class = \App\tableList::getTableList($class_id_key,$id);
+        $class = \App\tableList::getTableList($age_group_id_key,$id);
         $exam = \App\tableList::getTableList($exam_id_key,$id);
         $tables = $class . '' . $exam;
         //return $tables;

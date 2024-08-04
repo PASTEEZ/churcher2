@@ -15,7 +15,7 @@ class FeesGroupRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required', 'max:200' , Rule::unique('fm_fees_groups', 'name')->where('academic_id', getAcademicId())->where('school_id', auth()->user()->school_id)->ignore($this->id)],
+            'name' => ['required', 'max:200' , Rule::unique('fm_fees_groups', 'name')->where('church_year_id', getAcademicId())->where('church_id', auth()->user()->church_id)->ignore($this->id)],
         ];
     }
 

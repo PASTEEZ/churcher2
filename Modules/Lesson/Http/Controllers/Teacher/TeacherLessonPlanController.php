@@ -39,11 +39,11 @@ class TeacherLessonPlanController extends Controller
             $login_id = Auth::user()->id;
             $teachers = SmStaff::where('active_status', 1)->where('user_id', $login_id)->where(function($q)  {
                 $q->where('role_id', 4)->orWhere('previous_role_id', 4);
-            })->where('school_id', Auth::user()->school_id)->first();
+            })->where('church_id', Auth::user()->church_id)->first();
 
-            $class_times = SmClassTime::where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->orderBy('period', 'ASC')->get();
+            $class_times = SmClassTime::where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->orderBy('period', 'ASC')->get();
             $teacher_id = $teachers->id;
-            $sm_weekends = SmWeekend::where('school_id', Auth::user()->school_id)->orderBy('order', 'ASC')->where('active_status', 1)->get();
+            $sm_weekends = SmWeekend::where('church_id', Auth::user()->church_id)->orderBy('order', 'ASC')->where('active_status', 1)->get();
 
             return view('lesson::teacher.teacherLessonPlan', compact('dates', 'this_week', 'class_times', 'teacher_id', 'sm_weekends', 'teachers'));
         } catch (\Exception$e) {
@@ -60,30 +60,30 @@ class TeacherLessonPlanController extends Controller
 
             $teacher_info = SmStaff::where('user_id', Auth::user()->id)->first();
             $classes = SmAssignSubject::where('teacher_id', $teacher_info->id)
-                ->join('sm_classes', 'sm_classes.id', 'sm_assign_subjects.class_id')
-                ->where('sm_assign_subjects.academic_id', getAcademicId())
+                ->join('sm_classes', 'sm_classes.id', 'sm_assign_subjects.age_group_id')
+                ->where('sm_assign_subjects.church_year_id', getAcademicId())
                 ->where('sm_assign_subjects.active_status', 1)
-                ->where('sm_assign_subjects.school_id', Auth::user()->school_id)
-                ->select('sm_classes.id', 'class_name')
+                ->where('sm_assign_subjects.church_id', Auth::user()->church_id)
+                ->select('sm_classes.id', 'age_group_name')
                 ->distinct('sm_classes.id')
                 ->get();
 
             $login_id = Auth::user()->id;
             $teacher = SmStaff::where('active_status', 1)->where('user_id', $login_id)->where(function($q)  {
                 $q->where('role_id', 4)->orWhere('previous_role_id', 4);
-            })->where('school_id', Auth::user()->school_id)->first();
+            })->where('church_id', Auth::user()->church_id)->first();
             $teachers = $teacher->id;
 
-            $lessonPlanDetail = LessonPlanner::where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+            $lessonPlanDetail = LessonPlanner::where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
-            $lessons = SmLesson::where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+            $lessons = SmLesson::where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
-            $topics = SmLessonTopic::where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()
-                        ->school_id)
+            $topics = SmLessonTopic::where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()
+                        ->church_id)
                     ->get();
 
             return view('lesson::teacher.teacher_lesson_plan_overview', compact('lessonPlanDetail', 'lessons', 'topics', 'classes', 'teachers'));
@@ -103,7 +103,7 @@ class TeacherLessonPlanController extends Controller
                 'un_session_id' => 'sometimes|nullable',
                 'un_faculty_id' => 'sometimes|nullable',
                 'un_department_id' => 'sometimes|nullable',
-                'un_academic_id' => 'sometimes|nullable',
+                'un_church_year_id' => 'sometimes|nullable',
                 'un_semester_id' => 'sometimes|nullable',
                 'un_semester_label_id' => 'sometimes|nullable',
                 'un_subject_id' => 'sometimes|nullable',
@@ -163,8 +163,8 @@ class TeacherLessonPlanController extends Controller
                 }
             }
             $classes = SmClass::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             $teachers = $request->teacher;
@@ -200,12 +200,12 @@ class TeacherLessonPlanController extends Controller
             $login_id = Auth::user()->id;
             $teachers = SmStaff::where('active_status', 1)->where('user_id', $login_id)->where(function($q)  {
 	            $q->where('role_id', 4)->orWhere('previous_role_id', 4);
-            })->where('school_id', Auth::user()->school_id)->first();
+            })->where('church_id', Auth::user()->church_id)->first();
 
             $user = Auth::user();
-            $class_times = SmClassTime::where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->orderBy('period', 'ASC')->get();
+            $class_times = SmClassTime::where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->orderBy('period', 'ASC')->get();
             $teacher_id = $teachers->id;
-            $sm_weekends = SmWeekend::where('school_id', Auth::user()->school_id)->orderBy('order', 'ASC')->where('active_status', 1)->get();
+            $sm_weekends = SmWeekend::where('church_id', Auth::user()->church_id)->orderBy('order', 'ASC')->where('active_status', 1)->get();
 
             return view('lesson::teacher.teacherLessonPlan', compact('dates', 'this_week', 'class_times', 'teacher_id', 'sm_weekends', 'teachers'));
 
@@ -235,12 +235,12 @@ class TeacherLessonPlanController extends Controller
             $login_id = Auth::user()->id;
             $teachers = SmStaff::where('active_status', 1)->where('user_id', $login_id)->where(function($q)  {
                 $q->where('role_id', 4)->orWhere('previous_role_id', 4);
-            })->where('school_id', Auth::user()->school_id)->first();
+            })->where('church_id', Auth::user()->church_id)->first();
 
             $user = Auth::user();
-            $class_times = SmClassTime::where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->orderBy('period', 'ASC')->get();
+            $class_times = SmClassTime::where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->orderBy('period', 'ASC')->get();
             $teacher_id = $teachers->id;
-            $sm_weekends = SmWeekend::where('school_id', Auth::user()->school_id)->orderBy('order', 'ASC')->where('active_status', 1)->get();
+            $sm_weekends = SmWeekend::where('church_id', Auth::user()->church_id)->orderBy('order', 'ASC')->where('active_status', 1)->get();
 
             return view('lesson::teacher.teacherLessonPlan', compact('dates', 'this_week', 'class_times', 'teacher_id', 'sm_weekends', 'teachers'));
         } catch (\Exception$e) {

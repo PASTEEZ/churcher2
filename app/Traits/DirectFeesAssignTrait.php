@@ -14,32 +14,32 @@ use function PHPUnit\Framework\isNull;
 
 trait DirectFeesAssignTrait{
 
-    public function assignDirectFees($record_id = null, $class_id = null,  $section_id = null, $master_id = null){
+    public function assignDirectFees($record_id = null, $age_group_id = null,  $mgender_id = null, $master_id = null){
         if(is_null($record_id)){
             $fees_master = SmFeesMaster::find($master_id);
-            $class_id = $fees_master->class_id;
-            $section_id = $fees_master->section_id;
+            $age_group_id = $fees_master->age_group_id;
+            $mgender_id = $fees_master->mgender_id;
             $student_records = StudentRecord::query();
-            $student_records = $student_records->where('is_promote',0)->where('class_id', $class_id);
-            if($section_id != null){
-                $student_records = $student_records->where('section_id', $section_id);
+            $student_records = $student_records->where('is_promote',0)->where('age_group_id', $age_group_id);
+            if($mgender_id != null){
+                $student_records = $student_records->where('mgender_id', $mgender_id);
             }
-            $student_records = $student_records->where('academic_id',getAcademicId())->where('school_id',Auth::user()->school_id)->where('is_promote',0)->get();
+            $student_records = $student_records->where('church_year_id',getAcademicId())->where('church_id',Auth::user()->church_id)->where('is_promote',0)->get();
         }
         else{
             $student_records = StudentRecord::where('id',$record_id)->get();
-            $fees_master = SmFeesMaster::where('school_id',Auth::user()->school_id)
-                                        ->where('academic_id', getAcademicId())
-                                        ->where('class_id',$class_id)
-                                        ->when(!is_null($section_id), function ($q) use ($section_id) {
-                                            $q->where('section_id', $section_id);
+            $fees_master = SmFeesMaster::where('church_id',Auth::user()->church_id)
+                                        ->where('church_year_id', getAcademicId())
+                                        ->where('age_group_id',$age_group_id)
+                                        ->when(!is_null($mgender_id), function ($q) use ($mgender_id) {
+                                            $q->where('mgender_id', $mgender_id);
                                         })->latest()
                                         ->first();
 
         if(! $fees_master){
-            $fees_master = SmFeesMaster::where('school_id',Auth::user()->school_id)
-                                        ->where('academic_id', getAcademicId())
-                                        ->where('class_id',$class_id)
+            $fees_master = SmFeesMaster::where('church_id',Auth::user()->church_id)
+                                        ->where('church_year_id', getAcademicId())
+                                        ->where('age_group_id',$age_group_id)
                                         ->latest()
                                         ->first();
             }
@@ -57,22 +57,22 @@ trait DirectFeesAssignTrait{
             }else{
                 $assign_fees = new SmFeesAssign();
             }
-            $assign_fees->student_id = $studentRecord->student_id;
+            $assign_fees->member_id = $studentRecord->member_id;
             $assign_fees->fees_amount = $fees_master->amount;
             $assign_fees->fees_master_id = $fees_master->id;
-            $assign_fees->class_id = $studentRecord->class_id;
-            $assign_fees->section_id = $studentRecord->section_id;
+            $assign_fees->age_group_id = $studentRecord->age_group_id;
+            $assign_fees->mgender_id = $studentRecord->mgender_id;
             $assign_fees->record_id = $studentRecord->id;
-            $assign_fees->school_id = Auth::user()->school_id;
-            $assign_fees->academic_id = getAcademicId();
+            $assign_fees->church_id = Auth::user()->church_id;
+            $assign_fees->church_year_id = getAcademicId();
             $assign_fees->save();
 
             $installments = DirectFeesInstallment::where('fees_master_id', $fees_master->id)->get();
                 if (count($installments)>0) {
                     foreach ($installments as $installment) {
-                        $checkExist = DirectFeesInstallmentAssign::where('academic_id', getAcademicId())
+                        $checkExist = DirectFeesInstallmentAssign::where('church_year_id', getAcademicId())
                             ->where('record_id', $studentRecord->id)
-                            ->where('student_id', $studentRecord->student_id)
+                            ->where('member_id', $studentRecord->member_id)
                             ->where('fees_installment_id', $installment->id)
                             ->first();
                            
@@ -101,10 +101,10 @@ trait DirectFeesAssignTrait{
                         // $assignInstallment->amount = $installment->amount;
                         $assignInstallment->due_date = $installment->due_date;
                         $assignInstallment->fees_type_id = $fees_master->fees_type_id;
-                        $assignInstallment->student_id = $studentRecord->student_id;
+                        $assignInstallment->member_id = $studentRecord->member_id;
                         $assignInstallment->record_id = $studentRecord->id;
-                        $assignInstallment->academic_id = getAcademicId();
-                        $assignInstallment->school_id = auth()->user()->school_id;
+                        $assignInstallment->church_year_id = getAcademicId();
+                        $assignInstallment->church_id = auth()->user()->church_id;
                         $assignInstallment->save();
                     }
                 }

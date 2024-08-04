@@ -23,7 +23,7 @@ class SmStudent extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'admission_no',
+        'registration_no',
     ];
 
     protected static function boot()
@@ -41,11 +41,11 @@ class SmStudent extends Model
 
     public function getOptionalSubjectSetupAttribute()
     {
-        return SmClassOptionalSubject::where('class_id', $this->class_id)->first();
+        return SmClassOptionalSubject::where('age_group_id', $this->age_group_id)->first();
     }
     public function optionalSubject()
     {
-        return $this->belongsTo('App\SmOptionalSubjectAssign', 'student_id', 'id');
+        return $this->belongsTo('App\SmOptionalSubjectAssign', 'member_id', 'id');
     }
     public function drivers()
     {
@@ -59,7 +59,7 @@ class SmStudent extends Model
 
     public function feesPayment()
     {
-        return $this->hasMany(SmFeesPayment::class, 'student_id');
+        return $this->hasMany(SmFeesPayment::class, 'member_id');
     }
 
     public function gender()
@@ -69,7 +69,7 @@ class SmStudent extends Model
 
     public function school()
     {
-        return $this->belongsTo('App\SmSchool', 'school_id', 'id');
+        return $this->belongsTo('App\SmSchool', 'church_id', 'id');
     }
 
     public function religion()
@@ -99,18 +99,18 @@ class SmStudent extends Model
 
     public function academicYear()
     {
-        return $this->belongsTo('App\SmAcademicYear', 'academic_id', 'id');
+        return $this->belongsTo('App\SmAcademicYear', 'church_year_id', 'id');
     }
 
     //student class name
     public function class()
     {
-        return $this->belongsTo('App\SmClass', 'class_id', 'id')->withoutGlobalScope(StatusAcademicSchoolScope::class);
+        return $this->belongsTo('App\SmClass', 'age_group_id', 'id')->withoutGlobalScope(StatusAcademicSchoolScope::class);
     }
 
     public function section()
     {
-        return $this->belongsTo('App\SmSection', 'section_id', 'id')->withoutGlobalScope(StatusAcademicSchoolScope::class);
+        return $this->belongsTo('App\SmSection', 'mgender_id', 'id')->withoutGlobalScope(StatusAcademicSchoolScope::class);
     }
 
     public function route()
@@ -130,7 +130,7 @@ class SmStudent extends Model
 
     public function sections()
     {
-        return $this->hasManyThrough('App\SmSection', 'App\SmClassSection', 'class_id', 'id', 'class_id', 'section_id');
+        return $this->hasManyThrough('App\SmSection', 'App\SmClassSection', 'age_group_id', 'id', 'age_group_id', 'mgender_id');
     }
 
     public function rooms()
@@ -145,27 +145,27 @@ class SmStudent extends Model
 
     public function attendances()
     {
-        return $this->hasMany(SmStudentAttendance::class, 'student_id');
+        return $this->hasMany(SmStudentAttendance::class, 'member_id');
     }
 
     public function forwardBalance()
     {
-        return $this->belongsTo('App\SmFeesCarryForward', 'id', 'student_id');
+        return $this->belongsTo('App\SmFeesCarryForward', 'id', 'member_id');
     }
 
     public function meritList()
     {
-        return $this->belongsTo('App\SmTemporaryMeritlist', 'id', 'student_id');
+        return $this->belongsTo('App\SmTemporaryMeritlist', 'id', 'member_id');
     }
 
     public function feesAssign()
     {
-        return $this->hasMany('App\SmFeesAssign', 'student_id', 'id');
+        return $this->hasMany('App\SmFeesAssign', 'member_id', 'id');
     }
 
     public function feesAssignDiscount()
     {
-        return $this->hasMany('App\SmFeesAssignDiscount', 'student_id', 'id');
+        return $this->hasMany('App\SmFeesAssignDiscount', 'member_id', 'id');
     }
 
     public function studentDocument()
@@ -175,7 +175,7 @@ class SmStudent extends Model
 
     public function studentTimeline()
     {
-        return $this->hasMany('App\SmStudentTimeline', 'staff_student_id', 'id');
+        return $this->hasMany('App\SmStudentTimeline', 'staff_member_id', 'id');
     }
 
     public function studentLeave()
@@ -185,7 +185,7 @@ class SmStudent extends Model
 
     public function getClass()
     {
-        return $this->belongsTo(CheckClass::class, 'class_id');
+        return $this->belongsTo(CheckClass::class, 'age_group_id');
     }
 
     public function getAttendanceType($month)
@@ -200,54 +200,54 @@ class SmStudent extends Model
 
     public function assignDiscount()
     {
-        return $this->hasMany(InfixAssignDiscount::class, 'student_id');
+        return $this->hasMany(InfixAssignDiscount::class, 'member_id');
     }
 
     public function feesMasters()
     {
-        return $this->hasMany(InfixFeesMaster::class, 'class_id', 'class_id');
+        return $this->hasMany(InfixFeesMaster::class, 'age_group_id', 'age_group_id');
     }
 
     public function markStores()
     {
-        return $this->hasMany(SmMarkStore::class, 'student_id')->where('class_id', $this->class_id)
-            ->where('section_id', $this->section_id);
+        return $this->hasMany(SmMarkStore::class, 'member_id')->where('age_group_id', $this->age_group_id)
+            ->where('mgender_id', $this->mgender_id);
     }
 
     public function assignSubjects()
     {
-        return $this->hasMany(SmAssignSubject::class, 'class_id', 'class_id')->where('section_id', $this->section_id)->where('active_status', 1);
+        return $this->hasMany(SmAssignSubject::class, 'age_group_id', 'age_group_id')->where('mgender_id', $this->mgender_id)->where('active_status', 1);
     }
 
     public function studentOnlineExams()
     {
 
         if (moduleStatusCheck('OnlineExam') == true) {
-            return $this->hasMany(InfixOnlineExam::class, 'class_id', 'class_id')->where('section_id', $this->section_id)
-                ->where('active_status', 1)->where('status', 1)->where('school_id', Auth::user()->school_id);
+            return $this->hasMany(InfixOnlineExam::class, 'age_group_id', 'age_group_id')->where('mgender_id', $this->mgender_id)
+                ->where('active_status', 1)->where('status', 1)->where('church_id', Auth::user()->church_id);
         } else {
-            return $this->hasMany(SmOnlineExam::class, 'class_id', 'class_id')->where('section_id', $this->section_id)
-                ->where('active_status', 1)->where('status', 1)->where('school_id', Auth::user()->school_id);
+            return $this->hasMany(SmOnlineExam::class, 'age_group_id', 'age_group_id')->where('mgender_id', $this->mgender_id)
+                ->where('active_status', 1)->where('status', 1)->where('church_id', Auth::user()->church_id);
         }
 
     }
     public function studentPdfExams()
     {
 
-        return $this->hasMany(InfixPdfExam::class, 'class_id', 'class_id')->where('section_id', $this->section_id)
-            ->where('active_status', 1)->where('status', 1)->where('school_id', Auth::user()->school_id);
+        return $this->hasMany(InfixPdfExam::class, 'age_group_id', 'age_group_id')->where('mgender_id', $this->mgender_id)
+            ->where('active_status', 1)->where('status', 1)->where('church_id', Auth::user()->church_id);
 
     }
 
     public function scheduleBySubjects()
     {
-        return $this->hasMany(SmExamSchedule::class, 'class_id', 'class_id')
-            ->where('section_id', $this->section_id);
+        return $this->hasMany(SmExamSchedule::class, 'age_group_id', 'age_group_id')
+            ->where('mgender_id', $this->mgender_id);
     }
 
     public function assignSubject()
     {
-        return $this->hasMany(SmAssignSubject::class, 'class_id', 'class_id')->where('section_id', $this->section_id)->distinct('teacher_id');
+        return $this->hasMany(SmAssignSubject::class, 'age_group_id', 'age_group_id')->where('mgender_id', $this->mgender_id)->distinct('teacher_id');
     }
 
     public function bookIssue()
@@ -257,43 +257,43 @@ class SmStudent extends Model
 
     public function examSchedule()
     {
-        return $this->hasMany(SmExamSchedule::class, 'class_id', 'class_id')->where('section_id', $this->section_id);
+        return $this->hasMany(SmExamSchedule::class, 'age_group_id', 'age_group_id')->where('mgender_id', $this->mgender_id);
     }
 
     public function homework()
     {
-        return $this->hasMany(SmHomework::class, 'class_id', 'class_id')->where('section_id', $this->section_id)
+        return $this->hasMany(SmHomework::class, 'age_group_id', 'age_group_id')->where('mgender_id', $this->mgender_id)
             ->where('evaluation_date', '=', null)->where('submission_date', '>', date('Y-m-d'));
     }
 
     public function studentAttendances()
     {
-        return $this->hasMany(SmStudentAttendance::class, 'student_id')->where('attendance_date', 'like', date('Y') . '-' . date('m') . '%')
+        return $this->hasMany(SmStudentAttendance::class, 'member_id')->where('attendance_date', 'like', date('Y') . '-' . date('m') . '%')
             ->where('attendance_type', 'P');
     }
 
     public function studentOnlineExam()
     {
         if (moduleStatusCheck('OnlineExam') == true) {
-            return $this->hasMany(InfixStudentTakeOnlineExam::class, 'student_id');
+            return $this->hasMany(InfixStudentTakeOnlineExam::class, 'member_id');
         } else {
-            return $this->hasMany(SmStudentTakeOnlineExam::class, 'student_id');
+            return $this->hasMany(SmStudentTakeOnlineExam::class, 'member_id');
         }
 
     }
 
     public function examsSchedule()
     {
-        return $this->hasMany(SmExamSchedule::class, 'class_id', 'class_id')->where('section_id', $this->section_id);
+        return $this->hasMany(SmExamSchedule::class, 'age_group_id', 'age_group_id')->where('mgender_id', $this->mgender_id);
     }
     public function homeworkContents()
     {
-        return $this->hasMany(SmUploadHomeworkContent::class, 'student_id');
+        return $this->hasMany(SmUploadHomeworkContent::class, 'member_id');
     }
 
     public function bankSlips()
     {
-        return $this->hasMany(SmBankPaymentSlip::class, 'student_id');
+        return $this->hasMany(SmBankPaymentSlip::class, 'member_id');
     }
 
     public static function totalFees($feesAssigns)
@@ -332,7 +332,7 @@ class SmStudent extends Model
     {
         $amount = 0;
         foreach ($this->feesAssign as $feesAssign) {
-            $amount += SmFeesAssign::where('fees_type_id', $feesAssign->feesGroupMaster->fees_type_id)->where('student_id', $id)->sum('discount_amount');
+            $amount += SmFeesAssign::where('fees_type_id', $feesAssign->feesGroupMaster->fees_type_id)->where('member_id', $id)->sum('discount_amount');
         }
         return $amount;
     }
@@ -341,7 +341,7 @@ class SmStudent extends Model
     {
         $amount = 0;
         foreach ($this->feesAssign as $feesAssign) {
-            $amount += SmFeesPayment::where('active_status', 1)->where('fees_type_id', $feesAssign->feesGroupMaster->fees_type_id)->where('student_id', $id)->sum('fine');
+            $amount += SmFeesPayment::where('active_status', 1)->where('fees_type_id', $feesAssign->feesGroupMaster->fees_type_id)->where('member_id', $id)->sum('fine');
         }
         return $amount;
     }
@@ -350,19 +350,19 @@ class SmStudent extends Model
     {
         $amount = 0;
         foreach ($this->feesAssign as $feesAssign) {
-            $amount += SmFeesPayment::where('active_status', 1)->where('fees_type_id', $feesAssign->feesGroupMaster->fees_type_id)->where('student_id', $id)->sum('amount');
+            $amount += SmFeesPayment::where('active_status', 1)->where('fees_type_id', $feesAssign->feesGroupMaster->fees_type_id)->where('member_id', $id)->sum('amount');
         }
         return $amount;
     }
 
-    public static function totalDeposit($feesAssigns, $student_id)
+    public static function totalDeposit($feesAssigns, $member_id)
     {
 
         try {
             $amount = 0;
             foreach ($feesAssigns as $feesAssign) {
                 $fees_type = SmFeesMaster::select('fees_type_id')->where('id', $feesAssign->fees_master_id)->first();
-                $amount += SmFeesPayment::where('active_status', 1)->where('fees_type_id', $fees_type->fees_type_id)->where('student_id', $student_id)->sum('amount');
+                $amount += SmFeesPayment::where('active_status', 1)->where('fees_type_id', $fees_type->fees_type_id)->where('member_id', $member_id)->sum('amount');
             }
             return $amount;
         } catch (\Exception $e) {
@@ -371,13 +371,13 @@ class SmStudent extends Model
         }
     }
 
-    public static function totalDiscount($feesAssigns, $student_id)
+    public static function totalDiscount($feesAssigns, $member_id)
     {
 
         try {
             $amount = 0;
             foreach ($feesAssigns as $feesAssign) {
-                $amount = SmFeesAssign::where('student_id', $student_id)->sum('applied_discount');
+                $amount = SmFeesAssign::where('member_id', $member_id)->sum('applied_discount');
             }
             return $amount;
         } catch (\Exception $e) {
@@ -386,14 +386,14 @@ class SmStudent extends Model
         }
     }
 
-    public static function totalFine($feesAssigns, $student_id)
+    public static function totalFine($feesAssigns, $member_id)
     {
 
         try {
             $amount = 0;
             foreach ($feesAssigns as $feesAssign) {
                 $fees_type = SmFeesMaster::select('fees_type_id')->where('id', $feesAssign->fees_master_id)->first();
-                $amount += SmFeesPayment::where('active_status', 1)->where('fees_type_id', $fees_type->fees_type_id)->where('student_id', $student_id)->sum('fine');
+                $amount += SmFeesPayment::where('active_status', 1)->where('fees_type_id', $fees_type->fees_type_id)->where('member_id', $member_id)->sum('fine');
             }
             return $amount;
         } catch (\Exception $e) {
@@ -411,7 +411,7 @@ class SmStudent extends Model
     {
 
         try {
-            $marks_register = SmMarksRegister::where('exam_id', $exam_id)->where('student_id', $s_id)->first();
+            $marks_register = SmMarksRegister::where('exam_id', $exam_id)->where('member_id', $s_id)->first();
             $marks_register_clilds = [];
             if ($marks_register != "") {
                 $marks_register_clilds = SmMarksRegisterChild::where('marks_register_id', $marks_register->id)->where('active_status', 1)->get();
@@ -477,8 +477,8 @@ class SmStudent extends Model
         try {
             $schedule = SmExamSchedule::where('exam_term_id', $exam_id)
                 ->where('subject_id', $sb_id)
-                ->where('class_id', $record->class_id)
-                ->where('section_id', $record->section_id)
+                ->where('age_group_id', $record->age_group_id)
+                ->where('mgender_id', $record->mgender_id)
                 ->first();
             return $schedule;
         } catch (\Exception $e) {
@@ -488,23 +488,23 @@ class SmStudent extends Model
 
     public function promotion()
     {
-        return $this->hasMany('App\SmStudentPromotion', 'student_id', 'id');
+        return $this->hasMany('App\SmStudentPromotion', 'member_id', 'id');
     }
 
     public function feesPayments()
     {
-        return $this->hasMany(InfixFeesPayment::class, 'student_id');
+        return $this->hasMany(InfixFeesPayment::class, 'member_id');
     }
 
     public function getClassesAttribute()
     {
         $classes = '';
         if (count($this->promotion) > 0) {
-            $maxClass = $this->promotion->max('current_class_id');
-            $minClass = $this->promotion->min('previous_class_id');
+            $maxClass = $this->promotion->max('current_age_group_id');
+            $minClass = $this->promotion->min('previous_age_group_id');
             $classes = $minClass . ' - ' . $maxClass;
         } else {
-            $classes = $this->class->class_name . ' - ' . $this->class->class_name;
+            $classes = $this->class->age_group_name . ' - ' . $this->class->age_group_name;
         }
 
         return $classes;
@@ -530,7 +530,7 @@ class SmStudent extends Model
     {
         try {
             $class = SmClass::where('id', $class)->first();
-            return $class->class_name;
+            return $class->age_group_name;
         } catch (\Exception $e) {
             $data = [];
             return $data;
@@ -550,17 +550,17 @@ class SmStudent extends Model
 
     public static function getExamResult($exam_id, $record)
     {
-        $eligible_subjects = SmAssignSubject::where('class_id', $record->class_id)
-                            ->where('section_id', $record->section_id)
-                            ->groupBy(['section_id', 'subject_id'])
-                            ->where('academic_id', getAcademicId())
-                            ->where('school_id', Auth::user()->school_id)
+        $eligible_subjects = SmAssignSubject::where('age_group_id', $record->age_group_id)
+                            ->where('mgender_id', $record->mgender_id)
+                            ->groupBy(['mgender_id', 'subject_id'])
+                            ->where('church_year_id', getAcademicId())
+                            ->where('church_id', Auth::user()->church_id)
                             ->get();
 
         foreach ($eligible_subjects as $subject) {
             $getMark = SmResultStore::where([
                 ['exam_type_id', $exam_id],   
-                ['student_id', $record->student_id],
+                ['member_id', $record->member_id],
                 ['student_record_id', $record->id],
                 ['subject_id', $subject->subject_id],
             ])->first();
@@ -571,7 +571,7 @@ class SmStudent extends Model
 
             $result = SmResultStore::where([
                 ['exam_type_id', $exam_id],
-                ['student_id', $record->student_id],
+                ['member_id', $record->member_id],
                 ['student_record_id', $record->id],
             ])->get();
 
@@ -593,7 +593,7 @@ class SmStudent extends Model
             $getMark = universityFilter($SmResultStore, $request)
                                 ->where([
                                     ['exam_type_id', $exam_id],   
-                                    ['student_id', $record->student_id],
+                                    ['member_id', $record->member_id],
                                     ['student_record_id', $record->id],
                                     ['un_subject_id', $subject->un_subject_id],
                                 ])->first();
@@ -606,7 +606,7 @@ class SmStudent extends Model
             $result = universityFilter($SmResultStore, $request)
                     ->where([
                         ['exam_type_id', $exam_id],
-                        ['student_id', $record->student_id],
+                        ['member_id', $record->member_id],
                         ['student_record_id', $record->id],
                     ])->get();
 
@@ -616,34 +616,34 @@ class SmStudent extends Model
 
     public function examAttendances()
     {
-        return $this->hasMany(SmExamAttendanceChild::class, 'student_id');
+        return $this->hasMany(SmExamAttendanceChild::class, 'member_id');
     }
 
     public function homeworks()
     {
-        return $this->hasMany(SmHomeworkStudent::class, 'student_id');
+        return $this->hasMany(SmHomeworkStudent::class, 'member_id');
     }
 
     public function onlineExams()
     {
-        return $this->hasMany(SmStudentTakeOnlineExam::class, 'student_id');
+        return $this->hasMany(SmStudentTakeOnlineExam::class, 'member_id');
     }
 
     public function subjectAssign()
     {
-        return $this->hasOne(SmOptionalSubjectAssign::class, 'student_id')->where('academic_id', getAcademicId());
+        return $this->hasOne(SmOptionalSubjectAssign::class, 'member_id')->where('church_year_id', getAcademicId());
     }
 
     public function scopeStatus($query)
     {
-        return $query->where('active_status', 1)->where('school_id', Auth::user()->school_id);
+        return $query->where('active_status', 1)->where('church_id', Auth::user()->church_id);
     }
 
     public function DateWiseAttendances()
     {
         if (moduleStatusCheck('Univeristy')) {
             $request = request();
-            return $this->hasOne(SmStudentAttendance::class, 'student_id')
+            return $this->hasOne(SmStudentAttendance::class, 'member_id')
             ->when($request->un_session_id, function ($q) use ($request) {
                 $q->where('un_session_id', $request->un_session_id);
             })
@@ -653,29 +653,29 @@ class SmStudent extends Model
             ->when($request->un_department_id, function ($q) use ($request) {
                 $q->where('un_department_id', $request->un_department_id);
             })
-            ->when($request->un_academic_id, function ($q) use ($request) {
-                $q->where('un_academic_id', $request->un_academic_id);
+            ->when($request->un_church_year_id, function ($q) use ($request) {
+                $q->where('un_church_year_id', $request->un_church_year_id);
             })
             ->when($request->un_semester_id, function ($q) use ($request) {
                 $q->where('un_semester_id', $request->un_semester_id);
             })
             ->when($request->un_semester_label_id, function ($q) use ($request) {
                 $q->where('un_semester_label_id', $request->un_semester_label_id);
-            })->where('school_id', auth()->user()->school_id)
+            })->where('church_id', auth()->user()->church_id)
             ->where('attendance_date', date('Y-m-d', strtotime(request()->attendance_date)));
         } else {
-            return $this->hasOne(SmStudentAttendance::class, 'student_id')
-            ->where('class_id', request()->class)
-            ->where('section_id', request()->section)
+            return $this->hasOne(SmStudentAttendance::class, 'member_id')
+            ->where('age_group_id', request()->class)
+            ->where('mgender_id', request()->section)
             ->where('attendance_date', date('Y-m-d', strtotime(request()->attendance_date)));
         }
     }
     public function DateSubjectWiseAttendances()
     {
         if (moduleStatusCheck('University')) {
-            return $this->hasOne(SmSubjectAttendance::class, 'student_id')->where('un_semester_label_id', request()->un_semester_label_id)->where('un_subject_id', request()->un_subject_id)->where('attendance_date', date('Y-m-d', strtotime(request()->attendance_date)));
+            return $this->hasOne(SmSubjectAttendance::class, 'member_id')->where('un_semester_label_id', request()->un_semester_label_id)->where('un_subject_id', request()->un_subject_id)->where('attendance_date', date('Y-m-d', strtotime(request()->attendance_date)));
         } else {
-            return $this->hasOne(SmSubjectAttendance::class, 'student_id')->where('class_id', request()->class)->where('section_id', request()->section)->where('subject_id', request()->subject)->where('attendance_date', date('Y-m-d', strtotime(request()->attendance_date)));
+            return $this->hasOne(SmSubjectAttendance::class, 'member_id')->where('age_group_id', request()->class)->where('mgender_id', request()->section)->where('subject_id', request()->subject)->where('attendance_date', date('Y-m-d', strtotime(request()->attendance_date)));
         }
     }
     public function lead()
@@ -698,63 +698,63 @@ class SmStudent extends Model
     }
     public function studentAllRecords()
     {
-        return $this->hasMany(StudentRecord::class, 'student_id', 'id')->where('is_promote', 0)->orderBy('id', 'DESC');
+        return $this->hasMany(StudentRecord::class, 'member_id', 'id')->where('is_promote', 0)->orderBy('id', 'DESC');
     }
     public function studentRecords()
     {
-        return $this->hasMany(StudentRecord::class, 'student_id', 'id')->where('is_promote', 0)->where('active_status', 1)->orderBy('id', 'DESC');
+        return $this->hasMany(StudentRecord::class, 'member_id', 'id')->where('is_promote', 0)->where('active_status', 1)->orderBy('id', 'DESC');
     }
 
     public function orderByStudentRecords()
     {
-        return $this->hasMany(StudentRecord::class, 'student_id', 'id')->where('is_promote', 0)->where('active_status', 1)->orderBy('id', 'DESC');
+        return $this->hasMany(StudentRecord::class, 'member_id', 'id')->where('is_promote', 0)->where('active_status', 1)->orderBy('id', 'DESC');
     }
     public function getClassRecord()
     {
-        return $this->hasMany(StudentRecord::class, 'student_id', 'id')->where('is_promote', 0)->groupBy('class_id');
+        return $this->hasMany(StudentRecord::class, 'member_id', 'id')->where('is_promote', 0)->groupBy('age_group_id');
     }
     public function studentRecord()
     {
-        return $this->hasOne(StudentRecord::class, 'student_id')->where('is_promote', 0)
+        return $this->hasOne(StudentRecord::class, 'member_id')->where('is_promote', 0)
         ->when(moduleStatusCheck('University')==false, function ($q) {
-            $q->where('academic_id', getAcademicId());
-        })->where('school_id', Auth::user()->school_id);
+            $q->where('church_year_id', getAcademicId());
+        })->where('church_id', Auth::user()->church_id);
     }
     public function defaultClass()
     {        
-        return $this->hasOne(StudentRecord::class, 'student_id')->where('is_promote', 0)->latest()->where('is_default', 1)
+        return $this->hasOne(StudentRecord::class, 'member_id')->where('is_promote', 0)->latest()->where('is_default', 1)
         ->when(moduleStatusCheck('University'), function ($query) {
-            $query->where('un_academic_id', getAcademicId());
+            $query->where('un_church_year_id', getAcademicId());
         }, function ($query) {
-            $query->where('academic_id', getAcademicId());
-        })->where('school_id', Auth::user()->school_id);
+            $query->where('church_year_id', getAcademicId());
+        })->where('church_id', Auth::user()->church_id);
     }
     public function recordClass()
     {
-        return $this->hasOne(StudentRecord::class, 'student_id')->where('is_promote', 0)->where('class_id', request()->class)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id);
+        return $this->hasOne(StudentRecord::class, 'member_id')->where('is_promote', 0)->where('age_group_id', request()->class)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id);
     }
     
     public function recordSection()
     {
-        return $this->hasOne(StudentRecord::class, 'student_id')->where('is_promote', 0)->where('class_id', request()->class)->where('section_id', request()->section)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id);
+        return $this->hasOne(StudentRecord::class, 'member_id')->where('is_promote', 0)->where('age_group_id', request()->class)->where('mgender_id', request()->section)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id);
     }
     public function recordClasses()
     {
-        return $this->hasMany(StudentRecord::class, 'student_id')->where('is_promote', 0)->where('class_id', request()->class)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id);
+        return $this->hasMany(StudentRecord::class, 'member_id')->where('is_promote', 0)->where('age_group_id', request()->class)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id);
     }
     public function recordStudentRoll()
     {
-        return $this->hasOne(StudentRecord::class, 'student_id')->where('is_promote', 0)->where('class_id', request()->current_class)->where('section_id', request()->current_section)->where('academic_id', request()->current_session)->where('school_id', Auth::user()->school_id);
+        return $this->hasOne(StudentRecord::class, 'member_id')->where('is_promote', 0)->where('age_group_id', request()->current_class)->where('mgender_id', request()->current_section)->where('church_year_id', request()->current_session)->where('church_id', Auth::user()->church_id);
     }
 
     public function completeSubjects()
     {
-        return $this->hasMany(UnSubjectComplete::class, 'student_id', 'id')->where('is_pass', 'pass');
+        return $this->hasMany(UnSubjectComplete::class, 'member_id', 'id')->where('is_pass', 'pass');
     }
 
     public function lastRecord()
     {
-        return $this->hasOne(StudentRecord::class, 'student_id', 'id')->where('is_promote', 0)->latest();
+        return $this->hasOne(StudentRecord::class, 'member_id', 'id')->where('is_promote', 0)->latest();
     }
     
     public function getFullNameAttribute()

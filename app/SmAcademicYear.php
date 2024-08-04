@@ -21,12 +21,12 @@ class SmAcademicYear extends Model
 
         return $query->where('active_status', 1);
     }
-    public static function API_ACADEMIC_YEAR($school_id)
+    public static function API_church_year($church_id)
     {
         try {
-            $settings = SmGeneralSettings::where('school_id', $school_id)->first();
+            $settings = SmGeneralSettings::where('church_id', $church_id)->first();
             if(moduleStatusCheck('University')){
-                return $settings->un_academic_id;
+                return $settings->un_church_year_id;
              }
              return $settings->session_id;
         } catch (\Exception $e) {
@@ -34,12 +34,12 @@ class SmAcademicYear extends Model
         }
 
     }
-    public static function SINGLE_SCHOOL_API_ACADEMIC_YEAR()
+    public static function SINGLE_SCHOOL_API_church_year()
     {
         try {
-            $settings = SmGeneralSettings::where('school_id', 1)->first();
+            $settings = SmGeneralSettings::where('church_id', 1)->first();
             if(moduleStatusCheck('University')){
-               return $settings->un_academic_id;
+               return $settings->un_church_year_id;
             }
 
             return $settings->session_id;

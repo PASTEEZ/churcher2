@@ -134,7 +134,7 @@ hr{
                                 <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                     <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                     @foreach($classes as $class)
-                                    <option value="{{$class->id}}" {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{$class->class_name}}</option>
+                                    <option value="{{$class->id}}" {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{$class->age_group_name}}</option>
                                     @endforeach
                                 </select>
                                 @if ($errors->has('class'))
@@ -206,7 +206,7 @@ hr{
                                             <img class="logo-img" src="{{ @generalSetting()->logo }}" alt="">
                                             </div>
                                             <div class="col-lg-6 ml-30">
-                                                <h3 class="text-white"> {{isset(generalSetting()->school_name)?generalSetting()->school_name:'Infix School Management ERP'}} </h3> 
+                                                <h3 class="text-white"> {{isset(generalSetting()->church_name)?generalSetting()->church_name:'Infix School Management ERP'}} </h3> 
                                                 <p class="text-white mb-0"> {{isset(generalSetting()->address)?generalSetting()->address:'Infix School Address'}} </p>
                                                 <p class="text-white mb-0"> @lang('common.email')  {{isset($email)?$email:'admin@demo.com'}} ,  @lang('common.phone')  {{isset(generalSetting()->phone)?generalSetting()->phone:'admin@demo.com'}} </p> 
                                             </div>
@@ -228,16 +228,16 @@ hr{
                                                         <div class="col-md-6">
                                                             <h3>@lang('exam.order_of_merit_list')</h3> 
                                                             <p class="mb-0">
-                                                                @lang('common.academic_year') : <span class="primary-color fw-500">{{@generalSetting()->academic_Year->year ?? ''}}</span>
+                                                                @lang('common.church_year') : <span class="primary-color fw-500">{{@generalSetting()->church_year->year ?? ''}}</span>
                                                             </p>
                                                             {{-- <p class="mb-0">
                                                                 @lang('exam.exam') : <span class="primary-color fw-500">{{@$exam_name}}</span>
                                                             </p> --}}
                                                             <p class="mb-0">
-                                                                @lang('common.class') : <span class="primary-color fw-500">{{@$class_name}}</span>
+                                                                @lang('common.class') : <span class="primary-color fw-500">{{@$age_group_name}}</span>
                                                             </p>
                                                             <p class="mb-0">
-                                                                @lang('common.section') : <span class="primary-color fw-500">{{@$section->section_name}}</span>
+                                                                @lang('common.section') : <span class="primary-color fw-500">{{@$section->mgender_name}}</span>
                                                             </p>  
                                                         </div>
                                                         <div class="col-md-6">
@@ -264,7 +264,7 @@ hr{
 
                                                 {{-- sm_marks_grades --}}
                                                 <div class="col-lg-4 text-black"> 
-                                                    @php $marks_grade=DB::table('sm_marks_grades')->where('academic_id', getAcademicId())->orderBy('gpa','desc')->get(); @endphp
+                                                    @php $marks_grade=DB::table('sm_marks_grades')->where('church_year_id', getAcademicId())->orderBy('gpa','desc')->get(); @endphp
                                                     @if(@$marks_grade)
                                                         <table class="table  table-bordered table-striped " id="grade_table">
                                                             <thead>
@@ -304,7 +304,7 @@ hr{
                                                           <thead>
                                                             <tr>
                                                               <th colspan="" class="full_width" >@lang('common.sl')</th>
-                                                              <th colspan="" class="full_width" >@lang('student.admission_no')</th>
+                                                              <th colspan="" class="full_width" >@lang('student.registration_no')</th>
                                                               <th colspan="" class="full_width" >@lang('common.student')</th>
                                                             <th colspan="" class="full_width" >@lang('exam.first_term') ({{ $custom_result_setup->percentage1 }}%)</th>
                                                               <th colspan="" class="full_width" >@lang('exam.second_term') ({{ $custom_result_setup->percentage2 }}%)</th>
@@ -318,7 +318,7 @@ hr{
                                                               @foreach($customresult as $row)
                                                             <tr>
                                                                 <td >{{$count++}}</td>
-                                                                <td >{{@$row->admission_no}}</td>
+                                                                <td >{{@$row->registration_no}}</td>
                                                                 <td >{{@$row->full_name}}</td>
                                                                 <td >{{@$row->gpa1}}</td>
                                                                 <td >{{@$row->gpa2}}</td>

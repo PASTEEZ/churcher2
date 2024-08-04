@@ -45,14 +45,14 @@ class SmFeesBankPaymentController extends Controller
     public function bankPaymentSlip()
     {
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id',Auth::user()->school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id',Auth::user()->church_id)->get();
             $bank_slips = SmBankPaymentSlip::query();
             if(moduleStatusCheck('University')){
-                $bank_slips->where('un_academic_id', getAcademicId());
+                $bank_slips->where('un_church_year_id', getAcademicId());
             }else{
-                $bank_slips->where('academic_id', getAcademicId());
+                $bank_slips->where('church_year_id', getAcademicId());
             }
-            $bank_slips = $bank_slips->where('school_id',Auth::user()->school_id)->where('approve_status',0)->orderBy('id', 'desc')->get();
+            $bank_slips = $bank_slips->where('church_id',Auth::user()->church_id)->where('approve_status',0)->orderBy('id', 'desc')->get();
             return view('backEnd.feesCollection.bank_payment_slip', compact('classes','bank_slips'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -70,10 +70,10 @@ class SmFeesBankPaymentController extends Controller
             }
             else{
                 if ($request->class != "") {
-                    $bank_slips->where('class_id', $request->class);
+                    $bank_slips->where('age_group_id', $request->class);
                 }
                 if ($request->section != "") {
-                    $bank_slips->where('section_id', $request->section);
+                    $bank_slips->where('mgender_id', $request->section);
                 }
                 if ($request->payment_date != "") {
                     $date = strtotime($request->payment_date);
@@ -87,17 +87,17 @@ class SmFeesBankPaymentController extends Controller
             }
 
             if(moduleStatusCheck('University')){
-                $all_bank_slips = $bank_slips->where('un_academic_id', getAcademicId())->where('school_id',Auth::user()->school_id)->orderBy('id', 'desc')->get();
+                $all_bank_slips = $bank_slips->where('un_church_year_id', getAcademicId())->where('church_id',Auth::user()->church_id)->orderBy('id', 'desc')->get();
               
             }else{
-                $all_bank_slips = $bank_slips->where('academic_id', getAcademicId())->where('school_id',Auth::user()->school_id)->orderBy('id', 'desc')->get();
+                $all_bank_slips = $bank_slips->where('church_year_id', getAcademicId())->where('church_id',Auth::user()->church_id)->orderBy('id', 'desc')->get();
             }
             
             $data = [];
             $data['date'] = $request->payment_date;
-            $data['class_id'] = $request->class;
+            $data['age_group_id'] = $request->class;
             $data['approve_status'] = $request->approve_status;
-            $data['section_id'] = $request->section;
+            $data['mgender_id'] = $request->section;
             $data['classes'] = SmClass::get();
             $data['sections'] = SmSection::get();
             $data['all_bank_slips'] = $all_bank_slips;
@@ -117,7 +117,7 @@ class SmFeesBankPaymentController extends Controller
 
         try{
             $bank_payment = SmBankPaymentSlip::find($request->id);        
-            $student = SmStudent::find($bank_payment->student_id);
+            $student = SmStudent::find($bank_payment->member_id);
             $parent = SmParent::find($student->parent_id);
 
             if($bank_payment){
@@ -132,8 +132,8 @@ class SmFeesBankPaymentController extends Controller
                     $notification->date = date('Y-m-d');
                     $notification->user_id = $student->user_id;
                     $notification->url = "student-fees";
-                    $notification->school_id = Auth::user()->school_id;
-                    $notification->academic_id = getAcademicId();
+                    $notification->church_id = Auth::user()->church_id;
+                    $notification->church_year_id = getAcademicId();
                     $notification->save();
 
                     try{
@@ -144,7 +144,7 @@ class SmFeesBankPaymentController extends Controller
                         $compact['data'] =  array( 
                                 'note' => $bank_payment->reason, 
                                 'date' =>dateConvert($notification->created_at),
-                                'student_name' =>$student->full_name,
+                                'member_name' =>$student->full_name,
                         ); 
                         send_mail($receiver_email, $receiver_name, $subject , $view , $compact);
                    }catch(\Exception $e){
@@ -157,8 +157,8 @@ class SmFeesBankPaymentController extends Controller
                     $notification->date = date('Y-m-d');
                     $notification->user_id = $parent->user_id;
                     $notification->url = "parent-fees/".$student->id;
-                    $notification->school_id = Auth::user()->school_id;
-                    $notification->academic_id = getAcademicId();
+                    $notification->church_id = Auth::user()->church_id;
+                    $notification->church_year_id = getAcademicId();
                     $notification->save();
 
                     try{
@@ -169,7 +169,7 @@ class SmFeesBankPaymentController extends Controller
                         $compact['data'] =  array( 
                                 'note' => $bank_payment->reason, 
                                 'date' =>dateConvert($notification->created_at),
-                                'student_name' =>$student->full_name,
+                                'member_name' =>$student->full_name,
                         ); 
                         send_mail($receiver_email, $receiver_name, $subject , $view , $compact);
                    }catch(\Exception $e){
@@ -194,7 +194,7 @@ class SmFeesBankPaymentController extends Controller
           if (checkAdmin()) {
                 $bank_payment = SmBankPaymentSlip::find($request->id);
             }else{
-                $bank_payment = SmBankPaymentSlip::where('id',$request->id)->where('school_id',Auth::user()->school_id)->first();
+                $bank_payment = SmBankPaymentSlip::where('id',$request->id)->where('church_id',Auth::user()->church_id)->first();
             }
 
             if(moduleStatusCheck('University')){
@@ -269,12 +269,12 @@ class SmFeesBankPaymentController extends Controller
             else{
                 $get_master_id=SmFeesMaster::join('sm_fees_assigns','sm_fees_assigns.fees_master_id','=','sm_fees_masters.id')
                 ->where('sm_fees_masters.fees_type_id',$bank_payment->fees_type_id)
-                ->where('sm_fees_assigns.student_id',$bank_payment->student_id)->first();
+                ->where('sm_fees_assigns.member_id',$bank_payment->member_id)->first();
     
                 $fees_assign=SmFeesAssign::where('fees_master_id',$get_master_id->fees_master_id)
                             ->where('record_id',$bank_payment->record_id)
-                            ->where('student_id',$bank_payment->student_id)
-                            ->where('school_id',Auth::user()->school_id)
+                            ->where('member_id',$bank_payment->member_id)
+                            ->where('church_id',Auth::user()->church_id)
                             ->first();
                             if ($bank_payment->amount > $fees_assign->fees_amount) {
                                 Toastr::warning('Due amount less than bank payment', 'Warning');
@@ -284,7 +284,7 @@ class SmFeesBankPaymentController extends Controller
 
             $user = Auth::user();
             $fees_payment = new SmFeesPayment();
-            $fees_payment->student_id = $bank_payment->student_id;
+            $fees_payment->member_id = $bank_payment->member_id;
             $fees_payment->fees_type_id = $bank_payment->fees_type_id;
             $fees_payment->discount_amount = 0;
             $fees_payment->fine = 0;
@@ -297,19 +297,19 @@ class SmFeesBankPaymentController extends Controller
             $fees_payment->note = $bank_payment->note;
             $fees_payment->record_id = $bank_payment->record_id;
             
-            $fees_payment->school_id = Auth::user()->school_id;
+            $fees_payment->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
                 $fees_payment->un_fees_installment_id =$bank_payment->un_fees_installment_id;
                 $fees_payment->un_semester_label_id = $bank_payment->un_semester_label_id;
-                $fees_payment->un_academic_id = getAcademicId();
+                $fees_payment->un_church_year_id = getAcademicId();
                 $fees_payment->installment_payment_id = $childPayment->id;
             }elseif(directFees()){
                 $fees_payment->direct_fees_installment_assign_id = $bank_payment->installment_id;
-                $fees_payment->academic_id = getAcademicId();
+                $fees_payment->church_year_id = getAcademicId();
                 $fees_payment->installment_payment_id = $childPayment->id;
             }
             else{
-                $fees_payment->academic_id = getAcademicId();
+                $fees_payment->church_year_id = getAcademicId();
             }
             $fees_payment->save();
             $bank_payment->approve_status = 1; 
@@ -332,14 +332,14 @@ class SmFeesBankPaymentController extends Controller
                 $add_income->account_id = $bank_payment->bank_id;
             }
             $add_income->created_by = Auth()->user()->id;
-            $add_income->school_id = Auth::user()->school_id;
-            $add_income->academic_id = getAcademicId();
+            $add_income->church_id = Auth::user()->church_id;
+            $add_income->church_year_id = getAcademicId();
             $add_income->save();
 
 
             if($payment_method->id==3){
                 $bank=SmBankAccount::where('id',$bank_payment->bank_id)
-                ->where('school_id',Auth::user()->school_id)
+                ->where('church_id',Auth::user()->church_id)
                 ->first();
                 $after_balance= $bank->current_balance + $bank_payment->amount;
 
@@ -350,7 +350,7 @@ class SmFeesBankPaymentController extends Controller
                 $bank_statement->details= "Fees Payment";
                 $bank_statement->payment_date= date('Y-m-d', strtotime($bank_payment->date));
                 $bank_statement->bank_id= $bank_payment->bank_id;
-                $bank_statement->school_id=Auth::user()->school_id;
+                $bank_statement->church_id=Auth::user()->church_id;
                 $bank_statement->payment_method= $payment_method->id;
                 $bank_statement->fees_payment_id= $fees_payment->id;
                 $bank_statement->save();
@@ -359,7 +359,7 @@ class SmFeesBankPaymentController extends Controller
                 $current_balance->current_balance=$after_balance;
                 $current_balance->update();
         }
-            // $fees_assign=SmFeesAssign::where('fees_master_id',$get_master_id->fees_master_id)->where('student_id',$bank_payment->student_id)->first();
+            // $fees_assign=SmFeesAssign::where('fees_master_id',$get_master_id->fees_master_id)->where('member_id',$bank_payment->member_id)->first();
             if(moduleStatusCheck('University')){
                
             }
@@ -378,9 +378,9 @@ class SmFeesBankPaymentController extends Controller
                     $bank_slips->where('un_semester_label_id', $request->un_semester_label_id);
                 }
             }else{
-                $bank_slips->where('class_id', $request->class);
+                $bank_slips->where('age_group_id', $request->class);
                 if ($request->section != "") {
-                    $bank_slips->where('section_id', $request->section);
+                    $bank_slips->where('mgender_id', $request->section);
                 }
             }
             
@@ -391,24 +391,24 @@ class SmFeesBankPaymentController extends Controller
                 $bank_slips->where('date', $new_format);
             }
             $bank_slips = $bank_slips->where('record_id',$bank_payment->record_id)
-                            ->where('school_id',Auth::user()->school_id)
+                            ->where('church_id',Auth::user()->church_id)
                             ->orderBy('id', 'desc')
                             ->get();
             $date = $request->payment_date;
-            $class_id = $request->class;
-            $section_id = $request->section;
-            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id',Auth::user()->school_id)->get();
-            $sections = SmSection::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id',Auth::user()->school_id)->get();
+            $age_group_id = $request->class;
+            $mgender_id = $request->section;
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id',Auth::user()->church_id)->get();
+            $sections = SmSection::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id',Auth::user()->church_id)->get();
 
-            $student = SmStudent::find($bank_payment->student_id);
+            $student = SmStudent::find($bank_payment->member_id);
             try{
                 $notification = new SmNotification;
                 $notification->user_id = $student->user_id;
                 $notification->role_id = 2;
                 $notification->date = date('Y-m-d');
                 $notification->message = app('translator')->get('fees.fees_approved');
-                $notification->school_id = Auth::user()->school_id;
-                $notification->academic_id = getAcademicId();
+                $notification->church_id = Auth::user()->church_id;
+                $notification->church_year_id = getAcademicId();
                 $notification->save();
                 $user=User::find($student->user_id);
                 Notification::send($user, new FeesApprovedNotification($notification));
@@ -424,8 +424,8 @@ class SmFeesBankPaymentController extends Controller
                 $notification->date = date('Y-m-d');
                 $notification->user_id = $parent->user_id;
                 $notification->url = "";
-                $notification->school_id = Auth::user()->school_id;
-                $notification->academic_id = getAcademicId();
+                $notification->church_id = Auth::user()->church_id;
+                $notification->church_year_id = getAcademicId();
                 $notification->save();
                 $user=User::find($parent->user_id);
                 Notification::send($user, new FeesApprovedNotification($notification));

@@ -1411,7 +1411,7 @@ $isSchoolAdmin = Session::get('isSchoolAdmin');
 
                              @if (userPermission(432) && menuStatus(432))
                                  <li data-position="{{ menuPosition(432) }}">
-                                     <a href="{{ route('academic-year') }}">@lang('common.academic_year')</a>
+                                     <a href="{{ route('academic-year') }}">@lang('common.church_year')</a>
                                  </li>
                              @endif
 

@@ -20,7 +20,7 @@ return [
 
     "section_limit" => "Límite de sección",
 
-    "admission_no_limit" => "Admisión No Limit",
+    "registration_no_limit" => "Admisión No Limit",
 
     "invoice_number_position" => "Posición del número de factura",
 

@@ -44,7 +44,7 @@ class SmStaff extends Model
     }
     public function attendances()
     {
-        return $this->hasMany(SmStaffAttendence::class, 'staff_id')->where('school_id', auth()->user()->school_id);
+        return $this->hasMany(SmStaffAttendence::class, 'staff_id')->where('church_id', auth()->user()->church_id);
     }
     public function getAttendanceType($month)
     {
@@ -56,14 +56,14 @@ class SmStaff extends Model
     public function classes()
     {
         return $this->hasMany('App\SmAssignSubject', 'teacher_id', 'id')
-            ->join('sm_classes', 'sm_classes.id', 'sm_assign_subjects.class_id')
-            ->select('sm_classes.id', 'class_name')
-            ->groupBy('class_id');
+            ->join('sm_classes', 'sm_classes.id', 'sm_assign_subjects.age_group_id')
+            ->select('sm_classes.id', 'age_group_name')
+            ->groupBy('age_group_id');
     }
 
     public function scopeStatus($query)
     {
-        return $query->where('active_status', 1)->where('school_id', Auth::user()->school_id);
+        return $query->where('active_status', 1)->where('church_id', Auth::user()->church_id);
     }
 
     public function DateWiseStaffAttendance()

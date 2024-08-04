@@ -51,11 +51,11 @@ class SmFeesDiscountController extends Controller
             $fees_discount->type = $request->type;
             $fees_discount->amount = $request->amount;
             $fees_discount->description = $request->description;
-            $fees_discount->school_id = Auth::user()->school_id;
+            $fees_discount->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $fees_discount->un_academic_id = getAcademicId();
+                $fees_discount->un_church_year_id = getAcademicId();
             }else{
-                $fees_discount->academic_id = getAcademicId();
+                $fees_discount->church_year_id = getAcademicId();
             }
            
             $result = $fees_discount->save(); 
@@ -99,11 +99,11 @@ class SmFeesDiscountController extends Controller
             $fees_discount->type = $request->type;
             $fees_discount->amount = $request->amount;
             $fees_discount->description = $request->description;
-            $fees_discount->academic_id = getAcademicId();
+            $fees_discount->church_year_id = getAcademicId();
             $result = $fees_discount->save();
 
             if ($fees_discount->type=='once') {
-                $fees_assigns=SmFeesAssign::where('fees_discount_id',$request->id)->where('school_id',Auth::user()->school_id)->get();
+                $fees_assigns=SmFeesAssign::where('fees_discount_id',$request->id)->where('church_id',Auth::user()->church_id)->get();
                 foreach($fees_assigns as $key => $fees_assign){
                     $fees_assign_total=$fees_assign->fees_amount+$fees_assign->applied_discount;
                     if ($fees_assign->feesGroupMaster->amount==$fees_assign_total) {
@@ -121,7 +121,7 @@ class SmFeesDiscountController extends Controller
                     }
                 }
             } else {
-                $fees_assigns=SmFeesAssign::where('fees_discount_id',$request->id)->where('school_id',Auth::user()->school_id)->get();
+                $fees_assigns=SmFeesAssign::where('fees_discount_id',$request->id)->where('church_id',Auth::user()->church_id)->get();
                 foreach($fees_assigns as $key => $fees_assign){
                     $fees_assign_total=$fees_assign->fees_amount+$fees_assign->applied_discount;
                     if ($fees_assign->feesGroupMaster->amount==$fees_assign_total) {
@@ -211,7 +211,7 @@ class SmFeesDiscountController extends Controller
             $genders = SmBaseSetup::where('base_group_id', '=', '1')->get();
             $classes = SmClass::get();
             $groups = SmStudentGroup::get();
-            $categories = SmStudentCategory::where('school_id', Auth::user()->school_id)->get();
+            $categories = SmStudentCategory::where('church_id', Auth::user()->church_id)->get();
             $fees_discount_id = $request->fees_discount_id;
             $students = StudentRecord::query();
 
@@ -224,12 +224,12 @@ class SmFeesDiscountController extends Controller
             }
             else {
                 if ($request->class != "") {
-                    $students->where('class_id', $request->class);
+                    $students->where('age_group_id', $request->class);
                 }
                 if ($request->section != "") {
-                    $students->where('section_id', $request->section);
+                    $students->where('mgender_id', $request->section);
                 }
-                $students = $students->with('studentDetail.parents', 'class', 'section', 'studentDetail.category', 'studentDetail.gender')->where('school_id', Auth::user()->school_id)
+                $students = $students->with('studentDetail.parents', 'class', 'section', 'studentDetail.category', 'studentDetail.gender')->where('church_id', Auth::user()->church_id)
                                         ->whereHas('studentDetail', function ($q)  {
                                             $q->where('active_status', 1);
                                         })->get();
@@ -240,73 +240,73 @@ class SmFeesDiscountController extends Controller
             $pre_assigned = [];
             $already_paid = [];
             foreach ($students as $student) {
-                $assigned_student = SmFeesAssignDiscount::select('student_id')
-                                    ->where('student_id', $student->student_id)
+                $assigned_student = SmFeesAssignDiscount::select('member_id')
+                                    ->where('member_id', $student->member_id)
                                     ->where('record_id',$student->id)
                                     ->where('fees_discount_id', $request->fees_discount_id)
-                                    ->where('school_id',Auth::user()->school_id)
+                                    ->where('church_id',Auth::user()->church_id)
                                     ->first();
 
                 if ($assigned_student != "") {
-                    if (!in_array($assigned_student->student_id, $pre_assigned)) {
-                        $pre_assigned[] = $assigned_student->student_id;
+                    if (!in_array($assigned_student->member_id, $pre_assigned)) {
+                        $pre_assigned[] = $assigned_student->member_id;
                     }
                 }
 
                 $already_paid_student = SmFeesPayment::where('active_status', 1)
                                         ->where('record_id',$student->id)
-                                        ->where('student_id', $student->student_id)
+                                        ->where('member_id', $student->member_id)
                                         ->where('fees_discount_id', $request->fees_discount_id)
                                         ->first();
                 if ($already_paid_student != "") {
-                    if (!in_array($already_paid_student->student_id, $already_paid)) {
-                        $already_paid[] = $already_paid_student->student_id;
+                    if (!in_array($already_paid_student->member_id, $already_paid)) {
+                        $already_paid[] = $already_paid_student->member_id;
                     }
                 }
             }
 
-            $class_id = $request->class;
+            $age_group_id = $request->class;
             $category_id = $request->category;
             $group_id = $request->group;
             $gender_id = $request->gender;
 
-            // $fees_assign_groups = SmFeesMaster::where('fees_group_id', $request->fees_group_id)->whereBetween('created_at', [YearCheck::AcStartDate(), YearCheck::AcEndDate()])->where('school_id',Auth::user()->school_id)->get();
+            // $fees_assign_groups = SmFeesMaster::where('fees_group_id', $request->fees_group_id)->whereBetween('created_at', [YearCheck::AcStartDate(), YearCheck::AcEndDate()])->where('church_id',Auth::user()->church_id)->get();
             $assigned_fees_types=[];
             $assigned_fees_groups=[];
             foreach ($students as $key => $student) {
-                $assigned_fees_type=SmFeesAssign::where('student_id',$student->student_id)
+                $assigned_fees_type=SmFeesAssign::where('member_id',$student->member_id)
                         ->where('record_id',$student->id)
                         ->join('sm_fees_masters','sm_fees_masters.id','=','sm_fees_assigns.fees_master_id')
                         ->join('sm_fees_types','sm_fees_types.id','=','sm_fees_masters.fees_type_id')
                         ->where('sm_fees_assigns.applied_discount','=',null)
-                        ->select('sm_fees_masters.id','sm_fees_types.id as fees_type_id','name','amount','sm_fees_assigns.student_id','applied_discount','sm_fees_masters.fees_group_id')
-                        ->where('sm_fees_assigns.school_id',Auth::user()->school_id)
+                        ->select('sm_fees_masters.id','sm_fees_types.id as fees_type_id','name','amount','sm_fees_assigns.member_id','applied_discount','sm_fees_masters.fees_group_id')
+                        ->where('sm_fees_assigns.church_id',Auth::user()->church_id)
                         ->get();
                 $assigned_fees_types[$student->id]= $assigned_fees_type;
 
                 $assigned_fees_group=DB::table('sm_fees_assigns')
-                            ->where('student_id',$student->student_id)
+                            ->where('member_id',$student->member_id)
                             ->where('record_id',$student->id)
                             ->join('sm_fees_masters','sm_fees_masters.id','=','sm_fees_assigns.fees_master_id')
                             ->join('sm_fees_groups','sm_fees_groups.id','=','sm_fees_masters.fees_group_id')
                             ->where('sm_fees_assigns.applied_discount','=',null)
                             ->distinct ('fees_group_id')
-                            ->select('sm_fees_masters.id','sm_fees_groups.id as group_id','name','amount','sm_fees_assigns.student_id')
+                            ->select('sm_fees_masters.id','sm_fees_groups.id as group_id','name','amount','sm_fees_assigns.member_id')
                             ->get();
                 $assigned_fees_groups[$student->id]= $assigned_fees_group;
             }
             if(moduleStatusCheck('University')){
                 $already_assigned = UnFeesInstallmentAssign::where('fees_discount_id', $fees_discount_id)->pluck('record_id')->toArray();
-                return view('university::un_fees_discount_assign', compact('assigned_fees_types','assigned_fees_groups','classes','groups', 'categories', 'students', 'fees_discount', 'genders','fees_discount_id', 'already_assigned', 'already_paid' ,'class_id', 'category_id', 'gender_id'));
+                return view('university::un_fees_discount_assign', compact('assigned_fees_types','assigned_fees_groups','classes','groups', 'categories', 'students', 'fees_discount', 'genders','fees_discount_id', 'already_assigned', 'already_paid' ,'age_group_id', 'category_id', 'gender_id'));
             }
 
             if(directFees()){
                 $already_assigned = DirectFeesInstallmentAssign::where('fees_discount_id', $fees_discount_id)->pluck('record_id')->toArray();
-                return view('backEnd.feesCollection.directFees.assign_fees_discount', compact('assigned_fees_types','assigned_fees_groups','classes','groups', 'categories', 'students', 'fees_discount', 'genders','fees_discount_id', 'already_assigned', 'already_paid' ,'class_id', 'category_id', 'gender_id'));
+                return view('backEnd.feesCollection.directFees.assign_fees_discount', compact('assigned_fees_types','assigned_fees_groups','classes','groups', 'categories', 'students', 'fees_discount', 'genders','fees_discount_id', 'already_assigned', 'already_paid' ,'age_group_id', 'category_id', 'gender_id'));
             }
 
             else{
-                return view('backEnd.feesCollection.fees_discount_assign', compact('assigned_fees_types','assigned_fees_groups','classes','groups', 'categories', 'students', 'fees_discount', 'genders','fees_discount_id', 'pre_assigned', 'already_paid' ,'class_id', 'category_id', 'gender_id'));
+                return view('backEnd.feesCollection.fees_discount_assign', compact('assigned_fees_types','assigned_fees_groups','classes','groups', 'categories', 'students', 'fees_discount', 'genders','fees_discount_id', 'pre_assigned', 'already_paid' ,'age_group_id', 'category_id', 'gender_id'));
             }
     
         }catch (\Exception $e) {
@@ -323,19 +323,19 @@ class SmFeesDiscountController extends Controller
             $discount_info=SmFeesDiscount::find($discount_id);
 
             foreach ($datas as $data) {
-                $studentId= gv($data,'student_id');
+                $studentId= gv($data,'member_id');
                 $recordId= gv($data,'record_id');
                 $feesMasterId= gv($data,'fees_master_id');
 
                 $assign_discount = SmFeesAssignDiscount::where('fees_discount_id', $discount_id)
-                                    ->where('student_id', $studentId)
+                                    ->where('member_id', $studentId)
                                     ->where('record_id', $recordId)
                                     ->delete();
 
                 $fees_assigns = SmFeesAssign::where('fees_discount_id', $discount_id)
-                                ->where('student_id', $studentId)
+                                ->where('member_id', $studentId)
                                 ->where('record_id', $recordId)
-                                ->where('school_id',Auth::user()->school_id)
+                                ->where('church_id',Auth::user()->church_id)
                                 ->get();
                             
                 foreach ($fees_assigns as $key => $fees_assign) {
@@ -350,7 +350,7 @@ class SmFeesDiscountController extends Controller
                     continue;
                 }
                     $assign_discount = new SmFeesAssignDiscount();
-                    $assign_discount->student_id = $studentId;
+                    $assign_discount->member_id = $studentId;
                     $assign_discount->fees_discount_id = $discount_id;
                     $assign_discount->applied_amount = $discount_info->amount;
                     $assign_discount->record_id = $recordId;
@@ -359,16 +359,16 @@ class SmFeesDiscountController extends Controller
                     } else {
                         $assign_discount->fees_group_id = $feesMasterId;
                     }
-                    $assign_discount->school_id = Auth::user()->school_id;
-                    $assign_discount->academic_id = getAcademicId();
+                    $assign_discount->church_id = Auth::user()->church_id;
+                    $assign_discount->church_year_id = getAcademicId();
                     $assign_discount->save();
 
                     if ($discount_info->type=='once') {
                         $fees_assign = SmFeesAssign::where('fees_master_id',$feesMasterId)
-                                        ->where('student_id',$studentId)
+                                        ->where('member_id',$studentId)
                                         ->where('record_id',$recordId)
                                         ->where('applied_discount','=',null)
-                                        ->where('school_id',Auth::user()->school_id)
+                                        ->where('church_id',Auth::user()->church_id)
                                         ->first();
                         if ($fees_assign) {
                             if ($fees_assign->fees_amount >= $discount_info->amount) {
@@ -393,10 +393,10 @@ class SmFeesDiscountController extends Controller
                         $get_masters=DB::table('sm_fees_masters')->where('fees_group_id',$feesMasterId)->get();
                         foreach ($get_masters as $key => $master) {
                             $fees_assign = SmFeesAssign::where('fees_master_id',$master->id)
-                                            ->where('student_id',$studentId)
+                                            ->where('member_id',$studentId)
                                             ->where('record_id',$recordId)
                                             ->where('applied_discount','=',null)
-                                            ->where('school_id',Auth::user()->school_id)
+                                            ->where('church_id',Auth::user()->church_id)
                                             ->first();
                             if ($fees_assign) {
                                 if ($fees_assign->fees_amount>=$discount_info->amount) {
@@ -433,7 +433,7 @@ class SmFeesDiscountController extends Controller
 
     public function feesDiscountAmountSearch(Request $request)
     {
-        $discount_unapplied_amount=DB::table('sm_fees_assign_discounts')->where('fees_discount_id',$request->fees_discount_id)->where('student_id',$request->student_id)->first();
+        $discount_unapplied_amount=DB::table('sm_fees_assign_discounts')->where('fees_discount_id',$request->fees_discount_id)->where('member_id',$request->member_id)->first();
         if (intval($request->fees_amount) > $discount_unapplied_amount->unapplied_amount ) {
             $html = $discount_unapplied_amount->unapplied_amount;
         } else {
@@ -455,7 +455,7 @@ class SmFeesDiscountController extends Controller
         $fees_discount_id = $request->fees_discount_id;
         try{
             foreach ($datas as $data) {
-                $studentId= gv($data,'student_id');
+                $studentId= gv($data,'member_id');
                 $recordId= gv($data,'record_id');
                 if(gbv($data, 'checked')){
                     $this->assignFeesDiscount($fees_discount_id,$recordId);

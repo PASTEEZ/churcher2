@@ -22,8 +22,8 @@ class AjaxController extends Controller
         public function ajaxSelectLesson(Request $request){
         try {
            
-            $lesson_all=SmLesson::where('class_id',$request->class)
-            ->where('section_id','=',$request->section)
+            $lesson_all=SmLesson::where('age_group_id',$request->class)
+            ->where('mgender_id','=',$request->section)
             ->where('subject_id','=',$request->subject)
             ->get(['id', 'lesson_title']);
 
@@ -76,13 +76,13 @@ class AjaxController extends Controller
     public function getSubject(Request $request){
 
 
-        $class_id = $request->class;
+        $age_group_id = $request->class;
         $selectedSections = $request->message_to_section;
 
         $subjectId=SmSubject::query();
-        $subjectId=$subjectId->where('class_id', $class_id);
+        $subjectId=$subjectId->where('age_group_id', $age_group_id);
          foreach ($selectedSections as $key => $value) {            
-            $subjectId=$subjectId->where('section_id', $value);  
+            $subjectId=$subjectId->where('mgender_id', $value);  
            
          }
          return $subjectId->get();
@@ -95,10 +95,10 @@ class AjaxController extends Controller
             $staff_info = SmStaff::where('user_id', Auth::user()->id)->first();
             // return $staff_info;
             if (teacherAccess()) {
-                $subject_all = SmAssignSubject::where('class_id', '=', $request->class_id)->groupBy('subject_id')->where('teacher_id', $staff_info->id)->distinct('subject_id')->get();
+                $subject_all = SmAssignSubject::where('age_group_id', '=', $request->age_group_id)->groupBy('subject_id')->where('teacher_id', $staff_info->id)->distinct('subject_id')->get();
 
             } else {
-                $subject_all = SmAssignSubject::where('class_id', '=', $request->class_id)->groupBy('subject_id')->distinct('subject_id')->get();
+                $subject_all = SmAssignSubject::where('age_group_id', '=', $request->age_group_id)->groupBy('subject_id')->distinct('subject_id')->get();
 
             }
             $students = [];

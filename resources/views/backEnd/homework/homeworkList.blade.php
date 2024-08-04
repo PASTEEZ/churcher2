@@ -46,16 +46,16 @@
                         <div class="row">
                             <div class="col-lg-4">
                                 <div class="input-effect">
-                                    <select class="niceSelect w-100 bb form-control{{ $errors->has('class_id') ? ' is-invalid' : '' }}" name="class_id"  id="class_subject">
+                                    <select class="niceSelect w-100 bb form-control{{ $errors->has('age_group_id') ? ' is-invalid' : '' }}" name="age_group_id"  id="class_subject">
                                     <option data-display="@lang('common.select_class') *" value="">@lang('common.select')</option>
                                         @foreach($classes as $key=>$value)
-                                        <option value="{{$value->id}}" {{ isset($search_info['class_id']) ? ($search_info['class_id'] == $value->id ? 'selected':'') :'' }}>{{$value->class_name}}</option>
+                                        <option value="{{$value->id}}" {{ isset($search_info['age_group_id']) ? ($search_info['age_group_id'] == $value->id ? 'selected':'') :'' }}>{{$value->age_group_name}}</option>
                                         @endforeach
                                     </select>
                                     <span class="focus-border"></span>
-                                    @if ($errors->has('class_id'))
+                                    @if ($errors->has('age_group_id'))
                                     <span class="invalid-feedback invalid-select" role="alert">
-                                        <strong>{{ $errors->first('class_id') }}</strong>
+                                        <strong>{{ $errors->first('age_group_id') }}</strong>
                                     </span>
                                     @endif
                                 </div>
@@ -84,11 +84,11 @@
                             </div>
                             <div class="col-lg-4">
                                 <div class="input-effect" id="m_select_subject_section_div">
-                                    <select class="niceSelect w-100 bb form-control{{ $errors->has('section_id') ? ' is-invalid' : '' }} m_select_subject_section" name="section_id" id="m_select_subject_section">
+                                    <select class="niceSelect w-100 bb form-control{{ $errors->has('mgender_id') ? ' is-invalid' : '' }} m_select_subject_section" name="mgender_id" id="m_select_subject_section">
                                         <option data-display="@lang('common.select_section')" value="">@lang('common.section')</option>
                                         @isset($subjectSections)
                                             @foreach($subjectSections as $key=>$subjectSection)
-                                            <option value="{{$subjectSection->id}}" {{ isset($search_info['section_id']) ? ($search_info['section_id'] == $subjectSection->id ? 'selected':'') :'' }}>{{$subjectSection->section_name}}</option>
+                                            <option value="{{$subjectSection->id}}" {{ isset($search_info['mgender_id']) ? ($search_info['mgender_id'] == $subjectSection->id ? 'selected':'') :'' }}>{{$subjectSection->mgender_name}}</option>
                                             @endforeach
                                         @endisset
                                     </select>
@@ -96,9 +96,9 @@
                                         <img class="loader_img_style" src="{{asset('public/backEnd/img/demo_wait.gif')}}" alt="loader">
                                     </div>
                                     <span class="focus-border"></span>
-                                    @if ($errors->has('section_id'))
+                                    @if ($errors->has('mgender_id'))
                                     <span class="invalid-feedback invalid-select" role="alert">
-                                        <strong>{{ $errors->first('section_id') }}</strong>
+                                        <strong>{{ $errors->first('mgender_id') }}</strong>
                                     </span>
                                     @endif
                                 </div>
@@ -157,8 +157,8 @@
                                 <td> {{@$value->semesterLabel->name}} ({{@$value->unSession->name}})</td>
                                 <td> {{@$value->unSemester->name}}</td>
                                 @else 
-                                <td>{{$value->classes  !=""?$value->classes->class_name:""}}</td>
-                                <td>{{$value->sections !=""?$value->sections->section_name:""}}</td>
+                                <td>{{$value->classes  !=""?$value->classes->age_group_name:""}}</td>
+                                <td>{{$value->sections !=""?$value->sections->mgender_name:""}}</td>
                                 @endif 
                                 <td>{{$value->subjects !=""?$value->subjects->subject_name:""}}</td>
                                 <td>{{$value->marks}}</td>
@@ -188,7 +188,7 @@
                                             </a>
                                             @else
                                             <a class="dropdown-item" title="Evaluation Homework" 
-                                                    href="{{route('evaluation-homework',[@$value->class_id,@$value->section_id,@$value->id])}}">
+                                                    href="{{route('evaluation-homework',[@$value->age_group_id,@$value->mgender_id,@$value->id])}}">
                                                     @lang('homework.evaluation')
                                             </a>
                                             @endif

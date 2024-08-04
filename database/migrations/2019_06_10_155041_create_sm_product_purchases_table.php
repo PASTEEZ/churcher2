@@ -29,8 +29,8 @@ class CreateSmProductPurchasesTable extends Migration
             $table->integer('staff_id')->nullable()->unsigned();
             $table->foreign('staff_id')->references('id')->on('sm_staffs')->onDelete('cascade');
 
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
             
         });
  

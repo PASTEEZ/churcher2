@@ -14,8 +14,8 @@ class MembertypeController extends Controller
             $sections = SmSection::query();
             
               
-            $data = $sections->where('academic_id',getAcademicId());
-            $sections = $data->where('school_id',auth()->user()->school_id)->get();
+            $data = $sections->where('church_year_id',getAcademicId());
+            $sections = $data->where('church_id',auth()->user()->church_id)->get();
             $classes = SmClass::with('groupclassSections')->withCount('records')->get();
         
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {

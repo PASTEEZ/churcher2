@@ -33,7 +33,7 @@ class CreateWmWalletSettingsTable extends Migration
         }
 
    foreach ($schools as $school){
-       $payment_method = SmPaymentMethhod::where('method', 'Wallet')->where('school_id', $school->id)->first();
+       $payment_method = SmPaymentMethhod::where('method', 'Wallet')->where('church_id', $school->id)->first();
        if (!$payment_method){
            $storePaymentMethod = new SmPaymentMethhod ();
            $storePaymentMethod->method = 'Wallet';
@@ -41,7 +41,7 @@ class CreateWmWalletSettingsTable extends Migration
            $storePaymentMethod->active_status = 1;
            $storePaymentMethod->created_by = 1;
            $storePaymentMethod->updated_by = 1;
-           $storePaymentMethod->school_id = $school->id;
+           $storePaymentMethod->church_id = $school->id;
            $storePaymentMethod->save();
        }
    }

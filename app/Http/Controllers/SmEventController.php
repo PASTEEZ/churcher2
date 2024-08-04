@@ -32,7 +32,7 @@ class SmEventController extends Controller
     public function index(Request $request)
     {
         try {
-            $events = SmEvent::where('school_id', Auth::user()->school_id)->where('academic_id', getAcademicId())->orderby('id','DESC')->get();
+            $events = SmEvent::where('church_id', Auth::user()->church_id)->where('church_year_id', getAcademicId())->orderby('id','DESC')->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($events, null);
             }
@@ -95,23 +95,23 @@ class SmEventController extends Controller
             $events->to_date = date('Y-m-d', strtotime($request->to_date));
             $events->created_by = $login_id;
             $events->uplad_image_file = $fileName;
-            $events->school_id = Auth::user()->school_id;
-            $events->academic_id = getAcademicId();
+            $events->church_id = Auth::user()->church_id;
+            $events->church_year_id = getAcademicId();
             $results = $events->save();
             if ($request->for_whom == 'All') {
-                $users = User::where('school_id', Auth::user()->school_id)->where('active_status', 1)->get();
+                $users = User::where('church_id', Auth::user()->church_id)->where('active_status', 1)->get();
                 foreach ($users as $value) {
                     $notification = new SmNotification;
                     $notification->user_id = $value->id;
                     $notification->role_id = $value->role_id;
                     $notification->date = date('Y-m-d');
                     $notification->message = $request->event_title;
-                    $notification->school_id = Auth::user()->school_id;
-                    $notification->academic_id = getAcademicId();
+                    $notification->church_id = Auth::user()->church_id;
+                    $notification->church_year_id = getAcademicId();
                     $notification->save();
                 }
             } elseif ($request->for_whom == 'Teacher') {
-                $users = User::where('school_id', Auth::user()->school_id)->where('active_status', 1)->whereHas('staff', function($subQ){
+                $users = User::where('church_id', Auth::user()->church_id)->where('active_status', 1)->whereHas('staff', function($subQ){
                     return $subQ->where(function($q)  {
                          $q->where('role_id', 4)->orWhere('previous_role_id', 4);
                     });
@@ -122,24 +122,24 @@ class SmEventController extends Controller
                     $notification->role_id = $value->role_id;
                     $notification->date = date('Y-m-d');
                     $notification->message = $request->event_title;
-                    $notification->school_id = Auth::user()->school_id;
-                    $notification->academic_id = getAcademicId();
+                    $notification->church_id = Auth::user()->church_id;
+                    $notification->church_year_id = getAcademicId();
                     $notification->save();
                 }
             } elseif ($request->for_whom == 'Student') {
-                $users = User::where('school_id', Auth::user()->school_id)->where('active_status', 1)->where('role_id', 2)->get();
+                $users = User::where('church_id', Auth::user()->church_id)->where('active_status', 1)->where('role_id', 2)->get();
                 foreach ($users as $value) {
                     $notification = new SmNotification;
                     $notification->user_id = $value->id;
                     $notification->role_id = $value->role_id;
                     $notification->date = date('Y-m-d');
                     $notification->message = $request->event_title;
-                    $notification->school_id = Auth::user()->school_id;
-                    $notification->academic_id = getAcademicId();
+                    $notification->church_id = Auth::user()->church_id;
+                    $notification->church_year_id = getAcademicId();
                     $notification->save();
                 }
             } elseif ($request->for_whom == 'Parents') {
-                $users = User::where('school_id', Auth::user()->school_id)
+                $users = User::where('church_id', Auth::user()->church_id)
                 ->where('active_status', 1)
                 ->whereHas('staff', function($subQ){
                     return $subQ->where(function($q)  {
@@ -152,8 +152,8 @@ class SmEventController extends Controller
                     $notification->role_id = $value->role_id;
                     $notification->date = date('Y-m-d');
                     $notification->message = $request->event_title;
-                    $notification->school_id = Auth::user()->school_id;
-                    $notification->academic_id = getAcademicId();
+                    $notification->church_id = Auth::user()->church_id;
+                    $notification->church_year_id = getAcademicId();
                     $notification->save();
                 }
             }
@@ -184,9 +184,9 @@ class SmEventController extends Controller
              if (checkAdmin()) {
                 $editData = SmEvent::find($id);
             }else{
-                $editData = SmEvent::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+                $editData = SmEvent::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
             }
-            $events = SmEvent::where('school_id', Auth::user()->school_id)->get();
+            $events = SmEvent::where('church_id', Auth::user()->church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -237,7 +237,7 @@ class SmEventController extends Controller
             if (checkAdmin()) {
                 $events = SmEvent::find($id);
             }else{
-                $events = SmEvent::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+                $events = SmEvent::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
             }
 
             $fileName = "";
@@ -312,7 +312,7 @@ class SmEventController extends Controller
             if (checkAdmin()) {
                 $events = SmEvent::destroy($id);
             }else{
-                $events = SmEvent::where('id',$id)->where('school_id',Auth::user()->school_id)->delete();
+                $events = SmEvent::where('id',$id)->where('church_id',Auth::user()->church_id)->delete();
             }
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {

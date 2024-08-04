@@ -114,7 +114,7 @@
         font-weight: 500;
         border-top: 1px dashed #ddd;
       }
-      .school_name{
+      .church_name{
         font-size: 14px;
         font-weight: 600;
         }
@@ -180,14 +180,14 @@
                     @endif
               </div>
               <div style="float:right; width:70%; text-aligh:left">
-                      <h4 class="school_name">{{$setting->school_name}}</h4>
+                      <h4 class="church_name">{{$setting->church_name}}</h4>
                       <p>{{$setting->address}}</p>
               </div>
                 <h4 class="fees_book_title" style="display:inline-block"></h4>
               <ul>
                 <li>
                   <p>
-                    @lang('student.admission_no'): {{@$student->studentDetail->admission_no}}
+                    @lang('student.registration_no'): {{@$student->studentDetail->registration_no}}
                   </p> 
                   <p>
                     @lang('common.date'): {{date('d/m/Y')}}
@@ -195,7 +195,7 @@
                 </li>
                 <li>
                   <p>
-                    @lang('student.student_name'): {{@$student->studentDetail->full_name}} 
+                    @lang('student.member_name'): {{@$student->studentDetail->full_name}} 
                   </p>
                   <p>
                     @lang('student.roll'):{{@$student->studentDetail->roll_no}}
@@ -209,7 +209,7 @@
                     @if(moduleStatusCheck('University'))
                     @lang('university::un.department'): {{@$student->unDepartment->name}}
                     @else 
-                    @lang('common.class_section'): {{@$student->class->class_name}} ({{@$student->section->section_name}})
+                    @lang('common.class_section'): {{@$student->class->age_group_name}} ({{@$student->section->mgender_name}})
                     @endif 
                   </p> 
                   <p><strong>
@@ -219,7 +219,7 @@
                 <li>
                   @if(@moduleStatusCheck('University'))
                   <p>
-                    @lang('common.section'): {{@$student->section->section_name}}
+                    @lang('common.section'): {{@$student->section->mgender_name}}
                   </p> 
                   @endif 
                   
@@ -238,14 +238,14 @@
                         @endif
                   </div>
                   <div style="float:right; width:70%; text-aligh:left">
-                          <h4 class="school_name">{{$setting->school_name}}</h4>
+                          <h4 class="church_name">{{$setting->church_name}}</h4>
                           <p>{{$setting->address}}</p>
                   </div>
                     <h4 class="fees_book_title" style="display:inline-block"></h4>
                   <ul>
                     <li>
                       <p>
-                        @lang('student.admission_no'): {{@$student->studentDetail->admission_no}}
+                        @lang('student.registration_no'): {{@$student->studentDetail->registration_no}}
                       </p> 
                       <p>
                         @lang('common.date'): {{date('d/m/Y')}}
@@ -253,7 +253,7 @@
                     </li>
                     <li>
                       <p>
-                        @lang('student.student_name'): {{@$student->studentDetail->full_name}} 
+                        @lang('student.member_name'): {{@$student->studentDetail->full_name}} 
                       </p>
                       <p>
                         @lang('student.roll'):{{@$student->studentDetail->roll_no}}
@@ -267,7 +267,7 @@
                        @if(moduleStatusCheck('University'))
                     @lang('university::un.department'): {{@$student->unDepartment->name}}
                     @else 
-                    @lang('common.class_section'): {{@$student->class->class_name}} ({{@$student->section->section_name}})
+                    @lang('common.class_section'): {{@$student->class->age_group_name}} ({{@$student->section->mgender_name}})
                     @endif  
                       </p> 
                       <p><strong>
@@ -277,7 +277,7 @@
                     <li>
                       @if(@moduleStatusCheck('University'))
                       <p>
-                        @lang('common.section'): {{@$student->section->section_name}}
+                        @lang('common.section'): {{@$student->section->mgender_name}}
                       </p> 
                       @endif 
                       
@@ -297,14 +297,14 @@
                         @endif
                   </div>
                   <div style="float:right; width:70%; text-aligh:left">
-                          <h4 class="school_name">{{$setting->school_name}}</h4>
+                          <h4 class="church_name">{{$setting->church_name}}</h4>
                           <p>{{$setting->address}}</p>
                   </div>
                     <h4 class="fees_book_title" style="display:inline-block"></h4>
                   <ul>
                     <li>
                       <p>
-                        @lang('student.admission_no'): {{@$student->studentDetail->admission_no}}
+                        @lang('student.registration_no'): {{@$student->studentDetail->registration_no}}
                       </p> 
                       <p>
                         @lang('common.date'): {{date('d/m/Y')}}
@@ -312,7 +312,7 @@
                     </li>
                     <li>
                       <p>
-                        @lang('student.student_name'): {{@$student->studentDetail->full_name}} 
+                        @lang('student.member_name'): {{@$student->studentDetail->full_name}} 
                       </p>
                       <p>
                         @lang('student.roll'):{{@$student->studentDetail->roll_no}}
@@ -326,7 +326,7 @@
                         @if(moduleStatusCheck('University'))
                     @lang('university::un.department'): {{@$student->unDepartment->name}}
                     @else 
-                    @lang('common.class_section'): {{@$student->class->class_name}} ({{@$student->section->section_name}})
+                    @lang('common.class_section'): {{@$student->class->age_group_name}} ({{@$student->section->mgender_name}})
                     @endif 
                       </p> 
                       <p><strong>
@@ -336,7 +336,7 @@
                     <li>
                       @if(@moduleStatusCheck('University'))
                       <p>
-                        @lang('common.section'): {{@$student->section->section_name}}
+                        @lang('common.section'): {{@$student->section->mgender_name}}
                       </p> 
                       @endif 
                        <p><strong>@lang('fees.payment_id'): {{@smFeesInvoice($feesInstallment->invoice_no)}} </strong> </p> 

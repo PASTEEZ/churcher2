@@ -38,16 +38,16 @@
                         <div class="row">
                         <div class="col-lg-4">
                             <div class="input-effect">
-                                <select class="niceSelect w-100 bb form-control{{ $errors->has('class_id') ? ' is-invalid' : '' }}" name="class_id"  id="class_subject">
+                                <select class="niceSelect w-100 bb form-control{{ $errors->has('age_group_id') ? ' is-invalid' : '' }}" name="age_group_id"  id="class_subject">
                                 <option data-display="@lang('common.select_class') *" value="">@lang('common.select')</option>
                                     @foreach($classes as $key=>$value)
-                                    <option value="{{$value->id}}"{{ isset($class_id) ? ($class_id == $value->id ? 'selected':''):'' }} >{{ $value->class_name}}</option>
+                                    <option value="{{$value->id}}"{{ isset($age_group_id) ? ($age_group_id == $value->id ? 'selected':''):'' }} >{{ $value->age_group_name}}</option>
                                     @endforeach
                                 </select>
                                 <span class="focus-border"></span>
-                                @if ($errors->has('class_id'))
+                                @if ($errors->has('age_group_id'))
                                 <span class="invalid-feedback invalid-select" role="alert">
-                                    <strong>{{ $errors->first('class_id') }}</strong>
+                                    <strong>{{ $errors->first('age_group_id') }}</strong>
                                 </span>
                                 @endif
                             </div>
@@ -76,11 +76,11 @@
                         </div>
                         <div class="col-lg-4">
                             <div class="input-effect" id="m_select_subject_section_div">
-                                <select class="niceSelect w-100 bb form-control{{ $errors->has('section_id') ? ' is-invalid' : '' }} m_select_subject_section" name="section_id" id="m_select_subject_section">
+                                <select class="niceSelect w-100 bb form-control{{ $errors->has('mgender_id') ? ' is-invalid' : '' }} m_select_subject_section" name="mgender_id" id="m_select_subject_section">
                                     <option data-display="@lang('common.select_section')" value="">@lang('common.section')</option>
                                     @isset($smClass)                                   
                                         @foreach ($subjects as $item)
-                                            <option value="{{ $item->section_id }}" {{ isset($section_id) ? ($section_id == $item->section_id ? 'selected':''):''}}>{{ $item->section->section_name }}</option>
+                                            <option value="{{ $item->mgender_id }}" {{ isset($mgender_id) ? ($mgender_id == $item->mgender_id ? 'selected':''):''}}>{{ $item->section->mgender_name }}</option>
                                         @endforeach                                    
                                     @endisset
                                 </select>
@@ -88,9 +88,9 @@
                                     <img class="loader_img_style" src="{{asset('public/backEnd/img/demo_wait.gif')}}" alt="loader">
                                 </div>
                                 <span class="focus-border"></span>
-                                @if ($errors->has('section_id'))
+                                @if ($errors->has('mgender_id'))
                                 <span class="invalid-feedback invalid-select" role="alert">
-                                    <strong>{{ $errors->first('section_id') }}</strong>
+                                    <strong>{{ $errors->first('mgender_id') }}</strong>
                                 </span>
                                 @endif
                             </div>
@@ -168,7 +168,7 @@
                                     <td>{{$value->submission_date != ""? dateConvert($value->submission_date):''}} 
                                     </td>
                                         @php
-                                            $homeworkPercentage = App\SmHomework::getHomeworkPercentage($value->class_id, $value->section_id, $value->id);
+                                            $homeworkPercentage = App\SmHomework::getHomeworkPercentage($value->age_group_id, $value->mgender_id, $value->id);
                                         @endphp
                                     <td>
                                         <?php

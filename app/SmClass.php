@@ -22,36 +22,36 @@ class SmClass extends Model
 
     public function classSection()
     {
-      return $this->hasMany('App\SmClassSection', 'class_id')->with('sectionName');
+      return $this->hasMany('App\SmClassSection', 'age_group_id')->with('sectionName');
 
       
     }
     public function classSectionAll(){
-        return $this->belongsToMany('App\SmSection','sm_class_sections','class_id','section_id');
+        return $this->belongsToMany('App\SmSection','sm_class_sections','age_group_id','mgender_id');
     }
 
     public function sectionName()
     {
-        return $this->belongsTo('App\SmSection', 'section_id');
+        return $this->belongsTo('App\SmSection', 'mgender_id');
     }
 
     public function sections()
     {
-        return $this->hasMany('App\SmSection', 'id', 'section_id');
+        return $this->hasMany('App\SmSection', 'id', 'mgender_id');
     }
 
     public function records()
     {
-        return $this->hasMany(StudentRecord::class, 'class_id', 'id')->where('is_promote', 0)->whereHas('student');
+        return $this->hasMany(StudentRecord::class, 'age_group_id', 'id')->where('is_promote', 0)->whereHas('student');
     }
 
     public function classSections()
     {
-        return $this->hasMany('App\SmClassSection', 'class_id', 'id');
+        return $this->hasMany('App\SmClassSection', 'age_group_id', 'id');
     }
     public function groupclassSections()
     {
-        return $this->hasMany('App\SmClassSection', 'class_id', 'id')->groupBy(['class_id','section_id'])->with('sectionName');
+        return $this->hasMany('App\SmClassSection', 'age_group_id', 'id')->groupBy(['age_group_id','mgender_id'])->with('sectionName');
     }
     public function students()
     {
@@ -60,16 +60,16 @@ class SmClass extends Model
 
     public function subjects()
     {
-        return $this->hasMany(SmAssignSubject::class, 'class_id');
+        return $this->hasMany(SmAssignSubject::class, 'age_group_id');
     }
 
     public function routineUpdates()
     {
-        return $this->hasMany(SmClassRoutineUpdate::class, 'class_id')->where('active_status', 1);
+        return $this->hasMany(SmClassRoutineUpdate::class, 'age_group_id')->where('active_status', 1);
     }
 
     public function academic()
     {
-        return $this->belongsTo('App\SmAcademicYear', 'academic_id', 'id')->withDefault();
+        return $this->belongsTo('App\SmAcademicYear', 'church_year_id', 'id')->withDefault();
     }
 }

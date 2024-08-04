@@ -26,30 +26,30 @@ class SmWeekend extends Model
     {
         $student = SmStudent::where('user_id', auth()->user()->id)->first();         
         return $this->hasMany('App\SmClassRoutineUpdate', 'day', 'id')
-        ->where('class_id', $student->class_id)
-        ->where('section_id', $student->section_id)
-        ->where('academic_id', getAcademicId())
-        ->where('school_id', auth()->user()->school_id)->oderBy('start_time');
+        ->where('age_group_id', $student->age_group_id)
+        ->where('mgender_id', $student->mgender_id)
+        ->where('church_year_id', getAcademicId())
+        ->where('church_id', auth()->user()->church_id)->oderBy('start_time');
     }
-    public static function studentClassRoutineFromRecord($class_id, $section_id, $day_id)
+    public static function studentClassRoutineFromRecord($age_group_id, $mgender_id, $day_id)
     {
          
         $routine = SmClassRoutineUpdate::where('day', $day_id)
-                                    ->where('class_id', $class_id)
-                                    ->where('section_id', $section_id)
-                                    ->where('academic_id', getAcademicId())
-                                    ->where('school_id', auth()->user()->school_id)->get();
+                                    ->where('age_group_id', $age_group_id)
+                                    ->where('mgender_id', $mgender_id)
+                                    ->where('church_year_id', getAcademicId())
+                                    ->where('church_id', auth()->user()->church_id)->get();
         return  $routine;
     }
     
-    public static function studentClassRoutineFromRecordUniversity($un_academic_id, $un_semester_label_id, $day_id)
+    public static function studentClassRoutineFromRecordUniversity($un_church_year_id, $un_semester_label_id, $day_id)
     {
          
         $routine = SmClassRoutineUpdate::where('day', $day_id)
-                                    ->where('un_academic_id', $un_academic_id)
+                                    ->where('un_church_year_id', $un_church_year_id)
                                     ->where('un_semester_label_id', $un_semester_label_id)
-                                    ->where('academic_id', getAcademicId())
-                                    ->where('school_id', auth()->user()->school_id)->get();
+                                    ->where('church_year_id', getAcademicId())
+                                    ->where('church_id', auth()->user()->church_id)->get();
         return  $routine;
     }
     public function teacherClassRoutine()
@@ -62,52 +62,52 @@ class SmWeekend extends Model
          
         return $this->hasMany('App\SmClassRoutineUpdate', 'day', 'id')
         ->where('teacher_id', $teacher_id)
-        ->where('academic_id', getAcademicId())
-        ->where('school_id', auth()->user()->school_id);
+        ->where('church_year_id', getAcademicId())
+        ->where('church_id', auth()->user()->church_id);
     }
 
     public function teacherClassRoutineAdmin()
     {
         return $this->hasMany('App\SmClassRoutineUpdate', 'day', 'id')
         ->where('teacher_id', request()->teacher)
-        ->where('academic_id', getAcademicId())
-        ->where('school_id', auth()->user()->school_id);
+        ->where('church_year_id', getAcademicId())
+        ->where('church_id', auth()->user()->church_id);
     }
 
     public static function teacherClassRoutineById($day, $teacher_id)
     {
 
         return SmClassRoutineUpdate::where('day', $day)->where('teacher_id', $teacher_id)
-            ->where('academic_id', getAcademicId())
-            ->where('school_id', auth()->user()->school_id)->get();
+        ->where('church_year_id', getAcademicId())
+        ->where('church_id', auth()->user()->church_id)->get();
     }
 
     public static function unTeacherClassRoutineById($day, $teacher_id)
     {
         return SmClassRoutineUpdate::where('day', $day)->where('teacher_id', $teacher_id)
-            ->where('un_academic_id', getAcademicId())
-            ->where('school_id', auth()->user()->school_id)->get();
+            ->where('un_church_year_id', getAcademicId())
+            ->where('church_id', auth()->user()->church_id)->get();
     }
 
-    public static function parentClassRoutine($day, $student_id)
+    public static function parentClassRoutine($day, $member_id)
     {
-        $student = SmStudent::find($student_id);
+        $student = SmStudent::find($member_id);
 
-        return SmClassRoutineUpdate::where('day', $day)->where('class_id', $student->class_id)
-            ->where('section_id', $student->section_id)
-            ->where('academic_id', getAcademicId())
-            ->where('school_id', auth()->user()->school_id)->get();
+        return SmClassRoutineUpdate::where('day', $day)->where('age_group_id', $student->age_group_id)
+            ->where('mgender_id', $student->mgender_id)
+            ->where('church_year_id', getAcademicId())
+            ->where('church_id', auth()->user()->church_id)->get();
     }
 
 
 
-    public static function universityStudentClassRoutine($un_semester_label_id, $section_id, $day_id)
+    public static function universityStudentClassRoutine($un_semester_label_id, $mgender_id, $day_id)
     {
          
         $routine = SmClassRoutineUpdate::where('day', $day_id)
                                     ->where('un_semester_label_id', $un_semester_label_id)
-                                    ->where('un_section_id', $section_id)
-                                    ->where('school_id', auth()->user()->school_id)->get();
+                                    ->where('un_mgender_id', $mgender_id)
+                                    ->where('church_id', auth()->user()->church_id)->get();
         return  $routine;
     }
 

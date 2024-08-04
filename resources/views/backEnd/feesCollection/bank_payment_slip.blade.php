@@ -53,7 +53,7 @@
                                     <select class="niceSelect w-100 bb form-control{{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                         <option data-display="@lang('common.select_class')" value="">@lang('common.select_class')</option>
                                         @foreach($classes as $class)
-                                        <option value="{{$class->id}}" {{isset($class_id)? ($class_id == $class->id? 'selected': ''):'' }}>{{$class->class_name}}</option>
+                                        <option value="{{$class->id}}" {{isset($age_group_id)? ($age_group_id == $class->id? 'selected': ''):'' }}>{{$class->age_group_name}}</option>
                                         @endforeach
                                     </select>
                                      @if ($errors->has('class'))
@@ -65,9 +65,9 @@
                                 <div class="col-lg-3 col-md-3" id="select_section_div">
                                     <select class="niceSelect w-100 bb form-control{{ $errors->has('section') ? ' is-invalid' : '' }}" id="select_section" name="section">
                                         <option data-display="@lang('common.select_section')" value="">@lang('common.select_section')</option>
-                                        @if (isset($section_id))
+                                        @if (isset($mgender_id))
                                             @foreach($sections as $section)
-                                                <option value="{{$section->id}}" {{isset($section_id)? ($section_id == $section->id? 'selected': ''):'' }}>{{$section->section_name}}</option>
+                                                <option value="{{$section->id}}" {{isset($mgender_id)? ($mgender_id == $section->id? 'selected': ''):'' }}>{{$section->mgender_name}}</option>
                                             @endforeach
                                         @endif
                                     </select>
@@ -144,7 +144,7 @@
                             <table id="table_id" class="display school-table " cellspacing="0" width="100%">
                                 <thead>
                                     <tr>
-                                        <th>@lang('student.student_name')</th>
+                                        <th>@lang('student.member_name')</th>
                                         @if(moduleStatusCheck('University'))
                                         <th>@lang('university::un.installment')</th>
                                         @else
@@ -346,8 +346,8 @@
                     <button type="button" class="primary-btn tr-bg" data-dismiss="modal">@lang('common.cancel')</button>
                      {{ Form::open(['route' => 'approve-fees-payment', 'method' => 'POST', 'enctype' => 'multipart/form-data']) }}
                   
-                     <input type="hidden" name="class" value="{{@$class_id}}">
-                     <input type="hidden" name="section" value="{{@$section_id}}">
+                     <input type="hidden" name="class" value="{{@$age_group_id}}">
+                     <input type="hidden" name="section" value="{{@$mgender_id}}">
                      <input type="hidden" name="payment_date" value="{{@$date}}">
                      <input type="hidden" name="id" value="" id="student_enable_i">
                     <button class="primary-btn fix-gr-bg" type="submit">@lang('fees.approve')</button>
@@ -425,7 +425,7 @@ $(document).ready(function() {
                  "ajax": $.fn.dataTable.pipeline( {
                        url: "{{url('bank-payment-slip-ajax')}}",
                        data: { 
-                            academic_year: $('#academic_id').val(), 
+                            church_year: $('#church_year_id').val(), 
                             class: $('#class').val(), 
                             section: $('#section').val(), 
                             roll_no: $('#roll').val(), 
@@ -435,7 +435,7 @@ $(document).ready(function() {
                        
                    } ),
                    columns: [
-                       {data: 'student_info.full_name', name: 'student_name'},
+                       {data: 'student_info.full_name', name: 'member_name'},
                        {data: 'fees_type.name', name: 'fees_type'},
                        {data: 'date', name: 'date'},
                        {data: 'amount', name: 'amount'},

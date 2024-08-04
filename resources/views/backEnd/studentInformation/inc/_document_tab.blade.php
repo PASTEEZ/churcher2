@@ -113,7 +113,7 @@
                             <div class="mt-40 d-flex justify-content-between">
                                 <form action="{{route('student_document_delete')}}" method="POST">
                                     @csrf
-                                    <input type="hidden" name="student_id" >
+                                    <input type="hidden" name="member_id" >
                                     <input type="hidden" name="doc_id">
                                     <button type="button" class="primary-btn tr-bg" data-dismiss="modal">@lang('common.cancel')</button>
                                     <button type="submit" class="primary-btn fix-gr-bg">@lang('common.delete')</button>
@@ -194,7 +194,7 @@
                                             'method' => 'POST', 'enctype' => 'multipart/form-data', 'name' => 'document_upload']) }}
                         <div class="row">
                             <div class="col-lg-12">
-                                <input type="hidden" name="student_id"
+                                <input type="hidden" name="member_id"
                                        value="{{$student_detail->id}}">
                                 <div class="row mt-25">
                                     <div class="col-lg-12">

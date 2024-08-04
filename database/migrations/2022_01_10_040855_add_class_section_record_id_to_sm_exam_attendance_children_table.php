@@ -17,11 +17,11 @@ class AddClassSectionRecordIdToSmExamAttendanceChildrenTable extends Migration
             $table->bigInteger('student_record_id')->nullable()->unsigned();
             $table->foreign('student_record_id')->references('id')->on('student_records')->onDelete('cascade');
 
-            $table->integer('class_id')->nullable()->unsigned();
-            $table->foreign('class_id')->references('id')->on('sm_classes')->onDelete('cascade');
+            $table->integer('age_group_id')->nullable()->unsigned();
+            $table->foreign('age_group_id')->references('id')->on('sm_classes')->onDelete('cascade');
 
-            $table->integer('section_id')->nullable()->unsigned();
-            $table->foreign('section_id')->references('id')->on('sm_sections')->onDelete('cascade');
+            $table->integer('mgender_id')->nullable()->unsigned();
+            $table->foreign('mgender_id')->references('id')->on('sm_sections')->onDelete('cascade');
         });
     }
 
@@ -34,8 +34,8 @@ class AddClassSectionRecordIdToSmExamAttendanceChildrenTable extends Migration
     {
         Schema::table('sm_exam_attendance_children', function (Blueprint $table) {
             $table->dropColumn('student_record_id');
-            $table->dropColumn('class_id');
-            $table->dropColumn('section_id');
+            $table->dropColumn('age_group_id');
+            $table->dropColumn('mgender_id');
         });
     }
 }

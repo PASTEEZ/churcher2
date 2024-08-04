@@ -30,12 +30,12 @@ class CreateSmRolePermissionsTable extends Migration
 
             $table->integer('updated_by')->nullable()->default(1)->unsigned();
 
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
         }); 
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
-        $sql = "INSERT INTO `sm_role_permissions` (`id`, `active_status`, `created_at`, `updated_at`, `module_link_id`, `role_id`, `created_by`, `updated_by`, `school_id`) VALUES
+        $sql = "INSERT INTO `sm_role_permissions` (`id`, `active_status`, `created_at`, `updated_at`, `module_link_id`, `role_id`, `created_by`, `updated_by`, `church_id`) VALUES
                 (1, 1, '2019-11-18 08:13:45', '2019-11-18 08:13:45', 1, 1, 1, 1, 1),
                 (2, 1, '2019-11-18 08:13:45', '2019-11-18 08:13:45', 2, 1, 1, 1, 1),
                 (3, 1, '2019-11-18 08:13:45', '2019-11-18 08:13:45', 3, 1, 1, 1, 1),

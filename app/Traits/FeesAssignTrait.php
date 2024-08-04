@@ -25,7 +25,7 @@ trait FeesAssignTrait
         } else {
             $fees_master = SmFeesMaster::where('un_subject_id', $subject_id)
                 ->where('un_semester_label_id',$semester_label_id)
-                ->where('un_academic_id', getAcademicId())
+                ->where('un_church_year_id', getAcademicId())
                 ->first();
 
                 if(is_null($fees_master)){
@@ -33,15 +33,15 @@ trait FeesAssignTrait
                     $sem_label = UnSemesterLabel::find($semester_label_id);
                     $fees_group = new SmFeesGroup();
                     $fees_group->name = $subeject->subject_name;
-                    $fees_group->school_id = Auth::user()->school_id;
-                    $fees_group->un_academic_id = getAcademicId();
+                    $fees_group->church_id = Auth::user()->church_id;
+                    $fees_group->un_church_year_id = getAcademicId();
                     $fees_group->save();
                     $feesGroupId = $fees_group->id;
                     $fees_type = new SmFeesType();
                     $fees_type->name =$subeject->subject_name;
                     $fees_type->fees_group_id = $feesGroupId;
-                    $fees_type->school_id = Auth::user()->school_id;
-                    $fees_type->un_academic_id = getAcademicId();
+                    $fees_type->church_id = Auth::user()->church_id;
+                    $fees_type->un_church_year_id = getAcademicId();
                     $fees_type->save();
                     $feesTypeId = $fees_type->id;
         
@@ -53,8 +53,8 @@ trait FeesAssignTrait
                     $fees_master->un_subject_id = $subeject->id;
                     $fees_master->un_semester_label_id = $semester_label_id;
                     $fees_master->date = date('Y-m-d', strtotime( $year . '-01-01'));
-                    $fees_master->school_id = Auth::user()->school_id;
-                    $fees_master->un_academic_id = getAcademicId();
+                    $fees_master->church_id = Auth::user()->church_id;
+                    $fees_master->un_church_year_id = getAcademicId();
                     $fees_master->amount = $amount;
                     $fees_master->save();
                 }
@@ -62,7 +62,7 @@ trait FeesAssignTrait
         if ($fees_master) {
             $exist = SmFeesAssign::where('fees_master_id', $fees_master->id)
                 ->where('un_semester_label_id', $semester_label_id)
-                ->where('un_academic_id', getAcademicId())
+                ->where('un_church_year_id', getAcademicId())
                 ->where('record_id', $student_record)
                 ->first();
                
@@ -71,10 +71,10 @@ trait FeesAssignTrait
                 $assign_fees = new SmFeesAssign();
                 $assign_fees->fees_amount = $fees_master->amount;
                 $assign_fees->fees_master_id = $fees_master->id;
-                $assign_fees->student_id = $studentRecord->student_id;
+                $assign_fees->member_id = $studentRecord->member_id;
                 $assign_fees->record_id = $studentRecord->id;
-                $assign_fees->un_academic_id = getAcademicId();
-                $assign_fees->school_id = auth()->user()->school_id;
+                $assign_fees->un_church_year_id = getAcademicId();
+                $assign_fees->church_id = auth()->user()->church_id;
                 $assign_fees->un_semester_label_id = $semester_label_id;
                 $assign_fees->save();
 
@@ -83,9 +83,9 @@ trait FeesAssignTrait
                 if (count($installments)>0) {
                     foreach ($installments as $installment) {
                         $checkExist = UnFeesInstallmentAssign::where('un_semester_label_id', $semester_label_id)
-                            ->where('un_academic_id', getAcademicId())
+                            ->where('un_church_year_id', getAcademicId())
                             ->where('record_id', $studentRecord->id)
-                            ->where('student_id', $studentRecord->student_id)
+                            ->where('member_id', $studentRecord->member_id)
                             ->where('un_fees_installment_id', $installment->id)
                             ->first();
                         if ($checkExist) {
@@ -108,11 +108,11 @@ trait FeesAssignTrait
                         $assignInstallment->amount += (($fees_master->amount * $installment->percentange) / 100);
                         $assignInstallment->due_date = $installment->due_date;
                         $assignInstallment->fees_type_id = $fees_master->fees_type_id;
-                        $assignInstallment->student_id = $studentRecord->student_id;
+                        $assignInstallment->member_id = $studentRecord->member_id;
                         $assignInstallment->record_id = $studentRecord->id;
                         $assignInstallment->un_semester_label_id = $semester_label_id;
-                        $assignInstallment->un_academic_id = getAcademicId();
-                        $assignInstallment->school_id = auth()->user()->school_id;
+                        $assignInstallment->un_church_year_id = getAcademicId();
+                        $assignInstallment->church_id = auth()->user()->church_id;
                         $assignInstallment->save();
                     }
                 }
@@ -142,7 +142,7 @@ trait FeesAssignTrait
         $fees_master = SmFeesMaster::where('fees_group_id', $fees_group_id)->first();
         $installments  = UnFeesInstallmentAssign::where('record_id',$record_id)->where('un_semester_label_id',$semester_label_id)->get();
         $selectedAssignFees = SmFeesAssign::where('un_semester_label_id', $semester_label_id)
-                                    ->where('un_academic_id', getAcademicId())
+                                    ->where('un_church_year_id', getAcademicId())
                                     ->where('record_id', $record_id)
                                     ->where('fees_master_id',$fees_master->id)
                                     ->first();

@@ -47,7 +47,7 @@ class sm_schoolsSeeder extends Seeder
         //     $school= $faker->company. ' School';
 
         //     $store= new SmSchool();
-        //     $store->school_name= $school;
+        //     $store->church_name= $school;
         //     $store->email= $email;
         //     $store->created_at = date('Y-m-d h:i:s');
         //     $store->starting_date = date('Y-m-d');
@@ -55,11 +55,11 @@ class sm_schoolsSeeder extends Seeder
         //     $store->save();
             
         //     $general_setting = new SmGeneralSettings();
-        //     $general_setting->school_name = $school;
+        //     $general_setting->church_name = $school;
         //     $general_setting->email = $email;
         //     $general_setting->address = '';
-        //     $general_setting->school_code = '';
-        //     $general_setting->school_id = $i;
+        //     $general_setting->church_code = '';
+        //     $general_setting->church_id = $i;
         //     $general_setting->phone = '';
         //     $general_setting->time_zone_id = 1;
         //     $general_setting->save();
@@ -72,7 +72,7 @@ class sm_schoolsSeeder extends Seeder
         //     $user->email     = $email;
         //     $user->username  = $email;
         //     $user->password  = Hash::make('123456');
-        //     $user->school_id = $i;
+        //     $user->church_id = $i;
         //     $user->save();
         //     $user->toArray();
 
@@ -89,7 +89,7 @@ class sm_schoolsSeeder extends Seeder
         //     $staff->date_of_birth   = '1980-12-26';
         //     $staff->date_of_joining = '2019-05-26';
         //     $staff->gender_id       = 1;
-        //     $staff->school_id       = $i;
+        //     $staff->church_id       = $i;
         //     $staff->email           = $email;
         //     $staff->staff_photo     = 'public/uploads/staff/1_infix_edu.jpg';
         //     $staff->casual_leave    = '12';
@@ -108,27 +108,27 @@ class sm_schoolsSeeder extends Seeder
             $school= $faker->company. ' School';
 
             $store= new SmSchool();
-            $store->school_name= $school;
+            $store->church_name= $school;
             $store->email= $email;
             $store->created_at = date('Y-m-d h:i:s');
             $store->starting_date = date('Y-m-d');
             $store->is_email_verified = 1;
             $store->save();
 
-            $academic_year = new SmAcademicYear();
-            $academic_year->year = date('Y');
-            $academic_year->title = ' Financial year' . date('Y');
-            $academic_year->school_id = $i;
-            $academic_year->starting_date = date('Y') . '-01-01';
-            $academic_year->ending_date = date('Y') . '-12-31';
-            $academic_year->save();
+            $church_year = new SmAcademicYear();
+            $church_year->year = date('Y');
+            $church_year->title = ' Financial year' . date('Y');
+            $church_year->church_id = $i;
+            $church_year->starting_date = date('Y') . '-01-01';
+            $church_year->ending_date = date('Y') . '-12-31';
+            $church_year->save();
             
             $general_setting = new SmGeneralSettings();
-            $general_setting->school_name = $school;
+            $general_setting->church_name = $school;
             $general_setting->email = $email;
             $general_setting->address = $faker->address;
-            $general_setting->school_code = $i;
-            $general_setting->school_id = $i;
+            $general_setting->church_code = $i;
+            $general_setting->church_id = $i;
             $general_setting->phone = $faker->phoneNumber;
             $general_setting->time_zone_id = 1;
             $general_setting->save();
@@ -140,7 +140,7 @@ class sm_schoolsSeeder extends Seeder
             $user->email     = $email;
             $user->username  = $email;
             $user->password  = Hash::make('123456');
-            $user->school_id = $i;
+            $user->church_id = $i;
             $user->save();
             $user->toArray();
 
@@ -157,7 +157,7 @@ class sm_schoolsSeeder extends Seeder
             $staff->date_of_birth   = '1980-12-26';
             $staff->date_of_joining = '2019-05-26';
             $staff->gender_id       = 1;
-            $staff->school_id       = $i;
+            $staff->church_id       = $i;
             $staff->email           = $email;
             $staff->staff_photo     = 'public/uploads/staff/1_infix_edu.jpg';
             $staff->casual_leave    = '12';
@@ -170,7 +170,7 @@ class sm_schoolsSeeder extends Seeder
                 $assign->module_id = $i;
                 $assign->created_by = 1;
                 $assign->updated_by = 1;
-                $assign->school_id = $i;
+                $assign->church_id = $i;
                 $assign->save();
             }
 
@@ -184,7 +184,7 @@ class sm_schoolsSeeder extends Seeder
                 $method = new SmPaymentMethhod();
                 $method->method = $payment_method;
                 $method->type = 'System';
-                $method->school_id = $i;
+                $method->church_id = $i;
                 $method->save();
             }
 
@@ -196,7 +196,7 @@ class sm_schoolsSeeder extends Seeder
                     'gateway_client_id'     => '',
                     'gateway_secret_key'    => 'AVZdghanegaOjiL6DPXd0XwjMGEQ2aXc58z1-isWmBFnw1h2j',
                     'gateway_secret_word'   => 'AVZdghanegaOjiL6DPXd0XwjMGEQ2aXc58z1',
-                    'school_id'    => $i
+                    'church_id'    => $i
                 ]
             ]);
 
@@ -209,7 +209,7 @@ class sm_schoolsSeeder extends Seeder
                     'gateway_client_id'     => '',
                     'gateway_secret_key'    => 'sk_live_2679322872013c265e161bc8ea11efc1e822bce1',
                     'gateway_publisher_key' => 'pk_live_e5738ce9aade963387204f1f19bee599176e7a71',
-                    'school_id'    => $i
+                    'church_id'    => $i
                 ],
 
             ]);
@@ -222,7 +222,7 @@ class sm_schoolsSeeder extends Seeder
                     'gateway_client_id'     => 'AaCPtpoUHZEXCa3v006nbYhYfD0HIX-dlgYWlsb0fdoFqpVToATuUbT43VuUE6pAxgvSbPTspKBqAF0x69',
                     'gateway_secret_key'    => 'EJ6q4h8w0OanYO1WKtNbo9o8suDg6PKUkHNKv-T6F4APDiq2e19OZf7DfpL5uOlEzJ_AMgeE0L2PtTEj69',
                     'gateway_publisher_key' => '',
-                    'school_id'    => $i
+                    'church_id'    => $i
                 ],
 
             ]);
@@ -236,7 +236,7 @@ class sm_schoolsSeeder extends Seeder
                         'gateway_client_id'     => '',
                         'gateway_secret_key'    => '',
                         'gateway_publisher_key' => '',
-                        'school_id'    => $i
+                        'church_id'    => $i
                     ],
 
                 ]);
@@ -245,7 +245,7 @@ class sm_schoolsSeeder extends Seeder
             DB::table('sm_payment_gateway_settings')->insert([
                 [
                     'gateway_name'          => 'Bank',
-                    'school_id'    => $i
+                    'church_id'    => $i
                 ],
 
             ]);
@@ -253,7 +253,7 @@ class sm_schoolsSeeder extends Seeder
             DB::table('sm_payment_gateway_settings')->insert([
                 [
                     'gateway_name'          => 'Cheque',
-                    'school_id'    => $i
+                    'church_id'    => $i
                 ],
 
             ]);
@@ -269,9 +269,9 @@ class sm_schoolsSeeder extends Seeder
                     'mail_username'    =>  $email,
                     'mail_password'    => '12345678',
                     'mail_encryption'    => 'tls',
-                    'school_id'    => $i,
+                    'church_id'    => $i,
                     'active_status'    => 0,
-                    'academic_id'    => $academic_year->id,
+                    'church_year_id'    => $church_year->id,
                 ],
                 [
                     'email_engine_type' => 'php',
@@ -283,9 +283,9 @@ class sm_schoolsSeeder extends Seeder
                     'mail_username'    =>  '',
                     'mail_password'    => '',
                     'mail_encryption'    => '',
-                    'school_id'    => $i,
+                    'church_id'    => $i,
                     'active_status'    => 1,
-                    'academic_id'    => $academic_year->id,
+                    'church_year_id'    => $church_year->id,
                 ],
                 
             ]);
@@ -295,31 +295,31 @@ class sm_schoolsSeeder extends Seeder
                     'gateway_name' => 'Clickatell',
                     'clickatell_username' => 'demo1',
                     'clickatell_password' => '122334',
-                    'school_id'    => $i
+                    'church_id'    => $i
                 ],
                 [
                     'gateway_name' => 'Twilio',
                     'clickatell_username' => 'demo2',
                     'clickatell_password' => '12336',
-                    'school_id'    => $i
+                    'church_id'    => $i
                 ],
                 [
                     'gateway_name' => 'Msg91',
                     'clickatell_username' => 'demo3',
                     'clickatell_password' => '23445',
-                    'school_id'    => $i
+                    'church_id'    => $i
                 ]
             ]);
 
 
-            $sm_langs = SmLanguage::where('school_id',$i)->get();
+            $sm_langs = SmLanguage::where('church_id',$i)->get();
                         foreach($sm_langs as $lang){
                             $newLang = new SmLanguage();
                             $newLang->language_name= $lang->language_name;
                             $newLang->native= $lang->native;
                             $newLang->language_universal= $lang->language_universal;
                             $newLang->active_status= $lang->active_status;
-                            $newLang->school_id= $i;
+                            $newLang->church_id= $i;
                             $newLang->save();
                         }
 
@@ -329,7 +329,7 @@ class sm_schoolsSeeder extends Seeder
                     'type'          => 'image',
                     'image'         => 'public/backEnd/img/body-bg.jpg',
                     'color'         => '',
-                    'school_id'         => $i,
+                    'church_id'         => $i,
                     'is_default'    => 1,
                 ]
             ]);
@@ -352,7 +352,7 @@ class sm_schoolsSeeder extends Seeder
             $s->areachartlinecolor1 = 'rgba(124, 50, 255, 0.5)';
             $s->areachartlinecolor2 = 'rgba(242, 82, 120, 0.5)';
             $s->areachartlinecolor2 = 'rgba(242, 82, 120, 0.5)';
-            $s->school_id = $i;
+            $s->church_id = $i;
             $s->is_active = 1;
             $s->is_active = 1;
             $s->save();
@@ -375,7 +375,7 @@ class sm_schoolsSeeder extends Seeder
             $s->areachartlinecolor1 = 'var(--base_color)';
             $s->areachartlinecolor2 = '#03e396';
             $s->dashboardbackground = '#e7ecff';
-            $s->school_id = $i;
+            $s->church_id = $i;
             $s->save();
 
             DB::table('sm_weekends')->insert([
@@ -384,56 +384,56 @@ class sm_schoolsSeeder extends Seeder
                     'order' => 1,
                     'is_weekend' => 0,
                     'created_at' => date('Y-m-d H:i:s'),
-                    'academic_id' => $academic_year->id,
-                    'school_id' => $i
+                    'church_year_id' => $church_year->id,
+                    'church_id' => $i
                 ],
                 [
                     'name' => 'Sunday',
                     'order' => 2,
                     'is_weekend' => 0,
                     'created_at' => date('Y-m-d H:i:s'),
-                    'academic_id' => $academic_year->id,
-                    'school_id' => $i
+                    'church_year_id' => $church_year->id,
+                    'church_id' => $i
                 ],
                 [
                     'name' => 'Monday',
                     'order' => 3,
                     'is_weekend' => 0,
                     'created_at' => date('Y-m-d H:i:s'),
-                    'academic_id' => $academic_year->id,
-                    'school_id' => $i
+                    'church_year_id' => $church_year->id,
+                    'church_id' => $i
                 ],
                 [
                     'name' => 'Tuesday',
                     'order' => 4,
                     'is_weekend' => 0,
                     'created_at' => date('Y-m-d H:i:s'),
-                    'academic_id' => $academic_year->id,
-                    'school_id' => $i
+                    'church_year_id' => $church_year->id,
+                    'church_id' => $i
                 ],
                 [
                     'name' => 'Wednesday',
                     'order' => 5,
                     'is_weekend' => 0,
                     'created_at' => date('Y-m-d H:i:s'),
-                    'academic_id' => $academic_year->id,
-                    'school_id' => $i
+                    'church_year_id' => $church_year->id,
+                    'church_id' => $i
                 ],
                 [
                     'name' => 'Thursday',
                     'order' => 6,
                     'is_weekend' => 0,
                     'created_at' => date('Y-m-d H:i:s'),
-                    'academic_id' => $academic_year->id,
-                    'school_id' => $i
+                    'church_year_id' => $church_year->id,
+                    'church_id' => $i
                 ],
                 [
                     'name' => 'Friday',
                     'order' => 7,
                     'is_weekend' => 1,
                     'created_at' => date('Y-m-d H:i:s'),
-                    'academic_id' => $academic_year->id,
-                    'school_id' => $i
+                    'church_year_id' => $church_year->id,
+                    'church_id' => $i
                 ]
             ]);
 
@@ -443,7 +443,7 @@ class sm_schoolsSeeder extends Seeder
                 $permission = new InfixPermissionAssign();
                 $permission->module_id = $j;
                 $permission->role_id = 5;
-                $permission->school_id = $i;
+                $permission->church_id = $i;
                 $permission->save();
             }
 
@@ -453,13 +453,13 @@ class sm_schoolsSeeder extends Seeder
                 $permission = new InfixPermissionAssign();
                 $permission->module_id = $value;   
                 $permission->role_id = 5;                
-                $permission->school_id = $i;                      
+                $permission->church_id = $i;                      
                 $permission->save();
             }
 
             $ids = [399,400,401,402,403,404,428,429,430,431,456,457,458,459,460,461,462,463,478,482,483,484,549];
             foreach ($ids as $id) {
-                $permission = InfixPermissionAssign::where('school_id',$i)->where('role_id',5)->where('module_id',$id)->first();
+                $permission = InfixPermissionAssign::where('church_id',$i)->where('role_id',5)->where('module_id',$id)->first();
                 if($permission){
                     $permission->delete();
                 }          
@@ -473,7 +473,7 @@ class sm_schoolsSeeder extends Seeder
                 $permission = new InfixPermissionAssign();
                 $permission->module_id = $value;
                 $permission->role_id = 4;
-                $permission->school_id = $i;
+                $permission->church_id = $i;
                 $permission->save();
             }
 
@@ -485,7 +485,7 @@ class sm_schoolsSeeder extends Seeder
                 $permission = new InfixPermissionAssign();
                 $permission->module_id = $value;
                 $permission->role_id = 7;
-                $permission->school_id = $i;
+                $permission->church_id = $i;
                 $permission->save();
             }
 
@@ -497,7 +497,7 @@ class sm_schoolsSeeder extends Seeder
                 $permission = new InfixPermissionAssign();
                 $permission->module_id = $value;
                 $permission->role_id = 8;
-                $permission->school_id = $i;
+                $permission->church_id = $i;
                 $permission->save();
             }
 
@@ -509,7 +509,7 @@ class sm_schoolsSeeder extends Seeder
                 $permission = new InfixPermissionAssign();
                 $permission->module_id = $value;
                 $permission->role_id = 9;
-                $permission->school_id = $i;
+                $permission->church_id = $i;
                 $permission->save();
             }
 
@@ -521,7 +521,7 @@ class sm_schoolsSeeder extends Seeder
                 $permission = new InfixPermissionAssign();
                 $permission->module_id = $value;
                 $permission->role_id = 6;
-                $permission->school_id = $i;
+                $permission->church_id = $i;
                 $permission->save();
             }
 
@@ -530,7 +530,7 @@ class sm_schoolsSeeder extends Seeder
                 $permission = new InfixPermissionAssign();
                 $permission->module_id = $j;
                 $permission->role_id = 2;
-                $permission->school_id = $i;
+                $permission->church_id = $i;
                 $permission->save();
             }
 
@@ -540,7 +540,7 @@ class sm_schoolsSeeder extends Seeder
                 $permission = new InfixPermissionAssign();
                 $permission->module_id = $value;                      
                 $permission->role_id = 2;
-                $permission->school_id = $i;
+                $permission->church_id = $i;
                 $permission->save();
             }
 
@@ -550,7 +550,7 @@ class sm_schoolsSeeder extends Seeder
                 $permission = new InfixPermissionAssign();
                 $permission->module_id = $j;
                 $permission->role_id = 3;
-                $permission->school_id = $i;
+                $permission->church_id = $i;
                 $permission->save();
             }
             // chat module
@@ -559,7 +559,7 @@ class sm_schoolsSeeder extends Seeder
                 $permission = new InfixPermissionAssign();
                 $permission->module_id = $value;                   
                 $permission->role_id = 3;
-                $permission->school_id = $i;
+                $permission->church_id = $i;
                 $permission->save();
             }
 
@@ -568,9 +568,9 @@ class sm_schoolsSeeder extends Seeder
             foreach ($sectionData as $row) {
                 for ($j = 2; $j <= 2; $j++) {
                     $s= new SmSection();
-                    $s->section_name=$row.' '.$j;
+                    $s->mgender_name=$row.' '.$j;
                     $s->created_at = date('Y-m-d h:i:s');
-                    $s->school_id=$i;
+                    $s->church_id=$i;
                     $s->save();
                 }
             } 
@@ -579,22 +579,22 @@ class sm_schoolsSeeder extends Seeder
             foreach ($classData as $row) {
                 for ($j = 2; $j <= 2; $j++) {
                     $s = new SmClass();
-                    $s->class_name = $row . ' ' . $j;
+                    $s->age_group_name = $row . ' ' . $j;
                     $s->created_at = date('Y-m-d h:i:s');
-                    $s->school_id = $i;
+                    $s->church_id = $i;
                     $s->save();
                 }
             } 
 
             for ($j = 2; $j <= 2; $j++) {
-                $classes= SmClass::where('school_id', $i)->get();
+                $classes= SmClass::where('church_id', $i)->get();
                 foreach ($classes as  $class) {
-                     $sections=SmSection::where('school_id', $i)->get();
+                     $sections=SmSection::where('church_id', $i)->get();
                     foreach ($sections as $section) {
                         $s = new SmClassSection();
-                        $s->class_id = $class->id;
-                        $s->section_id = $section->id;
-                        $s->school_id = $i;
+                        $s->age_group_id = $class->id;
+                        $s->mgender_id = $section->id;
+                        $s->church_id = $i;
                         $s->created_at = date('Y-m-d h:i:s');
                         $s->save();
                     }
@@ -605,7 +605,7 @@ class sm_schoolsSeeder extends Seeder
             DB::table('sm_subjects')->insert([
 
                 [
-                    'school_id'=> $i,
+                    'church_id'=> $i,
                     'subject_name'=> 'Bangla',
                     'subject_code'=> 'BAN-01',
                     'subject_type'=> 'T',
@@ -613,7 +613,7 @@ class sm_schoolsSeeder extends Seeder
                     'created_at' => date('Y-m-d h:i:s')
                 ],
                 [
-                    'school_id'=> $i,
+                    'church_id'=> $i,
                     'subject_name'=> 'English For Today',
                     'subject_code'=> 'ENG-01',
                     'subject_type'=> 'T',
@@ -621,7 +621,7 @@ class sm_schoolsSeeder extends Seeder
                     'created_at' => date('Y-m-d h:i:s')
                 ],
                 [
-                    'school_id'=> $i,
+                    'church_id'=> $i,
                     'subject_name'=> 'Mathematics',
                     'subject_code'=> 'MATH-01',
                     'subject_type'=> 'T',
@@ -629,7 +629,7 @@ class sm_schoolsSeeder extends Seeder
                     'created_at' => date('Y-m-d h:i:s')
                 ],
                 [
-                    'school_id'=> $i,
+                    'church_id'=> $i,
                     'subject_name'=> 'Agricultural Education',
                     'subject_code'=> 'AG-01',
                     'subject_type'=> 'T',
@@ -637,7 +637,7 @@ class sm_schoolsSeeder extends Seeder
                     'created_at' => date('Y-m-d h:i:s')
                 ],
                 [
-                    'school_id'=> $i,
+                    'church_id'=> $i,
                     'subject_name'=> 'Information and Communication Technology',
                     'subject_code'=> 'ICT-01',
                     'subject_type'=> 'T',
@@ -645,7 +645,7 @@ class sm_schoolsSeeder extends Seeder
                     'created_at' => date('Y-m-d h:i:s')
                 ],
                 [
-                    'school_id'=> $i,
+                    'church_id'=> $i,
                     'subject_name'=> 'Science',
                     'subject_code'=> 'SI-01',
                     'subject_type'=> 'T',
@@ -653,7 +653,7 @@ class sm_schoolsSeeder extends Seeder
                     'created_at' => date('Y-m-d h:i:s')
                 ],
                 [
-                    'school_id'=> $i,
+                    'church_id'=> $i,
                     'subject_name'=> 'Islam & Ethical Education',
                     'subject_code'=> 'IEE-01',
                     'subject_type'=> 'T',
@@ -674,7 +674,7 @@ class sm_schoolsSeeder extends Seeder
                 $store->out_time = $faker->time($format = 'H:i A', $max = 'now');
                 $store->file = '';
                 $store->created_at = date('Y-m-d h:i:s');
-                $store->school_id = $i;
+                $store->church_id = $i;
                 $store->save();
             }
 
@@ -764,7 +764,7 @@ class sm_schoolsSeeder extends Seeder
                 $store = new SmExpenseHead();
                 $store->name = $faker->word;
                 $store->description = $faker->realText($maxNbChars = 100, $indexSize = 1);
-                $store->school_id = $i;
+                $store->church_id = $i;
                 $store->save();
             }
 

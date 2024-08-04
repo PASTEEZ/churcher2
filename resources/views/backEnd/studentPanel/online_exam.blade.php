@@ -25,7 +25,7 @@
                     <ul class="nav nav-tabs tabs_scroll_nav ml-0" role="tablist">
                         @foreach($records as $key => $record) 
                             <li class="nav-item">
-                                <a class="nav-link @if($key== 0) active @endif " href="#tab{{$key}}" role="tab" data-toggle="tab">{{$record->class->class_name}} ({{$record->section->section_name}}) </a>
+                                <a class="nav-link @if($key== 0) active @endif " href="#tab{{$key}}" role="tab" data-toggle="tab">{{$record->class->age_group_name}} ({{$record->section->mgender_name}}) </a>
                             </li>
                         @endforeach
                     </ul>
@@ -52,7 +52,7 @@
                                         @endphp
                                             <tr>
                                                 <td>{{@$online_exam->title}}</td>
-                                                <td>{{@$online_exam->class->class_name.'  ('.@$online_exam->section->section_name.')'}}</td>
+                                                <td>{{@$online_exam->class->age_group_name.'  ('.@$online_exam->section->mgender_name.')'}}</td>
                                                 <td>{{@$online_exam->subject !=""?@$online_exam->subject->subject_name:""}}</td>
                                                 <td data-sort="{{strtotime(@$online_exam->date)}}">
                                                     {{@$online_exam->date != ""? dateConvert(@$online_exam->date):''}}

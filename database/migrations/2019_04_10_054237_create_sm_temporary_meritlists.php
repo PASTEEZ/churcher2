@@ -16,10 +16,10 @@ class CreateSmTemporaryMeritlists extends Migration
         Schema::create('sm_temporary_meritlists', function (Blueprint $table) {
             $table->increments('id');
             $table->string('iid',250)->nullable();
-            $table->string('student_id',250)->nullable();
+            $table->string('member_id',250)->nullable();
             $table->float('merit_order')->nullable();
-            $table->string('student_name',250)->nullable();
-            $table->string('admission_no',250)->nullable();
+            $table->string('member_name',250)->nullable();
+            $table->string('registration_no',250)->nullable();
             $table->string('subjects_id_string',250)->nullable();
             $table->string('subjects_string',250)->nullable();
             $table->string('marks_string',250)->nullable();
@@ -32,18 +32,18 @@ class CreateSmTemporaryMeritlists extends Migration
             $table->integer('exam_id')->nullable()->unsigned();
             $table->foreign('exam_id')->references('id')->on('sm_exams')->onDelete('cascade');
 
-            $table->integer('class_id')->nullable()->unsigned();
-            $table->foreign('class_id')->references('id')->on('sm_classes')->onDelete('cascade');
+            $table->integer('age_group_id')->nullable()->unsigned();
+            $table->foreign('age_group_id')->references('id')->on('sm_classes')->onDelete('cascade');
 
 
-            $table->integer('section_id')->nullable()->unsigned();
-            $table->foreign('section_id')->references('id')->on('sm_sections')->onDelete('cascade');
+            $table->integer('mgender_id')->nullable()->unsigned();
+            $table->foreign('mgender_id')->references('id')->on('sm_sections')->onDelete('cascade');
 
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');  
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');  
             
-            $table->integer('academic_id')->nullable()->default(1)->unsigned();
-            $table->foreign('academic_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
+            $table->integer('church_year_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_year_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
         });
     }
 

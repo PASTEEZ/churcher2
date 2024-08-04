@@ -27,7 +27,7 @@ class RoleController extends Controller
         try {
             $roles = InfixRole::where('active_status', '=', 1)
             ->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })
             ->where('id', '!=', 1)
             ->where('id', '!=', 5)
@@ -65,7 +65,7 @@ class RoleController extends Controller
             $role = new Role();
             $role->name = $request->name;
             $role->type = 'User Defined';
-            $role->school_id = Auth::user()->school_id;
+            $role->church_id = Auth::user()->church_id;
             $result = $role->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -94,7 +94,7 @@ class RoleController extends Controller
             $role = InfixRole::find($id);
             $roles = InfixRole::where('active_status', '=', 1)
             ->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })
             ->where('id', '!=', 1)
             ->where('id', '!=', 5)
@@ -220,7 +220,7 @@ class RoleController extends Controller
         try {
             $roles = InfixRole::where('active_status', '=', 1)
             ->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })
             ->where('id', '!=', 1)
             ->where('id', '!=', 5)
@@ -240,16 +240,16 @@ class RoleController extends Controller
         try {
             $role = InfixRole::find($id);
             if ($id == 2) {
-                $modules = SmModulePermission::where('dashboard_id', 2)->where('id', '!=', 22)->where('school_id',Auth::user()->school_id)->get();
+                $modules = SmModulePermission::where('dashboard_id', 2)->where('id', '!=', 22)->where('church_id',Auth::user()->church_id)->get();
             } elseif ($id == 3) {
-                $modules = SmModulePermission::where('dashboard_id', 3)->where('id', '!=', 36)->where('school_id',Auth::user()->school_id)->get();
+                $modules = SmModulePermission::where('dashboard_id', 3)->where('id', '!=', 36)->where('church_id',Auth::user()->church_id)->get();
             } elseif ($id == 1) {
-                $modules = SmModulePermission::where('id', '!=', 18)->where('id', '!=', 1)->where('dashboard_id', 1)->where('school_id',Auth::user()->school_id)->get();
+                $modules = SmModulePermission::where('id', '!=', 18)->where('id', '!=', 1)->where('dashboard_id', 1)->where('church_id',Auth::user()->church_id)->get();
             } else {
-                $modules = SmModulePermission::where('dashboard_id', 1)->where('id', '!=', 1)->where('school_id',Auth::user()->school_id)->get();
+                $modules = SmModulePermission::where('dashboard_id', 1)->where('id', '!=', 1)->where('church_id',Auth::user()->church_id)->get();
             }
             $modules = $modules->groupBy('dashboard_id');
-            $already_assigned = SmModulePermissionAssign::select('module_id')->where('role_id', $id)->where('school_id',Auth::user()->school_id)->get();
+            $already_assigned = SmModulePermissionAssign::select('module_id')->where('role_id', $id)->where('church_id',Auth::user()->church_id)->get();
             $already_assigned_ids = [];
             foreach ($already_assigned as $value) {
                 $already_assigned_ids[] = $value->module_id;

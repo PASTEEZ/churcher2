@@ -18,11 +18,11 @@ class CreateFmFeesWeaversTable extends Migration
             $table->unsignedBigInteger('fees_invoice_id')->nullable()->unsigned();
             $table->foreign('fees_invoice_id')->references('id')->on('fm_fees_invoices')->onDelete('cascade');
             $table->integer('fees_type')->nullable();
-            $table->integer('student_id')->nullable();
+            $table->integer('member_id')->nullable();
             $table->float('weaver')->nullable();
             $table->string('note')->nullable();
-            $table->integer('school_id')->nullable();
-            $table->integer('academic_id')->nullable();
+            $table->integer('church_id')->nullable();
+            $table->integer('church_year_id')->nullable();
             $table->timestamps();
         });
     }

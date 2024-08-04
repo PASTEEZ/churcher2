@@ -42,11 +42,11 @@ class SmPostalDispatchController extends Controller
             $postal_dispatch->to_title = $request->to_title;
             $postal_dispatch->file = $fileName;
             $postal_dispatch->created_by=Auth::user()->id;
-            $postal_dispatch->school_id = Auth::user()->school_id;
+            $postal_dispatch->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $postal_dispatch->un_academic_id = getAcademicId();
+                $postal_dispatch->un_church_year_id = getAcademicId();
             }else{
-                $postal_dispatch->academic_id = getAcademicId();
+                $postal_dispatch->church_year_id = getAcademicId();
             }
             $postal_dispatch->save();
 
@@ -84,7 +84,7 @@ class SmPostalDispatchController extends Controller
             $postal_dispatch->to_title = $request->to_title;            
             $postal_dispatch->file =fileUpdate($postal_dispatch->file,$request->file,$destination); 
             if(moduleStatusCheck('University')){
-                $postal_dispatch->un_academic_id = getAcademicId();
+                $postal_dispatch->un_church_year_id = getAcademicId();
             }         
             $postal_dispatch->save();
 

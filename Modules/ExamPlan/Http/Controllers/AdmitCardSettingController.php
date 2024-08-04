@@ -26,11 +26,11 @@ class AdmitCardSettingController extends Controller
     
     public function setting()
     {
-        $setting = AdmitCardSetting::where('school_id', Auth::user()->school_id)->where('academic_id', getAcademicId())->first();
+        $setting = AdmitCardSetting::where('church_id', Auth::user()->church_id)->where('church_year_id', getAcademicId())->first();
         if(!$setting){
-            $oldSetting = AdmitCardSetting::where('school_id', Auth::user()->school_id)->latest()->first();
+            $oldSetting = AdmitCardSetting::where('church_id', Auth::user()->church_id)->latest()->first();
             $setting = $oldSetting->replicate();
-            $setting->academic_id = getAcademicId();
+            $setting->church_year_id = getAcademicId();
             $setting->save();
         }
 
@@ -41,19 +41,19 @@ class AdmitCardSettingController extends Controller
     public function settingUpdate(Request $request){
         
         try{
-            $setting = AdmitCardSetting::where('school_id', Auth::user()->school_id)->where('academic_id', getAcademicId())->first();
+            $setting = AdmitCardSetting::where('church_id', Auth::user()->church_id)->where('church_year_id', getAcademicId())->first();
             if(!$setting){
-                $oldSetting = AdmitCardSetting::where('school_id', Auth::user()->school_id)->latest()->first();
+                $oldSetting = AdmitCardSetting::where('church_id', Auth::user()->church_id)->latest()->first();
                 $setting = $oldSetting->replicate();
             }
             $setting->student_photo = $request->student_photo ; 
-            $setting->student_name = $request->student_name ;
-            $setting->admission_no = $request->admission_no ;
+            $setting->member_name = $request->member_name ;
+            $setting->registration_no = $request->registration_no ;
             $setting->class_section = $request->class_section ;
             $setting->exam_name = $request->exam_name ;
             $setting->admit_sub_title = $request->admit_sub_title ;
             $setting->description = $request->description;
-            $setting->academic_year = $request->academic_year ;
+            $setting->church_year = $request->church_year ;
             $setting->principal_signature = $request->principal_signature;
             $setting->gaurdian_name = $request->gaurdian_name;
             $setting->student_download = $request->student_download ;
@@ -136,10 +136,10 @@ class AdmitCardSettingController extends Controller
     {
         try{
             $exams = SmExamType::where('active_status', 1)
-            ->where('academic_id', getAcademicId())
-            ->where('school_id', Auth::user()->school_id)
+            ->where('church_year_id', getAcademicId())
+            ->where('church_id', Auth::user()->church_id)
             ->get();
-            $classes = SmClass::where('academic_id',getAcademicId())->where('school_id',auth()->user()->school_id)->get();
+            $classes = SmClass::where('church_year_id',getAcademicId())->where('church_id',auth()->user()->church_id)->get();
             return view('examplan::admitCard',compact('exams','classes'));
         }
         catch(\Exception $e){
@@ -170,22 +170,22 @@ class AdmitCardSettingController extends Controller
 
             $exam = SmExamSchedule::query();
             $exam_id = $request->exam;
-            $class_id = $request->class;
-            $exam->where('school_id',auth()->user()->school_id)->where('academic_id',getAcademicId());
+            $age_group_id = $request->class;
+            $exam->where('church_id',auth()->user()->church_id)->where('church_year_id',getAcademicId());
             if ($request->exam != "") {
                 $exam->where('exam_term_id', $request->exam);
             }
             if ($request->class != "") {
-                $exam->where('class_id', $request->class);
+                $exam->where('age_group_id', $request->class);
             }
             if ($request->section != "") {
-                $exam->where('section_id', $request->section);
+                $exam->where('mgender_id', $request->section);
             }
             $exam_routine = $exam->get();
 
             $old_admits = AdmitCard::where('exam_type_id', $request->exam)
-                                        ->where('school_id', Auth::user()->school_id)
-                                        ->where('academic_id',getAcademicId())
+                                        ->where('church_id', Auth::user()->church_id)
+                                        ->where('church_year_id',getAcademicId())
                                         ->get(['student_record_id']);
                                        
             $old_admit_ids = [];
@@ -195,14 +195,14 @@ class AdmitCardSettingController extends Controller
                          
             if($exam_routine){
                 $student_records = StudentRecord::query();
-                $student_records->where('school_id',auth()->user()->school_id)
-                ->where('academic_id',getAcademicId())
+                $student_records->where('church_id',auth()->user()->church_id)
+                ->where('church_year_id',getAcademicId())
                 ->where('is_promote',0);
                 if ($request->class != "") {
-                    $student_records->where('class_id', $request->class);
+                    $student_records->where('age_group_id', $request->class);
                 }
                 if ($request->section != "") {
-                    $student_records->where('section_id', $request->section);
+                    $student_records->where('mgender_id', $request->section);
                 }
                                         
                 $records = $student_records->get();
@@ -210,13 +210,13 @@ class AdmitCardSettingController extends Controller
                
             
             $exams = SmExamType::where('active_status', 1)
-                                ->where('academic_id', getAcademicId())
-                                ->where('school_id', Auth::user()->school_id)
+                                ->where('church_year_id', getAcademicId())
+                                ->where('church_id', Auth::user()->church_id)
                                 ->get();
-            $classes = SmClass::where('academic_id',getAcademicId())
-                                ->where('school_id',auth()->user()->school_id)
+            $classes = SmClass::where('church_year_id',getAcademicId())
+                                ->where('church_id',auth()->user()->church_id)
                                 ->get();
-            return view('examplan::admitCard',compact('exams','classes','records','exam_id','class_id','old_admit_ids'));
+            return view('examplan::admitCard',compact('exams','classes','records','exam_id','age_group_id','old_admit_ids'));
             }else{
                 Toastr::warning('Exam shedule is not ready','warning');
                 return redirect()->back();
@@ -234,11 +234,11 @@ class AdmitCardSettingController extends Controller
        try{
             $student_records = [];
             $studentRecord = null;
-           $setting = AdmitCardSetting::where('school_id', Auth::user()->school_id)->where('academic_id', getAcademicId())->first();
+           $setting = AdmitCardSetting::where('church_id', Auth::user()->church_id)->where('church_year_id', getAcademicId())->first();
            if(!$setting){
-               $oldSetting = AdmitCardSetting::where('school_id', Auth::user()->school_id)->latest()->first();
+               $oldSetting = AdmitCardSetting::where('church_id', Auth::user()->church_id)->latest()->first();
                $setting = $oldSetting->replicate();
-               $setting->academic_id = getAcademicId();
+               $setting->church_year_id = getAcademicId();
                $setting->save();
            }
             if($request->data){
@@ -256,11 +256,11 @@ class AdmitCardSettingController extends Controller
                         $new_admit->student_record_id = $record;
                         $new_admit->exam_type_id = $request->exam_type_id;
                         $new_admit->created_by = Auth::id();
-                        $new_admit->school_id =Auth::user()->school_id;
-                        $new_admit->academic_id = getAcademicId();
+                        $new_admit->church_id =Auth::user()->church_id;
+                        $new_admit->church_year_id = getAcademicId();
                         $new_admit->save();
-                        $student_id = StudentRecord::find($record)->student_id;
-                        $student = SmStudent::find($student_id);
+                        $member_id = StudentRecord::find($record)->member_id;
+                        $student = SmStudent::find($member_id);
                         $exam_type = SmExamType::find($request->exam_type_id);
 
                         if($setting->student_notification ){
@@ -272,10 +272,10 @@ class AdmitCardSettingController extends Controller
                     }
                 }
                     $admitcards = AdmitCard::whereIn('student_record_id',$student_records)->where('exam_type_id',$request->exam_type_id)->with('studentRecord')->get();
-                    $assign_subjects = SmAssignSubject::where('class_id', $studentRecord->class_id)->where('section_id', $studentRecord->section_id)
-                                        ->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-                    $exam_routines = SmExamSchedule::where('class_id', $studentRecord->class_id)
-                                        ->where('section_id', $studentRecord->section_id)
+                    $assign_subjects = SmAssignSubject::where('age_group_id', $studentRecord->age_group_id)->where('mgender_id', $studentRecord->mgender_id)
+                                        ->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+                    $exam_routines = SmExamSchedule::where('age_group_id', $studentRecord->age_group_id)
+                                        ->where('mgender_id', $studentRecord->mgender_id)
                                         ->where('exam_term_id', $request->exam_type_id)->orderBy('date', 'ASC')->get();
 
                     if($setting->admit_layout == 2){
@@ -297,11 +297,11 @@ class AdmitCardSettingController extends Controller
 
     public function changeAdmitCardLayout(Request $request)
     {
-        $setting = AdmitCardSetting::where('school_id', Auth::user()->school_id)->where('academic_id', getAcademicId())->first();
+        $setting = AdmitCardSetting::where('church_id', Auth::user()->church_id)->where('church_year_id', getAcademicId())->first();
         if(!$setting){
-            $oldSetting = AdmitCardSetting::where('school_id', Auth::user()->school_id)->latest()->first();
+            $oldSetting = AdmitCardSetting::where('church_id', Auth::user()->church_id)->latest()->first();
             $setting = $oldSetting->replicate();
-            $setting->academic_id = getAcademicId();
+            $setting->church_year_id = getAcademicId();
         }
 
         $setting->admit_layout = $request->layout;

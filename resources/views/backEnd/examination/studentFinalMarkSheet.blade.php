@@ -161,14 +161,14 @@
                                     ])
 
                                     <div class="col-lg-3 mt-30" id="select_un_student_div">
-                                        {{ Form::select('student_id',[""=>__('common.select_student').'*'], null , ['class' => 'niceSelect w-100 bb form-control'. ($errors->has('student_id') ? ' is-invalid' : ''), 'id'=>'select_un_student']) }}
+                                        {{ Form::select('member_id',[""=>__('common.select_student').'*'], null , ['class' => 'niceSelect w-100 bb form-control'. ($errors->has('member_id') ? ' is-invalid' : ''), 'id'=>'select_un_student']) }}
                                         <span class="focus-border"></span>
                                         <div class="pull-right loader loader_style" id="select_un_student_loader">
                                             <img class="loader_img_style" src="{{asset('public/backEnd/img/demo_wait.gif')}}" alt="loader">
                                         </div>
-                                        @if ($errors->has('student_id'))
+                                        @if ($errors->has('member_id'))
                                             <span class="invalid-feedback custom-error-message" role="alert">
-                                                {{ @$errors->first('student_id') }}
+                                                {{ @$errors->first('member_id') }}
                                             </span>
                                         @endif
                                     </div>
@@ -182,7 +182,7 @@
                                         *
                                     </option>
                                     @foreach($classes as $class)
-                                        <option value="{{$class->id}}" {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{$class->class_name}}</option>
+                                        <option value="{{$class->id}}" {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{$class->age_group_name}}</option>
                                     @endforeach
                                 </select>
                                 @if ($errors->has('class'))
@@ -198,8 +198,8 @@
                                             value="">@lang('common.select_section') *
                                     </option>
                                     @if(isset($studentDetails))
-                                    <option data-display="{{$studentDetails->section->section_name}}"
-                                            value="{{$studentDetails->section->id}}" selected>{{$studentDetails->section->section_name}}
+                                    <option data-display="{{$studentDetails->section->mgender_name}}"
+                                            value="{{$studentDetails->section->id}}" selected>{{$studentDetails->section->mgender_name}}
                                     </option>
                                     @endif 
                                 </select>
@@ -260,9 +260,9 @@
                             <div class="print_button pull-right">
                                 {{ Form::open(['class' => 'form-horizontal', 'files' => true, 'route' => 'studentFinalMarkSheetPrint', 'method' => 'POST', 'enctype' => 'multipart/form-data', 'id' => 'search_student', 'target' => '_blank']) }}
 
-                                <input type="hidden" name="class_id" value="{{$class_id}}">
-                                <input type="hidden" name="section_id" value="{{$section_id}}">
-                                <input type="hidden" name="student_id" value="{{$student_id}}">
+                                <input type="hidden" name="age_group_id" value="{{$age_group_id}}">
+                                <input type="hidden" name="mgender_id" value="{{$mgender_id}}">
+                                <input type="hidden" name="member_id" value="{{$member_id}}">
                                 
                                 <button type="submit" class="primary-btn small fix-gr-bg"><i class="ti-printer"> </i> @lang('common.print')
                                 </button>
@@ -279,11 +279,11 @@
                                             <div class="card-header">
                                                     <div class="d-flex">
                                                             <div class="col-lg-2">
-                                                            <img class="logo-img" src="{{ generalSetting()->logo }}" alt="{{generalSetting()->school_name}}">
+                                                            <img class="logo-img" src="{{ generalSetting()->logo }}" alt="{{generalSetting()->church_name}}">
                                                             </div>
                                                             <div class="col-lg-6 ml-30">
                                                                 <h3 class="text-white"> 
-                                                                    {{isset(generalSetting()->school_name)?generalSetting()->school_name:'Infix School Management ERP'}} 
+                                                                    {{isset(generalSetting()->church_name)?generalSetting()->church_name:'Infix School Management ERP'}} 
                                                                 </h3> 
                                                                 <p class="text-white mb-0">
                                                                     {{isset(generalSetting()->address)?generalSetting()->address:'Infix School Address'}} 
@@ -311,18 +311,18 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <p class="mb-0">
-                                                                    @lang('common.academic_year') : &nbsp;<span class="primary-color fw-500">{{ @$studentDetails->academic->year }}</span>
+                                                                    @lang('common.church_year') : &nbsp;<span class="primary-color fw-500">{{ @$studentDetails->academic->year }}</span>
                                                                 </p>
                                                                 <p class="mb-0">
-                                                                    @lang('common.section') : &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="primary-color fw-500">{{ $studentDetails->section->section_name }}</span>
+                                                                    @lang('common.section') : &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="primary-color fw-500">{{ $studentDetails->section->mgender_name }}</span>
                                                                 </p>
                                                                 <p class="mb-0">
-                                                                    @lang('common.class') : &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="primary-color fw-500">{{ $studentDetails->class->class_name }}</span>
+                                                                    @lang('common.class') : &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="primary-color fw-500">{{ $studentDetails->class->age_group_name }}</span>
                                                                 </p>
                                                             </div>
                                                             <div class="col-lg-6">
                                                                 <p class="mb-0">
-                                                                    @lang('student.admission_no') : <span class="primary-color fw-500">{{$studentDetails->studentDetail->admission_no}}</span>
+                                                                    @lang('student.registration_no') : <span class="primary-color fw-500">{{$studentDetails->studentDetail->registration_no}}</span>
                                                                 </p>
                                                                 <p class="mb-0">
                                                                     @lang('student.roll') : &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="primary-color fw-500">{{$studentDetails->roll_no}}</span>
@@ -465,7 +465,7 @@
                     var url = $("#url").val();
                     var i = 0;
                     let semester_id = $(this).val();
-                    let academic_id = $('#select_academic').val();  
+                    let church_year_id = $('#select_academic').val();  
                     let session_id = $('#select_session').val();
                     let faculty_id = $('#select_faculty').val();
                     let department_id = $('#select_dept').val();
@@ -504,7 +504,7 @@
 
                         return ;
                     }
-                    if (academic_id =='') {
+                    if (church_year_id =='') {
                         setTimeout(function() {
                             toastr.error(
                             "Academic Not Found",
@@ -525,7 +525,7 @@
 
                     var formData = {
                         semester_id : semester_id,
-                        academic_id : academic_id,
+                        church_year_id : church_year_id,
                         session_id : session_id,
                         faculty_id : faculty_id,
                         department_id : department_id,

@@ -19,7 +19,7 @@ class NewsHeadingController extends Controller
     {
 
         try {
-            $SmNewsPage = SmNewsPage::where('school_id', app('school')->id)->first();
+            $SmNewsPage = SmNewsPage::where('church_id', app('school')->id)->first();
             $update = "";
 
             return view('backEnd.frontSettings.news.newsHeadingUpdate', compact('SmNewsPage', 'update'));
@@ -33,7 +33,7 @@ class NewsHeadingController extends Controller
     {
         try {
             $path = 'public/uploads/about_page/';
-            $newsHeading = SmNewsPage::where('school_id', app('school')->id)->first();
+            $newsHeading = SmNewsPage::where('church_id', app('school')->id)->first();
 
             if ($newsHeading) {
                 $newsHeading->image  = fileUpdate($newsHeading->image,$request->image,$path);
@@ -42,7 +42,7 @@ class NewsHeadingController extends Controller
                 $newsHeading = new SmNewsPage();
                 $newsHeading->image  = fileUpload($request->image,$path);
                 $newsHeading->main_image  = fileUpload($request->main_image,$path);
-                $newsHeading->school_id = app('school')->id; 
+                $newsHeading->church_id = app('school')->id; 
             }
 
             $newsHeading->title = $request->title;

@@ -20,7 +20,7 @@ class SmSocialMediaController extends Controller
 
     public function index()
     {
-        $visitors = SmSocialMediaIcon::where('school_id', app('school')->id)->get();
+        $visitors = SmSocialMediaIcon::where('church_id', app('school')->id)->get();
         return view('backEnd.frontSettings.socialMedia', compact('visitors'));
     }
 
@@ -32,7 +32,7 @@ class SmSocialMediaController extends Controller
             $visitor->url = $request->url;
             $visitor->icon = $request->icon;
             $visitor->status = $request->status;
-            $visitor->school_id = app('school')->id;
+            $visitor->church_id = app('school')->id;
             $result = $visitor->save();
 
             Toastr::success('Operation successful', 'Success');
@@ -48,8 +48,8 @@ class SmSocialMediaController extends Controller
     {
         try {
 
-            $visitors = SmSocialMediaIcon::where('school_id', app('school')->id)->get();
-            $visitor = SmSocialMediaIcon::where('school_id', app('school')->id)->findOrFail($id);
+            $visitors = SmSocialMediaIcon::where('church_id', app('school')->id)->get();
+            $visitor = SmSocialMediaIcon::where('church_id', app('school')->id)->findOrFail($id);
             return view('backEnd.frontSettings.socialMedia', compact('visitors', 'visitor'));
 
         } catch (\Exception $e) {
@@ -64,7 +64,7 @@ class SmSocialMediaController extends Controller
     {
         try {
            
-            $visitor = SmSocialMediaIcon::where('school_id', app('school')->id)->findOrFail($request->id);
+            $visitor = SmSocialMediaIcon::where('church_id', app('school')->id)->findOrFail($request->id);
             $visitor->url = $request->url;
             $visitor->icon = $request->icon;
             $visitor->status = $request->status;          

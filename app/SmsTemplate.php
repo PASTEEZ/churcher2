@@ -18,11 +18,11 @@ class SmsTemplate extends Model
         }
 
         if($user->role_id == 2){
-            $body = str_replace('[student_name]', gv($data, 'student_name', @$user->full_name), $body);
+            $body = str_replace('[member_name]', gv($data, 'member_name', @$user->full_name), $body);
             $body = str_replace('[name]', @$user->full_name, $body);
             $body = str_replace('[password]', '123456', $body);
         }elseif($user->role_id == 3){
-            $body = str_replace('[student_name]', @$data['student_name'], $body);
+            $body = str_replace('[member_name]', @$data['member_name'], $body);
             $body = str_replace('[parent_name]',gv($data, 'parent_name', @$user->full_name), $body);
             $body = str_replace('[password]', '123456', $body);
         }else{
@@ -35,13 +35,13 @@ class SmsTemplate extends Model
         
         if (@$data['slug'] == 'student') {
             $student_info = SmStudent::find(@$data['id']);
-            $body = str_replace('[student_name]', gv($data, 'student_name', @$student_info->full_name), $body);
+            $body = str_replace('[member_name]', gv($data, 'member_name', @$student_info->full_name), $body);
             $body = str_replace('[user_name]', @$user->username . '/' . @$user->email, $body);
         } elseif (@$data['slug'] == 'parent') {
             $parent_info = SmParent::find(@$data['id']);
             $student_info = SmStudent::where('parent_id', @$parent_info->id)->first();
             $body = str_replace('[parent_name]', gv($data, 'parent_name', @$parent_info->guardians_name), $body);
-            $body = str_replace('[student_name]', gv($data, 'student_name', @$student_info->full_name), $body);
+            $body = str_replace('[member_name]', gv($data, 'member_name', @$student_info->full_name), $body);
             $body = str_replace('[user_name]', @$user->username, $body);
         } else {
             $body = str_replace('[user_name]', @$user->email, $body);
@@ -53,12 +53,12 @@ class SmsTemplate extends Model
         $body = str_replace('[description]', @$data['description'], $body);
 
 
-        $body = str_replace('[class_name]', @$data['class_name'], $body);
-        $body = str_replace('[section_name]', @$data['section_name'], $body);
+        $body = str_replace('[age_group_name]', @$data['age_group_name'], $body);
+        $body = str_replace('[mgender_name]', @$data['mgender_name'], $body);
         $body = str_replace('[exam_type]', @$data['exam_type'], $body);
         $body = str_replace('[subject_marks]', @$data['subject_marks'], $body);
 
-        $body = str_replace('[school_name]', gv($data, 'school_name', @generalSetting()->school_name), $body);
+        $body = str_replace('[church_name]', gv($data, 'church_name', @generalSetting()->church_name), $body);
 
         $body = str_replace('[attendance_date]', @$data['attendance_date'], $body);
         
@@ -81,7 +81,7 @@ class SmsTemplate extends Model
         $body = str_replace('[number_of_subject]', @$data['number_of_subject'], $body);
         $body = str_replace('[subject_list]', @$data['subject_list'], $body);
         
-        $body = str_replace('[student_name]', @$data['student_name'], $body);
+        $body = str_replace('[member_name]', @$data['member_name'], $body);
         $body = str_replace('[parent_name]', @$data['parent_name'], $body);
 
 
@@ -94,11 +94,11 @@ class SmsTemplate extends Model
        $user = null;
         if (@$data['user_email']) {
             $user = User::where('email', $data['user_email'])->first();
-            $school = SmSchool::find($user->school_id);
+            $school = SmSchool::find($user->church_id);
 
             $body = str_replace('[name]', @$user->full_name, $body);
             $body = str_replace('[email]', @$user->email, $body);
-            $body = str_replace('[school_name]', @generalSetting()->school_name, $body);
+            $body = str_replace('[church_name]', @generalSetting()->church_name, $body);
         }
 
         $body = str_replace('[user_name]', @$data['user_name'], $body);
@@ -138,20 +138,20 @@ class SmsTemplate extends Model
             $student_info = SmStudent::find(@$data['id']);
             $parent_info = SmParent::find(@$student_info->parent_id);
 
-            $body = str_replace('[student_name]', @$student_info->full_name, $body);
+            $body = str_replace('[member_name]', @$student_info->full_name, $body);
             $body = str_replace('[father_name]', gv($data, 'father_name', @$parent_info->fathers_name), $body);
             $body = str_replace('[username]', @$user->username . '/' . @$user->email, $body);
-            $body = str_replace('[admission_number]', @$student_info->admission_no, $body);
+            $body = str_replace('[admission_number]', @$student_info->registration_no, $body);
         } elseif (@$data['slug'] == 'parent') {
             $parent_info = SmParent::find(@$data['id']);
             $student_info = SmStudent::where('parent_id', @$parent_info->id)->first();
 
             $body = str_replace('[name]', @$parent_info->guardians_name, $body);
-            $body = str_replace('[student_name]', @$student_info->full_name, $body);
+            $body = str_replace('[member_name]', @$student_info->full_name, $body);
             $body = str_replace('[username]', @$user->username, $body);
             $body = str_replace('[email]', @$user->email, $body);
             $body = str_replace('[father_name]', gv($data, 'father_name', @$student_info->father_name), $body);
-            $body = str_replace('[admission_number]', @$student_info->admission_no, $body);
+            $body = str_replace('[admission_number]', @$student_info->registration_no, $body);
         } else {
             $body = str_replace('[username]', gv($data, 'username', @$user->username), $body);
             $body = str_replace('[email]', gv($data, 'email', @$user->email), $body);
@@ -159,7 +159,7 @@ class SmsTemplate extends Model
         // Login Information End
 
         //Bank Reject Payment Start
-        $body = str_replace('[student_name]', @$data['student_name'], $body);
+        $body = str_replace('[member_name]', @$data['member_name'], $body);
         $body = str_replace('[father_name]', @$data['father_name'], $body);
         $body = str_replace('[parent_name]', @$data['parent_name'], $body);
         $body = str_replace('[note]', @$data['note'], $body);
@@ -187,8 +187,8 @@ class SmsTemplate extends Model
         
         // Wallet End
 
-        $body = str_replace('[class_name]', @$data['class_name'], $body);
-        $body = str_replace('[section_name]', @$data['section_name'], $body);
+        $body = str_replace('[age_group_name]', @$data['age_group_name'], $body);
+        $body = str_replace('[mgender_name]', @$data['mgender_name'], $body);
         $body = str_replace('[exam_type]', @$data['exam_type'], $body);
         $body = str_replace('[subject_marks]', @$data['subject_marks'], $body);
         
@@ -197,7 +197,7 @@ class SmsTemplate extends Model
         $body = str_replace('[due_amount]', @$data['due_amount'], $body);
         $body = str_replace('[fees_name]', @$data['fees_name'], $body);
 
-        $body = str_replace('[school_name]', @generalSetting()->school_name, $body);
+        $body = str_replace('[church_name]', @generalSetting()->church_name, $body);
 
 
         return $body;

@@ -14,13 +14,13 @@ class SmFeesCarryForwardTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run($school_id, $academic_id, $count=5)
+    public function run($church_id, $church_year_id, $count=5)
     {
-        $classSection = SmClassSection::where('school_id',$school_id)->where('academic_id', $academic_id)->first();
-        $students = StudentRecord::where('class_id', $classSection->class_id)->where('section_id', $classSection->section_id)->where('school_id',$school_id)->where('academic_id', $academic_id)->get();
+        $classSection = SmClassSection::where('church_id',$church_id)->where('church_year_id', $church_year_id)->first();
+        $students = StudentRecord::where('age_group_id', $classSection->age_group_id)->where('mgender_id', $classSection->mgender_id)->where('church_id',$church_id)->where('church_year_id', $church_year_id)->get();
         foreach ($students as $student){
             $store = new SmFeesCarryForward();
-            $store->student_id = $student->student_id;
+            $store->member_id = $student->member_id;
             $store->balance = rand(1000,5000);
             $store->save();
         }

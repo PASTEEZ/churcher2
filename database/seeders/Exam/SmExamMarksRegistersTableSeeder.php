@@ -18,21 +18,21 @@ class SmExamMarksRegistersTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run($school_id, $academic_id)
+    public function run($church_id, $church_year_id)
     {
         $faker = Faker::create();
 
-        $classSection = SmClassSection::where('school_id',$school_id)->where('academic_id', $academic_id)->first();
-        $students = StudentRecord::where('class_id', $classSection->class_id)->where('section_id', $classSection->section_id)->where('school_id',$school_id)->where('academic_id', $academic_id)->get();
+        $classSection = SmClassSection::where('church_id',$church_id)->where('church_year_id', $church_year_id)->first();
+        $students = StudentRecord::where('age_group_id', $classSection->age_group_id)->where('mgender_id', $classSection->mgender_id)->where('church_id',$church_id)->where('church_year_id', $church_year_id)->get();
         foreach ($students as $record) {
 
-            $class_id = $record->class_id;
-            $section_id = $record->section_id;
-            $subjects = SmAssignSubject::where('school_id',$school_id)->where('academic_id', $academic_id)->where('class_id', $class_id)->where('section_id', $section_id)->get();
+            $age_group_id = $record->age_group_id;
+            $mgender_id = $record->mgender_id;
+            $subjects = SmAssignSubject::where('church_id',$church_id)->where('church_year_id', $church_year_id)->where('age_group_id', $age_group_id)->where('mgender_id', $mgender_id)->get();
             foreach ($subjects as $subject) {
                 $store = new SmExamMarksRegister();
                 $store->exam_id = 1;
-                $store->student_id = $record->student_id;
+                $store->member_id = $record->member_id;
                 $store->subject_id = $subject->subject_id;
                 $store->obtained_marks = rand(40, 90);
                 $store->exam_date = $faker->dateTime()->format('Y-m-d');

@@ -240,7 +240,7 @@
             flex-grow: 0;
             text-align: right;
         }
-        .line_grid .student_name{
+        .line_grid .member_name{
             font-weight: 500;
             font-size: 14px;
             color: #000;
@@ -257,7 +257,7 @@
             align-items: center;
             flex: 60px 0 0;
         }
-        .student_name_highlight{
+        .member_name_highlight{
             font-weight: 500;
             color: #000;
             line-height: 1.5;
@@ -463,10 +463,10 @@
                                 <div class="{{(resultPrintStatus('header'))? "logo_img": "logo_img custom_result_print"}}">
                                 
                                     <div class="thumb_logo">
-                                        <img  src="{{asset('/')}}{{generalSetting()->logo }}" alt="{{generalSetting()->school_name}}">
+                                        <img  src="{{asset('/')}}{{generalSetting()->logo }}" alt="{{generalSetting()->church_name}}">
                                     </div>
                                     <div class="company_info">
-                                        <h3>{{isset(generalSetting()->school_name)?generalSetting()->school_name:'Infix School Management ERP'}}</h3>
+                                        <h3>{{isset(generalSetting()->church_name)?generalSetting()->church_name:'Infix School Management ERP'}}</h3>
                                         <h5>{{isset(generalSetting()->address)?generalSetting()->address:'Infix School Address'}}</h5>
                                         <h5>
                                             @lang('common.email'): {{isset(generalSetting()->email)?generalSetting()->email:'admin@infixedu.com'}},
@@ -491,7 +491,7 @@
         </div>
         <div class="{{(resultPrintStatus('body'))? "meritTableBody": "meritTableBodyCustomReport"}}">
             <!-- middle content  -->
-            <div class="student_name_highlight">
+            <div class="member_name_highlight">
                 {{$student_detail->studentDetail->full_name}}
             </div>
             <table class="table">
@@ -508,8 +508,8 @@
                                                 <span>@lang('common.class')</span>
                                                 <span>:</span>
                                             </span>
-                                            <span class="student_name bold_text">
-                                                {{$student_detail->class->class_name}}
+                                            <span class="member_name bold_text">
+                                                {{$student_detail->class->age_group_name}}
                                             </span>
                                         </p>
                                     </td>
@@ -519,7 +519,7 @@
                                                 <span>@lang('common.class')</span>
                                                 <span>:</span>
                                             </span>
-                                            <span class="student_name bold_text">
+                                            <span class="member_name bold_text">
                                                 {{$student_detail->roll_no}} 
                                             </span>
                                         </p>
@@ -533,8 +533,8 @@
                                                     <span>@lang('common.section')</span>
                                                     <span>:</span>
                                                 </span>
-                                                <span class="student_name bold_text">
-                                                    {{$student_detail->section->section_name}}
+                                                <span class="member_name bold_text">
+                                                    {{$student_detail->section->mgender_name}}
                                                 </span>
                                             </p>
                                         </td>
@@ -544,7 +544,7 @@
                                                     <span>@lang('exam.exam')</span>
                                                     <span>:</span>
                                                 </span>
-                                                <span class="student_name bold_text">
+                                                <span class="member_name bold_text">
                                                     {{$exam_details->title}}
                                                 </span>
                                                 
@@ -556,11 +556,11 @@
                                         <td>
                                             <p class="line_grid">
                                                 <span>
-                                                    <span>@lang('student.admission_no')</span>
+                                                    <span>@lang('student.registration_no')</span>
                                                     <span>:</span>
                                                 </span>
-                                                <span class="student_name bold_text">
-                                                    {{$student_detail->admission_no}}
+                                                <span class="member_name bold_text">
+                                                    {{$student_detail->registration_no}}
                                                 </span>
                                                 
                                             </p>
@@ -667,12 +667,12 @@
                         @endphp  
                         <tr>
                             <td>{{$data->subject->subject_name}}</td>
-                            <td>{{@subjectFullMark($exam_details->id, $data->subject->id, $class_id, $section_id )}}</td>
-                            <td>{{@subjectHighestMark($exam_type_id, $data->subject->id, $class_id, $section_id)}}</td>
+                            <td>{{@subjectFullMark($exam_details->id, $data->subject->id, $age_group_id, $mgender_id )}}</td>
+                            <td>{{@subjectHighestMark($exam_type_id, $data->subject->id, $age_group_id, $mgender_id)}}</td>
                             <td>{{@$data->total_marks}}</td>
                             <td>
                                 @php
-                                $result = markGpa(@subjectPercentageMark(@$data->total_marks , @subjectFullMark($exam_details->id, $data->subject->id, $class_id, $section_id)));
+                                $result = markGpa(@subjectPercentageMark(@$data->total_marks , @subjectFullMark($exam_details->id, $data->subject->id, $age_group_id, $mgender_id)));
                                 $main_subject_total_gpa += $result->gpa;
                                 $total_mark+=@$data->total_marks;
                                 @endphp
@@ -698,8 +698,8 @@
                             @endphp
                             <tr>
                                 <td>{{$data->subject->subject_name}}</td>
-                                <td>{{@subjectFullMark($exam_details->id, $data->subject->id , $class_id, $section_id)}}</td>
-                                <td>{{@subjectHighestMark($exam_type_id, $data->subject->id, $class_id, $section_id)}}</td>
+                                <td>{{@subjectFullMark($exam_details->id, $data->subject->id , $age_group_id, $mgender_id)}}</td>
+                                <td>{{@subjectHighestMark($exam_type_id, $data->subject->id, $age_group_id, $mgender_id)}}</td>
                                 <td>{{@$data->total_marks}}
                                 @php
                                     $total_mark+=@$data->total_marks;
@@ -802,7 +802,7 @@
                 <td colspan="2" style="text-align: center">
                 @lang('exam.position')
               </td>
-                <td colspan="2" style="text-align: center">{{getStudentMeritPosition($class_id, $section_id, $exam_details->id, $student_detail->id)}}</td>
+                <td colspan="2" style="text-align: center">{{getStudentMeritPosition($age_group_id, $mgender_id, $exam_details->id, $student_detail->id)}}</td>
             </tr>
           </tbody>
         </table>

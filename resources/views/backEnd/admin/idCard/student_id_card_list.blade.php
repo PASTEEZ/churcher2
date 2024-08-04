@@ -111,15 +111,15 @@
                                                                         <div class="card_text" style="line-height:1.02; display: flex; align-items: center; justify-content: space-between; width: 100%; flex-direction: column;">
                                                                             <div class="card_text_head " style="line-height:1.02; display: flex; align-items: center; justify-content: space-between; width: 100%; margin-top:25px; margin-bottom:10px">
                                                                                 <div class="card_text_left hId">
-                                                                                    @if($id_card->student_name==1)
+                                                                                    @if($id_card->member_name==1)
                                                                                         <div id="hName">
                                                                                             <h4 style="line-height:1.02; margin-top: 0; margin-bottom: 0px; font-size:11px; font-weight:600 ; text-transform: uppercase; color: #2656a6;">InfixEdu</h4>
                                                                                         </div>
                                                                                     @endif
-                                                                                    @if($id_card->admission_no==1 )
+                                                                                    @if($id_card->registration_no==1 )
                                                                                         <div id="hAdmissionNumber">
                                                                                             @if($role_id==2)
-                                                                                                <h3 style="line-height:1.02; margin-top: 0; margin-bottom: 3px; font-size:10px; font-weight:500">@lang('student.admission_no') : 001</h3>
+                                                                                                <h3 style="line-height:1.02; margin-top: 0; margin-bottom: 3px; font-size:10px; font-weight:500">@lang('student.registration_no') : 001</h3>
                                                                                             @else 
                                                                                                 <h3 style="line-height:1.02; margin-top: 0; margin-bottom: 3px; font-size:10px; font-weight:500">@lang('admin.id') : 001</h3>
                                                                                             @endif
@@ -233,15 +233,15 @@
                                                                         <div class="card_text" style="line-height:1.02; display: flex; align-items: center; justify-content: space-between; width: 100%; flex-direction: column;">
                                                                             <div class="card_text_head" style="line-height:1.02; display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom:5px"> 
                                                                                 <div class="card_text_left vId">
-                                                                                    @if($id_card->student_name==1)
+                                                                                    @if($id_card->member_name==1)
                                                                                         <div id="vName">
                                                                                             <h3 style="line-height:1.02; margin-top: 0; margin-bottom: 3px; font-size:11px; font-weight:600 ; text-transform: uppercase; color: #2656a6;">InfixEdu</h3>
                                                                                         </div>
                                                                                     @endif
-                                                                                    @if($id_card->admission_no==1)
+                                                                                    @if($id_card->registration_no==1)
                                                                                         <div id="vAdmissionNumber">
                                                                                             @if(in_array(2,$roleId))
-                                                                                                <h4 style="line-height:1.02; margin-top: 0; margin-bottom: 3px; font-size:10px;">@lang('student.admission_no') : 001</h4>
+                                                                                                <h4 style="line-height:1.02; margin-top: 0; margin-bottom: 3px; font-size:10px;">@lang('student.registration_no') : 001</h4>
                                                                                             @else 
                                                                                                 <h4 style="line-height:1.02; margin-top: 0; margin-bottom: 3px; font-size:10px;">@lang('admin.id') : 001</h4>
                                                                                             @endif
@@ -364,7 +364,7 @@
                                                                         <div class="card_text" style="line-height:1.02; display: flex; align-items: center; justify-content: space-between; width: 100%; flex-direction: column;">
                                                                             <div class="card_text_head " style="line-height:1.02; display: flex; align-items: center; justify-content: space-between; width: 100%; margin-top:25px; margin-bottom:10px">
                                                                                 <div class="card_text_left hId">
-                                                                                    @if($id_card->student_name==1)
+                                                                                    @if($id_card->member_name==1)
                                                                                         <div id="gHName">
                                                                                             <h4 style="line-height:1.02; margin-top: 0; margin-bottom: 0px; font-size:11px; font-weight:600 ; text-transform: uppercase; color: #2656a6;">InfixEdu</h4>
                                                                                         </div>
@@ -449,7 +449,7 @@
                                                                     <div class="card_text" style="line-height:1.02; display: flex; align-items: center; justify-content: space-between; width: 100%; flex-direction: column;">
                                                                         <div class="card_text_head " style="line-height:1.02; display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom:0px"> 
                                                                             <div class="card_text_left vId">
-                                                                                @if($id_card->student_name==1)
+                                                                                @if($id_card->member_name==1)
                                                                                     <div id="gVName">
                                                                                         <h3 style="line-height:1.02; margin-top: 0; margin-bottom: 3px; font-size:11px; font-weight:600 ; text-transform: uppercase; color: #2656a6;">InfixEdu</h3>
                                                                                     </div>

@@ -28,10 +28,10 @@ class SmRolePermissionController extends Controller
 			 if (checkAdmin()) {
 				$role = InfixRole::find($id);
 			}else{
-				$role = InfixRole::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+				$role = InfixRole::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
 			}
-			$modulesRole = SmModule::where('active_status', 1)->where('school_id',Auth::user()->school_id)->get();
-			$role_permissions = SmRolePermission::where('role_id', $id)->where('school_id',Auth::user()->school_id)->get();
+			$modulesRole = SmModule::where('active_status', 1)->where('church_id',Auth::user()->church_id)->get();
+			$role_permissions = SmRolePermission::where('role_id', $id)->where('church_id',Auth::user()->church_id)->get();
 			$already_assigned = [];
 			foreach($role_permissions as $role_permission){
 				$already_assigned[] = $role_permission->module_link_id;
@@ -59,7 +59,7 @@ class SmRolePermissionController extends Controller
 			 if (checkAdmin()) {
 				SmRolePermission::where('role_id', $request->role_id)->delete();
 			}else{
-				SmRolePermission::where('role_id', $request->role_id)->where('school_id',Auth::user()->school_id)->delete();
+				SmRolePermission::where('role_id', $request->role_id)->where('church_id',Auth::user()->church_id)->delete();
 			}
 
 			if(isset($request->permissions)){
@@ -67,7 +67,7 @@ class SmRolePermissionController extends Controller
 					$role_permission = new SmRolePermission();
 					$role_permission->role_id = $request->role_id;
 					$role_permission->module_link_id = $permission;
-					$role_permission->school_id = Auth::user()->school_id;
+					$role_permission->church_id = Auth::user()->church_id;
 					$role_permission->save();
 				}
 			}

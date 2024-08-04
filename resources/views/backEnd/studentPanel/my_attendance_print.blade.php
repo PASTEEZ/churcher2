@@ -26,7 +26,7 @@
                                 <img class="logo-img" src="{{ url('/')}}/{{@generalSetting()->logo }}" alt=""> 
                             </td>
                             <td> 
-                                <h3 style="font-size:22px !important" class="text-white"> {{isset(generalSetting()->school_name)?@generalSetting()->school_name:'Infix School Management ERP'}} </h3> 
+                                <h3 style="font-size:22px !important" class="text-white"> {{isset(generalSetting()->church_name)?@generalSetting()->church_name:'Infix School Management ERP'}} </h3> 
                                 <p style="font-size:18px !important" class="text-white mb-0"> {{isset(generalSetting()->address)?@generalSetting()->address:'Infix School Address'}} </p> 
                                 <p style="font-size:15px !important" class="text-white mb-0"> @lang('student.attendance') </p> 
                           </td>
@@ -46,7 +46,7 @@
                          
                         <tr>
                             <!-- <th>@lang('common.name')</th>
-                            <th>@lang('student.admission_no')</th> -->
+                            <th>@lang('student.registration_no')</th> -->
                             <th>P</th>
                             <th>L</th>
                             <th>A</th>
@@ -82,7 +82,7 @@
                                 @foreach($attendances as $value)
                                     @php @$student++; @endphp
                                     @if(@$student == 1)
-                                        {{@$student_detail->admission_no}}
+                                        {{@$student_detail->registration_no}}
                                     @endif
                                 @endforeach
                             </td> -->

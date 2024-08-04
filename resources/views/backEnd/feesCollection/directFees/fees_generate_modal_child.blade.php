@@ -48,7 +48,7 @@
                   
                   <input type="hidden" name="installment_id" id="assign_id" value="{{$installment_id}}">
                   <input type="hidden" name="real_amount" id="real_amount" value="{{discountFees($installment_id)}}">
-                  <input type="hidden" name="student_id" value="{{$student_id}}">
+                  <input type="hidden" name="member_id" value="{{$member_id}}">
                   <input type="hidden" name="record_id" value="{{$record_id}}">
                   {{-- <input type="hidden" name="un_semester_label_id" value="{{ $std_info->un_semester_label_id}}"> --}}
   

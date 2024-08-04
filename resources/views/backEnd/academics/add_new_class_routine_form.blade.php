@@ -14,8 +14,8 @@
                         'method' => 'POST', 'enctype' => 'multipart/form-data', 'name' => 'myForm', 'onsubmit' => "return validateAddNewroutine()"]) }}
         <div class="row">
             <div class="col-lg-12">                              
-               <input type="hidden" name="class_id" id="class_id" value="{{ $class_id }}">
-               <input type="hidden" name="section_id" id="section_id" value="{{ $section_id }}">
+               <input type="hidden" name="age_group_id" id="age_group_id" value="{{ $age_group_id }}">
+               <input type="hidden" name="mgender_id" id="mgender_id" value="{{ $mgender_id }}">
              
                 <div class="row mt-25">
                     <div class="col-lg-6">
@@ -133,8 +133,8 @@
         var url = $('#url').val();
         var i = 0;
         var formData = {
-            class_id: $('#class_id').val(),
-            section_id: $('#section_id').val(),
+            age_group_id: $('#age_group_id').val(),
+            mgender_id: $('#mgender_id').val(),
             subject: $('#subject').val(),
             day: $('#day').val(),
             update_teacher_id: $('#update_teacher_id').val()
@@ -199,8 +199,8 @@
         var url = $('#url').val();
         var i = 0;
         var formData = {
-            class_id: $('#class_id').val(),
-            section_id: $('#section_id').val(),
+            age_group_id: $('#age_group_id').val(),
+            mgender_id: $('#mgender_id').val(),
             subject: $('#subject').val(),
             class_time_id: $('#class_time_id').val(),
             day: $('#day').val(),

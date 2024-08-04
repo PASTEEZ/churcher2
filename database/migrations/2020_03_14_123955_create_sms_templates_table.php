@@ -25,67 +25,67 @@ class CreateSmsTemplatesTable extends Migration
             $table->string('module');
             $table->text('variable');
             $table->integer('status')->default(1)->comment('Enable & Disable');
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
             $table->timestamps();
         });
 
         $allTempletes = [
             // SMS Start
 
-            ['sms', 'student_admission', '', 'Dear [student_name], Your Admission Is Completed You Can Login To Your Account Using username:[user_name] Password:[password], Thank You [school_name]', '', '[student_name], [user_name], [password], [school_name]'],
-            ['sms', 'student_admission_for_parent', '', 'Dear Parent [parent_name], Your Child [student_name] Admission Is Completed You Can Login To Your Account Using username:[user_name] Password:[password], Thank You [school_name]', '', '[parent_name], [student_name], [user_name], [password], [school_name]'],
-            ['sms', 'exam_schedule_for_student', '', 'Dear [student_name], your next exam: [exam_type] on [exam_date], [exam_time],Please Attend In Exam, Thank You [school_name]', '', '[student_name], [exam_type], [exam_date], [exam_time], [school_name]'],
-            ['sms', 'exam_schedule_for_parent', '', 'Dear [parent_name], your children [student_name] next exam: [exam_type] on [exam_date], [exam_time], Thank You [school_name]', '', '[parent_name], [student_name], [exam_type], [exam_date], [exam_time], [school_name]'],
-            ['sms', 'user_login_permission', '', 'Dear [name], your login permission is disabled username:[user_name], Thank You [school_name]', '', '[name], [user_name], [school_name]'],
-            ['sms', 'student_promote', '', 'Hi [student_name] , Welcome to [school_name]. Congratulations ! You have promoted in the next class. Thank You [school_name]', '', '[student_name], [school_name]'],
-            ['sms', 'communicate_sms', '', 'In Communicate SMS description is: [description]. Thank You. Thank You [school_name]', '', '[description], [school_name]'],
+            ['sms', 'student_admission', '', 'Dear [member_name], Your Admission Is Completed You Can Login To Your Account Using username:[user_name] Password:[password], Thank You [church_name]', '', '[member_name], [user_name], [password], [church_name]'],
+            ['sms', 'student_admission_for_parent', '', 'Dear Parent [parent_name], Your Child [member_name] Admission Is Completed You Can Login To Your Account Using username:[user_name] Password:[password], Thank You [church_name]', '', '[parent_name], [member_name], [user_name], [password], [church_name]'],
+            ['sms', 'exam_schedule_for_student', '', 'Dear [member_name], your next exam: [exam_type] on [exam_date], [exam_time],Please Attend In Exam, Thank You [church_name]', '', '[member_name], [exam_type], [exam_date], [exam_time], [church_name]'],
+            ['sms', 'exam_schedule_for_parent', '', 'Dear [parent_name], your children [member_name] next exam: [exam_type] on [exam_date], [exam_time], Thank You [church_name]', '', '[parent_name], [member_name], [exam_type], [exam_date], [exam_time], [church_name]'],
+            ['sms', 'user_login_permission', '', 'Dear [name], your login permission is disabled username:[user_name], Thank You [church_name]', '', '[name], [user_name], [church_name]'],
+            ['sms', 'student_promote', '', 'Hi [member_name] , Welcome to [church_name]. Congratulations ! You have promoted in the next class. Thank You [church_name]', '', '[member_name], [church_name]'],
+            ['sms', 'communicate_sms', '', 'In Communicate SMS description is: [description]. Thank You. Thank You [church_name]', '', '[description], [church_name]'],
 
-            ['sms', 'student_attendance', '', 'Dear [student_name], your are came to the school at [attendance_date], Thank You [school_name]', '', '[student_name], [attendance_date], [school_name]'],
-            ['sms', 'student_attendance_for_parent', '', 'Dear Parent [parent_name], your child [student_name] came to the school at [attendance_date], Thank You [school_name]', '', '[parent_name], [student_name], [attendance_date], [school_name]'],
-            ['sms', 'student_absent', '', 'Dear [student_name], your are absent to the school on [attendance_date], Thank You [school_name]', '', '[student_name], [attendance_date], [school_name]'],
-            ['sms', 'student_absent_for_parent', '', 'Dear parent [parent_name], your child [student_name] is absent to the school on [attendance_date], Thank You [school_name]', '', '[parent_name], [student_name], [attendance_date], [school_name]'],
-            ['sms', 'student_late', '', 'Dear [student_name], your are late to the school on [attendance_date], Thank You [school_name]', '', '[student_late], [attendance_date], [school_name]'],
-            ['sms', 'student_late_for_parent', '', 'Dear parent [parent_name], your child [student_name] is late to the school on [attendance_date], Thank You [school_name]', '', '[parent_name], [student_name], [attendance_date], [school_name]'],
-            ['sms', 'student_leave_appllication', '', 'Dear [student_name], Thank you for your leave application. Please wait for approval, Thank You [school_name]', '', '[student_name], [school_name]'],
-            ['sms', 'student_leave_approve', '', 'Dear [student_name], Thank you for your leave application. Your Leave approve. Thank You [school_name]', '', '[student_name], [school_name]'],
-            ['sms', 'parent_leave_appllication_for_student', '', 'Dear [parent_name], Thank you for your leave [student_name] application. Please wait for approval, Thank You [school_name]. Thanks', '', '[parent_name], [student_name], [school_name]'],
-            ['sms', 'parent_leave_approve_for_student', '', 'Dear [parent_name], Thank you for your leave [student_name] application. Your Leave approve. Thank You [school_name]', '', '[parent_name], [student_name], [school_name]'],
-            ['sms', 'student_library_book_issue', '', 'Dear [student_name], Library book  is issued to you studying in class: [class_name] , section: [section_name] with roll no:[roll_no] On [issue_date] .Please find the details , Book Title: [book_title], Book No: [book_no], Due Date: [due_date], Thank You [school_name]', '', '[student_name], [class_name], [section_name],[roll_no],[issue_date], [book_title], [book_no], [due_date], [school_name]'],
-            ['sms', 'parent_library_book_issue', '', 'Dear parent [parent_name], Library book  is issued On [issue_date] .Please find the details , Book Title: [book_title], Book No: [book_no], Due Date: [due_date], Thank You [school_name]', '', '[parent_name], [issue_date], [book_title], [book_no], [due_date], [school_name]'],
-            ['sms', 'student_return_issue_book', '', 'Dear [student_name], Library book  is returned by you studying in class: [class_name] , section: [section_name] with roll no:[roll_no] On [return_date] .Please find the details , Book Title: [book_title], Book No: [book_no], Issue Date: [issue_date], Due Date: [due_date], Thank You [school_name]', '', '[student_name], [class_name], [section_name], [roll_no], [return_date], [issue_date], [book_title], [book_no], [due_date], [school_name]'],
-            ['sms', 'parent_return_issue_book', '', 'Dear parent [parent_name], Library book  is returned On [return_date] .Please find the details , Book Title: [book_title], Book No: [book_no], Issue Date: [issue_date], Due Date: [due_date], Thank You [school_name]', '', '[parent_name], [return_date], [issue_date], [book_title], [book_no], [due_date], [school_name]'],
-            ['sms', 'exam_mark_student', '', 'Hi [student_name] , You are in class [class_name] ([section_name]), Your exam type [exam_type], [subject_marks]. School Name- [school_name], Thank You [school_name]', '', '[student_name], [class_name], [section_name], [exam_type], [subject_names], [total_mark], [school_name], [subject_marks]'],
-            ['sms', 'exam_mark_parent', '', 'Hello, [parent_name], your child [student_name] of class [class_name] ([section_name]) exam type [exam_type], [subject_marks]. School Name- [school_name], Thank You [school_name]', '', '[parent_name], [student_name], [class_name], [section_name], [exam_type], [subject_names], [total_mark], [school_name], [subject_marks]'],
-            ['sms', 'student_fees_due', '', 'Hi [student_name], You fees due amount [dues_amount] for [fees_name] on [date]. Thank You [school_name]', '', '[student_name], [dues_amount], [fees_name], [date], [school_name]'],
-            ['sms', 'student_fees_due_for_parent', '', 'Hi [parent_name], You fees due amount [dues_amount] for [fees_name] on [date]. Thank You [school_name]', '', '[parent_name], [dues_amount], [fees_name], [date], [school_name]'],
+            ['sms', 'student_attendance', '', 'Dear [member_name], your are came to the school at [attendance_date], Thank You [church_name]', '', '[member_name], [attendance_date], [church_name]'],
+            ['sms', 'student_attendance_for_parent', '', 'Dear Parent [parent_name], your child [member_name] came to the school at [attendance_date], Thank You [church_name]', '', '[parent_name], [member_name], [attendance_date], [church_name]'],
+            ['sms', 'student_absent', '', 'Dear [member_name], your are absent to the school on [attendance_date], Thank You [church_name]', '', '[member_name], [attendance_date], [church_name]'],
+            ['sms', 'student_absent_for_parent', '', 'Dear parent [parent_name], your child [member_name] is absent to the school on [attendance_date], Thank You [church_name]', '', '[parent_name], [member_name], [attendance_date], [church_name]'],
+            ['sms', 'student_late', '', 'Dear [member_name], your are late to the school on [attendance_date], Thank You [church_name]', '', '[student_late], [attendance_date], [church_name]'],
+            ['sms', 'student_late_for_parent', '', 'Dear parent [parent_name], your child [member_name] is late to the school on [attendance_date], Thank You [church_name]', '', '[parent_name], [member_name], [attendance_date], [church_name]'],
+            ['sms', 'student_leave_appllication', '', 'Dear [member_name], Thank you for your leave application. Please wait for approval, Thank You [church_name]', '', '[member_name], [church_name]'],
+            ['sms', 'student_leave_approve', '', 'Dear [member_name], Thank you for your leave application. Your Leave approve. Thank You [church_name]', '', '[member_name], [church_name]'],
+            ['sms', 'parent_leave_appllication_for_student', '', 'Dear [parent_name], Thank you for your leave [member_name] application. Please wait for approval, Thank You [church_name]. Thanks', '', '[parent_name], [member_name], [church_name]'],
+            ['sms', 'parent_leave_approve_for_student', '', 'Dear [parent_name], Thank you for your leave [member_name] application. Your Leave approve. Thank You [church_name]', '', '[parent_name], [member_name], [church_name]'],
+            ['sms', 'student_library_book_issue', '', 'Dear [member_name], Library book  is issued to you studying in class: [age_group_name] , section: [mgender_name] with roll no:[roll_no] On [issue_date] .Please find the details , Book Title: [book_title], Book No: [book_no], Due Date: [due_date], Thank You [church_name]', '', '[member_name], [age_group_name], [mgender_name],[roll_no],[issue_date], [book_title], [book_no], [due_date], [church_name]'],
+            ['sms', 'parent_library_book_issue', '', 'Dear parent [parent_name], Library book  is issued On [issue_date] .Please find the details , Book Title: [book_title], Book No: [book_no], Due Date: [due_date], Thank You [church_name]', '', '[parent_name], [issue_date], [book_title], [book_no], [due_date], [church_name]'],
+            ['sms', 'student_return_issue_book', '', 'Dear [member_name], Library book  is returned by you studying in class: [age_group_name] , section: [mgender_name] with roll no:[roll_no] On [return_date] .Please find the details , Book Title: [book_title], Book No: [book_no], Issue Date: [issue_date], Due Date: [due_date], Thank You [church_name]', '', '[member_name], [age_group_name], [mgender_name], [roll_no], [return_date], [issue_date], [book_title], [book_no], [due_date], [church_name]'],
+            ['sms', 'parent_return_issue_book', '', 'Dear parent [parent_name], Library book  is returned On [return_date] .Please find the details , Book Title: [book_title], Book No: [book_no], Issue Date: [issue_date], Due Date: [due_date], Thank You [church_name]', '', '[parent_name], [return_date], [issue_date], [book_title], [book_no], [due_date], [church_name]'],
+            ['sms', 'exam_mark_student', '', 'Hi [member_name] , You are in class [age_group_name] ([mgender_name]), Your exam type [exam_type], [subject_marks]. School Name- [church_name], Thank You [church_name]', '', '[member_name], [age_group_name], [mgender_name], [exam_type], [subject_names], [total_mark], [church_name], [subject_marks]'],
+            ['sms', 'exam_mark_parent', '', 'Hello, [parent_name], your child [member_name] of class [age_group_name] ([mgender_name]) exam type [exam_type], [subject_marks]. School Name- [church_name], Thank You [church_name]', '', '[parent_name], [member_name], [age_group_name], [mgender_name], [exam_type], [subject_names], [total_mark], [church_name], [subject_marks]'],
+            ['sms', 'student_fees_due', '', 'Hi [member_name], You fees due amount [dues_amount] for [fees_name] on [date]. Thank You [church_name]', '', '[member_name], [dues_amount], [fees_name], [date], [church_name]'],
+            ['sms', 'student_fees_due_for_parent', '', 'Hi [parent_name], You fees due amount [dues_amount] for [fees_name] on [date]. Thank You [church_name]', '', '[parent_name], [dues_amount], [fees_name], [date], [church_name]'],
 
-            ['sms', 'staff_credentials', '', 'Dear staff [staff_name] your login details: username:[user_name] Password:[password], Thank You [school_name]', '', '[staff_name], [user_name], [password], [school_name]'],
-            ['sms', 'staff_attendance', '', 'Dear [staff_name], your are came to the school at [attendance_date], Thank You [school_name]', '', '[staff_name],[attendance_date], [school_name]'],
-            ['sms', 'staff_absent', '', 'Dear [staff_name], your are absent to the school on [attendance_date], Thank You [school_name]', '', '[staff_name], [attendance_date], [school_name]'],
-            ['sms', 'staff_late', '', 'Dear [staff_name], your are late to the school on [attendance_date], Thank You [school_name]', '', '[staff_name], |StudentName|, [attendance_date], [school_name]'],
-            ['sms', 'staff_leave_appllication', '', 'Dear staff [staff_name], Thank you for your leave application. Please wait for approval. Thank You [school_name]', '', '[staff_name], [school_name]'],
-            ['sms', 'staff_leave_approve', '', 'Dear staff [staff_name], Thank you for your leave application. Your Leave approve. Thank You [school_name]', '', '[staff_name], [school_name]'],
+            ['sms', 'staff_credentials', '', 'Dear staff [staff_name] your login details: username:[user_name] Password:[password], Thank You [church_name]', '', '[staff_name], [user_name], [password], [church_name]'],
+            ['sms', 'staff_attendance', '', 'Dear [staff_name], your are came to the school at [attendance_date], Thank You [church_name]', '', '[staff_name],[attendance_date], [church_name]'],
+            ['sms', 'staff_absent', '', 'Dear [staff_name], your are absent to the school on [attendance_date], Thank You [church_name]', '', '[staff_name], [attendance_date], [church_name]'],
+            ['sms', 'staff_late', '', 'Dear [staff_name], your are late to the school on [attendance_date], Thank You [church_name]', '', '[staff_name], |StudentName|, [attendance_date], [church_name]'],
+            ['sms', 'staff_leave_appllication', '', 'Dear staff [staff_name], Thank you for your leave application. Please wait for approval. Thank You [church_name]', '', '[staff_name], [church_name]'],
+            ['sms', 'staff_leave_approve', '', 'Dear staff [staff_name], Thank you for your leave application. Your Leave approve. Thank You [church_name]', '', '[staff_name], [church_name]'],
 
-            ['sms', 'holiday', '', 'This is to update you that [holiday_date] is holiday, Thank You [school_name]', '', '[holiday_date], [school_name]'],
-            ['sms', 'student_birthday', '', 'Dear [student_name], Warm wishes to your birthday. Happy Birthday, Thank You [school_name]', '', '[student_name], [school_name]'],
-            ['sms', 'staff_birthday', '', 'Dear staff [staff_name], Warm wishes to your birthday. Happy Birthday, Thank You [school_name]. Thanks', '', '[staff_name], [school_name]'],
+            ['sms', 'holiday', '', 'This is to update you that [holiday_date] is holiday, Thank You [church_name]', '', '[holiday_date], [church_name]'],
+            ['sms', 'student_birthday', '', 'Dear [member_name], Warm wishes to your birthday. Happy Birthday, Thank You [church_name]', '', '[member_name], [church_name]'],
+            ['sms', 'staff_birthday', '', 'Dear staff [staff_name], Warm wishes to your birthday. Happy Birthday, Thank You [church_name]. Thanks', '', '[staff_name], [church_name]'],
             
             
             //Module Base SMS Sending Start
             // Module Name : InfixBiometrics
-                ['sms', 'student_early_checkout', '', 'Dear parent [parent_name], your child [student_name] is checkout  at [attendance_date] to the school on [attendance_date], Thank You [school_name]','InfixBiometrics', '[parent_name], [student_name], [attendance_date], [attendance_date], [school_name]'],
-                ['sms', 'student_checkout', '', 'Dear Parent [parent_name], your child [student_name] left the school at [left_time], Thank You [school_name]','InfixBiometrics', '[parent_name], [student_name], [school_name]'],
+                ['sms', 'student_early_checkout', '', 'Dear parent [parent_name], your child [member_name] is checkout  at [attendance_date] to the school on [attendance_date], Thank You [church_name]','InfixBiometrics', '[parent_name], [member_name], [attendance_date], [attendance_date], [church_name]'],
+                ['sms', 'student_checkout', '', 'Dear Parent [parent_name], your child [member_name] left the school at [left_time], Thank You [church_name]','InfixBiometrics', '[parent_name], [member_name], [church_name]'],
             
             // Module Name : Fees 2.0
-                ['sms', 'student_dues_fees', '', 'Hi [student_name], You fees due amount [dues_amount] for [fees_name] on [date]. Thank You [school_name]','Fees', '[student_name], [dues_amount], [fees_name], [date], [school_name]'],
-                ['sms', 'student_dues_fees_for_parent', '', 'Hi [parent_name], You fees due amount [dues_amount] for [fees_name] on [date]. Thank You [school_name]','Fees', '[parent_name], [dues_amount], [fees_name], [date], [school_name]'],
+                ['sms', 'student_dues_fees', '', 'Hi [member_name], You fees due amount [dues_amount] for [fees_name] on [date]. Thank You [church_name]','Fees', '[member_name], [dues_amount], [fees_name], [date], [church_name]'],
+                ['sms', 'student_dues_fees_for_parent', '', 'Hi [parent_name], You fees due amount [dues_amount] for [fees_name] on [date]. Thank You [church_name]','Fees', '[parent_name], [dues_amount], [fees_name], [date], [church_name]'],
 
             // Module Name : ParentRegistration
-                ['sms', 'student_admission_in_progress', '', 'Dear parent [parent_name], your child [student_name] admission is in process, Thank You [school_name]','ParentRegistration','[parent_name], [student_name], [school_name]'],
+                ['sms', 'student_admission_in_progress', '', 'Dear parent [parent_name], your child [member_name] admission is in process, Thank You [church_name]','ParentRegistration','[parent_name], [member_name], [church_name]'],
             // Module Base SMS Sending End
 
-            ['sms', 'student_absent_notification', '', 'Hi [parent_name], Your child [student_name] absent for [number_of_subject] subjects. Those are [subject_list] on [date], Thank You [school_name]', '', '[parent_name], [student_name], [number_of_subject], [subject_list], [date], [school_name]'],
+            ['sms', 'student_absent_notification', '', 'Hi [parent_name], Your child [member_name] absent for [number_of_subject] subjects. Those are [subject_list] on [date], Thank You [church_name]', '', '[parent_name], [member_name], [number_of_subject], [subject_list], [date], [church_name]'],
             // SMS End
 
             // Email Start
@@ -136,7 +136,7 @@ class CreateSmsTemplatesTable extends Migration
                                                     <div class="txtTinyMce-wrapper" style="line-height:1.8;">
                                                         <h1>Hi [user_name] ,</h1>
                                                         <p style="margin:10px 0px 30px;line-height:1.929;font-size:16px;color:rgb(113,128,150);">
-                                                            It is test email . If your email configuration is okay then you will be got this email .Thank You [school_name]
+                                                            It is test email . If your email configuration is okay then you will be got this email .Thank You [church_name]
                                                         </p>
                                                     </div>
                                                 </div>
@@ -173,7 +173,7 @@ class CreateSmsTemplatesTable extends Migration
                         </td>
                     </tr>
                 </tbody>
-            </table>', '', '[user_name], [school_name]'],
+            </table>', '', '[user_name], [church_name]'],
 
 
             ['email', 'password_reset', 'Password Reset',
@@ -240,7 +240,7 @@ class CreateSmsTemplatesTable extends Migration
                                                                 <br>
                                                             </p>
                                                             </br>
-                                                            Thank You, [school_name]
+                                                            Thank You, [church_name]
                                                         </div>
                                                     </div>
                                                 </div>
@@ -276,7 +276,7 @@ class CreateSmsTemplatesTable extends Migration
                             </td>
                         </tr>
                     </tbody>
-            </table>', '', '[name], [reset_link], [school_name]'],
+            </table>', '', '[name], [reset_link], [church_name]'],
 
             ['email', 'student_login_credentials', 'Student Login Credentials',
             '<table bgcolor="#FFFFFF" cellpadding="0" cellspacing="0" class="nl-container" style="table-layout:fixed;vertical-align:top;min-width:320px;border-spacing:0;border-collapse:collapse;background-color:#FFFFFF;width:100%;" width="100%">
@@ -323,9 +323,9 @@ class CreateSmsTemplatesTable extends Migration
                                                 </h1>
                                                 <div style="line-height:1.8;padding:20px 15px;">
                                                     <div class="txtTinyMce-wrapper" style="line-height:1.8;">
-                                                        <h1>Hi [student_name] ,</h1>
+                                                        <h1>Hi [member_name] ,</h1>
                                                         <p style="margin:10px 0px 30px;line-height:1.929;font-size:16px;color:rgb(113,128,150);">
-                                                            Welcome to [school_name]. Congratulations ! You have registered successfully. Please login using this username [username] and password [password]. Thank You, [school_name]
+                                                            Welcome to [church_name]. Congratulations ! You have registered successfully. Please login using this username [username] and password [password]. Thank You, [church_name]
                                                         </p>
                                                     </div>
                                                 </div>
@@ -362,7 +362,7 @@ class CreateSmsTemplatesTable extends Migration
                         </td>
                     </tr>
                 </tbody>
-            </table>', '', '[student_name], [school_name], [username], [password]'],
+            </table>', '', '[member_name], [church_name], [username], [password]'],
 
             ['email', 'frontend_contact', 'Contact',
             '<table bgcolor="#FFFFFF" cellpadding="0" cellspacing="0" class="nl-container" style="table-layout:fixed;vertical-align:top;min-width:320px;border-spacing:0;border-collapse:collapse;background-color:#FFFFFF;width:100%;" width="100%">
@@ -413,7 +413,7 @@ class CreateSmsTemplatesTable extends Migration
                                                             </br>
                                                             message: [contact_message]
                                                             </br>
-                                                            Thank You, [school_name]
+                                                            Thank You, [church_name]
                                                         </p>
                                                     </div>
                                                 </div>
@@ -450,7 +450,7 @@ class CreateSmsTemplatesTable extends Migration
                         </td>
                     </tr>
                 </tbody>
-            </table>', '', '[contact_name], [contact_email], [contact_subject], [contact_message], [school_name]'],
+            </table>', '', '[contact_name], [contact_email], [contact_subject], [contact_message], [church_name]'],
 
             ['email', 'communication_sent_email', 'Sent Email',
             '<table bgcolor="#FFFFFF" cellpadding="0" cellspacing="0" class="nl-container" style="table-layout:fixed;vertical-align:top;min-width:320px;border-spacing:0;border-collapse:collapse;background-color:#FFFFFF;width:100%;" width="100%">
@@ -503,7 +503,7 @@ class CreateSmsTemplatesTable extends Migration
                                                             </br>
                                                             Description : [description]
                                                             </br>
-                                                            Thank You, [school_name]
+                                                            Thank You, [church_name]
                                                         </p>
                                                     </div>
                                                 </div>
@@ -540,7 +540,7 @@ class CreateSmsTemplatesTable extends Migration
                         </td>
                     </tr>
                 </tbody>
-            </table>', '', '[title], [description], [school_name]'],
+            </table>', '', '[title], [description], [church_name]'],
 
             ['email', 'parent_login_credentials', 'Parent Login Credentials', 
             '<table bgcolor="#FFFFFF" cellpadding="0" cellspacing="0" class="nl-container" style="table-layout:fixed;vertical-align:top;min-width:320px;border-spacing:0;border-collapse:collapse;background-color:#FFFFFF;width:100%;" width="100%">
@@ -589,7 +589,7 @@ class CreateSmsTemplatesTable extends Migration
                                                     <div class="txtTinyMce-wrapper" style="line-height:1.8;">
                                                         <h1>Hi [father_name] ,</h1>
                                                         <p style="margin:10px 0px 30px;line-height:1.929;font-size:16px;color:rgb(113,128,150);">
-                                                            Welcome to [school_name]. Congratulations ! You have registered successfully. Please login using this username [username] and password [password]. Thank You, [school_name]
+                                                            Welcome to [church_name]. Congratulations ! You have registered successfully. Please login using this username [username] and password [password]. Thank You, [church_name]
                                                         </p>
                                                     </div>
                                                 </div>
@@ -626,7 +626,7 @@ class CreateSmsTemplatesTable extends Migration
                         </td>
                     </tr>
                 </tbody>
-            </table>', '', '[student_name], [father_name], [school_name], [username], [password]'],
+            </table>', '', '[member_name], [father_name], [church_name], [username], [password]'],
 
 
             ['email', 'staff_login_credentials', 'Staff Login Credentials', 
@@ -676,7 +676,7 @@ class CreateSmsTemplatesTable extends Migration
                                                     <div class="txtTinyMce-wrapper" style="line-height:1.8;">
                                                         <h1>Hi [name] ,</h1>
                                                         <p style="margin:10px 0px 30px;line-height:1.929;font-size:16px;color:rgb(113,128,150);">
-                                                            Welcome to [school_name]. Congratulations ! You have registered successfully. Please login using this username [username] and password [password]. Thank You, [school_name]
+                                                            Welcome to [church_name]. Congratulations ! You have registered successfully. Please login using this username [username] and password [password]. Thank You, [church_name]
                                                         </p>
                                                     </div>
                                                 </div>
@@ -713,7 +713,7 @@ class CreateSmsTemplatesTable extends Migration
                         </td>
                     </tr>
                 </tbody>
-            </table>', '', '[name], [school_name], [username], [password]'],
+            </table>', '', '[name], [church_name], [username], [password]'],
 
             ['email', 'due_fees_payment', 'Duee Fees Payment', 
             '<table bgcolor="#FFFFFF" cellpadding="0" cellspacing="0" class="nl-container" style="table-layout:fixed;vertical-align:top;min-width:320px;border-spacing:0;border-collapse:collapse;background-color:#FFFFFF;width:100%;" width="100%">
@@ -760,9 +760,9 @@ class CreateSmsTemplatesTable extends Migration
                                                 </h1>
                                                 <div style="line-height:1.8;padding:20px 15px;">
                                                     <div class="txtTinyMce-wrapper" style="line-height:1.8;">
-                                                        <h1>Hi [student_name],</h1>
+                                                        <h1>Hi [member_name],</h1>
                                                         <p style="margin:10px 0px 30px;line-height:1.929;font-size:16px;color:rgb(113,128,150);">
-                                                            You fees due amount [due_amount] for [fees_name] on [date]. Thank You, [school_name]
+                                                            You fees due amount [due_amount] for [fees_name] on [date]. Thank You, [church_name]
                                                         </p>
                                                     </div>
                                                 </div>
@@ -799,7 +799,7 @@ class CreateSmsTemplatesTable extends Migration
                         </td>
                     </tr>
                 </tbody>
-            </table>','', '[student_name], [due_amount], [fees_name], [date], [school_name]'],
+            </table>','', '[member_name], [due_amount], [fees_name], [date], [church_name]'],
 
             ['email', 'dues_payment', 'Dues Payment', 
             '<table bgcolor="#FFFFFF" cellpadding="0" cellspacing="0" class="nl-container" style="table-layout:fixed;vertical-align:top;min-width:320px;border-spacing:0;border-collapse:collapse;background-color:#FFFFFF;width:100%;" width="100%">
@@ -846,9 +846,9 @@ class CreateSmsTemplatesTable extends Migration
                                                 </h1>
                                                 <div style="line-height:1.8;padding:20px 15px;">
                                                     <div class="txtTinyMce-wrapper" style="line-height:1.8;">
-                                                        <h1>Hi [student_name],</h1>
+                                                        <h1>Hi [member_name],</h1>
                                                         <p style="margin:10px 0px 30px;line-height:1.929;font-size:16px;color:rgb(113,128,150);">
-                                                            You fees due amount [due_amount] for [fees_name] on [date]. Thank You, [school_name]
+                                                            You fees due amount [due_amount] for [fees_name] on [date]. Thank You, [church_name]
                                                         </p>
                                                     </div>
                                                 </div>
@@ -885,7 +885,7 @@ class CreateSmsTemplatesTable extends Migration
                         </td>
                     </tr>
                 </tbody>
-            </table>','Fees', '[student_name], [due_amount], [fees_name], [date], [school_name]'],
+            </table>','Fees', '[member_name], [due_amount], [fees_name], [date], [church_name]'],
             
             ['email', 'parent_reject_bank_payment', 'Reject Bank Payment', 
             '<table bgcolor="#FFFFFF" cellpadding="0" cellspacing="0" class="nl-container" style="table-layout:fixed;vertical-align:top;min-width:320px;border-spacing:0;border-collapse:collapse;background-color:#FFFFFF;width:100%;" width="100%">
@@ -934,7 +934,7 @@ class CreateSmsTemplatesTable extends Migration
                                                     <div class="txtTinyMce-wrapper" style="line-height:1.8;">
                                                         <h1>Dear [parent_name],</h1>
                                                         <p style="margin:10px 0px 30px;line-height:1.929;font-size:16px;color:rgb(113,128,150);">
-                                                            your child [student_name] fees rejected . Reject Note [note] [date].Thank You, [school_name]
+                                                            your child [member_name] fees rejected . Reject Note [note] [date].Thank You, [church_name]
                                                         </p>
                                                     </div>
                                                 </div>
@@ -971,7 +971,7 @@ class CreateSmsTemplatesTable extends Migration
                         </td>
                     </tr>
                 </tbody>
-            </table>', '', '[parent_name], [student_name], [note], [date], [school_name]'],
+            </table>', '', '[parent_name], [member_name], [note], [date], [church_name]'],
 
             ['email', 'student_reject_bank_payment', 'Reject Bank Payment', 
             '<table bgcolor="#FFFFFF" cellpadding="0" cellspacing="0" class="nl-container" style="table-layout:fixed;vertical-align:top;min-width:320px;border-spacing:0;border-collapse:collapse;background-color:#FFFFFF;width:100%;" width="100%">
@@ -1018,9 +1018,9 @@ class CreateSmsTemplatesTable extends Migration
                                                 </h1>
                                                 <div style="line-height:1.8;padding:20px 15px;">
                                                     <div class="txtTinyMce-wrapper" style="line-height:1.8;">
-                                                        <h1>Dear [student_name],</h1>
+                                                        <h1>Dear [member_name],</h1>
                                                         <p style="margin:10px 0px 30px;line-height:1.929;font-size:16px;color:rgb(113,128,150);">
-                                                            Fees rejected . Reject Note [note] at [date] .Thank You, [school_name]
+                                                            Fees rejected . Reject Note [note] at [date] .Thank You, [church_name]
                                                         </p>
                                                     </div>
                                                 </div>
@@ -1057,7 +1057,7 @@ class CreateSmsTemplatesTable extends Migration
                         </td>
                     </tr>
                 </tbody>
-            </table>', '', '[student_name], [note], [date], [school_name]'],
+            </table>', '', '[member_name], [note], [date], [church_name]'],
 
             ['email', 'wallet_approve', 'Approve Wallet Payment',
             '<table bgcolor="#FFFFFF" cellpadding="0" cellspacing="0" class="nl-container" style="table-layout:fixed;vertical-align:top;min-width:320px;border-spacing:0;border-collapse:collapse;background-color:#FFFFFF;width:100%;" width="100%">
@@ -1106,7 +1106,7 @@ class CreateSmsTemplatesTable extends Migration
                                                     <div class="txtTinyMce-wrapper" style="line-height:1.8;">
                                                         <h1>Hi [name],</h1>
                                                         <p style="margin:10px 0px 30px;line-height:1.929;font-size:16px;color:rgb(113,128,150);">
-                                                            Your Wallet Diposit Request [add_balance] via [method] on [create_date] is approved by [school_name] .Your current balance is now [current_balance] <br> Thank You, [school_name]
+                                                            Your Wallet Diposit Request [add_balance] via [method] on [create_date] is approved by [church_name] .Your current balance is now [current_balance] <br> Thank You, [church_name]
                                                         </p>
                                                     </div>
                                                 </div>
@@ -1143,7 +1143,7 @@ class CreateSmsTemplatesTable extends Migration
                         </td>
                     </tr>
                 </tbody>
-            </table>','Wallet','[name], [add_balance], [method], [create_date], [school_name], [current_balance]'],
+            </table>','Wallet','[name], [add_balance], [method], [create_date], [church_name], [current_balance]'],
 
             ['email', 'wallet_reject', 'Reject Wallet Payment', 
             '<table bgcolor="#FFFFFF" cellpadding="0" cellspacing="0" class="nl-container" style="table-layout:fixed;vertical-align:top;min-width:320px;border-spacing:0;border-collapse:collapse;background-color:#FFFFFF;width:100%;" width="100%">
@@ -1192,7 +1192,7 @@ class CreateSmsTemplatesTable extends Migration
                                                     <div class="txtTinyMce-wrapper" style="line-height:1.8;">
                                                         <h1>Hi [name],</h1>
                                                         <p style="margin:10px 0px 30px;line-height:1.929;font-size:16px;color:rgb(113,128,150);">
-                                                            Your Wallet Diposit Request [add_balance] via [method] on [create_date] is <strong>Reject</strong> by [school_name] <strong>Reason: [reject_reason] </strong> .Your current balance is now [current_balance] <br> Thank You, [school_name]
+                                                            Your Wallet Diposit Request [add_balance] via [method] on [create_date] is <strong>Reject</strong> by [church_name] <strong>Reason: [reject_reason] </strong> .Your current balance is now [current_balance] <br> Thank You, [church_name]
                                                         </p>
                                                     </div>
                                                 </div>
@@ -1229,7 +1229,7 @@ class CreateSmsTemplatesTable extends Migration
                         </td>
                     </tr>
                 </tbody>
-            </table>','Wallet', '[name], [add_balance], [method], [create_date], [school_name], [reject_reason], [current_balance]'],
+            </table>','Wallet', '[name], [add_balance], [method], [create_date], [church_name], [reject_reason], [current_balance]'],
 
             ['email', 'fees_extra_amount_add', 'Fee Extra Amoun Add', 
             '<table bgcolor="#FFFFFF" cellpadding="0" cellspacing="0" class="nl-container" style="table-layout:fixed;vertical-align:top;min-width:320px;border-spacing:0;border-collapse:collapse;background-color:#FFFFFF;width:100%;" width="100%">
@@ -1278,7 +1278,7 @@ class CreateSmsTemplatesTable extends Migration
                                                     <div class="txtTinyMce-wrapper" style="line-height:1.8;">
                                                         <h1>Hi [name],</h1>
                                                         <p style="margin:10px 0px 30px;line-height:1.929;font-size:16px;color:rgb(113,128,150);">
-                                                            Your Xtra Fees Amount Add [school_name] , In Your Wallet Amount:  [add_balance] . Which Is Fees Add Payment Via [method] on [create_date] Your previous Balance Was [previous_balance] <br> .Your Current Balance Is Now [current_balance] <br> Thank You, [school_name]
+                                                            Your Xtra Fees Amount Add [church_name] , In Your Wallet Amount:  [add_balance] . Which Is Fees Add Payment Via [method] on [create_date] Your previous Balance Was [previous_balance] <br> .Your Current Balance Is Now [current_balance] <br> Thank You, [church_name]
                                                         </p>
                                                     </div>
                                                 </div>
@@ -1315,7 +1315,7 @@ class CreateSmsTemplatesTable extends Migration
                         </td>
                     </tr>
                 </tbody>
-            </table>','Wallet', '[name], [school_name], [add_balance], [method], [create_date], [previous_balance], [current_balance]'],
+            </table>','Wallet', '[name], [church_name], [add_balance], [method], [create_date], [previous_balance], [current_balance]'],
 
             ['email', 'wallet_refund', 'Wallet Refund',
             '<table bgcolor="#FFFFFF" cellpadding="0" cellspacing="0" class="nl-container" style="table-layout:fixed;vertical-align:top;min-width:320px;border-spacing:0;border-collapse:collapse;background-color:#FFFFFF;width:100%;" width="100%">
@@ -1364,7 +1364,7 @@ class CreateSmsTemplatesTable extends Migration
                                                     <div class="txtTinyMce-wrapper" style="line-height:1.8;">
                                                         <h1>Hi [name],</h1>
                                                         <p style="margin:10px 0px 30px;line-height:1.929;font-size:16px;color:rgb(113,128,150);">
-                                                            Your Amount [refund_amount] Is Successfully Refunded by [school_name] on [create_date] <br>.Your Current Balance Is Now [current_balance].Thank You, [school_name]
+                                                            Your Amount [refund_amount] Is Successfully Refunded by [church_name] on [create_date] <br>.Your Current Balance Is Now [current_balance].Thank You, [church_name]
                                                         </p>
                                                     </div>
                                                 </div>
@@ -1401,7 +1401,7 @@ class CreateSmsTemplatesTable extends Migration
                         </td>
                     </tr>
                 </tbody>
-            </table>','Wallet', '[name], [refund_amount], [school_name], [create_date], [current_balance]'],
+            </table>','Wallet', '[name], [refund_amount], [church_name], [create_date], [current_balance]'],
             
             ['email', 'student_registration', 'Student Registration',
             '<table bgcolor="#FFFFFF" cellpadding="0" cellspacing="0" class="nl-container" style="table-layout:fixed;vertical-align:top;min-width:320px;border-spacing:0;border-collapse:collapse;background-color:#FFFFFF;width:100%;" width="100%">
@@ -1450,7 +1450,7 @@ class CreateSmsTemplatesTable extends Migration
                                                     <div class="txtTinyMce-wrapper" style="line-height:1.8;">
                                                         <h1>Hi [name] ,</h1>
                                                         <p style="margin:10px 0px 30px;line-height:1.929;font-size:16px;color:rgb(113,128,150);">
-                                                            Welcome to [school_name]. Congratulations ! You have registered successfully.Thank You, [school_name]
+                                                            Welcome to [church_name]. Congratulations ! You have registered successfully.Thank You, [church_name]
                                                         </p>
                                                     </div>
                                                 </div>
@@ -1487,7 +1487,7 @@ class CreateSmsTemplatesTable extends Migration
                         </td>
                     </tr>
                 </tbody>
-            </table>','ParentRegistration', '[name], [school_name]'],
+            </table>','ParentRegistration', '[name], [church_name]'],
 
             ['email', 'student_registration_for_parents', 'Student Registration', 
             '<table bgcolor="#FFFFFF" cellpadding="0" cellspacing="0" class="nl-container" style="table-layout:fixed;vertical-align:top;min-width:320px;border-spacing:0;border-collapse:collapse;background-color:#FFFFFF;width:100%;" width="100%">
@@ -1536,7 +1536,7 @@ class CreateSmsTemplatesTable extends Migration
                                                     <div class="txtTinyMce-wrapper" style="line-height:1.8;">
                                                         <h1>Hi [father_name] ,</h1>
                                                         <p style="margin:10px 0px 30px;line-height:1.929;font-size:16px;color:rgb(113,128,150);">
-                                                            Welcome to [school_name]. Congratulations ! You have registered successfully. Please login using this username [username] and password [password]. Thank You, [school_name]
+                                                            Welcome to [church_name]. Congratulations ! You have registered successfully. Please login using this username [username] and password [password]. Thank You, [church_name]
                                                         </p>
                                                     </div>
                                                 </div>
@@ -1573,7 +1573,7 @@ class CreateSmsTemplatesTable extends Migration
                         </td>
                     </tr>
                 </tbody>
-            </table>','ParentRegistration','[father_name], [school_name], [username], [password]'],
+            </table>','ParentRegistration','[father_name], [church_name], [username], [password]'],
 
 
             // lead reminder 
@@ -1630,7 +1630,7 @@ class CreateSmsTemplatesTable extends Migration
                                                            Email : [lead_email],<br>
                                                            Date Time : [lead_date] [lead_time],<br>
                                                            Details : [lead_description],</br>
-                                                           Thank You, [school_name]
+                                                           Thank You, [church_name]
                                                         </p>
                                                     </div>
                                                 </div>
@@ -1667,7 +1667,7 @@ class CreateSmsTemplatesTable extends Migration
                         </td>
                     </tr>
                 </tbody>
-            </table>', 'Lead', '[assign_user], [lead_name], [lead_phone], [lead_email], [lead_date], [lead_time], [lead_description], [school_name]'],
+            </table>', 'Lead', '[assign_user], [lead_name], [lead_phone], [lead_email], [lead_date], [lead_time], [lead_description], [church_name]'],
 
             ['email', 'student_course_purchase', 'Lms Course Purchase',
             '<table bgcolor="#FFFFFF" cellpadding="0" cellspacing="0" class="nl-container" style="table-layout:fixed;vertical-align:top;min-width:320px;border-spacing:0;border-collapse:collapse;background-color:#FFFFFF;width:100%;" width="100%">
@@ -1716,7 +1716,7 @@ class CreateSmsTemplatesTable extends Migration
                                                     <div class="txtTinyMce-wrapper" style="line-height:1.8;">
                                                         <h1>Hi [name],</h1>
                                                         <p style="margin:10px 0px 30px;line-height:1.929;font-size:16px;color:rgb(113,128,150);">
-                                                            Your Course Purchase Sucessfully <br> Thanks You, [school_name]
+                                                            Your Course Purchase Sucessfully <br> Thanks You, [church_name]
                                                         </p>
                                                     </div>
                                                 </div>
@@ -1753,7 +1753,7 @@ class CreateSmsTemplatesTable extends Migration
                         </td>
                     </tr>
                 </tbody>
-            </table>','Lms','[name], [school_name]'],
+            </table>','Lms','[name], [church_name]'],
 
             ['email', 'parent_course_purchase', 'Lms Course Purchase',
             '<table bgcolor="#FFFFFF" cellpadding="0" cellspacing="0" class="nl-container" style="table-layout:fixed;vertical-align:top;min-width:320px;border-spacing:0;border-collapse:collapse;background-color:#FFFFFF;width:100%;" width="100%">
@@ -1802,7 +1802,7 @@ class CreateSmsTemplatesTable extends Migration
                                                     <div class="txtTinyMce-wrapper" style="line-height:1.8;">
                                                         <h1>Hi [name],</h1>
                                                         <p style="margin:10px 0px 30px;line-height:1.929;font-size:16px;color:rgb(113,128,150);">
-                                                            Your Course Purchase Sucessfully <br> Thanks You, [school_name]
+                                                            Your Course Purchase Sucessfully <br> Thanks You, [church_name]
                                                         </p>
                                                     </div>
                                                 </div>
@@ -1839,7 +1839,7 @@ class CreateSmsTemplatesTable extends Migration
                         </td>
                     </tr>
                 </tbody>
-            </table>','Lms','[name], [school_name]'],
+            </table>','Lms','[name], [church_name]'],
 
             ['email', 'student_approve_payment', 'Approve Lms Course Payment',
             '<table bgcolor="#FFFFFF" cellpadding="0" cellspacing="0" class="nl-container" style="table-layout:fixed;vertical-align:top;min-width:320px;border-spacing:0;border-collapse:collapse;background-color:#FFFFFF;width:100%;" width="100%">
@@ -1888,7 +1888,7 @@ class CreateSmsTemplatesTable extends Migration
                                                     <div class="txtTinyMce-wrapper" style="line-height:1.8;">
                                                         <h1>Hi [name],</h1>
                                                         <p style="margin:10px 0px 30px;line-height:1.929;font-size:16px;color:rgb(113,128,150);">
-                                                            Approve Payment.Thanks You, [school_name]
+                                                            Approve Payment.Thanks You, [church_name]
                                                         </p>
                                                     </div>
                                                 </div>
@@ -1925,7 +1925,7 @@ class CreateSmsTemplatesTable extends Migration
                         </td>
                     </tr>
                 </tbody>
-            </table>','Lms','[name], [school_name]'],
+            </table>','Lms','[name], [church_name]'],
 
             ['email', 'parent_approve_payment', 'Approve Lms Course Payment',
             '<table bgcolor="#FFFFFF" cellpadding="0" cellspacing="0" class="nl-container" style="table-layout:fixed;vertical-align:top;min-width:320px;border-spacing:0;border-collapse:collapse;background-color:#FFFFFF;width:100%;" width="100%">
@@ -1974,7 +1974,7 @@ class CreateSmsTemplatesTable extends Migration
                                                     <div class="txtTinyMce-wrapper" style="line-height:1.8;">
                                                         <h1>Hi [name],</h1>
                                                         <p style="margin:10px 0px 30px;line-height:1.929;font-size:16px;color:rgb(113,128,150);">
-                                                            Approve Payment.Thanks You, [school_name]
+                                                            Approve Payment.Thanks You, [church_name]
                                                         </p>
                                                     </div>
                                                 </div>
@@ -2011,7 +2011,7 @@ class CreateSmsTemplatesTable extends Migration
                         </td>
                     </tr>
                 </tbody>
-            </table>','Lms','[name], [school_name]'],
+            </table>','Lms','[name], [church_name]'],
             
             ['email', 'student_reject_payment', 'Reject Lms Course Payment',
             '<table bgcolor="#FFFFFF" cellpadding="0" cellspacing="0" class="nl-container" style="table-layout:fixed;vertical-align:top;min-width:320px;border-spacing:0;border-collapse:collapse;background-color:#FFFFFF;width:100%;" width="100%">
@@ -2060,7 +2060,7 @@ class CreateSmsTemplatesTable extends Migration
                                                     <div class="txtTinyMce-wrapper" style="line-height:1.8;">
                                                         <h1>Hi [name],</h1>
                                                         <p style="margin:10px 0px 30px;line-height:1.929;font-size:16px;color:rgb(113,128,150);">
-                                                            Reject Payment.Thanks You, [school_name]
+                                                            Reject Payment.Thanks You, [church_name]
                                                         </p>
                                                     </div>
                                                 </div>
@@ -2097,7 +2097,7 @@ class CreateSmsTemplatesTable extends Migration
                         </td>
                     </tr>
                 </tbody>
-            </table>','Lms','[name], [school_name]'],
+            </table>','Lms','[name], [church_name]'],
 
             ['email', 'parent_reject_payment', 'Reject Lms Course Payment',
             '<table bgcolor="#FFFFFF" cellpadding="0" cellspacing="0" class="nl-container" style="table-layout:fixed;vertical-align:top;min-width:320px;border-spacing:0;border-collapse:collapse;background-color:#FFFFFF;width:100%;" width="100%">
@@ -2146,7 +2146,7 @@ class CreateSmsTemplatesTable extends Migration
                                                     <div class="txtTinyMce-wrapper" style="line-height:1.8;">
                                                         <h1>Hi [name],</h1>
                                                         <p style="margin:10px 0px 30px;line-height:1.929;font-size:16px;color:rgb(113,128,150);">
-                                                            Reject Payment. Thanks You, [school_name]
+                                                            Reject Payment. Thanks You, [church_name]
                                                         </p>
                                                     </div>
                                                 </div>
@@ -2183,13 +2183,13 @@ class CreateSmsTemplatesTable extends Migration
                         </td>
                     </tr>
                 </tbody>
-            </table>','Lms','[name], [school_name]'],
+            </table>','Lms','[name], [church_name]'],
 
             // end lead reminder
 
             //Email End
         ];
-        // $schools=SmSchool::get(['id','school_name']);
+        // $schools=SmSchool::get(['id','church_name']);
         // foreach($schools as $school){
             foreach($allTempletes as $allTemplete){
                 $storeTemplete = new SmsTemplate();
@@ -2199,7 +2199,7 @@ class CreateSmsTemplatesTable extends Migration
                 $storeTemplete->body = $allTemplete[3];
                 $storeTemplete->module = $allTemplete[4];
                 $storeTemplete->variable = $allTemplete[5];               
-                // $storeTemplete->school_id = $school->id;
+                // $storeTemplete->church_id = $school->id;
                 $storeTemplete->save();
             }
         //  }

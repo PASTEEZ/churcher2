@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>@lang('student.student_id_card')</title>
+    <title>@lang('student.member_id_card')</title>
     <link rel="stylesheet" href="{{asset('public/backEnd/')}}/vendors/css/bootstrap.css" />
     <link rel="stylesheet" href="{{asset('public/backEnd/')}}/css/style.css" />
     <style media="print">
@@ -54,7 +54,7 @@ table {
                                <!--  <center>
                                     <img src="{{asset('public/backEnd/img/student/id-card-bg.png')}}" style="width: 100%; height: auto; padding: 0px; margin: 0px" >
                                 </center> -->
-                                <h3 style="padding: 5px; text-align: center; margin-bottom: 0px; font-size: 12px;  color: #fff; font-family: 'PT Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif; ">@lang('common.view_student_id_card')</h3>
+                                <h3 style="padding: 5px; text-align: center; margin-bottom: 0px; font-size: 12px;  color: #fff; font-family: 'PT Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif; ">@lang('common.view_member_id_card')</h3>
                             </td>
                         </tr>
                         <tr >
@@ -62,33 +62,33 @@ table {
                                 <img src="{{ @$student->student_photo != "" ? asset(@$student->student_photo) : asset('public/backEnd/img/student/id-card-img.jpg') }}" alt="" style="width: 30%; margin-top: 5px;">
                             </td>
                         </tr>
-                        @if(@$id_card->student_name == 1)
+                        @if(@$id_card->member_name == 1)
                         <tr >
                             <td colspan="2" style="padding-left: 20px; border-left: 1px solid #ddd">@lang('common.name')</td>
                             
                             <td style="text-align: right; margin-right: 40px !important; border-right: 1px solid #ddd">{{@$student->full_name}}</td>
                         </tr >
                         @endif
-                        @if(!empty($id_card->academic_id))
+                        @if(!empty($id_card->church_year_id))
                         <tr >
-                            <td colspan="2" style="padding-left: 20px; white-space:nowrap; border-left: 1px solid #ddd">@lang('common.academic_year')</td>
+                            <td colspan="2" style="padding-left: 20px; white-space:nowrap; border-left: 1px solid #ddd">@lang('common.church_year')</td>
                             
                             <td style="text-align: right; margin-right: 40px !important; border-right: 1px solid #ddd">{{@$student->academicYear->year}} - [{{@$student->academicYear->title}}]</td>
                         </tr >
                         @endif
-                        @if(@$id_card->admission_no == 1)
+                        @if(@$id_card->registration_no == 1)
                         <tr >
-                            <td colspan="2" style="padding-left: 20px; border-left: 1px solid #ddd">@lang('student.admission_no')</td>
+                            <td colspan="2" style="padding-left: 20px; border-left: 1px solid #ddd">@lang('student.registration_no')</td>
                             
-                            <td style="text-align: right; margin-right: 40px !important; border-right: 1px solid #ddd">{{ @$student->admission_no}}</td>
+                            <td style="text-align: right; margin-right: 40px !important; border-right: 1px solid #ddd">{{ @$student->registration_no}}</td>
                         </tr>
                         @endif
                         @if(@$id_card->class == 1)
                         <tr >
                             <td colspan="2" style="padding-left: 20px; border-left: 1px solid #ddd;">@lang('common.class')</td>                            
                             <td style="text-align: right; margin-right: 40px !important; border-right: 1px solid #ddd">
-                                {{ @$student->class!=""?@$student->class->class_name:""}} 
-                                ({{ @$student->section!=""?@$student->section->section_name:""}})</td>
+                                {{ @$student->class!=""?@$student->class->age_group_name:""}} 
+                                ({{ @$student->section!=""?@$student->section->mgender_name:""}})</td>
                         </tr>
                         @endif
                         @if(@$id_card->father_name == 1)

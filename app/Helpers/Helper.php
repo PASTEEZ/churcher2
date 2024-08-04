@@ -72,14 +72,14 @@ use Modules\ParentRegistration\Entities\SmStudentRegistration;
 
 function sendEmailBio($data, $to_name, $to_email, $email_sms_title)
 {
-    $systemSetting = DB::table('sm_general_settings')->select('school_name', 'email')->find(1);
+    $systemSetting = DB::table('sm_general_settings')->select('church_name', 'email')->find(1);
     $systemEmail = DB::table('sm_email_settings')->find(1);
     $system_email = $systemEmail->from_email;
-    $school_name = $systemSetting->school_name;
+    $church_name = $systemSetting->church_name;
     if (!empty($system_email)) {
         $data['email_sms_title'] = $email_sms_title;
         $data['system_email'] = $system_email;
-        $data['school_name'] = $school_name;
+        $data['church_name'] = $church_name;
         $details = $to_email;
         dispatch(new \App\Jobs\SendEmailJob($data, $details));
         $error_data = [];
@@ -93,7 +93,7 @@ function sendEmailBio($data, $to_name, $to_email, $email_sms_title)
 if (!function_exists('activeSmsGateway')) {
     function activeSmsGateway()
     {
-        $activeSmsGateway = SmSmsGateway::where('school_id', Auth::user()->school_id)->where('active_status', '=', 1)->first();
+        $activeSmsGateway = SmSmsGateway::where('church_id', Auth::user()->church_id)->where('active_status', '=', 1)->first();
 
         return $activeSmsGateway;
     }
@@ -205,7 +205,7 @@ function sendSMSApi($to_mobile, $sms, $id)
 
 function sendSMSBio($to_mobile, $sms)
 {
-    $activeSmsGateway = SmSmsGateway::where('school_id', Auth::user()->school_id)->where('active_status', '=', 1)->first();
+    $activeSmsGateway = SmSmsGateway::where('church_id', Auth::user()->church_id)->where('active_status', '=', 1)->first();
     if ($activeSmsGateway->gateway_name == 'Twilio') {
 
         config(['TWILIO.SID' => $activeSmsGateway->twilio_account_sid]);
@@ -301,9 +301,9 @@ function sendSMSBio($to_mobile, $sms)
     return $result;
 } //end Msg91
 
-function getValueByString($student_id, $string, $extra = null)
+function getValueByString($member_id, $string, $extra = null)
 {
-    $student = SmStudent::find($student_id);
+    $student = SmStudent::find($member_id);
     if ($extra != null) {
         return $student->$string->$extra;
     } else {
@@ -311,9 +311,9 @@ function getValueByString($student_id, $string, $extra = null)
     }
 }
 
-function getParentName($student_id, $string, $extra = null)
+function getParentName($member_id, $string, $extra = null)
 {
-    $student = SmStudent::find($student_id);
+    $student = SmStudent::find($member_id);
     $parent = SmParent::where('id', $student->parent_id)->first();
     if ($extra != null) {
         return $student->$parent->$extra;
@@ -335,11 +335,11 @@ function SMSBody($body, $s_id, $time)
                 $str = str_replace('.', '', $str);
                 if ($str == "class") {
                     $str = "class";
-                    $extra = "class_name";
+                    $extra = "age_group_name";
                     $custom_array[$item] = getValueByString($s_id, $str, $extra);
                 } elseif ($str == "section") {
                     $str = "section";
-                    $extra = "section_name";
+                    $extra = "mgender_name";
                     $custom_array[$item] = getValueByString($s_id, $str, $extra);
                 } elseif ($str == 'check_in_time') {
                     $custom_array[$item] = $time;
@@ -523,14 +523,14 @@ if (!function_exists('getAcademicId')) {
             return session()->get('sessionId');
         } else {
             if (moduleStatusCheck('University')) {
-                $session_id = generalSetting()->un_academic_id;
+                $session_id = generalSetting()->un_church_year_id;
                 if (!$session_id) {
-                    $session_id = UnAcademicYear::where('school_id', Auth::user()->school_id)->where('active_status', 1)->first()->id;
+                    $session_id = UnAcademicYear::where('church_id', Auth::user()->church_id)->where('active_status', 1)->first()->id;
                 }
             } else {
                 $session_id = generalSetting()->session_id;
                 if (!$session_id) {
-                    $session_id = SmAcademicYear::where('school_id', Auth::user()->school_id)->where('active_status', 1)->first()->id;
+                    $session_id = SmAcademicYear::where('church_id', Auth::user()->church_id)->where('active_status', 1)->first()->id;
                 }
             }
 
@@ -546,7 +546,7 @@ if (!function_exists('timeZone')) {
         $time_zone_setup = session()->get('time_zone_setup');
         if (is_null($time_zone_setup)) {
             $time_zone = SmGeneralSettings::join('sm_time_zones', 'sm_time_zones.id', '=', 'sm_general_settings.time_zone_id')
-                ->where('school_id', 1)->first('time_zone');
+                ->where('church_id', 1)->first('time_zone');
             session()->put('time_zone_setup', $time_zone);
             $time_zone_setup = session()->get('time_zone_setup');
         }
@@ -559,7 +559,7 @@ if (!function_exists('schoolTimeZone')) {
         $time_zone_setup = session()->get('time_zone_setup');
         if (is_null($time_zone_setup)) {
             $time_zone = SmGeneralSettings::join('sm_time_zones', 'sm_time_zones.id', '=', 'sm_general_settings.time_zone_id')
-                ->where('school_id', Auth::user()->school_id)->first('time_zone');
+                ->where('church_id', Auth::user()->church_id)->first('time_zone');
             session()->put('time_zone_setup', $time_zone);
             $time_zone_setup = session()->get('time_zone_setup');
         }
@@ -573,8 +573,8 @@ if (!function_exists('getUserLanguage')) {
         if (Auth::check()) {
             return userLanguage();
         } else {
-            $school_id = app()->bound('school') ? app('school')->id : 1;
-            $user = User::where('role_id', 1)->where('school_id', $school_id)->first();
+            $church_id = app()->bound('school') ? app('school')->id : 1;
+            $user = User::where('role_id', 1)->where('church_id', $church_id)->first();
 
             return $user ? $user->language : 'en';
         }
@@ -602,7 +602,7 @@ if (!function_exists('getTempleteDetails')) {
         $data = SmsTemplate::query()->where('purpose', $purpose)->where('status', 1);
 
         if (Auth::check()) {
-            $details = $data->where('school_id', Auth::user()->school_id)->first();
+            $details = $data->where('church_id', Auth::user()->church_id)->first();
         } else {
             $details = $data->first();
         }
@@ -620,7 +620,7 @@ if (!function_exists('send_mail')) {
         }
 
         if (Auth::check()) {
-            $setting = SmEmailSetting::where('school_id', Auth::user()->school_id)->where('active_status', 1)->first();
+            $setting = SmEmailSetting::where('church_id', Auth::user()->church_id)->where('active_status', 1)->first();
         } else {
             $setting = SmEmailSetting::where('active_status', 1)->first();
         }
@@ -639,7 +639,7 @@ if (!function_exists('send_mail')) {
             if ($email_driver == "smtp") {
                 if (Schema::hasTable('sm_email_settings')) {
                     $config = Auth::check() ? DB::table('sm_email_settings')
-                        ->where('school_id', Auth::user()->school_id)
+                        ->where('church_id', Auth::user()->church_id)
                         ->where('mail_driver', 'smtp')
                         ->first() :
                         DB::table('sm_email_settings')
@@ -773,15 +773,15 @@ if (!function_exists('showDocument')) {
 // end get file path from helpers
 
 if (!function_exists('termResult')) {
-    function termResult($exam_id, $class_id, $section_id, $student_id, $subject_count)
+    function termResult($exam_id, $age_group_id, $mgender_id, $member_id, $subject_count)
     {
         try {
-            $assigned_subject = SmAssignSubject::where('class_id', $class_id)->where('section_id', $section_id)->get();
-            $mark_store = DB::table('sm_mark_stores')->where([['class_id', $class_id], ['section_id', $section_id], ['exam_term_id', $exam_id], ['student_id', $student_id]])->first();
+            $assigned_subject = SmAssignSubject::where('age_group_id', $age_group_id)->where('mgender_id', $mgender_id)->get();
+            $mark_store = DB::table('sm_mark_stores')->where([['age_group_id', $age_group_id], ['mgender_id', $mgender_id], ['exam_term_id', $exam_id], ['member_id', $member_id]])->first();
             $subject_marks = [];
             $subject_gpas = [];
             foreach ($assigned_subject as $subject) {
-                $subject_mark = DB::table('sm_mark_stores')->where([['class_id', $class_id], ['section_id', $section_id], ['exam_term_id', $exam_id], ['student_id', $student_id], ['subject_id', $subject->subject_id]])->first();
+                $subject_mark = DB::table('sm_mark_stores')->where([['age_group_id', $age_group_id], ['mgender_id', $mgender_id], ['exam_term_id', $exam_id], ['member_id', $member_id], ['subject_id', $subject->subject_id]])->first();
                 $custom_result = new CustomResultSetting; // correct
 
                 $subject_gpa = $custom_result->getGpa($subject_mark->total_marks);
@@ -801,19 +801,19 @@ if (!function_exists('termResult')) {
 }
 
 if (!function_exists('getFinalResult')) {
-    function getFinalResult($exam_id, $class_id, $section_id, $student_id, $percentage)
+    function getFinalResult($exam_id, $age_group_id, $mgender_id, $member_id, $percentage)
     {
         try {
-            $system_setting = SmGeneralSettings::where('school_id', auth()->user()->school_id)->first();
+            $system_setting = SmGeneralSettings::where('church_id', auth()->user()->church_id)->first();
             $system_setting = $system_setting->session_id;
-            $custom_result_setup = CustomResultSetting::where('academic_year', $system_setting)->first();
+            $custom_result_setup = CustomResultSetting::where('church_year', $system_setting)->first();
 
-            $assigned_subject = SmAssignSubject::where('class_id', $class_id)->where('section_id', $section_id)->get();
+            $assigned_subject = SmAssignSubject::where('age_group_id', $age_group_id)->where('mgender_id', $mgender_id)->get();
 
             $all_subjects_gpa = [];
             foreach ($assigned_subject as $subject) {
                 $custom_result = new CustomResultSetting;
-                $subject_gpa = $custom_result->getSubjectGpa($exam_id, $class_id, $section_id, $student_id, $subject->subject_id);
+                $subject_gpa = $custom_result->getSubjectGpa($exam_id, $age_group_id, $mgender_id, $member_id, $subject->subject_id);
                 $all_subjects_gpa[] = $subject_gpa[$subject->subject_id][1];
             }
             $percentage = $custom_result_setup->$percentage;
@@ -829,11 +829,11 @@ if (!function_exists('getFinalResult')) {
 }
 
 if (!function_exists('getSubjectGpa')) {
-    function getSubjectGpa($class_id, $section_id, $exam_id, $student_id, $subject)
+    function getSubjectGpa($age_group_id, $mgender_id, $exam_id, $member_id, $subject)
     {
         try {
             $subject_marks = [];
-            $subject_mark = DB::table('sm_mark_stores')->where('student_id', $student_id)->where('exam_term_id', '=', $exam_id)->first();
+            $subject_mark = DB::table('sm_mark_stores')->where('member_id', $member_id)->where('exam_term_id', '=', $exam_id)->first();
 
             $custom_result = new CustomResultSetting;
             $subject_gpa = $custom_result->getGpa($subject_mark->total_marks);
@@ -856,12 +856,12 @@ if (!function_exists('getGrade')) {
         try {
             if($description){
                 $marks_gpa = DB::table('sm_marks_grades')->where('percent_from', '<=', $marks)->where('percent_upto', '>=', $marks)
-                ->where('academic_id', getAcademicId())->first();
+                ->where('church_year_id', getAcademicId())->first();
             return $marks_gpa->description;
             }
             else{
                 $marks_gpa = DB::table('sm_marks_grades')->where('percent_from', '<=', $marks)->where('percent_upto', '>=', $marks)
-                ->where('academic_id', getAcademicId())->first();
+                ->where('church_year_id', getAcademicId())->first();
             return $marks_gpa->grade_name;
             }
 
@@ -872,13 +872,13 @@ if (!function_exists('getGrade')) {
 }
 
 if (!function_exists('getNumberOfPart')) {
-    function getNumberOfPart($subject_id, $class_id, $section_id, $exam_term_id)
+    function getNumberOfPart($subject_id, $age_group_id, $mgender_id, $exam_term_id)
     {
         try {
             $results = SmExamSetup::where([
-                ['class_id', $class_id],
+                ['age_group_id', $age_group_id],
                 ['subject_id', $subject_id],
-                ['section_id', $section_id],
+                ['mgender_id', $mgender_id],
                 ['exam_term_id', $exam_term_id],
             ])->get();
             return $results;
@@ -890,15 +890,15 @@ if (!function_exists('getNumberOfPart')) {
 }
 
 if (!function_exists('GetResultBySubjectId')) {
-    function GetResultBySubjectId($class_id, $section_id, $subject_id, $exam_id, $student_id)
+    function GetResultBySubjectId($age_group_id, $mgender_id, $subject_id, $exam_id, $member_id)
     {
 
         try {
             $data = SmMarkStore::where([
-                ['class_id', $class_id],
-                ['section_id', $section_id],
+                ['age_group_id', $age_group_id],
+                ['mgender_id', $mgender_id],
                 ['exam_term_id', $exam_id],
-                ['student_id', $student_id],
+                ['member_id', $member_id],
                 ['subject_id', $subject_id],
             ])->get();
             return $data;
@@ -910,15 +910,15 @@ if (!function_exists('GetResultBySubjectId')) {
 }
 
 if (!function_exists('GetFinalResultBySubjectId')) {
-    function GetFinalResultBySubjectId($class_id, $section_id, $subject_id, $exam_id, $student_id)
+    function GetFinalResultBySubjectId($age_group_id, $mgender_id, $subject_id, $exam_id, $member_id)
     {
 
         try {
             $data = SmResultStore::where([
-                ['class_id', $class_id],
-                ['section_id', $section_id],
+                ['age_group_id', $age_group_id],
+                ['mgender_id', $mgender_id],
                 ['exam_type_id', $exam_id],
-                ['student_id', $student_id],
+                ['member_id', $member_id],
                 ['subject_id', $subject_id],
             ])->first();
 
@@ -950,18 +950,18 @@ if (!function_exists('markGpa')) {
 if (!function_exists('getGrade')) {
     function getGrade($grade)
     {
-        $mark = SmMarksGrade::where('from', '<=', $grade)->where('up', '>=', $grade)->where('academic_id', getAcademicId())->first();
+        $mark = SmMarksGrade::where('from', '<=', $grade)->where('up', '>=', $grade)->where('church_year_id', getAcademicId())->first();
         if ($mark) {
             return $mark;
         } else {
             $fail_grade = SmMarksGrade::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->min('gpa');
 
             $mark = SmMarksGrade::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->where('gpa', $fail_grade)
                 ->first();
 
@@ -971,10 +971,10 @@ if (!function_exists('getGrade')) {
 }
 
 if (!function_exists('is_optional_subject')) {
-    function is_optional_subject($student_id, $subject_id)
+    function is_optional_subject($member_id, $subject_id)
     {
         try {
-            $result = SmOptionalSubjectAssign::where('student_id', $student_id)->where('subject_id', $subject_id)->first();
+            $result = SmOptionalSubjectAssign::where('member_id', $member_id)->where('subject_id', $subject_id)->first();
             if ($result) {
                 return true;
             } else {
@@ -987,14 +987,14 @@ if (!function_exists('is_optional_subject')) {
 }
 
 if (!function_exists('getMarksOfPart')) {
-    function getMarksOfPart($student_id, $subject_id, $class_id, $section_id, $exam_term_id)
+    function getMarksOfPart($member_id, $subject_id, $age_group_id, $mgender_id, $exam_term_id)
     {
         try {
             $results = SmMarkStore::where([
-                ['student_id', $student_id],
-                ['class_id', $class_id],
+                ['member_id', $member_id],
+                ['age_group_id', $age_group_id],
                 ['subject_id', $subject_id],
-                ['section_id', $section_id],
+                ['mgender_id', $mgender_id],
                 ['exam_term_id', $exam_term_id],
             ])->get();
             return $results;
@@ -1008,16 +1008,16 @@ if (!function_exists('getMarksOfPart')) {
 if (!function_exists('getExamResult')) {
     function getExamResult($exam_id, $student)
     {
-        $eligible_subjects = SmAssignSubject::where('class_id', $student->class_id)->where('section_id', $student->section_id)->where('academic_id', getAcademicId())
-            ->where('school_id', Auth::user()->school_id)->get();
+        $eligible_subjects = SmAssignSubject::where('age_group_id', $student->age_group_id)->where('mgender_id', $student->mgender_id)->where('church_year_id', getAcademicId())
+            ->where('church_id', Auth::user()->church_id)->get();
 
         foreach ($eligible_subjects as $subject) {
 
             $getMark = SmResultStore::where([
                 ['exam_type_id', $exam_id],
-                ['class_id', $student->class_id],
-                ['section_id', $student->section_id],
-                ['student_id', $student->id],
+                ['age_group_id', $student->age_group_id],
+                ['mgender_id', $student->mgender_id],
+                ['member_id', $student->id],
                 ['subject_id', $subject->subject_id],
             ])->first();
 
@@ -1027,9 +1027,9 @@ if (!function_exists('getExamResult')) {
 
             $result = SmResultStore::where([
                 ['exam_type_id', $exam_id],
-                ['class_id', $student->class_id],
-                ['section_id', $student->section_id],
-                ['student_id', $student->id],
+                ['age_group_id', $student->age_group_id],
+                ['mgender_id', $student->mgender_id],
+                ['member_id', $student->id],
             ])->get();
 
             return $result;
@@ -1041,20 +1041,20 @@ if (!function_exists('teacherAssignedClass')) {
     function teacherAssignedClass()
     {
         try {
-            $class_id = [];
+            $age_group_id = [];
             $role_id = Auth::user()->role_id;
             if ($role_id == 4) {
                 $classes = SmClassTeacher::where('teacher_id', Auth::user()->id)->get(['id']);
                 foreach ($classes as $class) {
-                    $class_id[] = $class->module_id;
+                    $age_group_id[] = $class->module_id;
                 }
             } else {
 
-                $general_setting = SmGeneralSettings::where('school_id', auth()->user()->school_id)->first();
-                return @$general_setting->school_name;
+                $general_setting = SmGeneralSettings::where('church_id', auth()->user()->church_id)->first();
+                return @$general_setting->church_name;
             }
         } catch (\Exception $e) {
-            return $class_id = [];
+            return $age_group_id = [];
         }
     }
 }
@@ -1064,13 +1064,13 @@ if (!function_exists('getValueByStringTestRegistration')) {
     {
         if ($str == 'password') {
             return '123456';
-        } elseif ($str == 'school_name') {
+        } elseif ($str == 'church_name') {
             if (moduleStatusCheck('Saas') == true) {
                 $student_info = SmStudentRegistration::find(@$data['id']);
-                return @$student_info->school->school_name;
+                return @$student_info->school->church_name;
             } else {
                 $general_setting = SmGeneralSettings::find(1);
-                return @$general_setting->school_name;
+                return @$general_setting->church_name;
             }
         }
 
@@ -1081,15 +1081,15 @@ if (!function_exists('getValueByStringTestRegistration')) {
             } elseif ($str == 'guardian_name') {
                 return @$student_info->guardian_name;
             } elseif ($str == 'class') {
-                return @$student_info->class->class_name;
+                return @$student_info->class->age_group_name;
             } elseif ($str == 'section') {
-                return @$student_info->section->section_name;
+                return @$student_info->section->mgender_name;
             }
         } elseif ($data['slug'] == 'parent') {
             $parent_info = SmStudentRegistration::find(@$data['id']);
             if ($str == 'name') {
                 return @$parent_info->guardian_name;
-            } elseif ($str == 'student_name') {
+            } elseif ($str == 'member_name') {
                 return @$parent_info->first_name . ' ' . @$parent_info->last_name;
             }
         }
@@ -1098,10 +1098,10 @@ if (!function_exists('getValueByStringTestRegistration')) {
 if (!function_exists('getValueByStringTestReset')) {
     function getValueByStringTestReset($data, $str)
     {
-        if ($str == 'school_name') {
+        if ($str == 'church_name') {
 
-            $general_setting = SmGeneralSettings::where('school_id', auth()->user()->school_id)->first();
-            return @$general_setting->school_name;
+            $general_setting = SmGeneralSettings::where('church_id', auth()->user()->church_id)->first();
+            return @$general_setting->church_name;
         } elseif ($str == 'name') {
             $user = User::where('email', $data['email'])->first();
             return @$user->full_name;
@@ -1110,24 +1110,24 @@ if (!function_exists('getValueByStringTestReset')) {
 }
 
 if (!function_exists('subjectPosition')) {
-    function subjectPosition($subject_id, $class_id, $custom_result)
+    function subjectPosition($subject_id, $age_group_id, $custom_result)
     {
 
-        $students = SmStudent::where('class_id', $class_id)->get();
+        $students = SmStudent::where('age_group_id', $age_group_id)->get();
 
         $subject_mark_array = [];
         foreach ($students as $student) {
             $subject_marks = 0;
 
-            $first_exam_mark = SmMarkStore::where('student_id', $student->id)->where('class_id', $class_id)->where('subject_id', $subject_id)->where('exam_term_id', $custom_result->exam_term_id1)->sum('total_marks');
+            $first_exam_mark = SmMarkStore::where('member_id', $student->id)->where('age_group_id', $age_group_id)->where('subject_id', $subject_id)->where('exam_term_id', $custom_result->exam_term_id1)->sum('total_marks');
 
             $subject_marks = $subject_marks + $first_exam_mark / 100 * $custom_result->percentage1;
 
-            $second_exam_mark = SmMarkStore::where('student_id', $student->id)->where('class_id', $class_id)->where('subject_id', $subject_id)->where('exam_term_id', $custom_result->exam_term_id2)->sum('total_marks');
+            $second_exam_mark = SmMarkStore::where('member_id', $student->id)->where('age_group_id', $age_group_id)->where('subject_id', $subject_id)->where('exam_term_id', $custom_result->exam_term_id2)->sum('total_marks');
 
             $subject_marks = $subject_marks + $second_exam_mark / 100 * $custom_result->percentage2;
 
-            $third_exam_mark = SmMarkStore::where('student_id', $student->id)->where('class_id', $class_id)->where('subject_id', $subject_id)->where('exam_term_id', $custom_result->exam_term_id3)->sum('total_marks');
+            $third_exam_mark = SmMarkStore::where('member_id', $student->id)->where('age_group_id', $age_group_id)->where('subject_id', $subject_id)->where('exam_term_id', $custom_result->exam_term_id3)->sum('total_marks');
 
             $subject_marks = $subject_marks + $third_exam_mark / 100 * $custom_result->percentage3;
 
@@ -1149,7 +1149,7 @@ if (!function_exists('getValueByStringDuesFees')) {
     function getValueByStringDuesFees($student_detail, $str, $fees_info)
     {
 
-        if ($str == 'student_name') {
+        if ($str == 'member_name') {
 
             return @$student_detail->full_name;
         } elseif ($str == 'parent_name') {
@@ -1163,9 +1163,9 @@ if (!function_exists('getValueByStringDuesFees')) {
 
             $fees_master = SmFeesMaster::find($fees_info['fees_master']);
             return @$fees_master->date;
-        } elseif ($str == 'school_name') {
+        } elseif ($str == 'church_name') {
 
-            return @Auth::user()->school->school_name;
+            return @Auth::user()->school->church_name;
         } elseif ($str == 'fees_name') {
 
             $fees_master = SmFeesMaster::find($fees_info['fees_master']);
@@ -1175,11 +1175,11 @@ if (!function_exists('getValueByStringDuesFees')) {
 }
 if (!function_exists('assignedRoutineSubject')) {
 
-    function assignedRoutineSubject($class_id, $section_id, $exam_id, $subject_id)
+    function assignedRoutineSubject($age_group_id, $mgender_id, $exam_id, $subject_id)
     {
 
         try {
-            return SmExamSchedule::where('class_id', $class_id)->where('section_id', $section_id)->where('exam_term_id', $exam_id)->where('subject_id', $subject_id)->first();
+            return SmExamSchedule::where('age_group_id', $age_group_id)->where('mgender_id', $mgender_id)->where('exam_term_id', $exam_id)->where('subject_id', $subject_id)->first();
         } catch (\Exception $e) {
             $data = [];
             return $data;
@@ -1189,10 +1189,10 @@ if (!function_exists('assignedRoutineSubject')) {
 
 if (!function_exists('assignedRoutine')) {
 
-    function assignedRoutine($class_id, $section_id, $exam_id, $subject_id, $exam_period_id)
+    function assignedRoutine($age_group_id, $mgender_id, $exam_id, $subject_id, $exam_period_id)
     {
         try {
-            return SmExamSchedule::where('class_id', $class_id)->where('section_id', $section_id)->where('exam_term_id', $exam_id)->where('subject_id', $subject_id)
+            return SmExamSchedule::where('age_group_id', $age_group_id)->where('mgender_id', $mgender_id)->where('exam_term_id', $exam_id)->where('subject_id', $subject_id)
                 ->where('exam_period_id', $exam_period_id)->first();
         } catch (\Exception $e) {
             $data = [];
@@ -1203,11 +1203,11 @@ if (!function_exists('assignedRoutine')) {
 
 if (!function_exists('is_absent_check')) {
 
-    function is_absent_check($exam_id, $class_id, $section_id, $subject_id, $student_id)
+    function is_absent_check($exam_id, $age_group_id, $mgender_id, $subject_id, $member_id)
     {
         try {
-            $exam_attendance = SmExamAttendance::where('exam_id', $exam_id)->where('class_id', $class_id)->where('section_id', $section_id)->where('subject_id', $subject_id)->first();
-            $exam_attendance_child = SmExamAttendanceChild::where('exam_attendance_id', $exam_attendance->id)->where('student_id', $student_id)->first();
+            $exam_attendance = SmExamAttendance::where('exam_id', $exam_id)->where('age_group_id', $age_group_id)->where('mgender_id', $mgender_id)->where('subject_id', $subject_id)->first();
+            $exam_attendance_child = SmExamAttendanceChild::where('exam_attendance_id', $exam_attendance->id)->where('member_id', $member_id)->first();
             return $exam_attendance_child;
         } catch (\Exception $e) {
             $data = [];
@@ -1217,10 +1217,10 @@ if (!function_exists('is_absent_check')) {
 }
 
 if (!function_exists('feesPayment')) {
-    function feesPayment($type_id, $student_id)
+    function feesPayment($type_id, $member_id)
     {
         try {
-            return SmFeesPayment::where('active_status', 1)->where('fees_type_id', $type_id)->where('student_id', $student_id)->get();
+            return SmFeesPayment::where('active_status', 1)->where('fees_type_id', $type_id)->where('member_id', $member_id)->get();
         } catch (\Exception $e) {
             $data = [];
             return $data;
@@ -1237,9 +1237,9 @@ if (!function_exists('generalSetting')) {
             return session()->get('generalSetting');
         } else {
             if (app()->bound('school')) {
-                $generalSetting = SmGeneralSettings::where('school_id', app('school')->id)->first();
+                $generalSetting = SmGeneralSettings::where('church_id', app('school')->id)->first();
             } else {
-                $generalSetting = Auth::check() ? SmGeneralSettings::where('school_id', Auth::user()->school_id)->first() : SmGeneralSettings::first();
+                $generalSetting = Auth::check() ? SmGeneralSettings::where('church_id', Auth::user()->church_id)->first() : SmGeneralSettings::first();
             }
         }
 
@@ -1272,7 +1272,7 @@ if (!function_exists('emailTemplate')) {
         if (session()->has('email_template')) {
             return session()->get('email_template');
         } else {
-            $email_template = SmsTemplate::where('school_id', Auth::user()->school_id)->first();
+            $email_template = SmsTemplate::where('church_id', Auth::user()->church_id)->first();
             session()->put('email_template', $email_template);
 
             return session()->get('email_template');
@@ -1294,7 +1294,7 @@ if (!function_exists('allStyles')) {
         if (session()->has('all_styles')) {
             return session()->get('all_styles');
         } else {
-            $all_styles = SmStyle::where('school_id', 1)->where('active_status', 1)->get();
+            $all_styles = SmStyle::where('church_id', 1)->where('active_status', 1)->get();
             session()->put('all_styles', $all_styles);
 
             return session()->get('all_styles');
@@ -1325,8 +1325,8 @@ if (!function_exists('userRtlLtl')) {
         if (session()->has('user_text_direction')) {
             return session()->get('user_text_direction');
         } else {
-            $school_id = app()->bound('school') ? app('school')->id : 1;
-            $user = User::where('role_id', 1)->where('school_id', $school_id)->first();
+            $church_id = app()->bound('school') ? app('school')->id : 1;
+            $user = User::where('role_id', 1)->where('church_id', $church_id)->first();
 
             $ttl_rtl = $user ? $user->rtl_ltl : 2;
             session()->put('user_text_direction', $ttl_rtl);
@@ -1362,8 +1362,8 @@ if (!function_exists('selectedLanguage')) {
         if (session()->has('selected_language')) {
             return session()->get('selected_language');
         } else {
-            $selected_language = Auth::check() ? SmGeneralSettings::where('school_id', Auth::user()->school_id)->first() :
-                DB::table('sm_general_settings')->where('school_id', 1)->first();
+            $selected_language = Auth::check() ? SmGeneralSettings::where('church_id', Auth::user()->church_id)->first() :
+                DB::table('sm_general_settings')->where('church_id', 1)->first();
             session()->put('selected_language', $selected_language);
 
             return session()->get('selected_language');
@@ -1384,8 +1384,8 @@ if (!function_exists('getSession')) {
         if (session()->has('session')) {
             return session()->get('session');
         } else {
-            $selected_language = Auth::check() ? SmGeneralSettings::where('school_id', Auth::user()->school_id)->first() :
-                DB::table('sm_general_settings')->where('school_id', 1)->first();
+            $selected_language = Auth::check() ? SmGeneralSettings::where('church_id', Auth::user()->church_id)->first() :
+                DB::table('sm_general_settings')->where('church_id', 1)->first();
             $session = DB::table('sm_academic_years')->where('id', $selected_language->session_id)->first();
             session()->put('session', $session);
 
@@ -1401,7 +1401,7 @@ if (!function_exists('systemLanguage')) {
         if (session()->has('systemLanguage')) {
             return session()->get('systemLanguage');
         } else {
-            $systemLanguage = SmLanguage::where('school_id', auth()->user()->school_id)->get();
+            $systemLanguage = SmLanguage::where('church_id', auth()->user()->church_id)->get();
             session()->put('systemLanguage', $systemLanguage);
             return session()->get('systemLanguage');
         }
@@ -1411,33 +1411,33 @@ if (!function_exists('systemLanguage')) {
 if (!function_exists('academicYears')) {
     function academicYears()
     {
-        // session()->forget('academic_years');
+        // session()->forget('church_years');
         if (moduleStatusCheck('University')) {
-            if (!session()->has('academic_years')) {
-                $academic_years = Auth::check() ? UnAcademicYear::where('active_status', 1)->where('school_id', Auth::user()->school_id)->get() : '';
-                session()->put('academic_years', $academic_years);
-                return session()->get('academic_years');
+            if (!session()->has('church_years')) {
+                $church_years = Auth::check() ? UnAcademicYear::where('active_status', 1)->where('church_id', Auth::user()->church_id)->get() : '';
+                session()->put('church_years', $church_years);
+                return session()->get('church_years');
             } else {
-                return session()->get('academic_years');
+                return session()->get('church_years');
             }
         } else {
-            if (session()->has('academic_years')) {
-                return session()->get('academic_years');
+            if (session()->has('church_years')) {
+                return session()->get('church_years');
             } else {
-                $academic_years = Auth::check() ? SmAcademicYear::where('active_status', 1)->where('school_id', Auth::user()->school_id)->get() : '';
-                session()->put('academic_years', $academic_years);
-                return session()->get('academic_years');
+                $church_years = Auth::check() ? SmAcademicYear::where('active_status', 1)->where('church_id', Auth::user()->church_id)->get() : '';
+                session()->put('church_years', $church_years);
+                return session()->get('church_years');
             }
         }
     }
 }
 
 if (!function_exists('subjectFullMark')) {
-    function subjectFullMark($examtype, $subject, $class_id, $section_id)
+    function subjectFullMark($examtype, $subject, $age_group_id, $mgender_id)
     {
         try {
             $full_mark = SmExam::withOutGlobalScopes();
-            $full_mark->where('school_id', Auth::user()->school_id)
+            $full_mark->where('church_id', Auth::user()->church_id)
                 ->where('exam_type_id', $examtype);
                 if(moduleStatusCheck('University')){
                    
@@ -1446,7 +1446,7 @@ if (!function_exists('subjectFullMark')) {
                     $full_mark =  $full_mark->where('subject_id', $subject);
                 }
 
-                $full_mark = $full_mark->where('class_id', $class_id)->where('section_id', $section_id)->first('exam_mark')->exam_mark;
+                $full_mark = $full_mark->where('age_group_id', $age_group_id)->where('mgender_id', $mgender_id)->first('exam_mark')->exam_mark;
 
 
             return $full_mark;
@@ -1497,29 +1497,29 @@ if (!function_exists('subjectPercentageMark')) {
 }
 
 if (!function_exists('termWiseFullMark')) {
-    function termWiseFullMark($type_ids, $student_id, $academic_id = null)
+    function termWiseFullMark($type_ids, $member_id, $church_year_id = null)
     {
-        if(!$academic_id){
-            $academic_id = getAcademicId();
+        if(!$church_year_id){
+            $church_year_id = getAcademicId();
         }
         try {
             $average_gpa = 0;
             foreach ($type_ids as $type_id) {
-                $total_gpa = SmResultStore::where('student_record_id', $student_id)
+                $total_gpa = SmResultStore::where('student_record_id', $member_id)
                     ->where('exam_type_id', $type_id)
-                    ->where('academic_id', $academic_id)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_year_id', $church_year_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->sum('total_gpa_point');
 
-                $total_subject = SmResultStore::where('student_record_id', $student_id)
+                $total_subject = SmResultStore::where('student_record_id', $member_id)
                     ->where('exam_type_id', $type_id)
-                    ->where('academic_id', $academic_id)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_year_id', $church_year_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->count('subject_id');
 
                 $percentage = CustomResultSetting::where('exam_type_id', $type_id)
-                    ->where('academic_id', $academic_id)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_year_id', $church_year_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->first('exam_percentage')->exam_percentage;
 
                     if($total_subject){
@@ -1536,29 +1536,29 @@ if (!function_exists('termWiseFullMark')) {
 
 
 if (!function_exists('termWiseGpa')) {
-    function termWiseGpa($type_id, $student_id, $with_optional_subject_mark = null, $academic_id = null)
+    function termWiseGpa($type_id, $member_id, $with_optional_subject_mark = null, $church_year_id = null)
     {
-        if(!$academic_id){
-            $academic_id = getAcademicId();
+        if(!$church_year_id){
+            $church_year_id = getAcademicId();
         }
         try {
             $average_gpa = 0;
             if ($with_optional_subject_mark == null) {
-                $total_gpa = SmResultStore::select('total_gpa_point')->where('student_record_id', $student_id)
+                $total_gpa = SmResultStore::select('total_gpa_point')->where('student_record_id', $member_id)
                     ->where('exam_type_id', $type_id)
-                    ->where('academic_id', $academic_id)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_year_id', $church_year_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->sum('total_gpa_point');
 
-                $total_subject = SmResultStore::select('subject_id')->where('student_record_id', $student_id)
+                $total_subject = SmResultStore::select('subject_id')->where('student_record_id', $member_id)
                     ->where('exam_type_id', $type_id)
-                    ->where('academic_id', $academic_id)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_year_id', $church_year_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->count('subject_id');
 
                 $percentage = CustomResultSetting::where('exam_type_id', $type_id)
-                    ->where('academic_id', $academic_id)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_year_id', $church_year_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->first('exam_percentage')->exam_percentage;
 
                     if($total_subject){
@@ -1568,8 +1568,8 @@ if (!function_exists('termWiseGpa')) {
             } elseif ($with_optional_subject_mark != null) {
 
                 $percentage = CustomResultSetting::where('exam_type_id', $type_id)
-                    ->where('academic_id', $academic_id)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_year_id', $church_year_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->first('exam_percentage')->exam_percentage;
 
                 $average_gpa += $with_optional_subject_mark * ($percentage / 100);
@@ -1584,24 +1584,24 @@ if (!function_exists('termWiseGpa')) {
 
 
 if (!function_exists('termWiseTotalMark')) {
-    function termWiseTotalMark($type_id, $student_id, $optional_subject = null, $academic_id = null)
+    function termWiseTotalMark($type_id, $member_id, $optional_subject = null, $church_year_id = null)
     {
-        if(!$academic_id){
-            $academic_id = getAcademicId();
+        if(!$church_year_id){
+            $church_year_id = getAcademicId();
         }
         try {
             if ($optional_subject == null) {
                 $average_gpa = 0;
-                $total_gpa = SmResultStore::where('student_record_id', $student_id)
+                $total_gpa = SmResultStore::where('student_record_id', $member_id)
                     ->where('exam_type_id', $type_id)
-                    ->where('academic_id', $academic_id)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_year_id', $church_year_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->sum('total_gpa_point');
 
-                $total_subject = SmResultStore::where('student_record_id', $student_id)
+                $total_subject = SmResultStore::where('student_record_id', $member_id)
                     ->where('exam_type_id', $type_id)
-                    ->where('academic_id', $academic_id)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_year_id', $church_year_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->count('subject_id');
 
                     if($total_subject){
@@ -1614,40 +1614,40 @@ if (!function_exists('termWiseTotalMark')) {
                 $average_gpa = 0;
                 $optional_subject_extra_gpa = 0;
 
-                $class_id = StudentRecord::find($student_id)->class_id;
-                $optional_subject_above = SmClassOptionalSubject::where('class_id', $class_id)
-                    ->where('school_id', Auth::user()->school_id)
-                    ->where('academic_id', $academic_id)
+                $age_group_id = StudentRecord::find($member_id)->age_group_id;
+                $optional_subject_above = SmClassOptionalSubject::where('age_group_id', $age_group_id)
+                    ->where('church_id', Auth::user()->church_id)
+                    ->where('church_year_id', $church_year_id)
                     ->first('gpa_above')->gpa_above;
 
-                $subject_ids = SmResultStore::where('student_record_id', $student_id)
+                $subject_ids = SmResultStore::where('student_record_id', $member_id)
                     ->where('exam_type_id', $type_id)
-                    ->where('academic_id', $academic_id)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_year_id', $church_year_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->get('subject_id');
 
                 $optional_subject_id = SmOptionalSubjectAssign::whereIn('subject_id', $subject_ids)
-                    ->where('student_id', $student_id)
-                    ->where('academic_id', $academic_id)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('member_id', $member_id)
+                    ->where('church_year_id', $church_year_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->first('subject_id')->subject_id;
 
-                $without_optional_subject_gpa = SmResultStore::where('student_record_id', $student_id)
+                $without_optional_subject_gpa = SmResultStore::where('student_record_id', $member_id)
                     ->where('exam_type_id', $type_id)
                     ->where('subject_id', '!=', $optional_subject_id)
-                    ->where('academic_id', $academic_id)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_year_id', $church_year_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->sum('total_gpa_point');
 
-                $optional_subject_gpa = SmResultStore::where('student_record_id', $student_id)
+                $optional_subject_gpa = SmResultStore::where('student_record_id', $member_id)
                     ->where('exam_type_id', $type_id)
                     ->where('subject_id', $optional_subject_id)
-                    ->where('academic_id', $academic_id)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_year_id', $church_year_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->sum('total_gpa_point');
 
-                $maxgpa = SmMarksGrade::withOutGlobalScopes()->where('academic_id', $academic_id)
-                    ->where('school_id', Auth::user()->school_id)
+                $maxgpa = SmMarksGrade::withOutGlobalScopes()->where('church_year_id', $church_year_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->max('gpa');
 
                 if ($optional_subject_gpa > $optional_subject_above) {
@@ -1672,46 +1672,46 @@ if (!function_exists('termWiseTotalMark')) {
 
 
 if (!function_exists('optionalSubjectFullMark')) {
-    function optionalSubjectFullMark($type_id, $student_id, $above_gpa, $purpose = null, $academic_id = null)
+    function optionalSubjectFullMark($type_id, $member_id, $above_gpa, $purpose = null, $church_year_id = null)
     {
-        if(!$academic_id){
-            $academic_id = getAcademicId();
+        if(!$church_year_id){
+            $church_year_id = getAcademicId();
         }
         try {
-            $subject_ids = SmResultStore::where('student_record_id', $student_id)
+            $subject_ids = SmResultStore::where('student_record_id', $member_id)
                 ->where('exam_type_id', $type_id)
-                ->where('academic_id', $academic_id)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', $church_year_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get('subject_id');
 
             $additional_subject_id = SmOptionalSubjectAssign::whereIn('subject_id', $subject_ids)
-                ->where('record_id', $student_id)
-                ->where('academic_id', $academic_id)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('record_id', $member_id)
+                ->where('church_year_id', $church_year_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->first('subject_id')->subject_id;
 
             if ($purpose == "optional_sub_gpa") {
-                $total_mark = SmResultStore::where('student_record_id', $student_id)
+                $total_mark = SmResultStore::where('student_record_id', $member_id)
                     ->where('exam_type_id', $type_id)
                     ->where('subject_id', $additional_subject_id)
-                    ->where('academic_id', $academic_id)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_year_id', $church_year_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->sum('total_gpa_point');
 
                 return $total_mark;
             } elseif ($purpose == "with_optional_sub_gpa") {
-                $total_mark = SmResultStore::where('student_record_id', $student_id)
+                $total_mark = SmResultStore::where('student_record_id', $member_id)
                     ->where('exam_type_id', $type_id)
                     ->where('subject_id', $additional_subject_id)
-                    ->where('academic_id', $academic_id)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_year_id', $church_year_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->sum('total_gpa_point');
 
-                $exam_type_id = SmResultStore::where('student_record_id', $student_id)
+                $exam_type_id = SmResultStore::where('student_record_id', $member_id)
                     ->where('exam_type_id', $type_id)
                     ->where('subject_id', $additional_subject_id)
-                    ->where('academic_id', $academic_id)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_year_id', $church_year_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->count('exam_type_id');
 
                 $total = ($total_mark - $above_gpa) * $exam_type_id;
@@ -1724,60 +1724,60 @@ if (!function_exists('optionalSubjectFullMark')) {
 }
 
 if (!function_exists('termWiseAddOptionalMark')) {
-    function termWiseAddOptionalMark($type_id, $student_id, $above_gpa, $academic_id = null)
+    function termWiseAddOptionalMark($type_id, $member_id, $above_gpa, $church_year_id = null)
     {
-        if(!$academic_id){
-            $academic_id = getAcademicId();
+        if(!$church_year_id){
+            $church_year_id = getAcademicId();
         }
         try {
-            $subject_ids = SmResultStore::where('student_record_id', $student_id)
+            $subject_ids = SmResultStore::where('student_record_id', $member_id)
                 ->where('exam_type_id', $type_id)
-                ->where('academic_id', $academic_id)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', $church_year_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get('subject_id');
 
             $additional_subject_id = SmOptionalSubjectAssign::whereIn('subject_id', $subject_ids)
-                ->where('record_id', $student_id)
-                ->where('academic_id', $academic_id)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('record_id', $member_id)
+                ->where('church_year_id', $church_year_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->first('subject_id')->subject_id;
 
-            $additional_subject_mark = SmResultStore::where('student_record_id', $student_id)
+            $additional_subject_mark = SmResultStore::where('student_record_id', $member_id)
                 ->where('exam_type_id', $type_id)
                 ->where('subject_id', $additional_subject_id)
-                ->where('academic_id', $academic_id)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', $church_year_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->sum('total_gpa_point');
 
-            $additional_single_subject_mark = SmResultStore::where('student_record_id', $student_id)
+            $additional_single_subject_mark = SmResultStore::where('student_record_id', $member_id)
                 ->where('exam_type_id', $type_id)
                 ->where('subject_id', $additional_subject_id)
-                ->where('academic_id', $academic_id)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', $church_year_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->first('total_gpa_point')->total_gpa_point;
 
             $additional_mark_reduction = $additional_single_subject_mark - $above_gpa;
             if ($additional_mark_reduction > 0) {
             }
-            $all_subject_mark = SmResultStore::where('student_record_id', $student_id)
+            $all_subject_mark = SmResultStore::where('student_record_id', $member_id)
                 ->where('exam_type_id', $type_id)
                 ->where('subject_id', '!=', $additional_subject_id)
-                ->where('academic_id', $academic_id)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', $church_year_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->sum('total_gpa_point');
 
-            $without_additional_total_subject = SmResultStore::where('student_record_id', $student_id)
+            $without_additional_total_subject = SmResultStore::where('student_record_id', $member_id)
                 ->where('exam_type_id', $type_id)
                 ->where('subject_id', '!=', $additional_subject_id)
-                ->where('academic_id', $academic_id)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', $church_year_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->count('subject_id');
 
             $with_additional_full_gpa = $all_subject_mark + ($additional_subject_mark - $above_gpa);
 
             $percentage = CustomResultSetting::where('exam_type_id', $type_id)
-                ->where('academic_id', $academic_id)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', $church_year_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->first('exam_percentage')->exam_percentage;
 
             $with_additional_average_gpa = ($with_additional_full_gpa / $without_additional_total_subject) * ($percentage / 100);
@@ -1790,14 +1790,14 @@ if (!function_exists('termWiseAddOptionalMark')) {
 }
 
 if (!function_exists('gradeName')) {
-    function gradeName($total_gpa, $academic_id = null)
+    function gradeName($total_gpa, $church_year_id = null)
     {
-        if(!$academic_id){
-            $academic_id = getAcademicId();
+        if(!$church_year_id){
+            $church_year_id = getAcademicId();
         }
         try {
-            $grade_name = SmMarksGrade::where('academic_id', $academic_id)
-                ->where('school_id', Auth::user()->school_id)
+            $grade_name = SmMarksGrade::where('church_year_id', $church_year_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->where('from', '<=', $total_gpa)
                 ->where('up', '>=', $total_gpa)
                 ->first('grade_name')->grade_name;
@@ -1809,14 +1809,14 @@ if (!function_exists('gradeName')) {
 }
 
 if (!function_exists('remarks')) {
-    function remarks($total_gpa, $academic_id = null)
+    function remarks($total_gpa, $church_year_id = null)
     {
-        if(!$academic_id){
-            $academic_id = getAcademicId();
+        if(!$church_year_id){
+            $church_year_id = getAcademicId();
         }
         try {
-            $description = SmMarksGrade::where('academic_id', $academic_id)
-                ->where('school_id', Auth::user()->school_id)
+            $description = SmMarksGrade::where('church_year_id', $church_year_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->where('from', '<=', $total_gpa)
                 ->where('up', '>=', $total_gpa)
                 ->first('description')->description;
@@ -1828,13 +1828,13 @@ if (!function_exists('remarks')) {
 }
 
 if (!function_exists('subjectHighestMark')) {
-    function subjectHighestMark($exam_id, $subject_id, $class_id, $section_id)
+    function subjectHighestMark($exam_id, $subject_id, $age_group_id, $mgender_id)
     {
         try {
-            $highest_mark = SmResultStore::where([['class_id', $class_id], ['exam_type_id', $exam_id], ['section_id', $section_id]])
+            $highest_mark = SmResultStore::where([['age_group_id', $age_group_id], ['exam_type_id', $exam_id], ['mgender_id', $mgender_id]])
                 ->where('subject_id', $subject_id)
-                ->where('school_id', Auth::user()->school_id)
-                ->where('academic_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
+                ->where('church_year_id', getAcademicId())
                 ->max('total_marks');
             return $highest_mark;
         } catch (\Throwable $e) {
@@ -1915,17 +1915,17 @@ if (!function_exists('intallMdouleMenu')) {
 }
 
 if (!function_exists('customFieldValue')) {
-    function customFieldValue($student_id, $labelName, $formName)
+    function customFieldValue($member_id, $labelName, $formName)
     {
         $custom_field_values = [];
         if ($formName == "student_registration") {
-            $custom_field_data = SmStudent::withOutGlobalScopes()->where('id', $student_id)->first();
+            $custom_field_data = SmStudent::withOutGlobalScopes()->where('id', $member_id)->first();
             if(is_null($custom_field_data) && moduleStatusCheck('ParentRegistration')){
-               $custom_field_data = Modules\ParentRegistration\Entities\SmStudentRegistration::find($student_id);
+               $custom_field_data = Modules\ParentRegistration\Entities\SmStudentRegistration::find($member_id);
             }
             @$value = $custom_field_data->custom_field;
         } elseif ($formName == "staff_registration") {
-            $custom_field_data = SmStaff::withOutGlobalScopes()->where('id', $student_id)->first();
+            $custom_field_data = SmStaff::withOutGlobalScopes()->where('id', $member_id)->first();
             $value = $custom_field_data->custom_field;
         } else {
             $value = null;
@@ -1945,7 +1945,7 @@ if (!function_exists('paymentMethodName')) {
     function paymentMethodName($payment_method_id)
     {
         $paymentMethodName = SmPaymentMethhod::where('id', $payment_method_id)
-            ->where('school_id', Auth::user()->school_id)
+            ->where('church_id', Auth::user()->church_id)
             ->first('method')->method;
         if ($paymentMethodName == "Bank") {
             return true;
@@ -2005,7 +2005,7 @@ if (!function_exists('menuStatus')) {
 if (!function_exists('courseSetting')) {
     function courseSetting()
     {
-        return CourseSetting::where('school_id',Auth::user()->school_id)->first();
+        return CourseSetting::where('church_id',Auth::user()->church_id)->first();
     }
 }
 
@@ -2085,7 +2085,7 @@ if (!function_exists('putEnvConfigration')) {
 if (!function_exists('feesInvoiceSettings')) {
     function feesInvoiceSettings()
     {
-        $invoiceSettings = FmFeesInvoiceSettings::where('school_id', Auth::user()->school_id)->first();
+        $invoiceSettings = FmFeesInvoiceSettings::where('church_id', Auth::user()->church_id)->first();
         return $invoiceSettings;
     }
 }
@@ -2105,16 +2105,16 @@ if (!function_exists('feesInvoiceNumber')) {
 
         $key = [
             'prefix',
-            'admission_no',
+            'registration_no',
             'class',
             'section',
         ];
 
         $value = [
             $settings->prefix,
-            Str::limit($invoice->studentInfo->admission_no, $settings->admission_limit),
-            Str::limit($invoice->recordDetail->class->class_name, $settings->class_limit),
-            Str::limit($invoice->recordDetail->section->section_name, $settings->section_limit),
+            Str::limit($invoice->studentInfo->registration_no, $settings->admission_limit),
+            Str::limit($invoice->recordDetail->class->age_group_name, $settings->class_limit),
+            Str::limit($invoice->recordDetail->section->mgender_name, $settings->section_limit),
             $settings->uniq_id_start + $invoice->id
         ];
         return str_replace($key, $value, $format);
@@ -2133,7 +2133,7 @@ if (!function_exists('send_sms')) {
         
 
         if (Auth::check()) {
-            $activeSmsGateway = SmSmsGateway::where('school_id', Auth::user()->school_id)->where('active_status', 1)->first();
+            $activeSmsGateway = SmSmsGateway::where('church_id', Auth::user()->church_id)->where('active_status', 1)->first();
         } else {
             $activeSmsGateway = SmSmsGateway::where('active_status', 1)->first();
         }
@@ -2141,7 +2141,7 @@ if (!function_exists('send_sms')) {
         if($purpose != "test_sms"){
             $body = SmsTemplate::smsTempleteToBody($templete->body, $data);
         }else{
-            $body = "It is a Test Sms From ". $activeSmsGateway->gateway_name . " -". generalSetting()->school_name; 
+            $body = "It is a Test Sms From ". $activeSmsGateway->gateway_name . " -". generalSetting()->church_name; 
         }
 
        
@@ -2299,15 +2299,15 @@ if (!function_exists('addIncome')) {
         $add_income->income_head_id = $income_head->income_head_id;
         $add_income->payment_method_id = $payment_method->id;
         $add_income->created_by = $user_id;
-        $add_income->school_id = auth()->user()->school_id;
+        $add_income->church_id = auth()->user()->church_id;
         if(moduleStatusCheck('University')){
             $common = App::make(UnCommonRepositoryInterface::class);
             $common->storeUniversityData($add_income, $request);
-            $add_income->un_academic_id = getAcademicId();
+            $add_income->un_church_year_id = getAcademicId();
         }else{
-            $add_income->academic_id = getAcademicId();
+            $add_income->church_year_id = getAcademicId();
         }
-        $add_income->academic_id = getAcademicId();
+        $add_income->church_year_id = getAcademicId();
         $result = $add_income->save();
 
         if ($result) {
@@ -2327,11 +2327,11 @@ if (!function_exists('sendNotification')) {
         $notification->url = $url;
         $notification->user_id = $user_id;
         $notification->role_id = $role_id;
-        $notification->school_id = Auth::user()->school_id;
+        $notification->church_id = Auth::user()->church_id;
         if(moduleStatusCheck('University')){
-            $notification->un_academic_id = getAcademicId();
+            $notification->un_church_year_id = getAcademicId();
         }else{
-            $notification->academic_id = getAcademicId();
+            $notification->church_year_id = getAcademicId();
         }
         $result = $notification->save();
 
@@ -2363,7 +2363,7 @@ function studentFieldLabel($fields, $name)
 if (!function_exists('is_required')) {
     function is_required($field_name)
     {
-        $school_id = auth()->user()->school_id;
+        $church_id = auth()->user()->church_id;
         $fields = getStudentRegistrationFields();
         $field = $fields->where('field_name', $field_name)
             ->first();
@@ -2381,14 +2381,14 @@ if (!function_exists('is_show')) {
 }
 
 if (!function_exists('getStudentRegistrationFields')) {
-    function getStudentRegistrationFields($school_id = null)
+    function getStudentRegistrationFields($church_id = null)
     {
 
-        if(!$school_id){
-            $school_id = auth()->user()->school_id;
+        if(!$church_id){
+            $church_id = auth()->user()->church_id;
         }
-       return Cache::rememberForever('student_field_'.$school_id, function () use($school_id){
-            return SmStudentRegistrationField::where('school_id', $school_id)->get()->filter(function($field){
+       return Cache::rememberForever('student_field_'.$church_id, function () use($church_id){
+            return SmStudentRegistrationField::where('church_id', $church_id)->get()->filter(function($field){
                 return !$field->admin_section || isMenuAllowToShow($field->admin_section);
             });
         });
@@ -2414,23 +2414,23 @@ if (!function_exists('has_permission')) {
 }
 
 if (!function_exists('studentRecords')) {
-    function studentRecords($request = null, $student_id = null, $school_id = null)
+    function studentRecords($request = null, $member_id = null, $church_id = null)
     {
         $studentRecord = StudentRecord::query()->with('classes', 'studentDetail')->where('active_status', 1);
-        if ($student_id != null) {
-            $studentRecord->where('student_id', $student_id);
+        if ($member_id != null) {
+            $studentRecord->where('member_id', $member_id);
         }
-        if ($school_id != null) {
-            $studentRecord->where('school_id', $school_id);
+        if ($church_id != null) {
+            $studentRecord->where('church_id', $church_id);
         } else {
-            $studentRecord->where('school_id', auth()->user()->school_id);
+            $studentRecord->where('church_id', auth()->user()->church_id);
         }
         if ($request != null && !moduleStatusCheck('University')) {
             $studentRecord->when($request->class, function ($query) use ($request) {
-                $query->where('class_id', $request->class);
+                $query->where('age_group_id', $request->class);
             })
                 ->when($request->section, function ($query) use ($request) {
-                    $query->where('section_id', $request->section);
+                    $query->where('mgender_id', $request->section);
                 });
         }
         if ($request != null && moduleStatusCheck('University')) {
@@ -2443,8 +2443,8 @@ if (!function_exists('studentRecords')) {
                 ->when($request->un_department_id, function ($q) use ($request) {
                     $q->where('un_department_id', $request->un_department_id);
                 })
-                ->when($request->un_academic_id, function ($q) use ($request) {
-                    $q->where('un_academic_id', $request->un_academic_id);
+                ->when($request->un_church_year_id, function ($q) use ($request) {
+                    $q->where('un_church_year_id', $request->un_church_year_id);
                 })
                 ->when($request->un_semester_id, function ($q) use ($request) {
                     $q->where('un_semester_id', $request->un_semester_id);
@@ -2454,9 +2454,9 @@ if (!function_exists('studentRecords')) {
                 });
         }
         $studentRecord = $studentRecord->when(moduleStatusCheck('University'), function ($q) {
-            $q->where('un_academic_id', getAcademicId());
+            $q->where('un_church_year_id', getAcademicId());
         }, function ($query) {
-            $query->where('academic_id', getAcademicId());
+            $query->where('church_year_id', getAcademicId());
         })->where('is_promote', 0);
 
         return $studentRecord;
@@ -2477,7 +2477,7 @@ if (!function_exists('universityColumns')) {
             'un_sessions' => 'un_session_id',
             'un_faculties' => 'un_faculty_id',
             'un_departments' => 'un_department_id',
-            'un_academic_years' => 'un_academic_id',
+            'un_church_years' => 'un_church_year_id',
             'un_semesters' => 'un_semester_id',
             'un_semester_labels' => 'un_semester_label_id',
         ];
@@ -2506,9 +2506,9 @@ if (!function_exists('labelWiseStudentResult')) {
         // $assingSubjects = $studentRecord->unStudentSubjects->pluck('un_subject_id')->toArray();
         $marks = SmMarkStore::withOutGlobalScope(AcademicSchoolScope::class)->where('student_record_id', $studentRecord->id)
             ->where('un_semester_label_id', $studentRecord->un_semester_label_id)
-            ->where('un_academic_id', $studentRecord->un_academic_id)
+            ->where('un_church_year_id', $studentRecord->un_church_year_id)
             // ->where('un_subject_id', $subject_id)
-            ->where('school_id', auth()->user()->school_id);
+            ->where('church_id', auth()->user()->church_id);
 
         $exit = $marks->get();
 
@@ -2519,12 +2519,12 @@ if (!function_exists('labelWiseStudentResult')) {
         $data['result'] = 'not taken';
         if (count($exit) > 0) {
             $data['result'] = 'fail';
-            $settings = CustomResultSetting::where('school_id', $studentRecord->school_id)
-                ->where('un_academic_id', $studentRecord->un_academic_id)
+            $settings = CustomResultSetting::where('church_id', $studentRecord->church_id)
+                ->where('un_church_year_id', $studentRecord->un_church_year_id)
                 ->whereNotIn('exam_type_id', [0])
                 ->get();
             $subjectPassMark = Modules\University\Entities\UnSubject::where('id', $subject_id)
-                ->where('school_id', $studentRecord->school_id)
+                ->where('church_id', $studentRecord->church_id)
                 ->value('pass_mark');
 
             if (!$subjectPassMark) {
@@ -2615,7 +2615,7 @@ if (!function_exists('discountFees')) {
 if (!function_exists('smFeesInvoice')) {
     function smFeesInvoice($invoice)
     {
-        $settings = FeesInvoice::where('school_id', auth()->user()->school_id)->first();
+        $settings = FeesInvoice::where('church_id', auth()->user()->church_id)->first();
         
         $number = (($settings->start_form + $invoice)-1);
         $format = $settings->prefix."-". $number;
@@ -2671,7 +2671,7 @@ if (!function_exists('feesPaymentStatus')) {
 if (!function_exists('universityFeesInvoice')) {
     function universityFeesInvoice($invoice)
     {
-        $settings = FeesInvoice::where('school_id', auth()->user()->school_id)
+        $settings = FeesInvoice::where('church_id', auth()->user()->church_id)
             ->first();
 
         $number = $settings->start_form + $invoice;
@@ -2692,21 +2692,21 @@ if (!function_exists('universityFeesInvoice')) {
 
 
 if (!function_exists('smPaymentRemainder')) {
-    function smPaymentRemainder($school_id = null)
+    function smPaymentRemainder($church_id = null)
     {
         $today = date('Y-m-d');
 
-        if (!$school_id) {
-            $school_id = auth()->user()->school_id;
+        if (!$church_id) {
+            $church_id = auth()->user()->church_id;
         }
-        $notificationData = DirectFeesReminder::where('school_id', $school_id)
+        $notificationData = DirectFeesReminder::where('church_id', $church_id)
             ->first();
         $notificationType = json_decode($notificationData->notification_types);
 
         $dueDate = Carbon::parse($today)->addDays($notificationData->due_date_before)->format('Y-m-d');
 
 
-        $feesDues = DirectFeesInstallmentAssign::where('school_id', $school_id)
+        $feesDues = DirectFeesInstallmentAssign::where('church_id', $church_id)
             ->where('active_status', '!=', 1)
             ->where('due_date', $dueDate)
             ->get();
@@ -2724,9 +2724,9 @@ if (!function_exists('smPaymentRemainder')) {
                 $receiver_name = @$feesDue->recordDetail->student->full_name;
                 $purpose = 'university_fees_remainder';
 
-                $data['student_name'] = @$feesDue->recordDetail->student->full_name;
-                $data['class'] = @$feesDue->recordDetail->class->class_name;
-                $data['section'] = @$feesDue->recordDetail->section->section_name;
+                $data['member_name'] = @$feesDue->recordDetail->student->full_name;
+                $data['class'] = @$feesDue->recordDetail->class->age_group_name;
+                $data['section'] = @$feesDue->recordDetail->section->mgender_name;
                 $data['semester_label'] = @$feesDue->recordDetail->unSemesterLabel->name;
                 $data['academic'] = @$feesDue->recordDetail->academic->name;
                 $data['fees_type'] = @$feesDue->feesType->name;
@@ -2738,9 +2738,9 @@ if (!function_exists('smPaymentRemainder')) {
             if (in_array('sms', $notificationType)) {
                 $reciver_number = @$feesDue->recordDetail->student->mobile;
                 $purpose = 'university_fees_remainder';
-                $data['student_name'] = @$feesDue->recordDetail->student->full_name;
-                $data['class'] = @$feesDue->recordDetail->class->class_name;
-                $data['section'] = @$feesDue->recordDetail->section->section_name;
+                $data['member_name'] = @$feesDue->recordDetail->student->full_name;
+                $data['class'] = @$feesDue->recordDetail->class->age_group_name;
+                $data['section'] = @$feesDue->recordDetail->section->mgender_name;
                 $data['semester_label'] = @$feesDue->recordDetail->unSemesterLabel->name;
                 $data['academic'] = @$feesDue->recordDetail->academic->name;
                 $data['fees_type'] = @$feesDue->feesType->name;
@@ -2763,12 +2763,12 @@ if (!function_exists('singleSubjectMark')) {
         if(moduleStatusCheck('University')){
             $sm_mark = SmResultStore::where('student_record_id',$record_id)->where('un_subject_id',$subject_id)->where('exam_type_id',$exam_id)->first();
             if($sm_mark){
-                $full_mark = SmExam::where('exam_type_id',$exam_id)->where('un_subject_id',$subject_id)->where('un_semester_label_id',$sm_mark->un_semester_label_id)->where('un_section_id',$sm_mark->un_section_id)->first('exam_mark');
+                $full_mark = SmExam::where('exam_type_id',$exam_id)->where('un_subject_id',$subject_id)->where('un_semester_label_id',$sm_mark->un_semester_label_id)->where('un_mgender_id',$sm_mark->un_mgender_id)->first('exam_mark');
             }
         }else{
             $sm_mark = SmResultStore::where('student_record_id',$record_id)->where('subject_id',$subject_id)->where('exam_type_id',$exam_id)->first();
             if($sm_mark){
-                $full_mark = SmExam::where('exam_type_id',$exam_id)->where('subject_id',$subject_id)->where('class_id',$sm_mark->class_id)->where('section_id',$sm_mark->section_id)->first('exam_mark');
+                $full_mark = SmExam::where('exam_type_id',$exam_id)->where('subject_id',$subject_id)->where('age_group_id',$sm_mark->age_group_id)->where('mgender_id',$sm_mark->mgender_id)->first('exam_mark');
             }
             
         }
@@ -2793,10 +2793,10 @@ if (!function_exists('subjectAverageMark')) {
         $total_mark = 0;
         $grade = "";
         if(moduleStatusCheck('University')){
-             $result_setting = CustomResultSetting::where('un_academic_id',getAcademicId())->where('school_id',Auth()->user()->school_id)->get();
+             $result_setting = CustomResultSetting::where('un_church_year_id',getAcademicId())->where('church_id',Auth()->user()->church_id)->get();
         }
         else{
-            $result_setting = CustomResultSetting::where('academic_id',getAcademicId())->where('school_id',Auth()->user()->school_id)->get();
+            $result_setting = CustomResultSetting::where('church_year_id',getAcademicId())->where('church_id',Auth()->user()->church_id)->get();
         }
         
         if($result_setting){
@@ -2816,11 +2816,11 @@ if (!function_exists('subjectAverageMark')) {
                     if(moduleStatusCheck('University')){
                         $full_mark =  $full_mark->where('un_subject_id',$subject_id)
                         ->where('un_semester_label_id',$mark->un_semester_label_id)
-                        ->where('un_section_id',$mark->un_section_id);
+                        ->where('un_mgender_id',$mark->un_mgender_id);
                     }else{
                         $full_mark->where('subject_id',$subject_id)
-                        ->where('class_id',$mark->class_id)
-                        ->where('section_id',$mark->section_id);
+                        ->where('age_group_id',$mark->age_group_id)
+                        ->where('mgender_id',$mark->mgender_id);
                     }
                     $full_mark =  $full_mark->first('exam_mark'); 
                   $total_mark += ( ( ($mark->total_marks* 100) / $full_mark->exam_mark  ) * ($exam->exam_percentage/100) );
@@ -2844,12 +2844,12 @@ if (!function_exists('subjectAverageMark')) {
                     if(moduleStatusCheck('University')){
                         $full_mark = $full_mark->where('un_subject_id',$subject_id)
                                     ->where('un_semester_label_id',$mark->un_semester_label_id)
-                                    ->where('un_section_id',$mark->un_section_id);
+                                    ->where('un_mgender_id',$mark->un_mgender_id);
                     }
                     else{
                         $full_mark->where('subject_id',$subject_id)
-                        ->where('class_id',$mark->class_id)
-                        ->where('section_id',$mark->section_id);
+                        ->where('age_group_id',$mark->age_group_id)
+                        ->where('mgender_id',$mark->mgender_id);
                     }
                     $full_mark =  $full_mark->first('exam_mark'); 
                     $total_mark +=  $mark->total_marks ;
@@ -2870,8 +2870,8 @@ if (!function_exists('allSubjectAverageMark')) {
     function allSubjectAverageMark($record_id,$subject_id)
     {
        try{
-        $exam_rules = CustomResultSetting::where('school_id',Auth()->user()->school_id)
-        ->where('academic_id',getAcademicId())
+        $exam_rules = CustomResultSetting::where('church_id',Auth()->user()->church_id)
+        ->where('church_year_id',getAcademicId())
         ->get();
         $total_mark = 0;
         $grade = "";
@@ -2879,7 +2879,7 @@ if (!function_exists('allSubjectAverageMark')) {
             foreach($exam_rules as $exam){
               $mark =  SmResultStore::where('student_record_id',$record_id)->where('subject_id',$subject_id)->where('exam_type_id',$exam->exam_type_id)->first();
               if($mark){
-                $full_mark = SmExam::where('exam_type_id',$mark->exam_type_id)->where('subject_id',$subject_id)->where('class_id',$mark->class_id)->where('section_id',$mark->section_id)->first('exam_mark');
+                $full_mark = SmExam::where('exam_type_id',$mark->exam_type_id)->where('subject_id',$subject_id)->where('age_group_id',$mark->age_group_id)->where('mgender_id',$mark->mgender_id)->first('exam_mark');
                 $total_mark += ( (($mark->total_marks * 100) / $full_mark->exam_mark ) * ($exam->exam_percentage/100) );
               }
             }
@@ -2905,7 +2905,7 @@ if (!function_exists('allSubjectAverageMark')) {
                 if($exam_rule){
                     $result = SmResultStore::where('student_record_id', $record_id)
                     ->where('exam_type_id',$exam_rule->exam_type_id)
-                    ->where('academic_id',getAcademicId())->get();
+                    ->where('church_year_id',getAcademicId())->get();
                     if($result){
                         $total_marks = $result->sum('total_marks');
                         $avg_marks =  (($total_marks / count($result)   )* ($exam_rule->exam_percentage /100 ));
@@ -2915,7 +2915,7 @@ if (!function_exists('allSubjectAverageMark')) {
             }else{
                     $result = SmResultStore::where('student_record_id', $record_id)
                     ->where('exam_type_id',$exam_rule_id)
-                    ->where('academic_id',getAcademicId())->get();
+                    ->where('church_year_id',getAcademicId())->get();
                     if($result){
                         $total_marks = $result->sum('total_marks');
                         $avg_marks =  (($total_marks / count($result)));
@@ -2936,12 +2936,12 @@ if (!function_exists('allSubjectAverageMark')) {
            try{
             $total_avg = 0;
             if(moduleStatusCheck('University')){
-                $exam_rules = CustomResultSetting::where('un_academic_id',getAcademicId())->where('school_id',Auth()->user()->school_id)
-                ->where('un_academic_id',getAcademicId())
+                $exam_rules = CustomResultSetting::where('un_church_year_id',getAcademicId())->where('church_id',Auth()->user()->church_id)
+                ->where('un_church_year_id',getAcademicId())
                 ->get();
             }else{
-                $exam_rules = CustomResultSetting::where('academic_id',getAcademicId())->where('school_id',Auth()->user()->school_id)
-                ->where('academic_id',getAcademicId())
+                $exam_rules = CustomResultSetting::where('church_year_id',getAcademicId())->where('church_id',Auth()->user()->church_id)
+                ->where('church_year_id',getAcademicId())
                 ->get();
             }
            
@@ -2950,11 +2950,11 @@ if (!function_exists('allSubjectAverageMark')) {
                 foreach($exam_rules as $exam){
                     if(moduleStatusCheck('University')){
                         $mark =  SmResultStore::where('student_record_id',$record_id)->where('un_subject_id',$subject_id)->where('exam_type_id',$exam->exam_type_id)->first();
-                        $full_mark = SmExam::where('exam_type_id',$mark->exam_type_id)->where('un_subject_id',$subject_id)->where('class_id',$mark->class_id)->where('un_section_id',$mark->un_section_id)->first('exam_mark');
+                        $full_mark = SmExam::where('exam_type_id',$mark->exam_type_id)->where('un_subject_id',$subject_id)->where('age_group_id',$mark->age_group_id)->where('un_mgender_id',$mark->un_mgender_id)->first('exam_mark');
                         
                     }else{
                         $mark =  SmResultStore::where('student_record_id',$record_id)->where('subject_id',$subject_id)->where('exam_type_id',$exam->exam_type_id)->first();
-                        $full_mark = SmExam::where('exam_type_id',$mark->exam_type_id)->where('subject_id',$subject_id)->where('class_id',$mark->class_id)->where('section_id',$mark->section_id)->first('exam_mark');
+                        $full_mark = SmExam::where('exam_type_id',$mark->exam_type_id)->where('subject_id',$subject_id)->where('age_group_id',$mark->age_group_id)->where('mgender_id',$mark->mgender_id)->first('exam_mark');
                     }
                     
                     if($mark){
@@ -2973,9 +2973,9 @@ if (!function_exists('allSubjectAverageMark')) {
                         
                         if($mark){
                             if(moduleStatusCheck('University')){
-                                $full_mark = SmExam::where('exam_type_id',$mark->id)->where('un_subject_id',$subject_id)->where('un_semester_label_id',$mark->un_semester_label_id)->where('un_section_id',$mark->un_section_id)->first('exam_mark');
+                                $full_mark = SmExam::where('exam_type_id',$mark->id)->where('un_subject_id',$subject_id)->where('un_semester_label_id',$mark->un_semester_label_id)->where('un_mgender_id',$mark->un_mgender_id)->first('exam_mark');
                             }else{
-                                $full_mark = SmExam::where('exam_type_id',$mark->id)->where('subject_id',$subject_id)->where('class_id',$mark->class_id)->where('section_id',$mark->section_id)->first('exam_mark');
+                                $full_mark = SmExam::where('exam_type_id',$mark->id)->where('subject_id',$subject_id)->where('age_group_id',$mark->age_group_id)->where('mgender_id',$mark->mgender_id)->first('exam_mark');
                             }
                            
                             $total_avg += $mark->total_marks;
@@ -3047,7 +3047,7 @@ if (!function_exists('SaasSchool')) {
                 } else if ($host != $short_url and config('app.allow_custom_domain')) {
                     $school = \App\SmSchool::where(['custom_domain' => $host, 'active_status' => 1])->firstOrFail();
                 }  elseif(Auth::check()){
-                    $school = \App\SmSchool::findOrFail(Auth::user()->school_id);
+                    $school = \App\SmSchool::findOrFail(Auth::user()->church_id);
                 } else {
                     
                     
@@ -3112,8 +3112,8 @@ if (!function_exists('examTypes')) {
     function examTypes()
     {
         try {
-           return SmExamType::where('school_id',auth()->user()->school_id)
-                                ->where('academic_id',getAcademicId())
+           return SmExamType::where('church_id',auth()->user()->church_id)
+                                ->where('church_year_id',getAcademicId())
                                 ->where('active_status',1)
                                 ->get();
         } catch (\Throwable $th) {
@@ -3221,13 +3221,13 @@ if (!function_exists('send_custom_sms')) {
 }
 
 if (!function_exists('total_no_records')) {
-    function total_no_records($class_id,$section_id=null)
+    function total_no_records($age_group_id,$mgender_id=null)
     {
         try {
             $records = StudentRecord::query();
-            $records->where('class_id',$class_id)->where('is_promote', 0);
-            if ($section_id) {
-                $records->where('section_id',$section_id);
+            $records->where('age_group_id',$age_group_id)->where('is_promote', 0);
+            if ($mgender_id) {
+                $records->where('mgender_id',$mgender_id);
             }
             return $records->whereHas('student')->count();
         } catch (\Throwable $th) {
@@ -3241,7 +3241,7 @@ if (!function_exists('total_no_records')) {
 if(!function_exists('isSkip')) {
     function isSkip($name)
     {
-        $data = \App\Models\ExamStepSkip::where('name', $name)->where('school_id', auth()->user()->school_id)->first();
+        $data = \App\Models\ExamStepSkip::where('name', $name)->where('church_id', auth()->user()->church_id)->first();
         if($data) {
             return true;
         }
@@ -3289,11 +3289,11 @@ if (!function_exists('resultPrintStatus')) {
 }
 
 if (!function_exists('getStudentMeritPosition')) {
-    function getStudentMeritPosition($class_id, $section_id, $exam_term_id, $record_id)
+    function getStudentMeritPosition($age_group_id, $mgender_id, $exam_term_id, $record_id)
     {
         try {
-            $position = ExamMeritPosition::withOUtGlobalScopes()->where('class_id', $class_id)
-                        ->where('section_id', $section_id)
+            $position = ExamMeritPosition::withOUtGlobalScopes()->where('age_group_id', $age_group_id)
+                        ->where('mgender_id', $mgender_id)
                         ->where('exam_term_id', $exam_term_id)
                         ->where('record_id', $record_id)
                         ->first();
@@ -3309,11 +3309,11 @@ if (!function_exists('getStudentMeritPosition')) {
 }
 
 if (!function_exists('getStudentAllExamMeritPosition')) {
-    function getStudentAllExamMeritPosition($class_id, $section_id, $record_id)
+    function getStudentAllExamMeritPosition($age_group_id, $mgender_id, $record_id)
     {
         try {
-            $position = AllExamWisePosition::where('class_id', $class_id)
-                        ->where('section_id', $section_id)
+            $position = AllExamWisePosition::where('age_group_id', $age_group_id)
+                        ->where('mgender_id', $mgender_id)
                         ->where('record_id', $record_id)
                         ->first();
             if($position){
@@ -3342,11 +3342,11 @@ if (!function_exists('gpaResult')) {
 
 
 if (!function_exists('getStudentAllExamMeritPosition')) {
-    function getStudentAllExamMeritPosition($class_id, $section_id, $record_id)
+    function getStudentAllExamMeritPosition($age_group_id, $mgender_id, $record_id)
     {
         try {
-            $position = AllExamWisePosition::where('class_id', $class_id)
-                ->where('section_id', $section_id)
+            $position = AllExamWisePosition::where('age_group_id', $age_group_id)
+                ->where('mgender_id', $mgender_id)
                 ->where('record_id', $record_id)
                 ->first();
             if($position){

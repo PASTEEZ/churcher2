@@ -114,7 +114,7 @@
                                 @if(moduleStatusCheck('University'))
                                 {{@$homeworkDetails->semesterLabel->name}} ({{@$homeworkDetails->unAcademic->name}})
                                 @else
-                               {{@$homeworkDetails->classes->class_name}}
+                               {{@$homeworkDetails->classes->age_group_name}}
                                @endif
                            </div>
                        </div>
@@ -137,7 +137,7 @@
                                 @if(moduleStatusCheck('University'))
                                 {{@$homeworkDetails->unDepartment->name}}
                                 @else
-                                {{@$homeworkDetails->sections->section_name}}
+                                {{@$homeworkDetails->sections->mgender_name}}
                                 @endif
                             </div>
                         </div>

@@ -1,6 +1,6 @@
 declare(strict_types=1);
 
-{namespace}class {class_name} extends \SoapClient
+{namespace}class {age_group_name} extends \SoapClient
 {
     public function __construct($wsdl, array $options)
     {

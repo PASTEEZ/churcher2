@@ -40,17 +40,17 @@ class SubjectMarkSheetReportController extends Controller
         try {
             if (teacherAccess()) {
                 $teacher_info=SmStaff::where('user_id',Auth::user()->id)->first();
-                $classes= SmAssignSubject::where('teacher_id',$teacher_info->id)->join('sm_classes','sm_classes.id','sm_assign_subjects.class_id')
-                    ->where('sm_assign_subjects.academic_id', getAcademicId())
+                $classes= SmAssignSubject::where('teacher_id',$teacher_info->id)->join('sm_classes','sm_classes.id','sm_assign_subjects.age_group_id')
+                    ->where('sm_assign_subjects.church_year_id', getAcademicId())
                     ->where('sm_assign_subjects.active_status', 1)
-                    ->where('sm_assign_subjects.school_id',Auth::user()->school_id)
-                    ->select('sm_classes.id','class_name')
+                    ->where('sm_assign_subjects.church_id',Auth::user()->church_id)
+                    ->select('sm_classes.id','age_group_name')
                     ->groupBy('sm_classes.id')
                     ->get();
             } else {
                 $classes = SmClass::where('active_status', 1)
-                    ->where('academic_id', getAcademicId())
-                    ->where('school_id',Auth::user()->school_id)
+                    ->where('church_year_id', getAcademicId())
+                    ->where('church_id',Auth::user()->church_id)
                     ->get();
             }
             return view('backEnd.examination.subjectMarkSheet', compact('classes'));
@@ -67,7 +67,7 @@ class SubjectMarkSheetReportController extends Controller
         $section = null;
         if(moduleStatusCheck('University')){
             $subject = UnSubject::find($request->un_subject_id);
-            $assigned_subject = UnAssignSubject::where('school_id',Auth::user()->school_id)
+            $assigned_subject = UnAssignSubject::where('church_id',Auth::user()->church_id)
                                                 ->where('un_subject_id',$request->un_subject_id)
                                                 ->where('un_semester_label_id',$request->un_semester_label_id)
                                                 ->get();
@@ -79,16 +79,16 @@ class SubjectMarkSheetReportController extends Controller
             }
 
             $assigned_subject = SmAssignSubject::when($request->class, function ($query) use ($request) {
-                $query->where('class_id', $request->class);
+                $query->where('age_group_id', $request->class);
             })
             ->when($request->section, function ($query) use ($request) {
-                $query->where('section_id', $request->section);
+                $query->where('mgender_id', $request->section);
             })
             ->when($request->subject, function ($query) use ($request) {
                 $query->where('subject_id', $request->subject);
             })
-            ->where('school_id',Auth()->user()->school_id)
-            ->where('academic_id',getAcademicId())
+            ->where('church_id',Auth()->user()->church_id)
+            ->where('church_year_id',getAcademicId())
             ->get();
 
         }
@@ -97,51 +97,51 @@ class SubjectMarkSheetReportController extends Controller
             if(moduleStatusCheck('University')){
                 $sm_mark_stores = SmResultStore::where('un_semester_label_id',$request->un_semester_label_id)
                 ->where('un_session_id',$request->un_session_id)
-                ->where('school_id',Auth()->user()->school_id)
-                ->where('un_academic_id',$request->un_academic_id)
+                ->where('church_id',Auth()->user()->church_id)
+                ->where('un_church_year_id',$request->un_church_year_id)
                 ->with('studentInfo')
                 ->get()
-                ->groupBy('student_id');
+                ->groupBy('member_id');
             }else{
                 $sm_mark_stores = SmResultStore::when($request->class, function ($query) use ($request) {
-                    $query->where('class_id', $request->class);
+                    $query->where('age_group_id', $request->class);
                 })
                 ->when($request->section, function ($query) use ($request) {
-                    $query->where('section_id', $request->section);
+                    $query->where('mgender_id', $request->section);
                 }) 
                 ->when($request->subject, function ($query) use ($request) {
                     $query->where('subject_id', $request->subject);
                 })
-                ->where('school_id',Auth()->user()->school_id)
-                ->where('academic_id',getAcademicId())
+                ->where('church_id',Auth()->user()->church_id)
+                ->where('church_year_id',getAcademicId())
                 ->with('studentInfo')
                 ->get()
-                ->groupBy('student_id');
+                ->groupBy('member_id');
             }
 
             $students = StudentRecord::query();
             if(moduleStatusCheck('University')){
                 $data['session'] = UnSession::find($request->un_session_id)->name;
-                $data['academic_year'] = UnAcademicYear::find($request->un_academic_id)->name;
+                $data['church_year'] = UnAcademicYear::find($request->un_church_year_id)->name;
                 $data['faculty'] = UnFaculty::find($request->un_faculty_id)->name;
                 $data['department'] = UnDepartment::find($request->un_department_id)->name;
                 $data['semester'] = UnSemester::find($request->un_semester_id)->name;
                 $data['semester_label'] = UnSemesterLabel::find($request->un_semester_label_id)->name;
                 $data['requestData'] = $request->all();
                 $students = universityFilter($students,$request);
-                $result_setting = CustomResultSetting::where('un_academic_id',getAcademicId())->where('school_id',Auth()->user()->school_id)->get();
+                $result_setting = CustomResultSetting::where('un_church_year_id',getAcademicId())->where('church_id',Auth()->user()->church_id)->get();
             }else{
                 $students = $student->when($request->class, function ($query) use ($request) {
-                    $query->where('class_id', $request->class);
+                    $query->where('age_group_id', $request->class);
                     })
                     ->when($request->section, function ($query) use ($request) {
-                        $query->where('section_id', $request->section);
+                        $query->where('mgender_id', $request->section);
                     })
-                    ->where('academic_id',getAcademicId());
-                    $result_setting = CustomResultSetting::where('academic_id',getAcademicId())->where('school_id',Auth()->user()->school_id)->get();
+                    ->where('church_year_id',getAcademicId());
+                    $result_setting = CustomResultSetting::where('church_year_id',getAcademicId())->where('church_id',Auth()->user()->church_id)->get();
             }
                  
-            $students->where('school_id',Auth()->user()->school_id)->where('is_promote',0)->whereHas('studentDetail', function ($q)  {
+            $students->where('church_id',Auth()->user()->church_id)->where('is_promote',0)->whereHas('studentDetail', function ($q)  {
                                             $q->where('active_status', 1);
                                         })->with('studentDetail')->get();
                                         
@@ -151,8 +151,8 @@ class SubjectMarkSheetReportController extends Controller
             $student_collection = collect();
             foreach($students as $student){
                 $item = [
-                    'student_name' => $student->studentDetail->full_name,
-                    'admission_no' => $student->studentDetail->admission_no,
+                    'member_name' => $student->studentDetail->full_name,
+                    'registration_no' => $student->studentDetail->registration_no,
                     'roll_no' => $student->studentDetail->roll_no,
                     'avg_mark' => 0
                 ];
@@ -184,17 +184,17 @@ class SubjectMarkSheetReportController extends Controller
 
             if (teacherAccess()) {
                 $teacher_info=SmStaff::where('user_id',Auth::user()->id)->first();
-                $classes= SmAssignSubject::where('teacher_id',$teacher_info->id)->join('sm_classes','sm_classes.id','sm_assign_subjects.class_id')
-                    ->where('sm_assign_subjects.academic_id', getAcademicId())
+                $classes= SmAssignSubject::where('teacher_id',$teacher_info->id)->join('sm_classes','sm_classes.id','sm_assign_subjects.age_group_id')
+                    ->where('sm_assign_subjects.church_year_id', getAcademicId())
                     ->where('sm_assign_subjects.active_status', 1)
-                    ->where('sm_assign_subjects.school_id',Auth::user()->school_id)
-                    ->select('sm_classes.id','class_name')
+                    ->where('sm_assign_subjects.church_id',Auth::user()->church_id)
+                    ->select('sm_classes.id','age_group_name')
                     ->groupBy('sm_classes.id')
                     ->get();
             } else {
                 $classes = SmClass::where('active_status', 1)
-                    ->where('academic_id', getAcademicId())
-                    ->where('school_id',Auth::user()->school_id)
+                    ->where('church_year_id', getAcademicId())
+                    ->where('church_id',Auth::user()->church_id)
                     ->get();
             }
 
@@ -217,7 +217,7 @@ class SubjectMarkSheetReportController extends Controller
          $section = null;
          if(moduleStatusCheck('University')){
              $subject = UnSubject::find($request->un_subject_id);
-             $assigned_subject = UnAssignSubject::where('school_id',Auth::user()->school_id)
+             $assigned_subject = UnAssignSubject::where('church_id',Auth::user()->church_id)
                                                  ->where('un_subject_id',$request->un_subject_id)
                                                  ->where('un_semester_label_id',$request->un_semester_label_id)
                                                  ->get();
@@ -229,16 +229,16 @@ class SubjectMarkSheetReportController extends Controller
              }
  
              $assigned_subject = SmAssignSubject::when($request->class, function ($query) use ($request) {
-                 $query->where('class_id', $request->class);
+                 $query->where('age_group_id', $request->class);
              })
              ->when($request->section, function ($query) use ($request) {
-                 $query->where('section_id', $request->section);
+                 $query->where('mgender_id', $request->section);
              })
              ->when($request->subject, function ($query) use ($request) {
                  $query->where('subject_id', $request->subject);
              })
-             ->where('school_id',Auth()->user()->school_id)
-             ->where('academic_id',getAcademicId())
+             ->where('church_id',Auth()->user()->church_id)
+             ->where('church_year_id',getAcademicId())
              ->get();
          }
         
@@ -246,52 +246,52 @@ class SubjectMarkSheetReportController extends Controller
              if(moduleStatusCheck('University')){
                  $sm_mark_stores = SmResultStore::where('un_semester_label_id',$request->un_semester_label_id)
                  ->where('un_session_id',$request->un_session_id)
-                 ->where('school_id',Auth()->user()->school_id)
-                 ->where('un_academic_id',$request->un_academic_id)
+                 ->where('church_id',Auth()->user()->church_id)
+                 ->where('un_church_year_id',$request->un_church_year_id)
                  ->with('studentInfo')
                  ->get()
-                 ->groupBy('student_id');
+                 ->groupBy('member_id');
              }else{
                  $sm_mark_stores = SmResultStore::when($request->class, function ($query) use ($request) {
-                     $query->where('class_id', $request->class);
+                     $query->where('age_group_id', $request->class);
                  })
                  ->when($request->section, function ($query) use ($request) {
-                     $query->where('section_id', $request->section);
+                     $query->where('mgender_id', $request->section);
                  }) 
                  ->when($request->subject, function ($query) use ($request) {
                      $query->where('subject_id', $request->subject);
                  })
-                 ->where('school_id',Auth()->user()->school_id)
-                 ->where('academic_id',getAcademicId())
+                 ->where('church_id',Auth()->user()->church_id)
+                 ->where('church_year_id',getAcademicId())
                  ->with('studentInfo')
                  ->get()
-                 ->groupBy('student_id');
+                 ->groupBy('member_id');
              }
  
              $students = StudentRecord::query();
              if(moduleStatusCheck('University')){
                  $data['session'] = UnSession::find($request->un_session_id)->name;
-                 $data['academic_year'] = UnAcademicYear::find($request->un_academic_id)->name;
+                 $data['church_year'] = UnAcademicYear::find($request->un_church_year_id)->name;
                  $data['faculty'] = UnFaculty::find($request->un_faculty_id)->name;
                  $data['department'] = UnDepartment::find($request->un_department_id)->name;
                  $data['semester'] = UnSemester::find($request->un_semester_id)->name;
                  $data['semester_label'] = UnSemesterLabel::find($request->un_semester_label_id)->name;
                  $data['requestData'] = $request->all();
-                 $result_setting = CustomResultSetting::where('school_id',Auth()->user()->school_id)->where('un_academic_id',getAcademicId())->get();
+                 $result_setting = CustomResultSetting::where('church_id',Auth()->user()->church_id)->where('un_church_year_id',getAcademicId())->get();
                  $students = universityFilter($students,$request);
              }else{
 
-                $result_setting = CustomResultSetting::where('school_id',Auth()->user()->school_id)->where('academic_id',getAcademicId())->get();
+                $result_setting = CustomResultSetting::where('church_id',Auth()->user()->church_id)->where('church_year_id',getAcademicId())->get();
                  $students = $student->when($request->class, function ($query) use ($request) {
-                     $query->where('class_id', $request->class);
+                     $query->where('age_group_id', $request->class);
                      })
                      ->when($request->section, function ($query) use ($request) {
-                         $query->where('section_id', $request->section);
+                         $query->where('mgender_id', $request->section);
                      })
-                     ->where('academic_id',getAcademicId());
+                     ->where('church_year_id',getAcademicId());
              }
                   
-             $students->where('school_id',Auth()->user()->school_id)->where('is_promote',0)->whereHas('studentDetail', function ($q)  {
+             $students->where('church_id',Auth()->user()->church_id)->where('is_promote',0)->whereHas('studentDetail', function ($q)  {
                                              $q->where('active_status', 1);
                                          })->with('studentDetail')->get();
                                          
@@ -301,8 +301,8 @@ class SubjectMarkSheetReportController extends Controller
              $student_collection = collect();
              foreach($students as $student){
                  $item = [
-                     'student_name' => $student->studentDetail->full_name,
-                     'admission_no' => $student->studentDetail->admission_no,
+                     'member_name' => $student->studentDetail->full_name,
+                     'registration_no' => $student->studentDetail->registration_no,
                      'roll_no' => $student->studentDetail->roll_no,
                      'avg_mark' => 0
                  ];
@@ -334,23 +334,23 @@ class SubjectMarkSheetReportController extends Controller
  
              if (teacherAccess()) {
                  $teacher_info=SmStaff::where('user_id',Auth::user()->id)->first();
-                 $classes= SmAssignSubject::where('teacher_id',$teacher_info->id)->join('sm_classes','sm_classes.id','sm_assign_subjects.class_id')
-                     ->where('sm_assign_subjects.academic_id', getAcademicId())
+                 $classes= SmAssignSubject::where('teacher_id',$teacher_info->id)->join('sm_classes','sm_classes.id','sm_assign_subjects.age_group_id')
+                     ->where('sm_assign_subjects.church_year_id', getAcademicId())
                      ->where('sm_assign_subjects.active_status', 1)
-                     ->where('sm_assign_subjects.school_id',Auth::user()->school_id)
-                     ->select('sm_classes.id','class_name')
+                     ->where('sm_assign_subjects.church_id',Auth::user()->church_id)
+                     ->select('sm_classes.id','age_group_name')
                      ->groupBy('sm_classes.id')
                      ->get();
              } else {
                  $classes = SmClass::where('active_status', 1)
-                     ->where('academic_id', getAcademicId())
-                     ->where('school_id',Auth::user()->school_id)
+                     ->where('church_year_id', getAcademicId())
+                     ->where('church_id',Auth::user()->church_id)
                      ->get();
              }
 
-            $grades = SmMarksGrade::where('school_id', Auth::user()->school_id)
+            $grades = SmMarksGrade::where('church_id', Auth::user()->church_id)
              ->orderBy('gpa', 'desc')
-             ->where('academic_id',getAcademicId())
+             ->where('church_year_id',getAcademicId())
              ->get(); 
  
              if(moduleStatusCheck('University')){
@@ -380,47 +380,47 @@ class SubjectMarkSheetReportController extends Controller
     //          $section = SmSection::find($request->section);
     //      }
     //      $assigned_subject = SmAssignSubject::when($request->class, function ($query) use ($request) {
-    //          $query->where('class_id', $request->class);
+    //          $query->where('age_group_id', $request->class);
     //      })
     //      ->when($request->section, function ($query) use ($request) {
-    //          $query->where('section_id', $request->section);
+    //          $query->where('mgender_id', $request->section);
     //      })
     //      ->when($request->subject, function ($query) use ($request) {
     //          $query->where('subject_id', $request->subject);
     //      })
-    //      ->where('school_id',Auth()->user()->school_id)
-    //      ->where('academic_id',getAcademicId())
+    //      ->where('church_id',Auth()->user()->church_id)
+    //      ->where('church_year_id',getAcademicId())
     //      ->get();
          
     //      if($assigned_subject){
  
     //          $sm_mark_stores = SmResultStore::when($request->class, function ($query) use ($request) {
-    //              $query->where('class_id', $request->class);
+    //              $query->where('age_group_id', $request->class);
     //          })
     //          ->when($request->section, function ($query) use ($request) {
-    //              $query->where('section_id', $request->section);
+    //              $query->where('mgender_id', $request->section);
     //          }) 
     //          ->when($request->subject, function ($query) use ($request) {
     //              $query->where('subject_id', $request->subject);
     //          })
-    //          ->where('school_id',Auth()->user()->school_id)
-    //          ->where('academic_id',getAcademicId())
+    //          ->where('church_id',Auth()->user()->church_id)
+    //          ->where('church_year_id',getAcademicId())
     //          ->with('studentInfo')
-    //          ->get()->groupBy('student_id');
+    //          ->get()->groupBy('member_id');
  
     //          $students = StudentRecord::when($request->class, function ($query) use ($request) {
-    //                                      $query->where('class_id', $request->class);
+    //                                      $query->where('age_group_id', $request->class);
     //                                      })
     //                                      ->when($request->section, function ($query) use ($request) {
-    //                                          $query->where('section_id', $request->section);
-    //                                      })->where('school_id',Auth()->user()->school_id)
-    //                                      ->where('academic_id',getAcademicId())
+    //                                          $query->where('mgender_id', $request->section);
+    //                                      })->where('church_id',Auth()->user()->church_id)
+    //                                      ->where('church_year_id',getAcademicId())
     //                                      ->where('is_promote',0)
     //                                      ->whereHas('studentDetail', function ($q)  {
     //                                          $q->where('active_status', 1);
     //                                      })->with('studentDetail')->get();  
-    //          $result_setting = CustomResultSetting::where('school_id',Auth()->user()->school_id)
-    //          ->where('academic_id',getAcademicId())
+    //          $result_setting = CustomResultSetting::where('church_id',Auth()->user()->church_id)
+    //          ->where('church_year_id',getAcademicId())
     //          ->get();
     //          if(is_null($sm_mark_stores)){
     //              Toastr::error('Mark Register Uncomplete', 'Failed');
@@ -429,30 +429,30 @@ class SubjectMarkSheetReportController extends Controller
  
     //          if (teacherAccess()) {
     //              $teacher_info=SmStaff::where('user_id',Auth::user()->id)->first();
-    //              $classes= SmAssignSubject::where('teacher_id',$teacher_info->id)->join('sm_classes','sm_classes.id','sm_assign_subjects.class_id')
-    //                  ->where('sm_assign_subjects.academic_id', getAcademicId())
+    //              $classes= SmAssignSubject::where('teacher_id',$teacher_info->id)->join('sm_classes','sm_classes.id','sm_assign_subjects.age_group_id')
+    //                  ->where('sm_assign_subjects.church_year_id', getAcademicId())
     //                  ->where('sm_assign_subjects.active_status', 1)
-    //                  ->where('sm_assign_subjects.school_id',Auth::user()->school_id)
-    //                  ->select('sm_classes.id','class_name')
+    //                  ->where('sm_assign_subjects.church_id',Auth::user()->church_id)
+    //                  ->select('sm_classes.id','age_group_name')
     //                  ->groupBy('sm_classes.id')
     //                  ->get();
     //          } else {
     //              $classes = SmClass::where('active_status', 1)
-    //                  ->where('academic_id', getAcademicId())
-    //                  ->where('school_id',Auth::user()->school_id)
+    //                  ->where('church_year_id', getAcademicId())
+    //                  ->where('church_id',Auth::user()->church_id)
     //                  ->get();
     //          }
 
-    //          $grades = SmMarksGrade::where('school_id', Auth::user()->school_id)
-    //          ->where('academic_id', getAcademicId())
+    //          $grades = SmMarksGrade::where('church_id', Auth::user()->church_id)
+    //          ->where('church_year_id', getAcademicId())
     //          ->orderBy('gpa', 'desc')
     //          ->get(); 
              
     //          $student_collection = collect();
     //          foreach($students as $student){
     //              $item = [
-    //                  'student_name' => $student->studentDetail->full_name,
-    //                  'admission_no' => $student->studentDetail->admission_no,
+    //                  'member_name' => $student->studentDetail->full_name,
+    //                  'registration_no' => $student->studentDetail->registration_no,
     //                  'roll_no' => $student->studentDetail->roll_no,
     //                  'avg_mark' => 0
     //              ];
@@ -492,17 +492,17 @@ class SubjectMarkSheetReportController extends Controller
         try{
             if (teacherAccess()) {
                 $teacher_info=SmStaff::where('user_id',Auth::user()->id)->first();
-                $classes= SmAssignSubject::where('teacher_id',$teacher_info->id)->join('sm_classes','sm_classes.id','sm_assign_subjects.class_id')
-                    ->where('sm_assign_subjects.academic_id', getAcademicId())
+                $classes= SmAssignSubject::where('teacher_id',$teacher_info->id)->join('sm_classes','sm_classes.id','sm_assign_subjects.age_group_id')
+                    ->where('sm_assign_subjects.church_year_id', getAcademicId())
                     ->where('sm_assign_subjects.active_status', 1)
-                    ->where('sm_assign_subjects.school_id',Auth::user()->school_id)
-                    ->select('sm_classes.id','class_name')
+                    ->where('sm_assign_subjects.church_id',Auth::user()->church_id)
+                    ->select('sm_classes.id','age_group_name')
                     ->groupBy('sm_classes.id')
                     ->get();
             } else {
                 $classes = SmClass::where('active_status', 1)
-                    ->where('academic_id', getAcademicId())
-                    ->where('school_id',Auth::user()->school_id)
+                    ->where('church_year_id', getAcademicId())
+                    ->where('church_id',Auth::user()->church_id)
                     ->get();
             }
 
@@ -524,15 +524,15 @@ class SubjectMarkSheetReportController extends Controller
            
            if(moduleStatusCheck('University')){
 
-                $result_setting = CustomResultSetting::where('school_id',Auth()->user()->school_id)
-                ->where('un_academic_id',getAcademicId())
+                $result_setting = CustomResultSetting::where('church_id',Auth()->user()->church_id)
+                ->where('un_church_year_id',getAcademicId())
                 ->get();
 
-                if($request->un_section_id){
-                    $section = SmSection::find($request->un_section_id);
+                if($request->un_mgender_id){
+                    $section = SmSection::find($request->un_mgender_id);
                 }
                 $data['session'] = UnSession::find($request->un_session_id)->name;
-                $data['academic_year'] = UnAcademicYear::find($request->un_academic_id)->name;
+                $data['church_year'] = UnAcademicYear::find($request->un_church_year_id)->name;
                 $data['faculty'] = UnFaculty::find($request->un_faculty_id)->name;
                 $data['department'] = UnDepartment::find($request->un_department_id)->name;
                 $data['semester'] = UnSemester::find($request->un_semester_id)->name;
@@ -542,15 +542,15 @@ class SubjectMarkSheetReportController extends Controller
            }else{
                    
                 
-                $result_setting = CustomResultSetting::where('school_id',Auth()->user()->school_id)
-                ->where('academic_id',getAcademicId())
+                $result_setting = CustomResultSetting::where('church_id',Auth()->user()->church_id)
+                ->where('church_year_id',getAcademicId())
                 ->get();
-                    $assigned_subjects = SmAssignSubject::where('school_id',Auth()->user()->school_id)
+                    $assigned_subjects = SmAssignSubject::where('church_id',Auth()->user()->church_id)
                                                         ->when($request->class, function ($query) use ($request) {
-                                                            $query->where('class_id', $request->class);
+                                                            $query->where('age_group_id', $request->class);
                                                         })->when($request->section, function ($query) use ($request) {
-                                                                    $query->where('section_id', $request->section);
-                                                        })->where('academic_id',getAcademicId())->get()->unique('subject_id');    
+                                                                    $query->where('mgender_id', $request->section);
+                                                        })->where('church_year_id',getAcademicId())->get()->unique('subject_id');    
            }
 
             if(is_null($assigned_subjects)){
@@ -560,47 +560,47 @@ class SubjectMarkSheetReportController extends Controller
 
             if (teacherAccess()) {
                 $teacher_info=SmStaff::where('user_id',Auth::user()->id)->first();
-                $classes= SmAssignSubject::where('teacher_id',$teacher_info->id)->join('sm_classes','sm_classes.id','sm_assign_subjects.class_id')
-                                ->where('sm_assign_subjects.academic_id', getAcademicId())
+                $classes= SmAssignSubject::where('teacher_id',$teacher_info->id)->join('sm_classes','sm_classes.id','sm_assign_subjects.age_group_id')
+                                ->where('sm_assign_subjects.church_year_id', getAcademicId())
                                 ->where('sm_assign_subjects.active_status', 1)
-                                ->where('sm_assign_subjects.school_id',Auth::user()->school_id)
-                                ->select('sm_classes.id','class_name')
+                                ->where('sm_assign_subjects.church_id',Auth::user()->church_id)
+                                ->select('sm_classes.id','age_group_name')
                                 ->groupBy('sm_classes.id')
                                 ->get();
             } else {
                 $classes = SmClass::where('active_status', 1)
-                                ->where('academic_id', getAcademicId())
-                                ->where('school_id',Auth::user()->school_id)
+                                ->where('church_year_id', getAcademicId())
+                                ->where('church_id',Auth::user()->church_id)
                                 ->get();
             }
 
             $result = SmResultStore::query();
-            $result->where('school_id',Auth()->user()->school_id);
+            $result->where('church_id',Auth()->user()->church_id);
             if(moduleStatusCheck('University')){
                 $result = universityFilter($result,$request);
             }else{
                 $result->when($request->class, function ($query) use ($request) {
-                    $query->where('class_id', $request->class);
+                    $query->where('age_group_id', $request->class);
                 })
                 ->when($request->section, function ($query) use ($request) {
-                    $query->where('section_id', $request->section);
-                })->where('academic_id',getAcademicId());
+                    $query->where('mgender_id', $request->section);
+                })->where('church_year_id',getAcademicId());
             }
             
-            $result = $result->with('studentInfo')->get()->groupBy('student_id');
+            $result = $result->with('studentInfo')->get()->groupBy('member_id');
 
             if($result){
                 $students = StudentRecord::query();
-                $students->where('school_id',Auth()->user()->school_id);
+                $students->where('church_id',Auth()->user()->church_id);
                 if(moduleStatusCheck('University')){
                     $students = universityFilter($students, $request);
                 }else{
                     $students = $students->when($request->class, function ($query) use ($request) {
-                        $query->where('class_id', $request->class);
+                        $query->where('age_group_id', $request->class);
                         })
                         ->when($request->section, function ($query) use ($request) {
-                        $query->where('section_id', $request->section);
-                        })->where('academic_id',getAcademicId())->where('is_promote',0);
+                        $query->where('mgender_id', $request->section);
+                        })->where('church_year_id',getAcademicId())->where('is_promote',0);
                 }
                 
                 $students = $students->whereHas('studentDetail', function ($q)  {
@@ -610,8 +610,8 @@ class SubjectMarkSheetReportController extends Controller
                         $student_collection = collect();
                         foreach($students as $student){
                             $item = [
-                                'student_name' => $student->studentDetail->full_name,
-                                'admission_no' => $student->studentDetail->admission_no,
+                                'member_name' => $student->studentDetail->full_name,
+                                'registration_no' => $student->studentDetail->registration_no,
                                 'roll_no' => $student->studentDetail->roll_no,
                                 'avg_mark' => 0
                             ];
@@ -654,8 +654,8 @@ class SubjectMarkSheetReportController extends Controller
      }
 
 
-    //  $grades = SmMarksGrade::where('school_id', Auth::user()->school_id)
-    //                     ->where('academic_id', getAcademicId())
+    //  $grades = SmMarksGrade::where('church_id', Auth::user()->church_id)
+    //                     ->where('church_year_id', getAcademicId())
     //                     ->orderBy('gpa', 'desc')
     //                     ->get(); 
     //return view('backEnd.examination.finalMarkSheetPrint',compact('classes','students','class','section','assigned_subjects','result_setting','finalMarkSheets','grades','all_subject_ids'));
@@ -670,15 +670,15 @@ class SubjectMarkSheetReportController extends Controller
                 }
                
                if(moduleStatusCheck('University')){
-                    $result_setting = CustomResultSetting::where('school_id',Auth()->user()->school_id)
-                    ->where('un_academic_id',getAcademicId())
+                    $result_setting = CustomResultSetting::where('church_id',Auth()->user()->church_id)
+                    ->where('un_church_year_id',getAcademicId())
                     ->get();
 
-                    if($request->un_section_id){
-                        $section = SmSection::find($request->un_section_id);
+                    if($request->un_mgender_id){
+                        $section = SmSection::find($request->un_mgender_id);
                     }
                     $data['session'] = UnSession::find($request->un_session_id)->name;
-                    $data['academic_year'] = UnAcademicYear::find($request->un_academic_id)->name;
+                    $data['church_year'] = UnAcademicYear::find($request->un_church_year_id)->name;
                     $data['faculty'] = UnFaculty::find($request->un_faculty_id)->name;
                     $data['department'] = UnDepartment::find($request->un_department_id)->name;
                     $data['semester'] = UnSemester::find($request->un_semester_id)->name;
@@ -688,15 +688,15 @@ class SubjectMarkSheetReportController extends Controller
                }else{
                        
                     
-                        $result_setting = CustomResultSetting::where('school_id',Auth()->user()->school_id)
-                        ->where('academic_id',getAcademicId())
+                        $result_setting = CustomResultSetting::where('church_id',Auth()->user()->church_id)
+                        ->where('church_year_id',getAcademicId())
                         ->get();
-                        $assigned_subjects = SmAssignSubject::where('school_id',Auth()->user()->school_id)
+                        $assigned_subjects = SmAssignSubject::where('church_id',Auth()->user()->church_id)
                                                             ->when($request->class, function ($query) use ($request) {
-                                                                $query->where('class_id', $request->class);
+                                                                $query->where('age_group_id', $request->class);
                                                             })->when($request->section, function ($query) use ($request) {
-                                                                        $query->where('section_id', $request->section);
-                                                            })->where('academic_id',getAcademicId())->get()->unique('subject_id');    
+                                                                        $query->where('mgender_id', $request->section);
+                                                            })->where('church_year_id',getAcademicId())->get()->unique('subject_id');    
                }
     
                 if(is_null($assigned_subjects)){
@@ -706,47 +706,47 @@ class SubjectMarkSheetReportController extends Controller
     
                 if (teacherAccess()) {
                     $teacher_info=SmStaff::where('user_id',Auth::user()->id)->first();
-                    $classes= SmAssignSubject::where('teacher_id',$teacher_info->id)->join('sm_classes','sm_classes.id','sm_assign_subjects.class_id')
-                                    ->where('sm_assign_subjects.academic_id', getAcademicId())
+                    $classes= SmAssignSubject::where('teacher_id',$teacher_info->id)->join('sm_classes','sm_classes.id','sm_assign_subjects.age_group_id')
+                                    ->where('sm_assign_subjects.church_year_id', getAcademicId())
                                     ->where('sm_assign_subjects.active_status', 1)
-                                    ->where('sm_assign_subjects.school_id',Auth::user()->school_id)
-                                    ->select('sm_classes.id','class_name')
+                                    ->where('sm_assign_subjects.church_id',Auth::user()->church_id)
+                                    ->select('sm_classes.id','age_group_name')
                                     ->groupBy('sm_classes.id')
                                     ->get();
                 } else {
                     $classes = SmClass::where('active_status', 1)
-                                    ->where('academic_id', getAcademicId())
-                                    ->where('school_id',Auth::user()->school_id)
+                                    ->where('church_year_id', getAcademicId())
+                                    ->where('church_id',Auth::user()->church_id)
                                     ->get();
                 }
     
                 $result = SmResultStore::query();
-                $result->where('school_id',Auth()->user()->school_id);
+                $result->where('church_id',Auth()->user()->church_id);
                 if(moduleStatusCheck('University')){
                     $result = universityFilter($result,$request);
                 }else{
                     $result->when($request->class, function ($query) use ($request) {
-                        $query->where('class_id', $request->class);
+                        $query->where('age_group_id', $request->class);
                     })
                     ->when($request->section, function ($query) use ($request) {
-                        $query->where('section_id', $request->section);
-                    })->where('academic_id',getAcademicId());
+                        $query->where('mgender_id', $request->section);
+                    })->where('church_year_id',getAcademicId());
                 }
                 
-                $result = $result->with('studentInfo')->get()->groupBy('student_id');
+                $result = $result->with('studentInfo')->get()->groupBy('member_id');
     
                 if($result){
                     $students = StudentRecord::query();
-                    $students->where('school_id',Auth()->user()->school_id);
+                    $students->where('church_id',Auth()->user()->church_id);
                     if(moduleStatusCheck('University')){
                         $students = universityFilter($students, $request);
                     }else{
                         $students = $students->when($request->class, function ($query) use ($request) {
-                            $query->where('class_id', $request->class);
+                            $query->where('age_group_id', $request->class);
                             })
                             ->when($request->section, function ($query) use ($request) {
-                            $query->where('section_id', $request->section);
-                            })->where('academic_id',getAcademicId())->where('is_promote',0);
+                            $query->where('mgender_id', $request->section);
+                            })->where('church_year_id',getAcademicId())->where('is_promote',0);
                     }
                     
                     $students = $students->whereHas('studentDetail', function ($q)  {
@@ -756,8 +756,8 @@ class SubjectMarkSheetReportController extends Controller
                             $student_collection = collect();
                             foreach($students as $student){
                                 $item = [
-                                    'student_name' => $student->studentDetail->full_name,
-                                    'admission_no' => $student->studentDetail->admission_no,
+                                    'member_name' => $student->studentDetail->full_name,
+                                    'registration_no' => $student->studentDetail->registration_no,
                                     'roll_no' => $student->studentDetail->roll_no,
                                     'avg_mark' => 0
                                 ];
@@ -781,8 +781,8 @@ class SubjectMarkSheetReportController extends Controller
                             }
     
                         $finalMarkSheets =  $student_collection->sortByDesc('avg_mark');
-                        $grades = SmMarksGrade::where('school_id', Auth::user()->school_id)
-                                            ->where('academic_id', getAcademicId())
+                        $grades = SmMarksGrade::where('church_id', Auth::user()->church_id)
+                                            ->where('church_year_id', getAcademicId())
                                              ->orderBy('gpa', 'desc')
                                              ->get(); 
                         return view('backEnd.examination.finalMarkSheetPrint',compact('classes','students','class','section','assigned_subjects','result_setting','finalMarkSheets','grades','all_subject_ids','data'));
@@ -807,17 +807,17 @@ class SubjectMarkSheetReportController extends Controller
      public function studentFinalMarkSheet(){
         if (teacherAccess()) {
             $teacher_info=SmStaff::where('user_id',Auth::user()->id)->first();
-            $classes= SmAssignSubject::where('teacher_id',$teacher_info->id)->join('sm_classes','sm_classes.id','sm_assign_subjects.class_id')
-                            ->where('sm_assign_subjects.academic_id', getAcademicId())
+            $classes= SmAssignSubject::where('teacher_id',$teacher_info->id)->join('sm_classes','sm_classes.id','sm_assign_subjects.age_group_id')
+                            ->where('sm_assign_subjects.church_year_id', getAcademicId())
                             ->where('sm_assign_subjects.active_status', 1)
-                            ->where('sm_assign_subjects.school_id',Auth::user()->school_id)
-                            ->select('sm_classes.id','class_name')
+                            ->where('sm_assign_subjects.church_id',Auth::user()->church_id)
+                            ->select('sm_classes.id','age_group_name')
                             ->groupBy('sm_classes.id')
                             ->get();
         } else {
             $classes = SmClass::where('active_status', 1)
-                            ->where('academic_id', getAcademicId())
-                            ->where('school_id',Auth::user()->school_id)
+                            ->where('church_year_id', getAcademicId())
+                            ->where('church_id',Auth::user()->church_id)
                             ->get();
         }
         
@@ -832,7 +832,7 @@ class SubjectMarkSheetReportController extends Controller
             $data = [];
             if(moduleStatusCheck('University')){
                 $data['session'] = UnSession::find($request->un_session_id)->name;
-                $data['academic_year'] = UnAcademicYear::find($request->un_academic_id)->name;
+                $data['church_year'] = UnAcademicYear::find($request->un_church_year_id)->name;
                 $data['faculty'] = UnFaculty::find($request->un_faculty_id)->name;
                 $data['department'] = UnDepartment::find($request->un_department_id)->name;
                 $data['semester'] = UnSemester::find($request->un_semester_id)->name;
@@ -841,42 +841,42 @@ class SubjectMarkSheetReportController extends Controller
                 $exams = SmExam::where('active_status', 1)
                 ->where('un_semester_label_id', $request->un_semester_label_id)
                 ->where('un_session_id', $request->un_session_id)
-                ->where('school_id',Auth::user()->school_id)
+                ->where('church_id',Auth::user()->church_id)
                 ->get();
 
                 $exam_types = SmExamType::where('active_status', 1)
-                            ->where('un_academic_id', getAcademicId())
+                            ->where('un_church_year_id', getAcademicId())
                             ->pluck('id');
                 $fail_grade = SmMarksGrade::where('active_status',1)
-                            ->where('school_id',Auth::user()->school_id)
+                            ->where('church_id',Auth::user()->church_id)
                             ->min('gpa');
 
                 $fail_grade_name = SmMarksGrade::where('active_status',1)
-                                ->where('school_id',Auth::user()->school_id)
+                                ->where('church_id',Auth::user()->church_id)
                                 ->where('gpa',$fail_grade)
                                 ->first();
 
-                $studentDetails = StudentRecord::where('student_id', $request->student_id)
+                $studentDetails = StudentRecord::where('member_id', $request->member_id)
                                                 ->where('un_semester_label_id', $request->un_semester_label_id)
-                                                ->where('un_academic_id', $request->un_academic_id)
-                                                ->where('school_id', Auth::user()->school_id)
+                                                ->where('un_church_year_id', $request->un_church_year_id)
+                                                ->where('church_id', Auth::user()->church_id)
                                                 ->first();
-                $marks_grade = SmMarksGrade::where('school_id', Auth::user()->school_id)
-                                            ->where('un_academic_id',getAcademicId())
+                $marks_grade = SmMarksGrade::where('church_id', Auth::user()->church_id)
+                                            ->where('un_church_year_id',getAcademicId())
                                             ->orderBy('gpa', 'desc')
                                             ->get();
                     
-                $maxGrade = SmMarksGrade::where('school_id',Auth::user()->school_id)
+                $maxGrade = SmMarksGrade::where('church_id',Auth::user()->church_id)
                                         ->max('gpa');
                 $exam_setup = SmExamSetup::where([
                                             ['un_semester_label_id', $request->un_semester_label_id], 
                                             ['un_session_id', $request->un_session_id]])
-                                            ->where('school_id',Auth::user()->school_id)
+                                            ->where('church_id',Auth::user()->church_id)
                                             ->get();
 
                 $record_id = @$studentDetails->id;
-                $examSubjects = SmExam::where([['un_semester_label_id', $request->un_semester_label_id], ['un_session_id', $request->un_session_id], ['un_section_id', $request->un_section_id]])
-                                        ->where('school_id',Auth::user()->school_id)
+                $examSubjects = SmExam::where([['un_semester_label_id', $request->un_semester_label_id], ['un_session_id', $request->un_session_id], ['un_mgender_id', $request->un_mgender_id]])
+                                        ->where('church_id',Auth::user()->church_id)
                                         ->get();
 
                 $examSubjectIds = [];
@@ -886,7 +886,7 @@ class SubjectMarkSheetReportController extends Controller
             
 
                 $subjects = UnAssignSubject::where('un_semester_label_id', $request->un_semester_label_id)
-                            ->where('school_id',Auth::user()->school_id)
+                            ->where('church_id',Auth::user()->church_id)
                             ->whereIn('un_subject_id', $examSubjectIds)
                             ->get();
                     $assinged_exam_types = [];
@@ -895,15 +895,15 @@ class SubjectMarkSheetReportController extends Controller
                     }
                 $assinged_exam_types = array_unique($assinged_exam_types);
             
-                $result_setting = CustomResultSetting::where('school_id',Auth()->user()->school_id)
-                                    ->where('un_academic_id',getAcademicId())
+                $result_setting = CustomResultSetting::where('church_id',Auth()->user()->church_id)
+                                    ->where('un_church_year_id',getAcademicId())
                                     ->get();
 
                 foreach ($assinged_exam_types as $assinged_exam_type) {
                     foreach ($subjects as $subject) {
                         $is_mark_available = SmResultStore::where([
                                             ['un_semester_label_id', $request->un_semester_label_id],  
-                                            ['student_id', $request->student_id]
+                                            ['member_id', $request->member_id]
                                             ])
                                             ->first();
                                             
@@ -915,11 +915,11 @@ class SubjectMarkSheetReportController extends Controller
                     }
                 }
                 $is_result_available = SmResultStore::where([
-                    ['un_semester_label_id', $request->un_semester_label_id], ['un_section_id', $request->un_section_id], 
-                    ['student_id', $request->student_id]
+                    ['un_semester_label_id', $request->un_semester_label_id], ['un_mgender_id', $request->un_mgender_id], 
+                    ['member_id', $request->member_id]
                     ])
                     ->get();
-                    $student_id = $request->student_id;
+                    $member_id = $request->member_id;
                 $all_subject_ids = array_unique($examSubjectIds);    
                 if ($is_result_available->count() > 0) {
                         return view('university::exam.unStudentFinalMarkSheet', 
@@ -928,7 +928,7 @@ class SubjectMarkSheetReportController extends Controller
                         'is_result_available', 
                         'subjects', 
                         'data',
-                        'student_id', 
+                        'member_id', 
                         'studentDetails',
                         'exam_types', 
                         'assinged_exam_types',
@@ -947,81 +947,81 @@ class SubjectMarkSheetReportController extends Controller
 
 
             }else{
-                $result_setting = CustomResultSetting::where('school_id',Auth()->user()->school_id)
-                ->where('academic_id',getAcademicId())
+                $result_setting = CustomResultSetting::where('church_id',Auth()->user()->church_id)
+                ->where('church_year_id',getAcademicId())
                 ->get();
                 
                 $exams = SmExam::where('active_status', 1)
-                ->where('class_id', $request->class)
-                ->where('section_id', $request->section)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id',Auth::user()->school_id)
+                ->where('age_group_id', $request->class)
+                ->where('mgender_id', $request->section)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id',Auth::user()->church_id)
                 ->get();
 
                 $exam_types = SmExamType::where('active_status', 1)
-                            ->where('academic_id', getAcademicId())
-                            ->where('school_id',Auth::user()->school_id)
+                            ->where('church_year_id', getAcademicId())
+                            ->where('church_id',Auth::user()->church_id)
                             ->pluck('id');
                 
                 
 
                 $classes = SmClass::where('active_status', 1)
-                            ->where('academic_id', getAcademicId())
-                            ->where('school_id',Auth::user()->school_id)
+                            ->where('church_year_id', getAcademicId())
+                            ->where('church_id',Auth::user()->church_id)
                             ->get();
 
                 $fail_grade = SmMarksGrade::where('active_status',1)
-                            ->where('academic_id', getAcademicId())
-                            ->where('school_id',Auth::user()->school_id)
+                            ->where('church_year_id', getAcademicId())
+                            ->where('church_id',Auth::user()->church_id)
                             ->min('gpa');
 
                 $fail_grade_name = SmMarksGrade::where('active_status',1)
-                                ->where('academic_id', getAcademicId())
-                                ->where('school_id',Auth::user()->school_id)
+                                ->where('church_year_id', getAcademicId())
+                                ->where('church_id',Auth::user()->church_id)
                                 ->where('gpa',$fail_grade)
                                 ->first();
 
-                $studentDetails = StudentRecord::where('student_id', $request->student)
-                                    ->where('class_id', $request->class)
-                                    ->where('section_id', $request->section)
-                                    ->where('academic_id', getAcademicId())
-                                    ->where('school_id', Auth::user()->school_id)
+                $studentDetails = StudentRecord::where('member_id', $request->student)
+                                    ->where('age_group_id', $request->class)
+                                    ->where('mgender_id', $request->section)
+                                    ->where('church_year_id', getAcademicId())
+                                    ->where('church_id', Auth::user()->church_id)
                                     ->first();
 
-                $marks_grade = SmMarksGrade::where('school_id', Auth::user()->school_id)
-                            ->where('academic_id', getAcademicId())
+                $marks_grade = SmMarksGrade::where('church_id', Auth::user()->church_id)
+                            ->where('church_year_id', getAcademicId())
                             ->orderBy('gpa', 'desc')
                             ->get();
 
-                $maxGrade = SmMarksGrade::where('academic_id', getAcademicId())
-                            ->where('school_id',Auth::user()->school_id)
+                $maxGrade = SmMarksGrade::where('church_year_id', getAcademicId())
+                            ->where('church_id',Auth::user()->church_id)
                             ->max('gpa');
 
-                $optional_subject_setup = SmClassOptionalSubject::where('class_id','=',$request->class)
+                $optional_subject_setup = SmClassOptionalSubject::where('age_group_id','=',$request->class)
                                             ->first();
 
-                $student_optional_subject = SmOptionalSubjectAssign::where('student_id',$request->student)
+                $student_optional_subject = SmOptionalSubjectAssign::where('member_id',$request->student)
                                             ->where('session_id','=',$studentDetails->session_id)
                                             ->first();
 
                 $exam_setup = SmExamSetup::where([
-                            ['class_id', $request->class], 
-                            ['section_id', $request->section]])
-                            ->where('school_id',Auth::user()->school_id)
+                            ['age_group_id', $request->class], 
+                            ['mgender_id', $request->section]])
+                            ->where('church_id',Auth::user()->church_id)
                             ->get();
 
-                $class_id = $request->class;
-                $section_id = $request->section;
-                $student_id = $request->student;
-                $record_id = StudentRecord::where('class_id',$class_id)
-                                                ->where('section_id',$section_id)
-                                                ->where('school_id',auth()->user()->school_id)
-                                                ->where('academic_id',getAcademicId())
-                                                ->where('student_id',$student_id)
+                $age_group_id = $request->class;
+                $mgender_id = $request->section;
+                $member_id = $request->student;
+                $record_id = StudentRecord::where('age_group_id',$age_group_id)
+                                                ->where('mgender_id',$mgender_id)
+                                                ->where('church_id',auth()->user()->church_id)
+                                                ->where('church_year_id',getAcademicId())
+                                                ->where('member_id',$member_id)
                                                 ->value('id');
-                $examSubjects = SmExam::where([['section_id', $section_id], ['class_id', $class_id]])
-                                        ->where('school_id',Auth::user()->school_id)
-                                        ->where('academic_id',getAcademicId())
+                $examSubjects = SmExam::where([['mgender_id', $mgender_id], ['age_group_id', $age_group_id]])
+                                        ->where('church_id',Auth::user()->church_id)
+                                        ->where('church_year_id',getAcademicId())
                                         ->get();
 
                 $examSubjectIds = [];
@@ -1029,9 +1029,9 @@ class SubjectMarkSheetReportController extends Controller
                     $examSubjectIds[] = $examSubject->subject_id;
                 }
                 $subjects = SmAssignSubject::where([
-                            ['class_id', $request->class], 
-                            ['section_id', $request->section]])
-                            ->where('school_id',Auth::user()->school_id)
+                            ['age_group_id', $request->class], 
+                            ['mgender_id', $request->section]])
+                            ->where('church_id',Auth::user()->church_id)
                             ->whereIn('subject_id', $examSubjectIds)
                             ->get();
 
@@ -1047,9 +1047,9 @@ class SubjectMarkSheetReportController extends Controller
                 foreach ($assinged_exam_types as $assinged_exam_type) {
                     foreach ($subjects as $subject) {
                         $is_mark_available = SmResultStore::where([
-                                            ['class_id', $request->class], 
-                                            ['section_id', $request->section], 
-                                            ['student_id', $request->student]
+                                            ['age_group_id', $request->class], 
+                                            ['mgender_id', $request->section], 
+                                            ['member_id', $request->student]
                                             // ['exam_type_id', $assinged_exam_type]]
                                             ])
                                             ->first();
@@ -1061,10 +1061,10 @@ class SubjectMarkSheetReportController extends Controller
                     }
                 }
                 $is_result_available = SmResultStore::where([
-                    ['class_id', $request->class], 
-                    ['section_id', $request->section], 
-                    ['student_id', $request->student]])
-                    ->where('school_id',Auth::user()->school_id)
+                    ['age_group_id', $request->class], 
+                    ['mgender_id', $request->section], 
+                    ['member_id', $request->student]])
+                    ->where('church_id',Auth::user()->church_id)
                     ->get();
 
                     $all_subject_ids = array_unique($examSubjectIds);
@@ -1079,9 +1079,9 @@ class SubjectMarkSheetReportController extends Controller
                     'classes', 'studentDetails',
                     'is_result_available', 
                     'subjects', 
-                    'class_id', 
-                    'section_id', 
-                    'student_id', 
+                    'age_group_id', 
+                    'mgender_id', 
+                    'member_id', 
                     'exam_types', 
                     'assinged_exam_types',
                     'marks_grade',
@@ -1108,7 +1108,7 @@ class SubjectMarkSheetReportController extends Controller
 
             if(moduleStatusCheck('University')){
                 $data['session'] = UnSession::find($request->un_session_id)->name;
-                $data['academic_year'] = UnAcademicYear::find($request->un_academic_id)->name;
+                $data['church_year'] = UnAcademicYear::find($request->un_church_year_id)->name;
                 $data['faculty'] = UnFaculty::find($request->un_faculty_id)->name;
                 $data['department'] = UnDepartment::find($request->un_department_id)->name;
                 $data['semester'] = UnSemester::find($request->un_semester_id)->name;
@@ -1117,42 +1117,42 @@ class SubjectMarkSheetReportController extends Controller
                 $exams = SmExam::where('active_status', 1)
                 ->where('un_semester_label_id', $request->un_semester_label_id)
                 ->where('un_session_id', $request->un_session_id)
-                ->where('school_id',Auth::user()->school_id)
+                ->where('church_id',Auth::user()->church_id)
                 ->get();
 
                 $exam_types = SmExamType::where('active_status', 1)
-                            ->where('un_academic_id', getAcademicId())
+                            ->where('un_church_year_id', getAcademicId())
                             ->pluck('id');
                 $fail_grade = SmMarksGrade::where('active_status',1)
-                            ->where('school_id',Auth::user()->school_id)
+                            ->where('church_id',Auth::user()->church_id)
                             ->min('gpa');
 
                 $fail_grade_name = SmMarksGrade::where('active_status',1)
-                                ->where('school_id',Auth::user()->school_id)
+                                ->where('church_id',Auth::user()->church_id)
                                 ->where('gpa',$fail_grade)
                                 ->first();
 
-                $studentDetails = StudentRecord::where('student_id', $request->student_id)
+                $studentDetails = StudentRecord::where('member_id', $request->member_id)
                                                 ->where('un_semester_label_id', $request->un_semester_label_id)
-                                                ->where('un_academic_id', $request->un_academic_id)
-                                                ->where('school_id', Auth::user()->school_id)
+                                                ->where('un_church_year_id', $request->un_church_year_id)
+                                                ->where('church_id', Auth::user()->church_id)
                                                 ->first();
-                $marks_grade = SmMarksGrade::where('school_id', Auth::user()->school_id)
-                                            ->where('un_academic_id',getAcademicId())
+                $marks_grade = SmMarksGrade::where('church_id', Auth::user()->church_id)
+                                            ->where('un_church_year_id',getAcademicId())
                                             ->orderBy('gpa', 'desc')
                                             ->get();
                     
-                $maxGrade = SmMarksGrade::where('school_id',Auth::user()->school_id)
+                $maxGrade = SmMarksGrade::where('church_id',Auth::user()->church_id)
                                         ->max('gpa');
                 $exam_setup = SmExamSetup::where([
                                             ['un_semester_label_id', $request->un_semester_label_id], 
                                             ['un_session_id', $request->un_session_id]])
-                                            ->where('school_id',Auth::user()->school_id)
+                                            ->where('church_id',Auth::user()->church_id)
                                             ->get();
 
                 $record_id = @$studentDetails->id;
-                $examSubjects = SmExam::where([['un_semester_label_id', $request->un_semester_label_id], ['un_session_id', $request->un_session_id], ['un_section_id', $request->un_section_id]])
-                                        ->where('school_id',Auth::user()->school_id)
+                $examSubjects = SmExam::where([['un_semester_label_id', $request->un_semester_label_id], ['un_session_id', $request->un_session_id], ['un_mgender_id', $request->un_mgender_id]])
+                                        ->where('church_id',Auth::user()->church_id)
                                         ->get();
 
                 $examSubjectIds = [];
@@ -1162,7 +1162,7 @@ class SubjectMarkSheetReportController extends Controller
             
 
                 $subjects = UnAssignSubject::where('un_semester_label_id', $request->un_semester_label_id)
-                            ->where('school_id',Auth::user()->school_id)
+                            ->where('church_id',Auth::user()->church_id)
                             ->whereIn('un_subject_id', $examSubjectIds)
                             ->get();
                     $assinged_exam_types = [];
@@ -1171,15 +1171,15 @@ class SubjectMarkSheetReportController extends Controller
                     }
                 $assinged_exam_types = array_unique($assinged_exam_types);
             
-                $result_setting = CustomResultSetting::where('school_id',Auth()->user()->school_id)
-                                    ->where('un_academic_id',getAcademicId())
+                $result_setting = CustomResultSetting::where('church_id',Auth()->user()->church_id)
+                                    ->where('un_church_year_id',getAcademicId())
                                     ->get();
 
                 foreach ($assinged_exam_types as $assinged_exam_type) {
                     foreach ($subjects as $subject) {
                         $is_mark_available = SmResultStore::where([
                                             ['un_semester_label_id', $request->un_semester_label_id],  
-                                            ['student_id', $request->student_id]
+                                            ['member_id', $request->member_id]
                                             ])
                                             ->first();
                                             
@@ -1191,11 +1191,11 @@ class SubjectMarkSheetReportController extends Controller
                     }
                 }
                 $is_result_available = SmResultStore::where([
-                    ['un_semester_label_id', $request->un_semester_label_id], ['un_section_id', $request->un_section_id], 
-                    ['student_id', $request->student_id]
+                    ['un_semester_label_id', $request->un_semester_label_id], ['un_mgender_id', $request->un_mgender_id], 
+                    ['member_id', $request->member_id]
                     ])
                     ->get();
-                    $student_id = $request->student_id;
+                    $member_id = $request->member_id;
                 $all_subject_ids = array_unique($examSubjectIds);    
                 if ($is_result_available->count() > 0) {
                         return view('university::exam.unStudentFinalMarkSheetPrint', 
@@ -1204,7 +1204,7 @@ class SubjectMarkSheetReportController extends Controller
                         'is_result_available', 
                         'subjects', 
                         'data',
-                        'student_id', 
+                        'member_id', 
                         'studentDetails',
                         'exam_types', 
                         'assinged_exam_types',
@@ -1223,33 +1223,33 @@ class SubjectMarkSheetReportController extends Controller
 
 
             }else{
-                    $studentDetails = StudentRecord::where('class_id',$request->class_id)
-                                ->where('section_id',$request->section_id)
-                                ->where('academic_id',getAcademicId())
-                                ->where('school_id',auth()->user()->school_id)
-                                ->where('student_id',$request->student_id)
+                    $studentDetails = StudentRecord::where('age_group_id',$request->age_group_id)
+                                ->where('mgender_id',$request->mgender_id)
+                                ->where('church_year_id',getAcademicId())
+                                ->where('church_id',auth()->user()->church_id)
+                                ->where('member_id',$request->member_id)
                                 ->first();
 
                         $record = $studentDetails;  
                         $record_id = $record->id; 
-                        $result_setting =  CustomResultSetting::where('school_id',Auth()->user()->school_id)
-                        ->where('academic_id',getAcademicId())
+                        $result_setting =  CustomResultSetting::where('church_id',Auth()->user()->church_id)
+                        ->where('church_year_id',getAcademicId())
                         ->get();  
-                        $grades = SmMarksGrade::where('school_id', Auth::user()->school_id)
-                        ->where('academic_id', getAcademicId())
+                        $grades = SmMarksGrade::where('church_id', Auth::user()->church_id)
+                        ->where('church_year_id', getAcademicId())
                         ->orderBy('gpa', 'desc')
                         ->get();   
                         if($studentDetails){
                             $subjects = $studentDetails->assign_subject;
                             $all_subject_ids = $subjects->pluck('subject_id')->toArray();
                             $is_result_available = SmResultStore::where([
-                                ['class_id', $studentDetails->class_id], 
-                                ['section_id', $studentDetails->section_id], 
-                                ['student_id', $studentDetails->student_id]])
-                                ->where('school_id',Auth::user()->school_id)
+                                ['age_group_id', $studentDetails->age_group_id], 
+                                ['mgender_id', $studentDetails->mgender_id], 
+                                ['member_id', $studentDetails->member_id]])
+                                ->where('church_id',Auth::user()->church_id)
                                 ->get();
                         }
-                        $student_detail = SmStudent::find($record->student_id);
+                        $student_detail = SmStudent::find($record->member_id);
                         if ($is_result_available->count() > 0) {
                             return view('backEnd.examination.studentFinalMarkSheetPrint',compact('subjects','studentDetails','all_subject_ids','is_result_available','record','record_id','result_setting','grades','student_detail')); 
                         }

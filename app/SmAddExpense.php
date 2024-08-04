@@ -40,7 +40,7 @@ class SmAddExpense extends Model
         return $query->where('date', '>=', $date_from)
             ->where('date', '<=', $date_to)
             ->where('active_status', 1)
-            ->where('school_id', Auth::user()->school_id)
+            ->where('church_id', Auth::user()->church_id)
             ->where('payment_method_id', $payment_method);
     }
 

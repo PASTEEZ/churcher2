@@ -41,7 +41,7 @@
                                     <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                         <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                         @foreach($classes as $class)
-                                        <option value="{{$class->id}}"  {{( old("class") == $class->id ? "selected":"")}}>{{$class->class_name}}</option>
+                                        <option value="{{$class->id}}"  {{( old("class") == $class->id ? "selected":"")}}>{{$class->age_group_name}}</option>
                                         @endforeach
                                     </select>
                                     @if ($errors->has('class'))
@@ -60,7 +60,7 @@
                                 <div class="col-lg-6 mt-30-md infix_up_mt">
                                     <div class="input-effect">
                                         <input class="primary-input form-control" type="text" name="keyword">
-                                        <label>@lang('common.search_by_name'), @lang('student.admission_no'),@lang('student.roll_no'), @lang('lang.national_iD_number'), @lang('lang.local_Id_Number')</label>
+                                        <label>@lang('common.search_by_name'), @lang('student.registration_no'),@lang('student.roll_no'), @lang('lang.national_iD_number'), @lang('lang.local_Id_Number')</label>
                                         <span class="focus-border"></span>
                                     </div>
                                 </div>
@@ -85,7 +85,7 @@
                     <div class="row">
                         <div class="col-lg-8 no-gutters">
                             <div class="main-title">
-                                <h3 class="mb-0">@lang('fees.fees_collection_list') (@lang('common.class'): {{$search_info['class_name']}}, @lang('common.section'): {{@$search_info['section_name']}}, @lang('lang.keyword'): {{@$search_info['keyword']}})</h3>
+                                <h3 class="mb-0">@lang('fees.fees_collection_list') (@lang('common.class'): {{$search_info['age_group_name']}}, @lang('common.section'): {{@$search_info['mgender_name']}}, @lang('lang.keyword'): {{@$search_info['keyword']}})</h3>
                             </div>
                         </div>
                     </div>
@@ -107,7 +107,7 @@
                                     <tr>
                                         <th>@lang('common.class')</th>
                                         <th>@lang('common.section')</th>
-                                        <th>@lang('student.admission_no')</th>
+                                        <th>@lang('student.registration_no')</th>
                                         <th>@lang('common.name')</th>
                                         <th>@lang('student.father_name')</th>
                                         <th>@lang('common.date_of_birth')</th>
@@ -119,9 +119,9 @@
                                 <tbody>
                                     @foreach($students as $student)
                                     <tr>
-                                        <td>{{$student->class->class_name}}</td>
-                                        <td>{{$student->section->section_name}}</td>
-                                        <td>{{$student->admission_no}}</td>
+                                        <td>{{$student->class->age_group_name}}</td>
+                                        <td>{{$student->section->mgender_name}}</td>
+                                        <td>{{$student->registration_no}}</td>
                                         <td>{{$student->first_name.' '.$student->last_name}}</td>
                                         <td>{{$student->parents != ""? $student->parents->fathers_name:""}}</td>
                                         <td  data-sort="{{strtotime($student->date_of_birth)}}" >

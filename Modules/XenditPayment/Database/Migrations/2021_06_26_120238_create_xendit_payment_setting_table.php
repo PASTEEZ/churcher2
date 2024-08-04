@@ -23,32 +23,32 @@ class CreateXenditPaymentSettingTable extends Migration
         if (moduleStatusCheck('Saas') == TRUE) {
             $schools = SmSchool::all();
             foreach ($schools as $school) {
-                $is_method = SmPaymentMethhod::where('method', 'Xendit')->where('school_id', $school->id)->first();
+                $is_method = SmPaymentMethhod::where('method', 'Xendit')->where('church_id', $school->id)->first();
                 if (empty($is_method)) {
                     $is_method = new SmPaymentMethhod();
                 }
                 $is_method->method = 'Xendit';
                 $is_method->type = 'Module';
                 $is_method->active_status = 1;
-                $is_method->school_id = $school->id;
+                $is_method->church_id = $school->id;
                 $is_method->created_at = date('Y-m-d h:i:s');
                 $is_method->save();
 
 
-                $is_setting = SmPaymentGatewaySetting::where('gateway_name', 'Xendit')->where('school_id', $school->id)->first();
+                $is_setting = SmPaymentGatewaySetting::where('gateway_name', 'Xendit')->where('church_id', $school->id)->first();
                 if ($is_setting == "") {
                     $is_method = new SmPaymentGatewaySetting();
                     $is_method->gateway_name = 'Xendit';
                     $is_method->gateway_username = 'demo@xendit.co';
                     $is_method->gateway_password = '123456';
-                    $is_method->school_id = $school->id;
+                    $is_method->church_id = $school->id;
                     $is_method->created_at = date('Y-m-d h:i:s');
                     $is_method->save();
                 }
             }
         } else {
 
-            $is_method = SmPaymentMethhod::where('method', 'Xendit')->where('school_id', 1)->first();
+            $is_method = SmPaymentMethhod::where('method', 'Xendit')->where('church_id', 1)->first();
             if (empty($is_method)) {
                 $is_method = new SmPaymentMethhod();
             }
@@ -58,7 +58,7 @@ class CreateXenditPaymentSettingTable extends Migration
             $is_method->created_at = date('Y-m-d h:i:s');
             $is_method->save();
 
-            $is_setting = SmPaymentGatewaySetting::where('gateway_name', 'Xendit')->where('school_id', 1)->first();
+            $is_setting = SmPaymentGatewaySetting::where('gateway_name', 'Xendit')->where('church_id', 1)->first();
             if ($is_setting == "") {
                 $is_setting = new SmPaymentGatewaySetting();
             }

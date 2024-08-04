@@ -20,8 +20,8 @@ class SmItemController extends Controller
     public function index(Request $request)
     {
         try{
-            $items = SmItem::with('category')->where('school_id',Auth::user()->school_id)->get();
-            $itemCategories = SmItemCategory::where('school_id',Auth::user()->school_id)->get();
+            $items = SmItem::with('category')->where('church_id',Auth::user()->church_id)->get();
+            $itemCategories = SmItemCategory::where('church_id',Auth::user()->church_id)->get();
             return view('backEnd.inventory.itemList', compact('items', 'itemCategories'));
         }catch (\Exception $e) {
            Toastr::error('Operation Failed', 'Failed');
@@ -37,11 +37,11 @@ class SmItemController extends Controller
             $items->item_category_id = $request->category_name;
             $items->total_in_stock = 0;
             $items->description = $request->description;
-            $items->school_id = Auth::user()->school_id;
+            $items->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $items->un_academic_id = getAcademicId();
+                $items->un_church_year_id = getAcademicId();
             }else{
-                $items->academic_id = getAcademicId();
+                $items->church_year_id = getAcademicId();
             }
             $items->save();
 
@@ -59,10 +59,10 @@ class SmItemController extends Controller
             if (checkAdmin()) {
                 $editData = SmItem::find($id);
             }else{
-                $editData = SmItem::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+                $editData = SmItem::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
             }
-            $items = SmItem::where('school_id',Auth::user()->school_id)->get();
-            $itemCategories = SmItemCategory::where('school_id',Auth::user()->school_id)->get();
+            $items = SmItem::where('church_id',Auth::user()->church_id)->get();
+            $itemCategories = SmItemCategory::where('church_id',Auth::user()->church_id)->get();
             return view('backEnd.inventory.itemList', compact('editData', 'items', 'itemCategories'));
         }catch (\Exception $e) {
            Toastr::error('Operation Failed', 'Failed');
@@ -76,13 +76,13 @@ class SmItemController extends Controller
             if (checkAdmin()) {
                 $items = SmItem::find($id);
             }else{
-                $items = SmItem::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+                $items = SmItem::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
             }
             $items->item_name = $request->item_name;
             $items->item_category_id = $request->category_name;
             $items->description = $request->description;
             if(moduleStatusCheck('University')){
-                $items->un_academic_id = getAcademicId();
+                $items->un_church_year_id = getAcademicId();
             }
             $items->update();
 
@@ -115,7 +115,7 @@ class SmItemController extends Controller
                 if (checkAdmin()) {
                     SmItem::destroy($id);
                 }else{
-                    SmItem::where('id',$id)->where('school_id',Auth::user()->school_id)->delete();
+                    SmItem::where('id',$id)->where('church_id',Auth::user()->church_id)->delete();
                 }
 
                 Toastr::success('Operation successful', 'Success');

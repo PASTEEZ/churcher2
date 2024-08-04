@@ -144,14 +144,14 @@
                                     </div>
 
                                     <div class="col-lg-3 mt-30" id="select_un_student_div">
-                                        {{ Form::select('student_id',[""=>__('common.select_student').'*'], null , ['class' => 'niceSelect w-100 bb form-control'. ($errors->has('student_id') ? ' is-invalid' : ''), 'id'=>'select_un_student']) }}
+                                        {{ Form::select('member_id',[""=>__('common.select_student').'*'], null , ['class' => 'niceSelect w-100 bb form-control'. ($errors->has('member_id') ? ' is-invalid' : ''), 'id'=>'select_un_student']) }}
                                         <span class="focus-border"></span>
                                         <div class="pull-right loader loader_style" id="select_un_student_loader">
                                             <img class="loader_img_style" src="{{asset('public/backEnd/img/demo_wait.gif')}}" alt="loader">
                                         </div>
-                                        @if ($errors->has('student_id'))
+                                        @if ($errors->has('member_id'))
                                             <span class="invalid-feedback custom-error-message" role="alert">
-                                                {{ @$errors->first('student_id') }}
+                                                {{ @$errors->first('member_id') }}
                                             </span>
                                         @endif
                                     </div>
@@ -181,7 +181,7 @@
                                         *
                                     </option>
                                     @foreach($classes as $class)
-                                        <option value="{{$class->id}}" {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{$class->class_name}}</option>
+                                        <option value="{{$class->id}}" {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{$class->age_group_name}}</option>
                                     @endforeach
                                 </select>
                                 @if ($errors->has('class'))
@@ -422,7 +422,7 @@
                 flex-basis: 50%;
             }
 
-            .school_name {
+            .church_name {
                 text-align: center;
             }
 
@@ -631,7 +631,7 @@
                             </div>
                         </div>
                         <div class="col-lg-8 pull-right">
-                            <a href="{{route('mark_sheet_report_print', [$input['exam_id'], $input['class_id'], $input['section_id'], $input['student_id']])}}"
+                            <a href="{{route('mark_sheet_report_print', [$input['exam_id'], $input['age_group_id'], $input['mgender_id'], $input['member_id']])}}"
                             class="primary-btn small fix-gr-bg pull-right" target="_blank">
                             <i class="ti-printer"> </i> 
                                 @lang('reports.print')
@@ -648,10 +648,10 @@
                                                 <div class="card-header">
                                                     <div class="d-flex">
                                                         <div class=" col-lg-2">
-                                                            <img class="logo-img" src="{{ generalSetting()->logo }}" alt="{{generalSetting()->school_name }}">
+                                                            <img class="logo-img" src="{{ generalSetting()->logo }}" alt="{{generalSetting()->church_name }}">
                                                         </div>
                                                         <div class="col-lg-8 text-center">
-                                                            <h3 class="text-white" style="font-size: 30px;margin-bottom: 0px;"> {{isset(generalSetting()->school_name)?generalSetting()->school_name:'Infix School Management ERP'}} </h3>
+                                                            <h3 class="text-white" style="font-size: 30px;margin-bottom: 0px;"> {{isset(generalSetting()->church_name)?generalSetting()->church_name:'Infix School Management ERP'}} </h3>
                                                             <p class="text-white mb-0" style="font-size: 16px;">  {{isset(generalSetting()->address)?generalSetting()->address:'Infix School Address'}} </p>
                                                             <p class="text-white mb-0" style="font-size: 16px;">
                                                                 @lang('common.email'): <span class="text-lowercase">{{isset(generalSetting()->email)?generalSetting()->email:'admin@demo.com'}}</span>,
@@ -680,7 +680,7 @@
                                                                             <ul class="student_info">
                                                                                 <li>
                                                                                     <p>
-                                                                                        @lang('common.academic_year')
+                                                                                        @lang('common.church_year')
                                                                                     </p>
                                                                                     <p>
                                                                                         <strong>
@@ -694,7 +694,7 @@
                                                                                     </p>
                                                                                     <p class="italic_text"> 
                                                                                         <strong>  
-                                                                                            : {{$student_detail->class->class_name}}
+                                                                                            : {{$student_detail->class->age_group_name}}
                                                                                         </strong>
                                                                                     </p>
                                                                                 </li>
@@ -704,17 +704,17 @@
                                                                                     </p>
                                                                                     <p class="italic_text">
                                                                                         <strong> 
-                                                                                            : {{$student_detail->section->section_name}}
+                                                                                            : {{$student_detail->section->mgender_name}}
                                                                                         </strong>
                                                                                     </p>
                                                                                 </li>
                                                                                 <li>
                                                                                     <p>
-                                                                                        @lang('student.admission_no')
+                                                                                        @lang('student.registration_no')
                                                                                     </p>
                                                                                     <p class="italic_text">
                                                                                         <strong>
-                                                                                            : {{$student_detail->studentDetail->admission_no}}
+                                                                                            : {{$student_detail->studentDetail->registration_no}}
                                                                                         </strong>
                                                                                     </p>
                                                                                 </li>
@@ -780,7 +780,7 @@
                                                         </tr>
                                                         </thead>
                                                     </table>
-                                                    <div class="student_name_highlight" style="text-align: center; margin-bottom: 20px;">
+                                                    <div class="member_name_highlight" style="text-align: center; margin-bottom: 20px;">
                                                         <h3>{{$exam_details->title}}</h3>
                                                         <h4 style="text-align: center !important;"> <span style="border-bottom: 3px double;">@lang('reports.mark_sheet')</span></h4>
                                                     </div>
@@ -844,16 +844,16 @@
                                                                         @if (@generalSetting()->result_type == 'mark')
                                                                             {{subject100PercentMark()}}
                                                                         @else
-                                                                            {{@subjectFullMark($exam_details->id, $data->subject->id, $class_id, $section_id )}}
+                                                                            {{@subjectFullMark($exam_details->id, $data->subject->id, $age_group_id, $mgender_id )}}
                                                                         @endif
                                                                     </p>
                                                                 </td>
                                                                 <td>
                                                                     <p>
                                                                         @if (@generalSetting()->result_type == 'mark')
-                                                                            {{subjectPercentageMark(@subjectHighestMark($exam_type_id, $data->subject->id, $class_id, $section_id), @subjectFullMark($exam_details->id, $data->subject->id))}}
+                                                                            {{subjectPercentageMark(@subjectHighestMark($exam_type_id, $data->subject->id, $age_group_id, $mgender_id), @subjectFullMark($exam_details->id, $data->subject->id))}}
                                                                         @else
-                                                                            {{@subjectHighestMark($exam_type_id, $data->subject->id, $class_id, $section_id)}}
+                                                                            {{@subjectHighestMark($exam_type_id, $data->subject->id, $age_group_id, $mgender_id)}}
                                                                         @endif
                                                                     </p>
                                                                 </td>
@@ -868,7 +868,7 @@
                                                                         
                                                                         @php
                                                                             if(@generalSetting()->result_type == 'mark'){
-                                                                                $total_mark+=subjectPercentageMark(@$data->total_marks, @subjectFullMark($exam_details->id, $data->subject->id, $class_id, $section_id));
+                                                                                $total_mark+=subjectPercentageMark(@$data->total_marks, @subjectFullMark($exam_details->id, $data->subject->id, $age_group_id, $mgender_id));
                                                                             }else{
                                                                                 $total_mark+=@$data->total_marks;
                                                                             }
@@ -879,7 +879,7 @@
                                                                     <td>
                                                                         <p>
                                                                             @php
-                                                                                $result = markGpa(@subjectPercentageMark(@$data->total_marks , @subjectFullMark($exam_details->id, $data->subject->id, $class_id, $section_id)));
+                                                                                $result = markGpa(@subjectPercentageMark(@$data->total_marks , @subjectFullMark($exam_details->id, $data->subject->id, $age_group_id, $mgender_id)));
                                                                                 $main_subject_total_gpa += $result->gpa;
                                                                             @endphp
                                                                             {{@$data->total_gpa_grade}}
@@ -890,7 +890,7 @@
                                                                     <td>
                                                                         <p>
                                                                             @php
-                                                                                $totalMark = subjectPercentageMark(@$data->total_marks, @subjectFullMark($exam_details->id, $data->subject->id, $class_id, $section_id));
+                                                                                $totalMark = subjectPercentageMark(@$data->total_marks, @subjectFullMark($exam_details->id, $data->subject->id, $age_group_id, $mgender_id));
                                                                                 $passMark = $data->subject->pass_mark;
                                                                             @endphp
                                                                             @if ($passMark <= $totalMark)
@@ -904,7 +904,7 @@
                                                                     <td>
                                                                         <p>
                                                                             @php
-                                                                                $evaluation= markGpa(subjectPercentageMark(@$data->total_marks, @subjectFullMark($exam_details->id, $data->subject->id, $class_id, $section_id)));
+                                                                                $evaluation= markGpa(subjectPercentageMark(@$data->total_marks, @subjectFullMark($exam_details->id, $data->subject->id, $age_group_id, $mgender_id)));
                                                                             @endphp
                                                                             {{@$evaluation->description}}
                                                                         </p>
@@ -939,18 +939,18 @@
                                                                 </td>
                                                                 <td>
                                                                     <p>
-                                                                        {{@subjectFullMark($exam_details->id, $data->subject->id, $class_id, $section_id )}}
+                                                                        {{@subjectFullMark($exam_details->id, $data->subject->id, $age_group_id, $mgender_id )}}
                                                                     </p>
                                                                 </td>
                                                                 <td>
-                                                                    <p>{{@subjectHighestMark($exam_type_id, $data->subject->id, $class_id, $section_id)}}</p>
+                                                                    <p>{{@subjectHighestMark($exam_type_id, $data->subject->id, $age_group_id, $mgender_id)}}</p>
                                                                 </td>
                                                                 <td>
                                                                     <p>
                                                                         {{@$data->total_marks}}
                                                                         @php
                                                                             if(@generalSetting()->result_type == 'mark'){
-                                                                                $total_mark+=subjectPercentageMark(@$data->total_marks, @subjectFullMark($exam_details->id, $data->subject->id, $class_id, $section_id));
+                                                                                $total_mark+=subjectPercentageMark(@$data->total_marks, @subjectFullMark($exam_details->id, $data->subject->id, $age_group_id, $mgender_id));
                                                                             }else{
                                                                                 $total_mark+=@$data->total_marks;
                                                                             }
@@ -1071,7 +1071,7 @@
                                                                         <td colspan="2" style="text-align: center !important;">
                                                                             @lang('exam.position')
                                                                         </td>
-                                                                        <td colspan="2" style="text-align: center !important;">{{getStudentMeritPosition($class_id, $section_id, $exam_type_id, $student_detail->id)}}</td>
+                                                                        <td colspan="2" style="text-align: center !important;">{{getStudentMeritPosition($age_group_id, $mgender_id, $exam_type_id, $student_detail->id)}}</td>
 
                                                                     </tr>
                                                                 @endif
@@ -1154,7 +1154,7 @@
                     var url = $("#url").val();
                     var i = 0;
                     let semester_id = $(this).val();
-                    let academic_id = $('#select_academic').val();  
+                    let church_year_id = $('#select_academic').val();  
                     let session_id = $('#select_session').val();
                     let faculty_id = $('#select_faculty').val();
                     let department_id = $('#select_dept').val();
@@ -1193,7 +1193,7 @@
 
                         return ;
                     }
-                    if (academic_id =='') {
+                    if (church_year_id =='') {
                         setTimeout(function() {
                             toastr.error(
                             "Academic Not Found",
@@ -1214,7 +1214,7 @@
 
                     var formData = {
                         semester_id : semester_id,
-                        academic_id : academic_id,
+                        church_year_id : church_year_id,
                         session_id : session_id,
                         faculty_id : faculty_id,
                         department_id : department_id,

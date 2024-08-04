@@ -12,7 +12,7 @@ class SmHomework extends Model
     use HasFactory;
     protected $table = "sm_homeworks";
     protected $fillable = [
-        'class_id', 'section_id', 'subject_id', 'created_by', 'evaluated_by',
+        'age_group_id', 'mgender_id', 'subject_id', 'created_by', 'evaluated_by',
     ];
     protected $appends=['HomeworkPercentage'];
 
@@ -21,22 +21,22 @@ class SmHomework extends Model
         static::addGlobalScope(new StatusAcademicSchoolScope);
     }
     public function classes(){
-        return $this->belongsTo('App\SmClass', 'class_id', 'id');
+        return $this->belongsTo('App\SmClass', 'age_group_id', 'id');
     }
 
 
     public function class()
     {
-        return $this->belongsTo('App\SmClass', 'class_id', 'id');
+        return $this->belongsTo('App\SmClass', 'age_group_id', 'id');
     }
 
     public function sections()
     {
-        return $this->belongsTo('App\SmSection', 'section_id', 'id');
+        return $this->belongsTo('App\SmSection', 'mgender_id', 'id');
     }
     public function section()
     {
-        return $this->belongsTo('App\SmSection', 'section_id', 'id');
+        return $this->belongsTo('App\SmSection', 'mgender_id', 'id');
     }
     public function homeworkCompleted()
     {
@@ -63,18 +63,18 @@ class SmHomework extends Model
         return $this->belongsTo('App\User', 'evaluated_by', 'id');
     }
 
-    public static function getHomeworkPercentage($class_id, $section_id, $homework_id)
+    public static function getHomeworkPercentage($age_group_id, $mgender_id, $homework_id)
     {
         try {
-            $totalStudents = StudentRecord::where('class_id', $class_id)
-                ->where('section_id', $section_id)
-                ->where('school_id', auth()->user()->school_id)
-                ->where('academic_id', getAcademicId())
+            $totalStudents = StudentRecord::where('age_group_id', $age_group_id)
+                ->where('mgender_id', $mgender_id)
+                ->where('church_id', auth()->user()->church_id)
+                ->where('church_year_id', getAcademicId())
                 ->count();
             $totalHomeworkCompleted = SmHomeworkStudent::select('id')
                 ->where('homework_id', $homework_id)
-                ->where('school_id', auth()->user()->school_id)
-                ->where('academic_id', getAcademicId())
+                ->where('church_id', auth()->user()->church_id)
+                ->where('church_year_id', getAcademicId())
                 ->where('complete_status', 'C')
                 ->count();
 
@@ -98,15 +98,15 @@ class SmHomework extends Model
     {
         try {
             $totalStudents = SmStudent::withOutGlobalScope(StatusAcademicSchoolScope::class)->select('id')
-                ->where('class_id', $this->class_id)
-                ->where('section_id', $this->section_id)
-                ->where('school_id', auth()->user()->school_id)
+                ->where('age_group_id', $this->age_group_id)
+                ->where('mgender_id', $this->mgender_id)
+                ->where('church_id', auth()->user()->church_id)
               
                 ->count();
 
             $totalHomeworkCompleted = SmHomeworkStudent::select('id')
                 ->where('homework_id', $this->homework_id)
-                ->where('academic_id', getAcademicId())
+                ->where('church_year_id', getAcademicId())
                 ->where('complete_status', 'C')
                 ->count();
 
@@ -129,7 +129,7 @@ class SmHomework extends Model
     {
 
         try {
-            $abc = SmHomeworkStudent::where('homework_id', $h_id)->where('student_id', $s_id)->first();
+            $abc = SmHomeworkStudent::where('homework_id', $h_id)->where('member_id', $s_id)->first();
             return $abc;
         } catch (\Exception $e) {
             $data = [];
@@ -140,7 +140,7 @@ class SmHomework extends Model
     public static function uploadedContent($s_id, $h_id)
     {
         try {
-            $abc = SmUploadHomeworkContent::where('homework_id', $h_id)->where('student_id', $s_id)->get();
+            $abc = SmUploadHomeworkContent::where('homework_id', $h_id)->where('member_id', $s_id)->get();
             return $abc;
         } catch (\Exception $e) {
             $data = [];
@@ -162,7 +162,7 @@ class SmHomework extends Model
     }
     public function unAcademic()
     {
-        return $this->belongsTo('Modules\University\Entities\UnAcademicYear', 'un_academic_id', 'id')->withDefault();
+        return $this->belongsTo('Modules\University\Entities\UnAcademicYear', 'un_church_year_id', 'id')->withDefault();
     }
     public function unSemester()
     {

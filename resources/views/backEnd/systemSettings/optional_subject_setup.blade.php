@@ -36,8 +36,8 @@
                                     <label>@lang('common.select_class') *</label>
                                     @foreach($classes as $class)
                                         <div class="input-effect">
-                                            <input type="checkbox" id="class{{@$class->id}}" class="common-checkbox exam-checkbox" name="class[]" value="{{@$class->id}}" {{isset($editData)? (@$class->id == @$editData->class_id? 'checked':''):''}}>
-                                            <label for="class{{@$class->id}}">{{@$class->class_name}}</label>
+                                            <input type="checkbox" id="class{{@$class->id}}" class="common-checkbox exam-checkbox" name="class[]" value="{{@$class->id}}" {{isset($editData)? (@$class->id == @$editData->age_group_id? 'checked':''):''}}>
+                                            <label for="class{{@$class->id}}">{{@$class->age_group_name}}</label>
                                         </div>
                                     @endforeach
                                 <div class="input-effect">
@@ -124,7 +124,7 @@
                         @endif
                         <tr>
                             <th>@lang('common.sl')</th>
-                            <th>@lang('common.class_name')</th>
+                            <th>@lang('common.age_group_name')</th>
                             <th>@lang('reports.gpa_above')</th>
                             <th>@lang('common.action')</th>
                         </tr>
@@ -135,7 +135,7 @@
                         @foreach($class_optionals as $class_optional)
                         <tr>
                             <td>{{++$i}}</td>
-                            <td>{{@$class_optional->class_name}}</td>
+                            <td>{{@$class_optional->age_group_name}}</td>
                             <td>{{ number_format(@$class_optional->gpa_above, 2, '.', ' ')}}</td>
                            
                             <td>

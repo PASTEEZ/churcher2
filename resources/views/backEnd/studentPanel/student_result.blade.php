@@ -26,7 +26,7 @@
                 @foreach ($records as $key => $record)
                     <li class="nav-item">
                         <a class="nav-link @if ($record->is_default == 1) active @endif " href="#tab{{ $key }}" role="tab"
-                            data-toggle="tab">{{ $record->class->class_name }} ({{ $record->section->section_name }}) </a>
+                            data-toggle="tab">{{ $record->class->age_group_name }} ({{ $record->section->mgender_name }}) </a>
                     </li>
                 @endforeach
 
@@ -91,7 +91,7 @@
                                                                             }
                                                                         }
                                                                         $temp_gpa[] = $mark->total_gpa_point;
-                                                                        $get_subject_marks = subjectFullMark($mark->exam_type_id, $mark->subject_id, $mark->studentRecord->class_id, $mark->studentRecord->section_id);
+                                                                        $get_subject_marks = subjectFullMark($mark->exam_type_id, $mark->subject_id, $mark->studentRecord->age_group_id, $mark->studentRecord->mgender_id);
                                                                         
                                                                         $subject_marks = App\SmStudent::fullMarksBySubject($exam->id, $mark->subject_id);
                                                                         $schedule_by_subject = App\SmStudent::scheduleBySubject($exam->id, $mark->subject_id, @$record);
@@ -103,7 +103,7 @@
                                                                         }
                                                                         if (@$mark->is_absent == 0) {
                                                                             if(@generalSetting()->result_type == 'mark'){
-                                                                                $grand_total += @subjectPercentageMark(@$mark->total_marks, @subjectFullMark($mark->exam_type_id, $mark->subject_id, $mark->studentRecord->class_id, $mark->studentRecord->section_id));
+                                                                                $grand_total += @subjectPercentageMark(@$mark->total_marks, @subjectFullMark($mark->exam_type_id, $mark->subject_id, $mark->studentRecord->age_group_id, $mark->studentRecord->mgender_id));
                                                                             }else{
                                                                                 $grand_total += @$mark->total_marks;
                                                                             }
@@ -125,12 +125,12 @@
                                                                             @if (@generalSetting()->result_type == 'mark')
                                                                                 ({{subject100PercentMark()}})
                                                                             @else
-                                                                                ({{ @subjectFullMark($mark->exam_type_id, $mark->subject_id, $mark->studentRecord->class_id, $mark->studentRecord->section_id) }})
+                                                                                ({{ @subjectFullMark($mark->exam_type_id, $mark->subject_id, $mark->studentRecord->age_group_id, $mark->studentRecord->mgender_id) }})
                                                                             @endif
                                                                         </td>
                                                                         <td>
                                                                             @if (@generalSetting()->result_type == 'mark')
-                                                                                {{@subjectPercentageMark(@$mark->total_marks, @subjectFullMark($mark->exam_type_id, $mark->subject_id, $mark->studentRecord->class_id, $mark->studentRecord->section_id))}}
+                                                                                {{@subjectPercentageMark(@$mark->total_marks, @subjectFullMark($mark->exam_type_id, $mark->subject_id, $mark->studentRecord->age_group_id, $mark->studentRecord->mgender_id))}}
                                                                             @else
                                                                                 {{@$mark->total_marks}}
                                                                             @endif
@@ -138,7 +138,7 @@
                                                                         @if(@generalSetting()->result_type == 'mark')
                                                                             <td>
                                                                                 @php
-                                                                                    $totalMark = subjectPercentageMark(@$mark->total_marks, @subjectFullMark($mark->exam_type_id, $mark->subject_id, $mark->studentRecord->class_id, $mark->studentRecord->section_id));
+                                                                                    $totalMark = subjectPercentageMark(@$mark->total_marks, @subjectFullMark($mark->exam_type_id, $mark->subject_id, $mark->studentRecord->age_group_id, $mark->studentRecord->mgender_id));
                                                                                     $passMark = $mark->subject->pass_mark;
                                                                                 @endphp
                                                                                 @if ($passMark <= $totalMark)
@@ -161,7 +161,7 @@
                                                             <tfoot>
                                                                 <tr>
                                                                     <th></th>
-                                                                    <th>@lang('exam.position'): {{getStudentMeritPosition($record->class_id, $record->section_id, $exam->id, $record->id)}}</th>
+                                                                    <th>@lang('exam.position'): {{getStudentMeritPosition($record->age_group_id, $record->mgender_id, $exam->id, $record->id)}}</th>
                                                                     <th>
                                                                         @lang('exam.grand_total'):
                                                                         {{ $grand_total }}/{{ $grand_total_marks }}
@@ -181,16 +181,16 @@
                                                                                     if ($result == 0 && $grand_total_marks != 0) {
                                                                                         $gpa_point = number_format($final_gpa_point, 2, '.', '');
                                                                                         if ($gpa_point >= $maxgpa) {
-                                                                                            $average_grade_max = App\SmMarksGrade::where('school_id', Auth::user()->school_id)
-                                                                                                ->where('academic_id', getAcademicId())
+                                                                                            $average_grade_max = App\SmMarksGrade::where('church_id', Auth::user()->church_id)
+                                                                                                ->where('church_year_id', getAcademicId())
                                                                                                 ->where('from', '<=', $maxgpa)
                                                                                                 ->where('up', '>=', $maxgpa)
                                                                                                 ->first('grade_name');
                                                                                 
                                                                                             echo @$average_grade_max->grade_name;
                                                                                         } else {
-                                                                                            $average_grade = App\SmMarksGrade::where('school_id', Auth::user()->school_id)
-                                                                                                ->where('academic_id', getAcademicId())
+                                                                                            $average_grade = App\SmMarksGrade::where('church_id', Auth::user()->church_id)
+                                                                                                ->where('church_year_id', getAcademicId())
                                                                                                 ->where('from', '<=', $final_gpa_point)
                                                                                                 ->where('up', '>=', $final_gpa_point)
                                                                                                 ->first('grade_name');

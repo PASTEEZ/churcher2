@@ -16,17 +16,17 @@ class CreateFmFeesInvoicesTable extends Migration
         Schema::create('fm_fees_invoices', function (Blueprint $table) {
             $table->id();
             $table->string('invoice_id');
-            $table->integer('student_id')->nullable()->unsigned();
-            $table->foreign('student_id')->references('id')->on('sm_students')->onDelete('cascade');
-            $table->integer('class_id')->nullable();
+            $table->integer('member_id')->nullable()->unsigned();
+            $table->foreign('member_id')->references('id')->on('sm_students')->onDelete('cascade');
+            $table->integer('age_group_id')->nullable();
             $table->date('create_date')->nullable();
             $table->date('due_date')->nullable();
             $table->string('payment_status')->nullable();
             $table->string('payment_method')->nullable();
             $table->integer('bank_id')->nullable();
             $table->string('type')->default('fees')->nullable()->comment('fees, lms');
-            $table->integer('school_id')->nullable();
-            $table->integer('academic_id')->nullable();
+            $table->integer('church_id')->nullable();
+            $table->integer('church_year_id')->nullable();
             $table->timestamps();
         });
     }

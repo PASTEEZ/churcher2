@@ -218,9 +218,9 @@
 @php 
     $generalSetting= generalSetting(); 
     if(!empty($generalSetting)){
-        $school_name =$generalSetting->school_name;
+        $church_name =$generalSetting->church_name;
         $site_title =$generalSetting->site_title;
-        $school_code =$generalSetting->school_code;
+        $church_code =$generalSetting->church_code;
         $address =$generalSetting->address;
         $phone =$generalSetting->phone; 
     } 
@@ -249,10 +249,10 @@
                             <td>
                                 <div class="logo_img">
                                     <div class="thumb_logo">
-                                        <img src="{{asset('/')}}{{generalSetting()->logo }}" alt="{{$school_name}}">
+                                        <img src="{{asset('/')}}{{generalSetting()->logo }}" alt="{{$church_name}}">
                                     </div>
                                     <div class="company_info">
-                                        <h3>{{isset(generalSetting()->school_name)?generalSetting()->school_name:'Infix School Management ERP'}} </h3>
+                                        <h3>{{isset(generalSetting()->church_name)?generalSetting()->church_name:'Infix School Management ERP'}} </h3>
                                         <h5>{{isset(generalSetting()->address)?generalSetting()->address:'Infix School Address'}}</h5>
                                     </div>
                                 </div>
@@ -274,7 +274,7 @@
                                                <td>
                                                 <p class="line_grid" >
                                                     <span>
-                                                        <span>@lang('common.academic_year')</span>
+                                                        <span>@lang('common.church_year')</span>
                                                         <span>:</span>
                                                     </span>
                                                     {{$academiYear->year}} ({{$academiYear->title}})
@@ -325,8 +325,8 @@
             <thead>
               <tr>
                 <th>@lang('common.sl')</th>
-                <th>@lang('student.admission_no')</th>
-                <th>@lang('student.student_name')</th>
+                <th>@lang('student.registration_no')</th>
+                <th>@lang('student.member_name')</th>
                 <th>@lang('common.class') (@lang('common.section'))</th>
               </tr>
             </thead>
@@ -334,11 +334,11 @@
                 @foreach ($students as $key=>$student)
                     <tr>
                         <td>{{$key+1}}</td>
-                        <td>{{$student->admission_no}}</td>
+                        <td>{{$student->registration_no}}</td>
                         <td>{{$student->full_name}}</td>
                         <td>
                             @foreach(@$student->studentRecords as $classSection)
-                                {{$classSection->class->class_name}} ({{$classSection->section->section_name}}), 
+                                {{$classSection->class->age_group_name}} ({{$classSection->section->mgender_name}}), 
                             @endforeach
                         </td>
                     </tr>

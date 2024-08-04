@@ -32,10 +32,10 @@
                 <tr>
                     <td class="flex flex-wrap gap-2 items-center">
                         <div class="logo w-110">
-                            <img src="{{ asset(generalSetting()->logo)}}" class="w-full" alt="{{ asset(generalSetting()->school_name)}}">
+                            <img src="{{ asset(generalSetting()->logo)}}" class="w-full" alt="{{ asset(generalSetting()->church_name)}}">
                         </div>
                         <div class="content">
-                            <p class="fs-22 fw-bold text-black">{{generalSetting()->school_name}}</p>
+                            <p class="fs-22 fw-bold text-black">{{generalSetting()->church_name}}</p>
                             @if($setting->admit_sub_title)
                                 <p class="fs-16 fw-bold text-red">{{@$setting->admit_sub_title }}</p>
                             @endif
@@ -44,7 +44,7 @@
                     </td>
                     <td class="text-end">
                         <p class="fs-24 fw-bold text-black">@lang('examplan::exp.admit_card')</p>
-                        <p class="fs-14 fw-bold text-red">{{$admit->examType->title}} - {{@generalSetting()->academic_Year->year}} </p>
+                        <p class="fs-14 fw-bold text-red">{{$admit->examType->title}} - {{@generalSetting()->church_year->year}} </p>
                     </td>
                 </tr>
             </table>
@@ -52,8 +52,8 @@
             <table class="table w-full border p-10">
                 <tr>
                     <td>
-                        @if($setting->admission_no)
-                        <p class="fs-16 fw-bold text-black">@lang('student.admission_number') : <span class="fs-14 fw-bold text-red">{{@$admit->studentRecord->studentDetail->admission_no}}</span></p>
+                        @if($setting->registration_no)
+                        <p class="fs-16 fw-bold text-black">@lang('student.admission_number') : <span class="fs-14 fw-bold text-red">{{@$admit->studentRecord->studentDetail->registration_no}}</span></p>
                         @endif 
                     </td>
                     <td class="text-end">
@@ -66,13 +66,13 @@
                 <table class="table w-full border">
                     <tr class="border-bottom">
                         <td>
-                            @if($setting->student_name)
-                            <p class="fs-16 fw-bold text-black">@lang('student.student_name') : <span class="fs-14 fw-bold text-red">{{@$admit->studentRecord->studentDetail->full_name}}</span></p>
+                            @if($setting->member_name)
+                            <p class="fs-16 fw-bold text-black">@lang('student.member_name') : <span class="fs-14 fw-bold text-red">{{@$admit->studentRecord->studentDetail->full_name}}</span></p>
                             @endif 
                         </td>
                         <td class="text-end">
                             @if($setting->class_section)
-                            <p class="fs-16 fw-bold text-black">@lang('student.class') : <span class="fs-14 fw-bold text-red">{{@$admit->studentRecord->class->class_name}}</span></p>
+                            <p class="fs-16 fw-bold text-black">@lang('student.class') : <span class="fs-14 fw-bold text-red">{{@$admit->studentRecord->class->age_group_name}}</span></p>
                             @endif 
                         </td>
                     </tr>
@@ -84,7 +84,7 @@
                         </td>
                         <td class="text-end">
                             @if($setting->class_section)
-                            <p class="fs-16 fw-bold text-black">@lang('student.section') : <span class="fs-14 fw-bold text-red">{{@$admit->studentRecord->section->section_name}}</span></p>
+                            <p class="fs-16 fw-bold text-black">@lang('student.section') : <span class="fs-14 fw-bold text-red">{{@$admit->studentRecord->section->mgender_name}}</span></p>
                             @endif 
                         </td>
                     </tr>
@@ -95,7 +95,7 @@
                             @endif 
                         </td>
                         <td class="text-end">
-                            @if($setting->admission_no)
+                            @if($setting->registration_no)
                             <p class="fs-16 fw-bold text-black">@lang('student.roll'): <span class="fs-14 fw-bold text-red">{{@$admit->studentRecord->studentDetail->roll_no}}</span></p>
                             @endif 
                         </td>

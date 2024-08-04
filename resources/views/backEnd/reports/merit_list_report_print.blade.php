@@ -416,9 +416,9 @@
                         <div class="logo_img">
                             <div class="thumb_logo">
                                 <img src="{{asset('/')}}{{generalSetting()->logo}}"
-                                     alt="{{generalSetting()->school_name}}"></div>
+                                     alt="{{generalSetting()->church_name}}"></div>
                             <div class="company_info">
-                                <h3>{{isset(generalSetting()->school_name)?generalSetting()->school_name:'Infix School Management ERP'}} </h3>
+                                <h3>{{isset(generalSetting()->church_name)?generalSetting()->church_name:'Infix School Management ERP'}} </h3>
                                 <p>{{isset(generalSetting()->address)?generalSetting()->address:'Infix School Address'}}</p>
                                 <p>@lang('common.email')
                                     : {{isset(generalSetting()->email)?generalSetting()->email:'admin@demo.com'}}
@@ -444,7 +444,7 @@
                         </tr>
                         <tr>
                             <td><p class="line_grid">
-                                    <span><span>@lang('common.academic_year')</span><span>:</span></span>{{ @$class->academic->year }}
+                                    <span><span>@lang('common.church_year')</span><span>:</span></span>{{ @$class->academic->year }}
                                 </p></td>
                         </tr>
                         <tr>
@@ -453,12 +453,12 @@
                         </tr>
                         <tr>
                             <td><p class="line_grid">
-                                    <span><span>@lang('common.class')</span><span>:</span></span>{{$class_name}}</p>
+                                    <span><span>@lang('common.class')</span><span>:</span></span>{{$age_group_name}}</p>
                             </td>
                         </tr>
                         <tr>
                             <td><p class="line_grid">
-                                    <span><span>@lang('common.section')</span><span>:</span></span>{{$section->section_name}}
+                                    <span><span>@lang('common.section')</span><span>:</span></span>{{$section->mgender_name}}
                                 </p></td>
                         </tr>
                         </tbody>
@@ -493,7 +493,7 @@
             <thead>
             <tr>
                 <th>@lang('common.name')</th>
-                <th>@lang('student.admission_no')</th>
+                <th>@lang('student.registration_no')</th>
                 <th>@lang('student.roll_no')</th>
                 <th>@lang('exam.position')</th>
                 {{-- <th>@lang('lang.obtained_marks')</th> --}}
@@ -525,14 +525,14 @@
                     $main_subject_total_gpa= 0;
                 @endphp
                 @foreach($markslist as $mark)
-                    @if(App\SmOptionalSubjectAssign::is_optional_subject($row->student_id,$get_subject_id[$count]))
+                    @if(App\SmOptionalSubjectAssign::is_optional_subject($row->member_id,$get_subject_id[$count]))
                         @php
                             $additioncheck[] = $mark;
                         @endphp
                     @endif
                     @php
-                        if(App\SmOptionalSubjectAssign::is_optional_subject($row->student_id,$get_subject_id[$count])){
-                            $special_mark[$row->student_id]=$mark;
+                        if(App\SmOptionalSubjectAssign::is_optional_subject($row->member_id,$get_subject_id[$count])){
+                            $special_mark[$row->member_id]=$mark;
                         }
                         $count++;
                     @endphp
@@ -544,8 +544,8 @@
                     @endphp
                 @endforeach
                 <tr>
-                    <td>{{$row->student_name}}</td>
-                    <td>{{$row->admission_no}}</td>
+                    <td>{{$row->member_name}}</td>
+                    <td>{{$row->registration_no}}</td>
                     <td>{{$row->studentinfo->roll_no}}</td>
                     <td>{{@getStudentMeritPosition($InputClassId, $InputSectionId, $InputExamId, $row->studentinfo->studentRecord->id)}}</td>
                     <td>{{$row->total_marks}}</td>
@@ -558,7 +558,7 @@
                                 $total = $total + $subject_total_mark;
                                 $subject_id= $get_subject_id[$key];
                                 $total_subject= count($get_subject_id);
-                                $result = markGpa(@subjectPercentageMark($subject_mark , @subjectFullMark($row->exam_id, $subject_id, $row->class_id, $row->section_id)));
+                                $result = markGpa(@subjectPercentageMark($subject_mark , @subjectFullMark($row->exam_id, $subject_id, $row->age_group_id, $row->mgender_id)));
                                 $main_subject_total_gpa += $result->gpa;
                             @endphp
                             <td>{{!empty($subject_mark)? $subject_mark:0}}</td>
@@ -578,7 +578,7 @@
                                     $c = 0;
                                     foreach ($subject_mark as $key => $mark) {
                                         if ($additioncheck['0'] != $mark) {
-                                            $grade_gpa = DB::table('sm_marks_grades')->where('percent_from', '<=', $mark)->where('percent_upto', '>=', $mark)->where('academic_id', getAcademicId())->first();
+                                            $grade_gpa = DB::table('sm_marks_grades')->where('percent_from', '<=', $mark)->where('percent_upto', '>=', $mark)->where('church_year_id', getAcademicId())->first();
                                             $total_grade_point = $total_grade_point + $grade_gpa->gpa;
                                             $c++;
                                         }
@@ -597,8 +597,8 @@
                         </td>
                         @if (isset($optional_subject_setup))
                             @php
-                                if(!empty($special_mark[$row->student_id])){
-                                            $optional_subject_mark=$special_mark[$row->student_id];
+                                if(!empty($special_mark[$row->member_id])){
+                                            $optional_subject_mark=$special_mark[$row->member_id];
                                         }else{
                                             $optional_subject_mark=0;
                                         }
@@ -608,7 +608,7 @@
                                     if ($row->result == $failgpaname->grade_name) {
                                         echo $failgpa;
                                     } else {
-                                        $optional_grade_gpa = DB::table('sm_marks_grades')->where('percent_from', '<=', $optional_subject_mark)->where('percent_upto', '>=', $optional_subject_mark)->where('academic_id', getAcademicId())->first();
+                                        $optional_grade_gpa = DB::table('sm_marks_grades')->where('percent_from', '<=', $optional_subject_mark)->where('percent_upto', '>=', $optional_subject_mark)->where('church_year_id', getAcademicId())->first();
                                         $countable_optional_gpa = 0;
                                         if ($optional_grade_gpa->gpa > $optional_subject_setup->gpa_above) {
                                             $countable_optional_gpa = $optional_grade_gpa->gpa - $optional_subject_setup->gpa_above;
@@ -619,7 +619,7 @@
                                         $number_of_subject = count($subject_mark) - 1;
                                         foreach ($subject_mark as $mark) {
 
-                                            $grade_gpa = DB::table('sm_marks_grades')->where('percent_from', '<=', $mark)->where('percent_upto', '>=', $mark)->where('academic_id', getAcademicId())->first();
+                                            $grade_gpa = DB::table('sm_marks_grades')->where('percent_from', '<=', $mark)->where('percent_upto', '>=', $mark)->where('church_year_id', getAcademicId())->first();
                                             $total_grade_point = $total_grade_point + $grade_gpa->gpa;
 
 
@@ -652,7 +652,7 @@
                                         $total_grade_point = 0;
                                         $number_of_subject = count($subject_mark) - 1;
                                         foreach ($subject_mark as $mark) {
-                                            $grade_gpa = DB::table('sm_marks_grades')->where('percent_from', '<=', $mark)->where('percent_upto', '>=', $mark)->where('academic_id', getAcademicId())->first();
+                                            $grade_gpa = DB::table('sm_marks_grades')->where('percent_from', '<=', $mark)->where('percent_upto', '>=', $mark)->where('church_year_id', getAcademicId())->first();
                                             $total_grade_point = $total_grade_point + $grade_gpa->gpa;
                                         }
                                         if ($total_grade_point == 0) {

@@ -16,14 +16,14 @@ class SmTopicsTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run($school_id, $academic_id, $count=5)
+    public function run($church_id, $church_year_id, $count=5)
     {
         // $topic = ['theory', 'poem', 'practical', 'others'];
-        // $lesson_id = SmLesson::where('class_id', 1)->where('section_id', 1)->where('school_id', $school_id)->where('academic_id', $academic_id)->first()->id;
-        // $assignSubject = SmAssignSubject::where('school_id', $school_id)
-        // ->where('academic_id', $academic_id)
+        // $lesson_id = SmLesson::where('age_group_id', 1)->where('mgender_id', 1)->where('church_id', $church_id)->where('church_year_id', $church_year_id)->first()->id;
+        // $assignSubject = SmAssignSubject::where('church_id', $church_id)
+        // ->where('church_year_id', $church_year_id)
         // ->first();
-        // $is_duplicate = SmLessonTopic::where('class_id', $assignSubject->class_id)->where('lesson_id', $lesson_id)->where('section_id', $assignSubject->sction_id)->where('subject_id', $assignSubject->subject_id)->first();
+        // $is_duplicate = SmLessonTopic::where('age_group_id', $assignSubject->age_group_id)->where('lesson_id', $lesson_id)->where('mgender_id', $assignSubject->sction_id)->where('subject_id', $assignSubject->subject_id)->first();
         // if ($is_duplicate) {
         //     $length = count($topic);
         //     for ($i = 0; $i < $length; $i++) {
@@ -33,8 +33,8 @@ class SmTopicsTableSeeder extends Seeder
         //         $topicDetail->topic_id = $is_duplicate->id;
         //         $topicDetail->topic_title = $topic_title ? $topic_title.'0'.$i : '0'.$i;
         //         $topicDetail->lesson_id = $lesson_id;
-        //         $topicDetail->school_id = $school_id;
-        //         $topicDetail->academic_id = $academic_id;
+        //         $topicDetail->church_id = $church_id;
+        //         $topicDetail->church_year_id = $church_year_id;
         //         $topicDetail->save();
   
         //     }
@@ -43,12 +43,12 @@ class SmTopicsTableSeeder extends Seeder
         // } else {
   
         //     $smTopic = new SmLessonTopic;
-        //     $smTopic->class_id = $assignSubject->class_id;
-        //     $smTopic->section_id = $assignSubject->section_id;
+        //     $smTopic->age_group_id = $assignSubject->age_group_id;
+        //     $smTopic->mgender_id = $assignSubject->mgender_id;
         //     $smTopic->subject_id = $assignSubject->subject_id;
         //     $smTopic->lesson_id = $lesson_id;
-        //     $smTopic->school_id = $school_id;
-        //     $smTopic->academic_id = $academic_id;
+        //     $smTopic->church_id = $church_id;
+        //     $smTopic->church_year_id = $church_year_id;
         //     $smTopic->save();
         //     $smTopic_id = $smTopic->id;
         //     $length = count($topic);
@@ -60,8 +60,8 @@ class SmTopicsTableSeeder extends Seeder
         //         $topicDetail->topic_id = $smTopic_id;
         //         $topicDetail->topic_title = $topic_title ? $topic_title.'0'.$i : '0'.$i;
         //         $topicDetail->lesson_id = $lesson_id;
-        //         $topicDetail->school_id = $school_id;
-        //         $topicDetail->academic_id = $academic_id;
+        //         $topicDetail->church_id = $church_id;
+        //         $topicDetail->church_year_id = $church_year_id;
         //         $topicDetail->save();
   
         //     }

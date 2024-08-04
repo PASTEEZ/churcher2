@@ -24,7 +24,7 @@
 
                 @foreach($records as $key => $record)
                     <li class="nav-item">
-                        <a class="nav-link @if($key== 0) active @endif " href="#tab{{$key}}" role="tab" data-toggle="tab">{{$record->class->class_name}} ({{$record->section->section_name}}) </a>
+                        <a class="nav-link @if($key== 0) active @endif " href="#tab{{$key}}" role="tab" data-toggle="tab">{{$record->class->age_group_name}} ({{$record->section->mgender_name}}) </a>
                     </li>
                     @endforeach
 
@@ -49,7 +49,7 @@
 
                             <tbody>
                                 @php
-                                    $results = App\Models\StudentRecord::getInfixStudentTakeOnlineExamParent($record->student_id, $record->id);
+                                    $results = App\Models\StudentRecord::getInfixStudentTakeOnlineExamParent($record->member_id, $record->id);
                                 @endphp
                                 @foreach($results as $result_view)
                                 
@@ -89,7 +89,7 @@
                                             @endphp
                                         </td>
                                         <td>
-                                            {{-- <a class="btn btn-success modalLink" data-modal-size="modal-lg" title="Answer Script"  href="{{route('parent_answer_script', [@$result_view->online_exam_id, @$result_view->student_id])}}" >@lang('exam.answer_script')</a> --}}
+                                            {{-- <a class="btn btn-success modalLink" data-modal-size="modal-lg" title="Answer Script"  href="{{route('parent_answer_script', [@$result_view->online_exam_id, @$result_view->member_id])}}" >@lang('exam.answer_script')</a> --}}
                                         @php
                                         $startTime = strtotime($result_view->onlineExam->date . ' ' . $result_view->onlineExam->start_time);
                                         $endTime = strtotime($result_view->onlineExam->date . ' ' . $result_view->onlineExam->end_time);
@@ -98,10 +98,10 @@
                                         @endphp
                                         @if($now >= $endTime)
                                         @if (moduleStatusCheck('OnlineExam')== TRUE)
-                                            <a class="btn btn-success" title="Answer Script"  href="{{route('om-parent_answer_script', [@$result_view->online_exam_id, @$result_view->student_id, $record->id])}}" >@lang('exam.answer_script')</a>
+                                            <a class="btn btn-success" title="Answer Script"  href="{{route('om-parent_answer_script', [@$result_view->online_exam_id, @$result_view->member_id, $record->id])}}" >@lang('exam.answer_script')</a>
                                           
                                         @else
-                                            <a class="btn btn-success modalLink" data-modal-size="modal-lg" title="Answer Script"  href="{{route('parent_answer_script', [@$result_view->online_exam_id, @$result_view->student_id])}}" >@lang('exam.answer_script')</a>
+                                            <a class="btn btn-success modalLink" data-modal-size="modal-lg" title="Answer Script"  href="{{route('parent_answer_script', [@$result_view->online_exam_id, @$result_view->member_id])}}" >@lang('exam.answer_script')</a>
                                           
                                         @endif
                                               

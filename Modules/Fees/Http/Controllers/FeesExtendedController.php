@@ -25,20 +25,20 @@ class FeesExtendedController extends Controller
     public function invStore($request)
     {
         $storeFeesInvoice = new FmFeesInvoice();
-        $storeFeesInvoice->class_id = $request->class;
+        $storeFeesInvoice->age_group_id = $request->class;
         $storeFeesInvoice->create_date = date('Y-m-d', strtotime($request->create_date));
         $storeFeesInvoice->due_date = date('Y-m-d', strtotime($request->due_date));
         $storeFeesInvoice->payment_status = $request->payment_status;
         $storeFeesInvoice->payment_method = $request->payment_method;
         $storeFeesInvoice->bank_id = $request->bank;
-        $storeFeesInvoice->student_id = $request->student;
+        $storeFeesInvoice->member_id = $request->student;
         $storeFeesInvoice->record_id = $request->record_id;
-        $storeFeesInvoice->school_id = auth()->user()->school_id;
+        $storeFeesInvoice->church_id = auth()->user()->church_id;
         if(moduleStatusCheck('University')){
             $common = App::make(UnCommonRepositoryInterface::class);
             $common->storeUniversityData($storeFeesInvoice, $request);
         }else{
-            $storeFeesInvoice->academic_id = getAcademicId();
+            $storeFeesInvoice->church_year_id = getAcademicId();
         }
         $storeFeesInvoice->save();
         $storeFeesInvoice->invoice_id = feesInvoiceNumber($storeFeesInvoice);
@@ -49,12 +49,12 @@ class FeesExtendedController extends Controller
             $storeTransaction->fees_invoice_id = $storeFeesInvoice->id;
             $storeTransaction->payment_method = $request->payment_method;
             $storeTransaction->bank_id = $request->bank;
-            $storeTransaction->student_id = $request->student;
+            $storeTransaction->member_id = $request->student;
             $storeTransaction->record_id = $request->record_id;
             $storeTransaction->user_id = Auth::user()->id;
             $storeTransaction->paid_status = 'approve';
-            $storeTransaction->school_id = Auth::user()->school_id;
-            $storeTransaction->academic_id = getAcademicId();
+            $storeTransaction->church_id = Auth::user()->church_id;
+            $storeTransaction->church_year_id = getAcademicId();
             $storeTransaction->save();
         }
 
@@ -72,8 +72,8 @@ class FeesExtendedController extends Controller
             } else {
                 $storeFeesInvoiceChield->due_amount = $request->sub_total[$key];
             }
-            $storeFeesInvoiceChield->school_id = Auth::user()->school_id;
-            $storeFeesInvoiceChield->academic_id = getAcademicId();
+            $storeFeesInvoiceChield->church_id = Auth::user()->church_id;
+            $storeFeesInvoiceChield->church_year_id = getAcademicId();
             $storeFeesInvoiceChield->save();
 
             if ($request->paid_amount[$key] > 0) {
@@ -83,8 +83,8 @@ class FeesExtendedController extends Controller
                 $storeTransactionChield->weaver = $request->weaver[$key];
                 $storeTransactionChield->paid_amount = $request->paid_amount[$key];
                 $storeTransactionChield->note = $request->note[$key];
-                $storeTransactionChield->school_id = Auth::user()->school_id;
-                $storeTransactionChield->academic_id = getAcademicId();
+                $storeTransactionChield->church_id = Auth::user()->church_id;
+                $storeTransactionChield->church_year_id = getAcademicId();
                 $storeTransactionChield->save();
 
                 // Income
@@ -98,7 +98,7 @@ class FeesExtendedController extends Controller
                 if ($request->payment_method == "Bank") {
                     $payment_method = SmPaymentMethhod::where('method', $request->payment_method)->first();
                     $bank = SmBankAccount::where('id', $request->bank)
-                        ->where('school_id', Auth::user()->school_id)
+                        ->where('church_id', Auth::user()->church_id)
                         ->first();
                     $after_balance = $bank->current_balance + $request->paid_amount[$key];
 
@@ -110,7 +110,7 @@ class FeesExtendedController extends Controller
                     $bank_statement->item_sell_id = $storeTransaction->id;
                     $bank_statement->payment_date = date('Y-m-d');
                     $bank_statement->bank_id = $request->bank;
-                    $bank_statement->school_id = Auth::user()->school_id;
+                    $bank_statement->church_id = Auth::user()->church_id;
                     $bank_statement->payment_method = $payment_method->id;
                     $bank_statement->save();
 
@@ -123,11 +123,11 @@ class FeesExtendedController extends Controller
             $storeWeaver = new FmFeesWeaver();
             $storeWeaver->fees_invoice_id = $storeFeesInvoice->id;
             $storeWeaver->fees_type = $type;
-            $storeWeaver->student_id = $request->student;
+            $storeWeaver->member_id = $request->student;
             $storeWeaver->weaver = $request->weaver[$key];
             $storeWeaver->note = $request->note[$key];
-            $storeWeaver->school_id = Auth::user()->school_id;
-            $storeWeaver->academic_id = getAcademicId();
+            $storeWeaver->church_id = Auth::user()->church_id;
+            $storeWeaver->church_year_id = getAcademicId();
             $storeWeaver->save();
         }
     }
@@ -165,13 +165,13 @@ class FeesExtendedController extends Controller
                 $add_income->account_id = $transcation->bank_id;
             }
             $add_income->created_by = Auth()->user()->id;
-            $add_income->school_id = Auth::user()->school_id;
-            $add_income->academic_id = getAcademicId();
+            $add_income->church_id = Auth::user()->church_id;
+            $add_income->church_year_id = getAcademicId();
             $add_income->save();
 
             if ($transcation->payment_method == "Bank") {
                 $bank = SmBankAccount::where('id', $transcation->bank_id)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->first();
 
                 $after_balance = $bank->current_balance + $total_paid_amount;
@@ -184,7 +184,7 @@ class FeesExtendedController extends Controller
                 $bank_statement->payment_date = date('Y-m-d');
                 $bank_statement->item_sell_id = $transcation->id;
                 $bank_statement->bank_id = $transcation->bank_id;
-                $bank_statement->school_id = Auth::user()->school_id;
+                $bank_statement->church_id = Auth::user()->church_id;
                 $bank_statement->payment_method = $payment_method->id;
                 $bank_statement->save();
 
@@ -210,15 +210,15 @@ class FeesExtendedController extends Controller
             $addPayment->type = 'diposit';
             $addPayment->status = 'approve';
             $addPayment->note = 'Fees Extra Payment Add';
-            $addPayment->school_id = Auth::user()->school_id;
-            $addPayment->academic_id = getAcademicId();
+            $addPayment->church_id = Auth::user()->church_id;
+            $addPayment->church_year_id = getAcademicId();
             $addPayment->save();
 
-            $school = SmSchool::find($user->school_id);
+            $school = SmSchool::find($user->church_id);
             $compact['full_name'] = $user->full_name;
             $compact['method'] = $transcation->payment_method;
             $compact['create_date'] = date('Y-m-d');
-            $compact['school_name'] = $school->school_name;
+            $compact['church_name'] = $school->church_name;
             $compact['current_balance'] = $user->wallet_balance;
             $compact['add_balance'] = $transcation->add_wallet_money;
             $compact['previous_balance'] = $user->wallet_balance - $transcation->add_wallet_money;

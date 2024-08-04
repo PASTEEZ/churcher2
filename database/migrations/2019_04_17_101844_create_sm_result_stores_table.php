@@ -34,28 +34,28 @@ class CreateSmResultStoresTable extends Migration
             $table->integer('exam_setup_id')->nullable()->unsigned();
             $table->foreign('exam_setup_id')->references('id')->on('sm_exam_setups')->onDelete('cascade');
 
-            $table->integer('student_id')->nullable()->unsigned();
-            $table->foreign('student_id')->references('id')->on('sm_students')->onDelete('cascade');
+            $table->integer('member_id')->nullable()->unsigned();
+            $table->foreign('member_id')->references('id')->on('sm_students')->onDelete('cascade');
 
-            $table->integer('class_id')->nullable()->unsigned();
-            $table->foreign('class_id')->references('id')->on('sm_classes')->onDelete('cascade');
+            $table->integer('age_group_id')->nullable()->unsigned();
+            $table->foreign('age_group_id')->references('id')->on('sm_classes')->onDelete('cascade');
 
 
-            $table->integer('section_id')->nullable()->unsigned();
-            $table->foreign('section_id')->references('id')->on('sm_sections')->onDelete('cascade');
+            $table->integer('mgender_id')->nullable()->unsigned();
+            $table->foreign('mgender_id')->references('id')->on('sm_sections')->onDelete('cascade');
 
             $table->integer('created_by')->nullable()->default(1)->unsigned();
 
             $table->integer('updated_by')->nullable()->default(1)->unsigned();
 
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
             
-            $table->integer('academic_id')->nullable()->default(1)->unsigned();
-            $table->foreign('academic_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
+            $table->integer('church_year_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_year_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
         });
 
-        // $sql ="INSERT INTO `sm_result_stores` (`id`, `school_id`, `class_id`, `section_id`, `subject_id`, `exam_type_id`, `exam_setup_id`, `student_id`, `student_roll_no`, `student_addmission_no`, `is_absent`, `total_marks`, `total_gpa_point`, `total_gpa_grade`, `created_by`, `updated_by`, `created_at`, `updated_at`) VALUES
+        // $sql ="INSERT INTO `sm_result_stores` (`id`, `church_id`, `age_group_id`, `mgender_id`, `subject_id`, `exam_type_id`, `exam_setup_id`, `member_id`, `student_roll_no`, `student_addmission_no`, `is_absent`, `total_marks`, `total_gpa_point`, `total_gpa_grade`, `created_by`, `updated_by`, `created_at`, `updated_at`) VALUES
         //     (1, 1, 1, 1, 1, 1, 1, 1, 20, 20, 0, 87.00, 5.00, 'A+', 1, 1, '2019-05-31 08:42:29', '2019-05-31 08:42:29'),
         //     (2, 1, 1, 1, 1, 1, 1, 11, 30, 30, 0, 87.00, 5.00, 'A+', 1, 1, '2019-05-31 08:42:29', '2019-05-31 08:42:29'),
         //     (3, 1, 1, 1, 1, 1, 1, 21, 40, 40, 0, 88.00, 5.00, 'A+', 1, 1, '2019-05-31 08:42:29', '2019-05-31 08:42:29'),

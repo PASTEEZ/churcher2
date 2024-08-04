@@ -19,12 +19,12 @@ class CreateCustomResultSettingsTable extends Migration
             $table->integer('exam_type_id');
             $table->float('exam_percentage');
             $table->string('merit_list_setting');
-            $table->integer('academic_year');            
+            $table->integer('church_year');            
             $table->string('print_status');            
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
-            $table->integer('academic_id')->nullable()->unsigned();
-            $table->foreign('academic_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_year_id')->nullable()->unsigned();
+            $table->foreign('church_year_id')->references('id')->on('sm_academic_years')->onDelete('cascade');
             $table->timestamps();
         });
 

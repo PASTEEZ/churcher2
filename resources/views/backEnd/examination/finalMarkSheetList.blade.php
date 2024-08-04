@@ -164,7 +164,7 @@
                                           value="">@lang('student.select_class') *
                                   </option>
                                   @foreach($classes as $cls)
-                                  <option value="{{$cls->id}}" {{isset($class)? ($class->id == $cls->id? 'selected':''):''}}>{{$cls->class_name}}</option>
+                                  <option value="{{$cls->id}}" {{isset($class)? ($class->id == $cls->id? 'selected':''):''}}>{{$cls->age_group_name}}</option>
                                   @endforeach
                               </select>
                               @if ($errors->has('class'))
@@ -181,7 +181,7 @@
                                           value="">@lang('student.select_section') *
                                   </option>
                                   @if(!is_null($section))
-                                  <option value="{{$section->id}}" selected>{{$section->section_name}}</option>
+                                  <option value="{{$section->id}}" selected>{{$section->mgender_name}}</option>
                                     @endif
                               </select>
                               <div class="pull-right loader loader_style" id="select_section_loader">
@@ -238,11 +238,11 @@
                                             <div class="card-header">
                                                     <div class="d-flex">
                                                             <div class="col-lg-2">
-                                                            <img class="logo-img" src="{{ generalSetting()->logo }}" alt="{{generalSetting()->school_name}}">
+                                                            <img class="logo-img" src="{{ generalSetting()->logo }}" alt="{{generalSetting()->church_name}}">
                                                             </div>
                                                             <div class="col-lg-6 ml-30">
                                                                 <h3 class="text-white"> 
-                                                                    {{isset(generalSetting()->school_name)?generalSetting()->school_name:'Infix School Management ERP'}} 
+                                                                    {{isset(generalSetting()->church_name)?generalSetting()->church_name:'Infix School Management ERP'}} 
                                                                 </h3> 
                                                                 <p class="text-white mb-0">
                                                                     {{isset(generalSetting()->address)?generalSetting()->address:'Infix School Address'}} 
@@ -266,11 +266,11 @@
                                                         <div class="row mt-20">
                                                             <div class="col-lg-6">
                                                                 <p class="mb-0">
-                                                                    @lang('common.academic_year') : &nbsp;<span class="primary-color fw-500">{{ @generalSetting()->academic_year->year}} [{{@generalSetting()->academic_year->title}}]</span>
+                                                                    @lang('common.church_year') : &nbsp;<span class="primary-color fw-500">{{ @generalSetting()->church_year->year}} [{{@generalSetting()->church_year->title}}]</span>
                                                                 </p>
 
                                                                 <p class="mb-0">
-                                                                  @lang('student.class') : <span class="primary-color fw-500">{{@$class->class_name}}</span>
+                                                                  @lang('student.class') : <span class="primary-color fw-500">{{@$class->age_group_name}}</span>
                                                                 </p>
 
                                                             </div>
@@ -292,11 +292,11 @@
                                                                         @lang('common.section') : 
                                                                             <span class="primary-color fw-500">
                                                                               @if(!is_null($section))
-                                                                              {{$section->section_name}}
+                                                                              {{$section->mgender_name}}
                                                                               @else 
                                                                                   @if(@$class->groupclassSections)
                                                                                         @foreach ($class->groupclassSections as $section)
-                                                                                        {{@$section->sectionName->section_name}} ,
+                                                                                        {{@$section->sectionName->mgender_name}} ,
                                                                                         @endforeach
                                                                                   @endif
                                                                                   @endif 
@@ -312,7 +312,7 @@
                                                       <thead>
                                                             <tr>
                                                                   <th class="pl-3">@lang('common.name')</th>
-                                                                  <th>@lang('student.admission_no')</th>
+                                                                  <th>@lang('student.registration_no')</th>
                                                                   <th>@lang('exam.id_no')</th>
                                                                   <th>@lang('exam.position')</th>
                                                                   @foreach($assigned_subjects as $assigned_subject)
@@ -329,8 +329,8 @@
                                                       <tbody>
                                                         @foreach($finalMarkSheets as  $finalMarkSheet)
                                                             <tr>
-                                                                  <td class="pl-3">{{@$finalMarkSheet->get('student_name')}}</td>
-                                                                  <td>{{@$finalMarkSheet->get('admission_no')}}</td>
+                                                                  <td class="pl-3">{{@$finalMarkSheet->get('member_name')}}</td>
+                                                                  <td>{{@$finalMarkSheet->get('registration_no')}}</td>
                                                                   <td>{{@$finalMarkSheet->get('roll_no')}}</td>
                                                                   <td>{{$loop->iteration}}</td>
                                                                   @php $allsubjectMark = 0 ;  @endphp 
@@ -374,7 +374,7 @@
                     var url = $("#url").val();
                     var i = 0;
                     let semester_id = $(this).val();
-                    let academic_id = $('#select_academic').val();  
+                    let church_year_id = $('#select_academic').val();  
                     let session_id = $('#select_session').val();
                     let faculty_id = $('#select_faculty').val();
                     let department_id = $('#select_dept').val();
@@ -413,7 +413,7 @@
 
                         return ;
                     }
-                    if (academic_id =='') {
+                    if (church_year_id =='') {
                         setTimeout(function() {
                             toastr.error(
                             "Academic Not Found",
@@ -434,7 +434,7 @@
 
                     var formData = {
                         semester_id : semester_id,
-                        academic_id : academic_id,
+                        church_year_id : church_year_id,
                         session_id : session_id,
                         faculty_id : faculty_id,
                         department_id : department_id,

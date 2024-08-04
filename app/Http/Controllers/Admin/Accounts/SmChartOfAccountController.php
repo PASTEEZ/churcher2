@@ -34,11 +34,11 @@ class SmChartOfAccountController extends Controller
             $chart_of_account = new SmChartOfAccount();
             $chart_of_account->head = $request->head;
             $chart_of_account->type = $request->type;
-            $chart_of_account->school_id = Auth::user()->school_id;
+            $chart_of_account->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $chart_of_account->un_academic_id = getAcademicId();
+                $chart_of_account->un_church_year_id = getAcademicId();
             }else{
-                $chart_of_account->academic_id = getAcademicId();
+                $chart_of_account->church_year_id = getAcademicId();
             }
             $chart_of_account->save();
 
@@ -69,7 +69,7 @@ class SmChartOfAccountController extends Controller
             $chart_of_account->head = $request->head;
             $chart_of_account->type = $request->type;
             if(moduleStatusCheck('University')){
-                $chart_of_account->un_academic_id = getAcademicId();
+                $chart_of_account->un_church_year_id = getAcademicId();
             }
             $chart_of_account->save();
 

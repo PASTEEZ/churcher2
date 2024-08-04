@@ -187,13 +187,13 @@ class SmApiController extends Controller
                         $to_mobile = $sm_students->mobile;
 
                         if ($sm_students) {
-                            DB::table('device_log')->where('userid', $device_log->userid)->update(array('role_id' => $sm_students->role_id, 'class_id' => $sm_students->class_id, 'section_id' => $sm_students->section_id, 'profile_id' => $sm_students->id));
+                            DB::table('device_log')->where('userid', $device_log->userid)->update(array('role_id' => $sm_students->role_id, 'age_group_id' => $sm_students->age_group_id, 'mgender_id' => $sm_students->mgender_id, 'profile_id' => $sm_students->id));
                         }
-                        $attendance = SmStudentAttendance::where('student_id', $sm_students->id)->where('attendance_date', date('Y-m-d', strtotime($device_log->checktime)))->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->first();
+                        $attendance = SmStudentAttendance::where('member_id', $sm_students->id)->where('attendance_date', date('Y-m-d', strtotime($device_log->checktime)))->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->first();
                         if ($attendance == "") {
                             $attendance = new SmStudentAttendance();
                         }
-                        $attendance->student_id = $sm_students->id;
+                        $attendance->member_id = $sm_students->id;
                         $attendance_start_time = $attendance_setting->start_time;
                         $d_start_time = date('H:s', strtotime($device_log->checktime));
                         if ($attendance_start_time >= $d_start_time) {
@@ -214,7 +214,7 @@ class SmApiController extends Controller
                         }
                         $attendance->attendance_date = date('Y-m-d H:i:s', strtotime($device_log->checktime));
                         $attendance->notes = 'Biometric Student Atendance';
-                        $attendance->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+                        $attendance->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
                         $attendance->save();
                     } else {
                         $sm_staff = SmStaff::where('user_id', $device_log->userid)->first();
@@ -254,7 +254,7 @@ class SmApiController extends Controller
                         }
                         $attendance->attendence_date = date('Y-m-d H:i:s', strtotime($device_log->checktime));
                         $attendance->notes = 'Biometric Staff Atendance';
-                        $attendance->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+                        $attendance->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
                         $attendance->save();
                     }
                 }
@@ -506,11 +506,11 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendResponse($data, null);
         }
     }
-    public function saas_dormitoryList(Request $request, $school_id)
+    public function saas_dormitoryList(Request $request, $church_id)
     {
         $dormitory_lists = DB::table('sm_dormitory_lists')
             ->where('active_status', 1)
-            ->where('school_id', $school_id)->get();
+            ->where('church_id', $church_id)->get();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $data = [];
@@ -543,12 +543,12 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendResponse($data, null);
         }
     }
-    public function saas_roomTypeList(Request $request, $school_id)
+    public function saas_roomTypeList(Request $request, $church_id)
     {
         $room_type_lists = DB::table('sm_room_types')
             ->select('id', 'type')
             ->where('active_status', 1)
-            ->where('school_id', $school_id)->get();
+            ->where('church_id', $church_id)->get();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $data = [];
@@ -583,8 +583,8 @@ class SmApiController extends Controller
         $room_list->number_of_bed = $request->number_of_bed;
         $room_list->cost_per_bed = $request->cost_per_bed;
         $room_list->description = $request->description;
-        $room_list->school_id = 1;
-        $room_list->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+        $room_list->church_id = 1;
+        $room_list->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
         $result = $room_list->save();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -604,7 +604,7 @@ class SmApiController extends Controller
             'room_type' => "required",
             'number_of_bed' => "required|max:12",
             'cost_per_bed' => "required|max:11",
-            'school_id' => "required",
+            'church_id' => "required",
         ]);
 
         if ($validator->fails()) {
@@ -623,8 +623,8 @@ class SmApiController extends Controller
         $room_list->number_of_bed = $request->number_of_bed;
         $room_list->cost_per_bed = $request->cost_per_bed;
         $room_list->description = $request->description;
-        $room_list->school_id = $request->school_id;
-        $room_list->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+        $room_list->church_id = $request->church_id;
+        $room_list->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
         $result = $room_list->save();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -662,7 +662,7 @@ class SmApiController extends Controller
         $room->number_of_bed = $request->number_of_bed;
         $room->cost_per_bed = $request->cost_per_bed;
         $room->description = $request->description;
-        $room->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+        $room->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
         $result = $room->save();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -682,7 +682,7 @@ class SmApiController extends Controller
             'room_type' => "required",
             'number_of_bed' => "required|max:22",
             'cost_per_bed' => "required|max:11",
-            'school_id' => "required",
+            'church_id' => "required",
         ]);
 
         if ($validator->fails()) {
@@ -700,8 +700,8 @@ class SmApiController extends Controller
         $room->number_of_bed = $request->number_of_bed;
         $room->cost_per_bed = $request->cost_per_bed;
         $room->description = $request->description;
-        $room->school_id = $request->school_id;
-        $room->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+        $room->church_id = $request->church_id;
+        $room->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
         $result = $room->save();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -731,12 +731,12 @@ class SmApiController extends Controller
             }
         }
     }
-    public function saas_deleteRoom(Request $request, $school_id, $id)
+    public function saas_deleteRoom(Request $request, $church_id, $id)
     {
         $key_id = 'room_id';
         $tables = tableList::getTableList($key_id, $id);
         try {
-            $delete_query = SmRoomList::where('school_id', $school_id)->where('id', $id)->delete();
+            $delete_query = SmRoomList::where('church_id', $church_id)->where('id', $id)->delete();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 if ($delete_query) {
                     return ApiBaseMethod::sendResponse(null, 'Room has been deleted successfully');
@@ -775,7 +775,7 @@ class SmApiController extends Controller
         $dormitory_list->address = $request->address;
         $dormitory_list->intake = $request->intake;
         $dormitory_list->description = $request->description;
-        $dormitory_list->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+        $dormitory_list->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
         $result = $dormitory_list->save();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -791,7 +791,7 @@ class SmApiController extends Controller
             'dormitory_name' => "required|unique:sm_dormitory_lists,dormitory_name",
             'type' => "required",
             'intake' => "required",
-            'school_id' => "required",
+            'church_id' => "required",
         ]);
 
         if ($validator->fails()) {
@@ -809,8 +809,8 @@ class SmApiController extends Controller
         $dormitory_list->address = $request->address;
         $dormitory_list->intake = $request->intake;
         $dormitory_list->description = $request->description;
-        $dormitory_list->school_id = $request->school_id;
-        $dormitory_list->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+        $dormitory_list->church_id = $request->church_id;
+        $dormitory_list->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
         $result = $dormitory_list->save();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -844,7 +844,7 @@ class SmApiController extends Controller
         $dormitory_list->address = $request->address;
         $dormitory_list->intake = $request->intake;
         $dormitory_list->description = $request->description;
-        $dormitory_list->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+        $dormitory_list->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
         $result = $dormitory_list->save();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -860,7 +860,7 @@ class SmApiController extends Controller
             'dormitory_name' => "required|unique:sm_dormitory_lists,dormitory_name",
             'type' => "required",
             'intake' => "required",
-            'school_id' => "required",
+            'church_id' => "required",
         ]);
 
         if ($validator->fails()) {
@@ -878,8 +878,8 @@ class SmApiController extends Controller
         $dormitory_list->address = $request->address;
         $dormitory_list->intake = $request->intake;
         $dormitory_list->description = $request->description;
-        $dormitory_list->school_id = $request->school_id;
-        $dormitory_list->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+        $dormitory_list->church_id = $request->church_id;
+        $dormitory_list->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
         $result = $dormitory_list->save();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -909,11 +909,11 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError($msg);
         }
     }
-    public function saas_deleteDormitory(Request $request, $school_id, $id)
+    public function saas_deleteDormitory(Request $request, $church_id, $id)
     {
         $tables = \App\tableList::getTableList('dormitory_id', $id);
         try {
-            $dormitory_list = SmDormitoryList::where('school_id', $school_id)->where('id', $id)->delete();
+            $dormitory_list = SmDormitoryList::where('church_id', $church_id)->where('id', $id)->delete();
             if ($dormitory_list) {
                 if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                     if ($dormitory_list) {
@@ -940,12 +940,12 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendResponse($driver_list, null);
         }
     }
-    public function saas_getDriverList(Request $request, $school_id)
+    public function saas_getDriverList(Request $request, $church_id)
     {
         $driver_list = DB::table('sm_staffs')
             ->where('active_status', 1)
             ->where('role_id', '=', 9)
-            ->where('school_id', $school_id)->get();
+            ->where('church_id', $church_id)->get();
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             return ApiBaseMethod::sendResponse($driver_list, null);
         }
@@ -978,7 +978,7 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendResponse($data, null);
         }
     }
-    public function saas_setToken(Request $request, $school_id)
+    public function saas_setToken(Request $request, $church_id)
     {
         if (!Schema::hasColumn('users', 'notificationToken')) {
             Schema::table('users', function ($table) {
@@ -986,7 +986,7 @@ class SmApiController extends Controller
             });
         }
 
-        $user = User::where('school_id', $school_id)->find($request->id);
+        $user = User::where('church_id', $church_id)->find($request->id);
         $user->notificationToken = $request->token;
         $user->save();
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -1035,7 +1035,7 @@ class SmApiController extends Controller
         $books->details = $request->details;
         $books->post_date = date('Y-m-d');
         $books->created_by = $request->user_id;
-        $books->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+        $books->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
         $results = $books->save();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -1050,18 +1050,18 @@ class SmApiController extends Controller
     {
 
         $roles = InfixRole::where('active_status', '=', 1)->where(function ($q) {
-            $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+            $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
         })->orderBy('id', 'desc')->get();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             return ApiBaseMethod::sendResponse($roles, null);
         }
     }
-    public function saas_member_role(Request $request, $school_id)
+    public function saas_member_role(Request $request, $church_id)
     {
 
         $roles = InfixRole::where('active_status', '=', 1)->where(function ($q) {
-            $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+            $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
         })->orderBy('id', 'desc')->get();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -1142,7 +1142,7 @@ class SmApiController extends Controller
             $members->student_staff_id = $student_staff_id;
             $members->member_ud_id = $request->member_ud_id;
             $members->created_by = $user_id;
-            $members->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+            $members->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
             $results = $members->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -1163,7 +1163,7 @@ class SmApiController extends Controller
                     'member_type' => "required",
                     'created_by' => "required",
                     'member_ud_id' => "required|unique:sm_library_members,member_ud_id",
-                    'school_id' => "required",
+                    'church_id' => "required",
                 ]);
             } elseif ($request->member_type == "2") {
 
@@ -1172,7 +1172,7 @@ class SmApiController extends Controller
                     'student' => "required",
                     'created_by' => "required",
                     'member_ud_id' => "required|unique:sm_library_members,member_ud_id",
-                    'school_id' => "required",
+                    'church_id' => "required",
                 ]);
             } else {
                 $validator = Validator::make($input, [
@@ -1180,14 +1180,14 @@ class SmApiController extends Controller
                     'staff' => "required",
                     'created_by' => "required",
                     'member_ud_id' => "required|unique:sm_library_members,member_ud_id",
-                    'school_id' => "required",
+                    'church_id' => "required",
                 ]);
             }
         }
         $student_staff_id = '';
         if ($request->student != 0) {
             $student_staff_id = $request->student;
-            $isData = SmLibraryMember::where('student_staff_id', '=', $student_staff_id)->where('active_status', '=', 1)->where('school_id', '=', $request->school_id)->first();
+            $isData = SmLibraryMember::where('student_staff_id', '=', $student_staff_id)->where('active_status', '=', 1)->where('church_id', '=', $request->church_id)->first();
             if (!empty($isData)) {
                 if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                     return ApiBaseMethod::sendError('This Member is already added in our library.');
@@ -1196,7 +1196,7 @@ class SmApiController extends Controller
         }
         if ($request->staff != 0) {
             $student_staff_id = $request->staff;
-            $isData = SmLibraryMember::where('student_staff_id', '=', $student_staff_id)->where('active_status', '=', 1)->where('school_id', '=', $request->school_id)->first();
+            $isData = SmLibraryMember::where('student_staff_id', '=', $student_staff_id)->where('active_status', '=', 1)->where('church_id', '=', $request->church_id)->first();
             if (!empty($isData)) {
                 if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                     return ApiBaseMethod::sendError('This Member is already added in our library.');
@@ -1218,9 +1218,9 @@ class SmApiController extends Controller
             $created_by = $request->created_by;
         }
 
-        $isExist_staff_id = SmLibraryMember::where('student_staff_id', '=', $student_staff_id)->where('school_id', '=', $request->school_id)->first();
+        $isExist_staff_id = SmLibraryMember::where('student_staff_id', '=', $student_staff_id)->where('church_id', '=', $request->church_id)->first();
         if (!empty($isExist_staff_id)) {
-            $members = SmLibraryMember::where('student_staff_id', '=', $student_staff_id)->where('school_id', '=', $request->school_id)->first();
+            $members = SmLibraryMember::where('student_staff_id', '=', $student_staff_id)->where('church_id', '=', $request->church_id)->first();
             $members->active_status = 1;
             $results = $members->update();
             return ApiBaseMethod::sendResponse(null, 'New Member has been added successfully');
@@ -1229,9 +1229,9 @@ class SmApiController extends Controller
             $members->member_type = $request->member_type;
             $members->student_staff_id = $student_staff_id;
             $members->member_ud_id = $request->member_ud_id;
-            $members->school_id = $request->school_id;
+            $members->church_id = $request->church_id;
             $members->created_by = $created_by;
-            $members->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+            $members->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
             $results = $members->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -1279,7 +1279,7 @@ class SmApiController extends Controller
             } else {
                 $fees_master->amount = null;
             }
-            $fees_master->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+            $fees_master->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
             $result = $fees_master->save();
             if ($result) {
                 if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -1292,7 +1292,7 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Operation Failed.', $validator->errors());
         }
     }
-    public function saas_feesMasterStore(Request $request, $school_id)
+    public function saas_feesMasterStore(Request $request, $church_id)
     {
         $input = $request->all();
         if ($request->fees_group == "" || $request->fees_group != 1 && $request->fees_group != 2) {
@@ -1316,7 +1316,7 @@ class SmApiController extends Controller
             }
         }
 
-        $combination = SmFeesMaster::where('fees_group_id', $request->fees_group)->where('fees_type_id', $request->fees_type)->where('school_id', $school_id)->count();
+        $combination = SmFeesMaster::where('fees_group_id', $request->fees_group)->where('fees_type_id', $request->fees_type)->where('church_id', $church_id)->count();
 
         if ($combination == 0) {
             $fees_master = new SmFeesMaster();
@@ -1328,7 +1328,7 @@ class SmApiController extends Controller
             } else {
                 $fees_master->amount = null;
             }
-            $fees_master->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+            $fees_master->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
             $result = $fees_master->save();
             if ($result) {
                 if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -1377,7 +1377,7 @@ class SmApiController extends Controller
             } else {
                 $fees_master->amount = null;
             }
-            $fees_master->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+            $fees_master->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
             $result = $fees_master->save();
             if ($result) {
                 if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -1390,7 +1390,7 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Operation Failed.', $validator->errors());
         }
     }
-    public function saas_feesMasterUpdate(Request $request, $school_id)
+    public function saas_feesMasterUpdate(Request $request, $church_id)
     {
         $input = $request->all();
         if ($request->fees_group == "" || $request->fees_group != 1 && $request->fees_group != 2) {
@@ -1414,10 +1414,10 @@ class SmApiController extends Controller
             }
         }
 
-        $combination = SmFeesMaster::where('fees_group_id', $request->fees_group)->where('fees_type_id', $request->fees_type)->where('school_id', $school_id)->count();
+        $combination = SmFeesMaster::where('fees_group_id', $request->fees_group)->where('fees_type_id', $request->fees_type)->where('church_id', $church_id)->count();
 
         if ($combination == 0) {
-            $fees_master = SmFeesMaster::where('school_id', $school_id)->find($request->id);
+            $fees_master = SmFeesMaster::where('church_id', $church_id)->find($request->id);
             $fees_master->fees_group_id = $request->fees_group;
             $fees_master->fees_type_id = $request->fees_type;
             $fees_master->date = date('Y-m-d', strtotime($request->date));
@@ -1426,7 +1426,7 @@ class SmApiController extends Controller
             } else {
                 $fees_master->amount = null;
             }
-            $fees_master->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+            $fees_master->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
             $result = $fees_master->save();
             if ($result) {
                 if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -1445,7 +1445,7 @@ class SmApiController extends Controller
         $input = $request->all();
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $validator = Validator::make($input, [
-                'class_ids' => 'required',
+                'age_group_ids' => 'required',
                 'subjects_ids' => 'required|array',
                 'exams_types' => 'required|array',
                 'exam_marks' => "required|min:0",
@@ -1464,9 +1464,9 @@ class SmApiController extends Controller
 
         try {
 
-            $sections = SmClassSection::where('class_id', $request->class_ids)->get();
+            $sections = SmClassSection::where('age_group_id', $request->age_group_ids)->get();
 
-            $exist_check = SmExam::where('class_id', '=', $request->class_ids)->count();
+            $exist_check = SmExam::where('age_group_id', '=', $request->age_group_ids)->count();
 
             if ($exist_check == 0) {
 
@@ -1474,7 +1474,7 @@ class SmApiController extends Controller
 
                     foreach ($sections as $section) {
 
-                        $subject_for_sections = SmAssignSubject::where('class_id', $request->class_ids)->where('section_id', $section->section_id)->get();
+                        $subject_for_sections = SmAssignSubject::where('age_group_id', $request->age_group_ids)->where('mgender_id', $section->mgender_id)->get();
 
                         $eligible_subjects = [];
 
@@ -1487,12 +1487,12 @@ class SmApiController extends Controller
                             if (in_array($subject_id, $eligible_subjects)) {
                                 $exam = new SmExam();
                                 $exam->exam_type_id = $exam_type_id;
-                                $exam->class_id = $request->class_ids;
-                                $exam->section_id = $section->section_id;
+                                $exam->age_group_id = $request->age_group_ids;
+                                $exam->mgender_id = $section->mgender_id;
                                 $exam->subject_id = $subject_id;
                                 $exam->exam_mark = $request->exam_marks;
                                 $exam->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
-                                $exam->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+                                $exam->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
                                 $exam->save();
 
                                 $exam->toArray();
@@ -1508,14 +1508,14 @@ class SmApiController extends Controller
 
                                     $newSetupExam = new SmExamSetup();
                                     $newSetupExam->exam_id = $exam->id;
-                                    $newSetupExam->class_id = $request->class_ids;
-                                    $newSetupExam->section_id = $section->section_id;
+                                    $newSetupExam->age_group_id = $request->age_group_ids;
+                                    $newSetupExam->mgender_id = $section->mgender_id;
                                     $newSetupExam->subject_id = $subject_id;
                                     $newSetupExam->exam_term_id = $exam_type_id;
                                     $newSetupExam->exam_title = $ex_title;
                                     $newSetupExam->exam_mark = $ex_mark;
                                     $newSetupExam->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
-                                    $newSetupExam->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+                                    $newSetupExam->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
                                     $result = $newSetupExam->save();
                                 }
                             }
@@ -1532,13 +1532,13 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Operation Failed.', $validator->errors());
         }
     }
-    public function saas_NewExamSetup(Request $request, $school_id)
+    public function saas_NewExamSetup(Request $request, $church_id)
     {
 
         $input = $request->all();
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $validator = Validator::make($input, [
-                'class_ids' => 'required',
+                'age_group_ids' => 'required',
                 'subjects_ids' => 'required|array',
                 'exams_types' => 'required|array',
                 'exam_marks' => "required|min:0",
@@ -1557,9 +1557,9 @@ class SmApiController extends Controller
 
         try {
 
-            $sections = SmClassSection::where('class_id', $request->class_ids)->where('school_id', $school_id)->get();
+            $sections = SmClassSection::where('age_group_id', $request->age_group_ids)->where('church_id', $church_id)->get();
 
-            $exist_check = SmExam::where('class_id', '=', $request->class_ids)->where('school_id', $school_id)->count();
+            $exist_check = SmExam::where('age_group_id', '=', $request->age_group_ids)->where('church_id', $church_id)->count();
 
             if ($exist_check == 0) {
 
@@ -1567,7 +1567,7 @@ class SmApiController extends Controller
 
                     foreach ($sections as $section) {
 
-                        $subject_for_sections = SmAssignSubject::where('class_id', $request->class_ids)->where('section_id', $section->section_id)->where('school_id', $school_id)->get();
+                        $subject_for_sections = SmAssignSubject::where('age_group_id', $request->age_group_ids)->where('mgender_id', $section->mgender_id)->where('church_id', $church_id)->get();
 
                         $eligible_subjects = [];
 
@@ -1580,11 +1580,11 @@ class SmApiController extends Controller
                             if (in_array($subject_id, $eligible_subjects)) {
                                 $exam = new SmExam();
                                 $exam->exam_type_id = $exam_type_id;
-                                $exam->class_id = $request->class_ids;
-                                $exam->section_id = $section->section_id;
+                                $exam->age_group_id = $request->age_group_ids;
+                                $exam->mgender_id = $section->mgender_id;
                                 $exam->subject_id = $subject_id;
                                 $exam->exam_mark = $request->exam_marks;
-                                $exam->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+                                $exam->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
                                 $exam->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
 
                                 $exam->save();
@@ -1602,13 +1602,13 @@ class SmApiController extends Controller
 
                                     $newSetupExam = new SmExamSetup();
                                     $newSetupExam->exam_id = $exam->id;
-                                    $newSetupExam->class_id = $request->class_ids;
-                                    $newSetupExam->section_id = $section->section_id;
+                                    $newSetupExam->age_group_id = $request->age_group_ids;
+                                    $newSetupExam->mgender_id = $section->mgender_id;
                                     $newSetupExam->subject_id = $subject_id;
                                     $newSetupExam->exam_term_id = $exam_type_id;
                                     $newSetupExam->exam_title = $ex_title;
                                     $newSetupExam->exam_mark = $ex_mark;
-                                    $newSetupExam->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+                                    $newSetupExam->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
                                     $newSetupExam->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
                                     $result = $newSetupExam->save();
                                 }
@@ -1630,9 +1630,9 @@ class SmApiController extends Controller
     {
 
         if ($request->assigned_id == "") {
-            $check_date = SmExamSchedule::where('class_id', $request->class_id)->where('section_id', $request->section_id)->where('exam_term_id', $request->exam_term_id)->where('date', date('Y-m-d', strtotime($request->date)))->where('exam_period_id', $request->exam_period_id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $check_date = SmExamSchedule::where('age_group_id', $request->age_group_id)->where('mgender_id', $request->mgender_id)->where('exam_term_id', $request->exam_term_id)->where('date', date('Y-m-d', strtotime($request->date)))->where('exam_period_id', $request->exam_period_id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
         } else {
-            $check_date = SmExamSchedule::where('id', '!=', $request->assigned_id)->where('class_id', $request->class_id)->where('section_id', $request->section_id)->where('exam_term_id', $request->exam_term_id)->where('date', date('Y-m-d', strtotime($request->date)))->where('exam_period_id', $request->exam_period_id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $check_date = SmExamSchedule::where('id', '!=', $request->assigned_id)->where('age_group_id', $request->age_group_id)->where('mgender_id', $request->mgender_id)->where('exam_term_id', $request->exam_term_id)->where('date', date('Y-m-d', strtotime($request->date)))->where('exam_period_id', $request->exam_period_id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
         }
 
         $holiday_check = SmHoliday::where('from_date', '<=', date('Y-m-d', strtotime($request->date)))->where('to_date', '>=', date('Y-m-d', strtotime($request->date)))->first();
@@ -1645,16 +1645,16 @@ class SmApiController extends Controller
             $to_date = '';
         }
     }
-    public function saas_NewExamSchedule(Request $request, $school_id)
+    public function saas_NewExamSchedule(Request $request, $church_id)
     {
 
         if ($request->assigned_id == "") {
-            $check_date = SmExamSchedule::where('class_id', $request->class_id)->where('section_id', $request->section_id)->where('exam_term_id', $request->exam_term_id)->where('date', date('Y-m-d', strtotime($request->date)))->where('exam_period_id', $request->exam_period_id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+            $check_date = SmExamSchedule::where('age_group_id', $request->age_group_id)->where('mgender_id', $request->mgender_id)->where('exam_term_id', $request->exam_term_id)->where('date', date('Y-m-d', strtotime($request->date)))->where('exam_period_id', $request->exam_period_id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
         } else {
-            $check_date = SmExamSchedule::where('id', '!=', $request->assigned_id)->where('class_id', $request->class_id)->where('section_id', $request->section_id)->where('exam_term_id', $request->exam_term_id)->where('date', date('Y-m-d', strtotime($request->date)))->where('exam_period_id', $request->exam_period_id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+            $check_date = SmExamSchedule::where('id', '!=', $request->assigned_id)->where('age_group_id', $request->age_group_id)->where('mgender_id', $request->mgender_id)->where('exam_term_id', $request->exam_term_id)->where('date', date('Y-m-d', strtotime($request->date)))->where('exam_period_id', $request->exam_period_id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
         }
 
-        $holiday_check = SmHoliday::where('from_date', '<=', date('Y-m-d', strtotime($request->date)))->where('to_date', '>=', date('Y-m-d', strtotime($request->date)))->where('school_id', $school_id)->first();
+        $holiday_check = SmHoliday::where('from_date', '<=', date('Y-m-d', strtotime($request->date)))->where('to_date', '>=', date('Y-m-d', strtotime($request->date)))->where('church_id', $church_id)->first();
 
         if ($holiday_check != "") {
             $from_date = date('jS M, Y', strtotime($holiday_check->from_date));
@@ -1682,13 +1682,13 @@ class SmApiController extends Controller
         }
 
     }
-    public function SaasDemoUser(Request $request, $school_id)
+    public function SaasDemoUser(Request $request, $church_id)
     {
         try {
             $superadmin = User::where('role_id', '=', 1)->select('id', 'email')->first();
-            $student = User::where('role_id', '=', 2)->select('id', 'email')->where('school_id', $school_id)->first();
-            $parent = User::where('role_id', '=', 3)->select('id', 'email')->where('school_id', $school_id)->first();
-            $teacher = User::where('role_id', '=', 4)->select('id', 'email')->where('school_id', $school_id)->first();
+            $student = User::where('role_id', '=', 2)->select('id', 'email')->where('church_id', $church_id)->first();
+            $parent = User::where('role_id', '=', 3)->select('id', 'email')->where('church_id', $church_id)->first();
+            $teacher = User::where('role_id', '=', 4)->select('id', 'email')->where('church_id', $church_id)->first();
             $data = [];
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data['superadmin'] = $superadmin->toArray();
@@ -1728,7 +1728,7 @@ class SmApiController extends Controller
         $input = $request->all();
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $validator = Validator::make($input, [
-                'student_id' => 'required',
+                'member_id' => 'required',
                 'fees_type_id' => 'required',
                 'amount' => 'required',
                 'paid_by' => "required",
@@ -1742,10 +1742,10 @@ class SmApiController extends Controller
                 ->withErrors($validator)
                 ->withInput();
         }
-        $student_info = SmStudent::where('user_id', '=', $request->student_id)->first();
+        $student_info = SmStudent::where('user_id', '=', $request->member_id)->first();
 
         $fees_payment = new SmFeesPayment();
-        $fees_payment->student_id = $student_info->id;
+        $fees_payment->member_id = $student_info->id;
         $fees_payment->fees_type_id = $request->fees_type_id;
 
         $fees_payment->discount_amount = !empty($request->discount_amount) ? $request->discount_amount : 0;
@@ -1768,7 +1768,7 @@ class SmApiController extends Controller
         $input = $request->all();
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $validator = Validator::make($input, [
-                'student_id' => 'required',
+                'member_id' => 'required',
                 'fees_type_id' => 'required',
                 'amount' => 'required',
                 'paid_by' => "required",
@@ -1782,10 +1782,10 @@ class SmApiController extends Controller
                 ->withErrors($validator)
                 ->withInput();
         }
-        $student_info = SmStudent::where('user_id', '=', $request->student_id)->first();
+        $student_info = SmStudent::where('user_id', '=', $request->member_id)->first();
 
         $fees_payment = new SmFeesPayment();
-        $fees_payment->student_id = $student_info->id;
+        $fees_payment->member_id = $student_info->id;
         $fees_payment->fees_type_id = $request->fees_type_id;
 
         $fees_payment->discount_amount = !empty($request->discount_amount) ? $request->discount_amount : 0;
@@ -1841,7 +1841,7 @@ class SmApiController extends Controller
 
     public function allSchools(Request $request)
     {
-        $all_schools = SmSchool::select('id', 'school_name', 'is_enabled', 'active_status')->where('is_enabled', 'yes')->where('active_status', 1)->get();
+        $all_schools = SmSchool::select('id', 'church_name', 'is_enabled', 'active_status')->where('is_enabled', 'yes')->where('active_status', 1)->get();
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             return ApiBaseMethod::sendResponse($all_schools->toArray(), 'All schools retrieved successfully.');
         }
@@ -1856,7 +1856,7 @@ class SmApiController extends Controller
         $validator = Validator::make($input, [
             'email' => "required",
             'password' => "required",
-            'school_id' => "required",
+            'church_id' => "required",
         ]);
 
         if ($validator->fails()) {
@@ -1869,7 +1869,7 @@ class SmApiController extends Controller
         }
 
         try {
-            $user = User::where('school_id', $request->school_id)->where('email', $request->email)->first();
+            $user = User::where('church_id', $request->church_id)->where('email', $request->email)->first();
             if ($user != "") {
                 if (Hash::check($request->password, $user->password)) {
 
@@ -1881,8 +1881,8 @@ class SmApiController extends Controller
 
                         $data['userDetails'] = DB::table('sm_students')->select('sm_students.*', 'sm_parents.*', 'sm_classes.*', 'sm_sections.*')
                             ->join('sm_parents', 'sm_parents.id', '=', 'sm_students.parent_id')
-                            ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.class_id')
-                            ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.section_id')
+                            ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.age_group_id')
+                            ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.mgender_id')
                             ->where('sm_students.user_id', $user->id)
                             ->first();
 
@@ -1953,8 +1953,8 @@ class SmApiController extends Controller
 
                         $data['userDetails'] = DB::table('sm_students')->select('sm_students.*', 'sm_parents.*', 'sm_classes.*', 'sm_sections.*')
                             ->join('sm_parents', 'sm_parents.id', '=', 'sm_students.parent_id')
-                            ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.class_id')
-                            ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.section_id')
+                            ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.age_group_id')
+                            ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.mgender_id')
                             ->where('sm_students.user_id', $user->id)
                             ->first();
 
@@ -1999,39 +1999,39 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function get_class_name(Request $request, $id)
+    public function get_age_group_name(Request $request, $id)
     {
-        $get_class_name = SmClass::select('class_name as name')->where('id', $id)->first();
-        return $get_class_name;
+        $get_age_group_name = SmClass::select('age_group_name as name')->where('id', $id)->first();
+        return $get_age_group_name;
     }
-    public function saas_get_class_name(Request $request, $school_id, $id)
+    public function saas_get_age_group_name(Request $request, $church_id, $id)
     {
 
-        $get_class_name = SmClass::select('class_name as name')->where('id', $id)->where('school_id', $school_id)->first();
-        return $get_class_name;
+        $get_age_group_name = SmClass::select('age_group_name as name')->where('id', $id)->where('church_id', $church_id)->first();
+        return $get_age_group_name;
     }
 
-    public function get_section_name(Request $request, $id)
+    public function get_mgender_name(Request $request, $id)
     {
-        $get_section_name = SmSection::select('section_name as name')->where('id', $id)->first();
-        return $get_section_name;
+        $get_mgender_name = SmSection::select('mgender_name as name')->where('id', $id)->first();
+        return $get_mgender_name;
     }
-    public function saas_get_section_name(Request $request, $school_id, $id)
+    public function saas_get_mgender_name(Request $request, $church_id, $id)
     {
-        $get_section_name = SmSection::select('section_name as name')
+        $get_mgender_name = SmSection::select('mgender_name as name')
             ->where('id', $id)
-            ->where('school_id', $school_id)
+            ->where('church_id', $church_id)
             ->first();
-        return $get_section_name;
+        return $get_mgender_name;
     }
     public function get_teacher_name(Request $request, $id)
     {
         $get_teacher_name = SmStaff::select('full_name as name')->where('id', $id)->first();
         return $get_teacher_name;
     }
-    public function saas_get_teacher_name(Request $request, $school_id, $id)
+    public function saas_get_teacher_name(Request $request, $church_id, $id)
     {
-        $get_teacher_name = SmStaff::select('full_name as name')->where('id', $id)->where('school_id', $school_id)->first();
+        $get_teacher_name = SmStaff::select('full_name as name')->where('id', $id)->where('church_id', $church_id)->first();
         return $get_teacher_name;
     }
     public function get_subject_name(Request $request, $id)
@@ -2039,9 +2039,9 @@ class SmApiController extends Controller
         $get_subject_name = SmSubject::select('subject_name as name')->where('id', $id)->first();
         return $get_subject_name;
     }
-    public function saas_get_subject_name(Request $request, $school_id, $id)
+    public function saas_get_subject_name(Request $request, $church_id, $id)
     {
-        $get_subject_name = SmSubject::select('subject_name as name')->where('id', $id)->where('school_id', $school_id)->first();
+        $get_subject_name = SmSubject::select('subject_name as name')->where('id', $id)->where('church_id', $church_id)->first();
         return $get_subject_name;
     }
     public function get_room_name(Request $request, $id)
@@ -2049,9 +2049,9 @@ class SmApiController extends Controller
         $get_room_name = SmClassRoom::select('room_no as name')->where('id', $id)->first();
         return $get_room_name;
     }
-    public function saas_get_room_name(Request $request, $school_id, $id)
+    public function saas_get_room_name(Request $request, $church_id, $id)
     {
-        $get_room_name = SmClassRoom::select('room_no as name')->where('id', $id)->where('school_id', $school_id)->first();
+        $get_room_name = SmClassRoom::select('room_no as name')->where('id', $id)->where('church_id', $church_id)->first();
         return $get_room_name;
     }
     public function get_class_period_name(Request $request, $id)
@@ -2059,9 +2059,9 @@ class SmApiController extends Controller
         $get_class_period_name = SmClassTime::select('period as name', 'start_time', 'end_time')->where('id', $id)->first();
         return $get_class_period_name;
     }
-    public function saas_get_class_period_name(Request $request, $school_id, $id)
+    public function saas_get_class_period_name(Request $request, $church_id, $id)
     {
-        $get_class_period_name = SmClassTime::select('period as name', 'start_time', 'end_time')->where('id', $id)->where('school_id', $school_id)->first();
+        $get_class_period_name = SmClassTime::select('period as name', 'start_time', 'end_time')->where('id', $id)->where('church_id', $church_id)->first();
         return $get_class_period_name;
     }
 
@@ -2077,10 +2077,10 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_visitor_index(Request $request, $school_id)
+    public function saas_visitor_index(Request $request, $church_id)
     {
         try {
-            $visitors = SmVisitor::where('school_id', $school_id)->get();
+            $visitors = SmVisitor::where('church_id', $church_id)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($visitors->toArray(), 'Visitors retrieved successfully.');
             }
@@ -2189,7 +2189,7 @@ class SmApiController extends Controller
             'date' => "required",
             'in_time' => "required",
             'out_time' => "required",
-            'school_id' => "required",
+            'church_id' => "required",
             'file' => "sometimes|nullable|mimes:pdf,doc,docx,jpg,jpeg,png",
         ]);
         if ($validator->fails()) {
@@ -2241,7 +2241,7 @@ class SmApiController extends Controller
             $visitor->in_time = $request->in_time;
             $visitor->out_time = $request->out_time;
             $visitor->file = $fileName;
-            $visitor->school_id = $request->school_id;
+            $visitor->church_id = $request->church_id;
             $result = $visitor->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -2280,12 +2280,12 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_visitor_edit(Request $request, $school_id, $id)
+    public function saas_visitor_edit(Request $request, $church_id, $id)
     {
 
         try {
-            $visitor = SmVisitor::where('school_id', $school_id)->find($id);
-            $visitors = SmVisitor::where('school_id', $school_id)->get();
+            $visitor = SmVisitor::where('church_id', $church_id)->find($id);
+            $visitors = SmVisitor::where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -2397,7 +2397,7 @@ class SmApiController extends Controller
             'date' => "required",
             'in_time' => "required",
             'out_time' => "required",
-            'school_id' => "required",
+            'church_id' => "required",
             'file' => "sometimes|nullable|mimes:pdf,doc,docx,jpg,jpeg,png",
         ]);
 
@@ -2439,7 +2439,7 @@ class SmApiController extends Controller
             $visitor->date = $newformat;
             $visitor->in_time = $request->in_time;
             $visitor->out_time = $request->out_time;
-            $visitor->school_id = $request->school_id;
+            $visitor->church_id = $request->church_id;
             if ($fileName != "") {
                 $visitor->file = $fileName;
             }
@@ -2497,12 +2497,12 @@ class SmApiController extends Controller
         }
     }
 
-    public function saas_visitor_delete(Request $request, $school_id, $id)
+    public function saas_visitor_delete(Request $request, $church_id, $id)
     {
 
         try {
 
-            $visitor = SmVisitor::where('school_id', $school_id)->find($id);
+            $visitor = SmVisitor::where('church_id', $church_id)->find($id);
 
             if ($visitor->file != "") {
                 $path = url('/') . '/public/uploads/visitor/' . $visitor->file;
@@ -2608,9 +2608,9 @@ class SmApiController extends Controller
     public function saas_complaint_index(Request $request, $id)
     {
         try {
-            $complaints = SmComplaint::where('active_status', 1)->where('school_id', $id)->get();
-            $complaint_types = SmSetupAdmin::where('type', 2)->where('school_id', $id)->get();
-            $complaint_sources = SmSetupAdmin::where('type', 3)->where('school_id', $id)->get();
+            $complaints = SmComplaint::where('active_status', 1)->where('church_id', $id)->get();
+            $complaint_types = SmSetupAdmin::where('type', 2)->where('church_id', $id)->get();
+            $complaint_sources = SmSetupAdmin::where('type', 3)->where('church_id', $id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -2701,7 +2701,7 @@ class SmApiController extends Controller
             'complaint_type' => "required",
             'complaint_source' => "required",
             'phone' => "required|max:30",
-            'school_id' => "required",
+            'church_id' => "required",
             'file' => "sometimes|nullable|mimes:pdf,doc,docx,jpg,jpeg,png",
         ]);
 
@@ -2740,7 +2740,7 @@ class SmApiController extends Controller
             $complaint->action_taken = $request->action_taken;
             $complaint->assigned = $request->assigned;
             $complaint->file = $fileName;
-            $complaint->school_id = $request->school_id;
+            $complaint->church_id = $request->church_id;
             $result = $complaint->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -2785,14 +2785,14 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_complaint_edit(Request $request, $school_id, $id)
+    public function saas_complaint_edit(Request $request, $church_id, $id)
     {
         try {
-            $complaints = SmComplaint::where('active_status', 1)->where('school_id', $school_id)->get();
-            $complaint = SmComplaint::where('school_id', $school_id)->find($id);
+            $complaints = SmComplaint::where('active_status', 1)->where('church_id', $church_id)->get();
+            $complaint = SmComplaint::where('church_id', $church_id)->find($id);
 
-            $complaint_types = SmSetupAdmin::where('type', 2)->where('school_id', $school_id)->get();
-            $complaint_sources = SmSetupAdmin::where('type', 3)->where('school_id', $school_id)->get();
+            $complaint_types = SmSetupAdmin::where('type', 2)->where('church_id', $church_id)->get();
+            $complaint_sources = SmSetupAdmin::where('type', 3)->where('church_id', $church_id)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
                 $data['complaints'] = $complaints->toArray();
@@ -2895,7 +2895,7 @@ class SmApiController extends Controller
             'complaint_type' => "required",
             'complaint_source' => "required",
             'phone' => "required|max:30",
-            'school_id' => "required",
+            'church_id' => "required",
             'file' => "sometimes|nullable|mimes:pdf,doc,docx,jpg,jpeg,png",
         ]);
 
@@ -2940,7 +2940,7 @@ class SmApiController extends Controller
             $complaint->description = $request->description;
             $complaint->action_taken = $request->action_taken;
             $complaint->assigned = $request->assigned;
-            $complaint->school_id = $request->school_id;
+            $complaint->church_id = $request->church_id;
             if ($fileName != "") {
                 $complaint->file = $fileName;
             }
@@ -2982,11 +2982,11 @@ class SmApiController extends Controller
         }
     }
 
-    public function saas_postal_receive_index(Request $request, $school_id)
+    public function saas_postal_receive_index(Request $request, $church_id)
     {
 
         try {
-            $postal_receives = SmPostalReceive::where('school_id', $school_id)->get();
+            $postal_receives = SmPostalReceive::where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($postal_receives->toArray(), 'Postal retrieved successfully.');
@@ -3072,7 +3072,7 @@ class SmApiController extends Controller
             'reference_no' => "required|max:150",
             'address' => "required|max:250",
             'to_title' => "required|max:250",
-            'school_id' => "required",
+            'church_id' => "required",
             'file' => "sometimes|nullable|mimes:pdf,doc,docx,jpg,jpeg,png",
         ]);
 
@@ -3109,7 +3109,7 @@ class SmApiController extends Controller
             $postal_receive->note = $request->note;
             $postal_receive->to_title = $request->to_title;
             $postal_receive->file = $fileName;
-            $postal_receive->school_id = $request->school_id;
+            $postal_receive->church_id = $request->church_id;
             $result = $postal_receive->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -3150,12 +3150,12 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_postal_receive_show(Request $request, $school_id, $id)
+    public function saas_postal_receive_show(Request $request, $church_id, $id)
     {
 
         try {
-            $postal_receives = SmPostalReceive::where('school_id', $school_id)->get();
-            $postal_receive = SmPostalReceive::where('school_id', $school_id)->find($id);
+            $postal_receives = SmPostalReceive::where('church_id', $church_id)->get();
+            $postal_receive = SmPostalReceive::where('church_id', $church_id)->find($id);
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -3252,7 +3252,7 @@ class SmApiController extends Controller
             'reference_no' => "required|max:150",
             'address' => "required|max:250",
             'to_title' => "required|max:250",
-            'school_id' => "required",
+            'church_id' => "required",
             'file' => "sometimes|nullable|mimes:pdf,doc,docx,jpg,jpeg,png",
         ]);
 
@@ -3275,7 +3275,7 @@ class SmApiController extends Controller
             }
             $fileName = "";
             if ($request->file('file') != "") {
-                $postal_receive = SmPostalReceive::where('school_id', $request->school_id)->find($request->id);
+                $postal_receive = SmPostalReceive::where('church_id', $request->church_id)->find($request->id);
                 if ($postal_receive->file != "") {
                     if (file_exists($postal_receive->file)) {
                         unlink($postal_receive->file);
@@ -3287,14 +3287,14 @@ class SmApiController extends Controller
                 $fileName = 'public/uploads/postal/' . $fileName;
             }
 
-            $postal_receive = SmPostalReceive::where('school_id', $request->school_id)->find($request->id);
+            $postal_receive = SmPostalReceive::where('church_id', $request->church_id)->find($request->id);
             $postal_receive->from_title = $request->from_title;
             $postal_receive->reference_no = $request->reference_no;
             $postal_receive->address = $request->address;
             $postal_receive->date = date('Y-m-d', strtotime($request->date));
             $postal_receive->note = $request->note;
             $postal_receive->to_title = $request->to_title;
-            $postal_receive->school_id = $request->school_id;
+            $postal_receive->church_id = $request->church_id;
             if ($fileName != "") {
                 $postal_receive->file = $fileName;
             }
@@ -3352,11 +3352,11 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_postal_receive_destroy(Request $request, $school_id, $id)
+    public function saas_postal_receive_destroy(Request $request, $church_id, $id)
     {
 
         try {
-            $postal_receive = SmPostalReceive::where('school_id', $school_id)->find($id);
+            $postal_receive = SmPostalReceive::where('church_id', $church_id)->find($id);
             if ($postal_receive->file != "") {
                 if (file_exists($postal_receive->file)) {
                     unlink($postal_receive->file);
@@ -3399,11 +3399,11 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_postal_dispatch_index(Request $request, $school_id)
+    public function saas_postal_dispatch_index(Request $request, $church_id)
     {
 
         try {
-            $postal_dispatchs = SmPostalDispatch::where('school_id', $school_id)->get();
+            $postal_dispatchs = SmPostalDispatch::where('church_id', $church_id)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($postal_dispatchs->toArray(), 'Postal dispatchs retrieved successfully.');
             }
@@ -3488,7 +3488,7 @@ class SmApiController extends Controller
             'reference_no' => "required|max:150",
             'address' => "required|max:250",
             'to_title' => "required|max:250",
-            'school_id' => "required",
+            'church_id' => "required",
             'file' => "sometimes|nullable|mimes:pdf,doc,docx,jpg,jpeg,png",
         ]);
         if ($validator->fails()) {
@@ -3525,7 +3525,7 @@ class SmApiController extends Controller
             $postal_dispatch->note = $request->note;
             $postal_dispatch->to_title = $request->to_title;
             $postal_dispatch->file = $fileName;
-            $postal_dispatch->school_id = $request->school_id;
+            $postal_dispatch->church_id = $request->church_id;
             $result = $postal_dispatch->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -3552,7 +3552,7 @@ class SmApiController extends Controller
     {
 
         try {
-            $postal_dispatchs = SmPostalDispatch::where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $postal_dispatchs = SmPostalDispatch::where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             $postal_dispatch = SmPostalDispatch::find($id);
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -3567,12 +3567,12 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_postal_dispatch_show(Request $request, $school_id, $id)
+    public function saas_postal_dispatch_show(Request $request, $church_id, $id)
     {
 
         try {
-            $postal_dispatchs = SmPostalDispatch::where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
-            $postal_dispatch = SmPostalDispatch::where('school_id', $school_id)->find($id);
+            $postal_dispatchs = SmPostalDispatch::where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
+            $postal_dispatch = SmPostalDispatch::where('church_id', $church_id)->find($id);
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -3672,7 +3672,7 @@ class SmApiController extends Controller
             'reference_no' => "required|max:150",
             'address' => "required|max:250",
             'to_title' => "required|max:250",
-            'school_id' => "required",
+            'church_id' => "required",
             'file' => "sometimes|nullable|mimes:pdf,doc,docx,jpg,jpeg,png",
         ]);
 
@@ -3717,7 +3717,7 @@ class SmApiController extends Controller
             $postal_dispatch->date = date('Y-m-d', strtotime($request->date));
             $postal_dispatch->note = $request->note;
             $postal_dispatch->to_title = $request->to_title;
-            $postal_dispatch->school_id = $request->school_id;
+            $postal_dispatch->church_id = $request->church_id;
             if ($fileName != "") {
                 $postal_dispatch->file = $fileName;
             }
@@ -3773,11 +3773,11 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_postal_dispatch_destroy(Request $request, $school_id, $id)
+    public function saas_postal_dispatch_destroy(Request $request, $church_id, $id)
     {
 
         try {
-            $postal_dispatch = SmPostalDispatch::where('school_id', $school_id)->find($id);
+            $postal_dispatch = SmPostalDispatch::where('church_id', $church_id)->find($id);
             if ($postal_dispatch->file != "") {
                 if (file_exists($postal_dispatch->file)) {
                     unlink($postal_dispatch->file);
@@ -3832,40 +3832,40 @@ class SmApiController extends Controller
     public function studentDetails(Request $request)
     {
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             $student_list = DB::table('sm_students')
-                ->join('sm_classes', 'sm_students.class_id', '=', 'sm_classes.id')
-                ->join('sm_sections', 'sm_students.section_id', '=', 'sm_sections.id')
-                ->where('sm_students.academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())
+                ->join('sm_classes', 'sm_students.age_group_id', '=', 'sm_classes.id')
+                ->join('sm_sections', 'sm_students.mgender_id', '=', 'sm_sections.id')
+                ->where('sm_students.church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())
                 ->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
                 $data['student_list'] = $student_list->toArray();
                 return ApiBaseMethod::sendResponse($data, null);
             }
-            $academic_years = SmAcademicYear::latest()->get();
-            return view('backEnd.studentInformation.student_details', compact('students', 'classes', 'academic_years'));
+            $church_years = SmAcademicYear::latest()->get();
+            return view('backEnd.studentInformation.student_details', compact('students', 'classes', 'church_years'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_studentDetails(Request $request, $school_id)
+    public function saas_studentDetails(Request $request, $church_id)
     {
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
             $student_list = DB::table('sm_students')
-                ->join('sm_classes', 'sm_students.class_id', '=', 'sm_classes.id')
-                ->join('sm_sections', 'sm_students.section_id', '=', 'sm_sections.id')
-                ->where('sm_students.academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())
-                ->where('sm_students.school_id', $school_id)
+                ->join('sm_classes', 'sm_students.age_group_id', '=', 'sm_classes.id')
+                ->join('sm_sections', 'sm_students.mgender_id', '=', 'sm_sections.id')
+                ->where('sm_students.church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())
+                ->where('sm_students.church_id', $church_id)
                 ->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
                 $data['student_list'] = $student_list->toArray();
                 return ApiBaseMethod::sendResponse($data, null);
             }
-            $academic_years = SmAcademicYear::where('school_id', $school_id)->latest()->get();
-            return view('backEnd.studentInformation.student_details', compact('students', 'classes', 'academic_years'));
+            $church_years = SmAcademicYear::where('church_id', $church_id)->latest()->get();
+            return view('backEnd.studentInformation.student_details', compact('students', 'classes', 'church_years'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
@@ -3879,10 +3879,10 @@ class SmApiController extends Controller
             $students = SmStudent::query();
             $students->where('active_status', 1);
             if ($request->class != "") {
-                $students->where('class_id', $request->class);
+                $students->where('age_group_id', $request->class);
             }
             if ($request->section != "") {
-                $students->where('section_id', $request->section);
+                $students->where('mgender_id', $request->section);
             }
             if ($request->name != "") {
                 $students->where('full_name', 'like', '%' . $request->name . '%');
@@ -3892,9 +3892,9 @@ class SmApiController extends Controller
             }
 
             $students = $students->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
-            $class_id = $request->class;
+            $age_group_id = $request->class;
             $name = $request->name;
             $roll_no = $request->roll_no;
 
@@ -3902,12 +3902,12 @@ class SmApiController extends Controller
                 $data = [];
                 $data['students'] = $students->toArray();
                 $data['classes'] = $classes->toArray();
-                $data['class_id'] = $class_id;
+                $data['age_group_id'] = $age_group_id;
                 $data['name'] = $name;
                 $data['roll_no'] = $roll_no;
                 return ApiBaseMethod::sendResponse($data, null);
             }
-            return view('backEnd.studentInformation.student_details', compact('students', 'classes', 'class_id', 'name', 'roll_no'));
+            return view('backEnd.studentInformation.student_details', compact('students', 'classes', 'age_group_id', 'name', 'roll_no'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
@@ -3915,33 +3915,33 @@ class SmApiController extends Controller
     public function student_search_Details(Request $request)
     {
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             $student_list = DB::table('sm_students')
-                ->join('sm_classes', 'sm_students.class_id', '=', 'sm_classes.id')
-                ->join('sm_sections', 'sm_students.section_id', '=', 'sm_sections.id')
-                ->where('sm_students.academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())
+                ->join('sm_classes', 'sm_students.age_group_id', '=', 'sm_classes.id')
+                ->join('sm_sections', 'sm_students.mgender_id', '=', 'sm_sections.id')
+                ->where('sm_students.church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())
                 ->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
                 $data['student_list'] = $student_list->toArray();
                 return ApiBaseMethod::sendResponse($data, null);
             }
-            $academic_years = SmAcademicYear::latest()->get();
-            return view('backEnd.studentInformation.student_details', compact('students', 'classes', 'academic_years'));
+            $church_years = SmAcademicYear::latest()->get();
+            return view('backEnd.studentInformation.student_details', compact('students', 'classes', 'church_years'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_student_search_Details(Request $request, $school_id)
+    public function saas_student_search_Details(Request $request, $church_id)
     {
 
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
             $student_list = DB::table('sm_students')
-                ->join('sm_classes', 'sm_students.class_id', '=', 'sm_classes.id')
-                ->join('sm_sections', 'sm_students.section_id', '=', 'sm_sections.id')
-                ->where('sm_students.academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())
-                ->where('sm_students.school_id', $school_id)
+                ->join('sm_classes', 'sm_students.age_group_id', '=', 'sm_classes.id')
+                ->join('sm_sections', 'sm_students.mgender_id', '=', 'sm_sections.id')
+                ->where('sm_students.church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())
+                ->where('sm_students.church_id', $church_id)
                 ->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -3961,21 +3961,21 @@ class SmApiController extends Controller
 
             $siblings = SmStudent::where('parent_id', $student_detail->parent_id)
                 ->where('active_status', 1)
-                ->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())
+                ->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())
                 ->where('id', '!=', $student_detail->id)
                 ->get();
 
             $vehicle = DB::table('sm_vehicles')->where('id', $student_detail->vehicle_id)->first();
 
-            $fees_assigneds = SmFeesAssign::where('student_id', $id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $fees_assigneds = SmFeesAssign::where('member_id', $id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
-            $fees_discounts = SmFeesAssignDiscount::where('student_id', $id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $fees_discounts = SmFeesAssignDiscount::where('member_id', $id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
-            $documents = SmStudentDocument::where('student_staff_id', $id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $documents = SmStudentDocument::where('student_staff_id', $id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
-            $timelines = SmStudentTimeline::where('staff_student_id', $id)->where('type', 'stu')->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-            $exams = SmExamSchedule::where('class_id', $student_detail->class_id)->where('section_id', $student_detail->section_id)->get();
-            $academic_year = SmAcademicYear::where('id', $student_detail->session_id)->first();
+            $timelines = SmStudentTimeline::where('staff_member_id', $id)->where('type', 'stu')->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+            $exams = SmExamSchedule::where('age_group_id', $student_detail->age_group_id)->where('mgender_id', $student_detail->mgender_id)->get();
+            $church_year = SmAcademicYear::where('id', $student_detail->session_id)->first();
             $grades = SmMarksGrade::where('active_status', 1)->get();
             if (!empty($student_detail->vechile_id)) {
                 $driver_id = SmVehicle::where('id', '=', $student_detail->vechile_id)->first();
@@ -3999,38 +3999,38 @@ class SmApiController extends Controller
                 return ApiBaseMethod::sendResponse($data, null);
             }
 
-            return view('backEnd.studentInformation.student_view', compact('student_detail', 'driver_info', 'fees_assigneds', 'fees_discounts', 'exams', 'documents', 'timelines', 'siblings', 'grades', 'academic_year'));
+            return view('backEnd.studentInformation.student_view', compact('student_detail', 'driver_info', 'fees_assigneds', 'fees_discounts', 'exams', 'documents', 'timelines', 'siblings', 'grades', 'church_year'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_studentView(Request $request, $school_id, $id)
+    public function saas_studentView(Request $request, $church_id, $id)
     {
         try {
-            $student_detail = SmStudent::where('school_id', $school_id)->find($id);
+            $student_detail = SmStudent::where('church_id', $church_id)->find($id);
 
             $siblings = SmStudent::where('parent_id', $student_detail->parent_id)
                 ->where('active_status', 1)
-                ->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())
+                ->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())
                 ->where('id', '!=', $student_detail->id)
-                ->where('school_id', $school_id)
+                ->where('church_id', $church_id)
                 ->get();
 
-            $vehicle = DB::table('sm_vehicles')->where('id', $student_detail->vehicle_id)->where('school_id', $school_id)->first();
+            $vehicle = DB::table('sm_vehicles')->where('id', $student_detail->vehicle_id)->where('church_id', $church_id)->first();
 
-            $fees_assigneds = SmFeesAssign::where('student_id', $id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+            $fees_assigneds = SmFeesAssign::where('member_id', $id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
 
-            $fees_discounts = SmFeesAssignDiscount::where('student_id', $id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+            $fees_discounts = SmFeesAssignDiscount::where('member_id', $id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
 
-            $documents = SmStudentDocument::where('student_staff_id', $id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+            $documents = SmStudentDocument::where('student_staff_id', $id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
 
-            $timelines = SmStudentTimeline::where('staff_student_id', $id)->where('type', 'stu')->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
-            $exams = SmExamSchedule::where('class_id', $student_detail->class_id)->where('section_id', $student_detail->section_id)->where('school_id', $school_id)->get();
-            $academic_year = SmAcademicYear::where('id', $student_detail->session_id)->where('school_id', $school_id)->first();
+            $timelines = SmStudentTimeline::where('staff_member_id', $id)->where('type', 'stu')->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
+            $exams = SmExamSchedule::where('age_group_id', $student_detail->age_group_id)->where('mgender_id', $student_detail->mgender_id)->where('church_id', $church_id)->get();
+            $church_year = SmAcademicYear::where('id', $student_detail->session_id)->where('church_id', $church_id)->first();
             $grades = SmMarksGrade::where('active_status', 1)->get();
             if (!empty($student_detail->vechile_id)) {
-                $driver_id = SmVehicle::where('id', '=', $student_detail->vechile_id)->where('school_id', $school_id)->first();
-                $driver_info = SmStaff::where('id', '=', $driver_id->driver_id)->where('school_id', $school_id)->first();
+                $driver_id = SmVehicle::where('id', '=', $student_detail->vechile_id)->where('church_id', $church_id)->first();
+                $driver_info = SmStaff::where('id', '=', $driver_id->driver_id)->where('church_id', $church_id)->first();
             } else {
                 $driver_id = '';
                 $driver_info = '';
@@ -4050,7 +4050,7 @@ class SmApiController extends Controller
                 return ApiBaseMethod::sendResponse($data, null);
             }
 
-            return view('backEnd.studentInformation.student_view', compact('student_detail', 'driver_info', 'fees_assigneds', 'fees_discounts', 'exams', 'documents', 'timelines', 'siblings', 'grades', 'academic_year'));
+            return view('backEnd.studentInformation.student_view', compact('student_detail', 'driver_info', 'fees_assigneds', 'fees_discounts', 'exams', 'documents', 'timelines', 'siblings', 'grades', 'church_year'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
@@ -4063,7 +4063,7 @@ class SmApiController extends Controller
 
         DB::beginTransaction();
 
-        $tables = \App\tableList::getTableList('student_id', $request->id);
+        $tables = \App\tableList::getTableList('member_id', $request->id);
         try {
 
             if (!$tables) {
@@ -4160,41 +4160,41 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_studentDelete(Request $request, $school_id)
+    public function saas_studentDelete(Request $request, $church_id)
     {
 
-        $student_detail = SmStudent::where('school_id', $school_id)->find($request->id);
-        $siblings = SmStudent::where('parent_id', $student_detail->parent_id)->where('school_id', $school_id)->get();
+        $student_detail = SmStudent::where('church_id', $church_id)->find($request->id);
+        $siblings = SmStudent::where('parent_id', $student_detail->parent_id)->where('church_id', $church_id)->get();
 
         DB::beginTransaction();
 
-        $tables = \App\tableList::getTableList('student_id', $request->id);
+        $tables = \App\tableList::getTableList('member_id', $request->id);
         try {
 
             if (!$tables) {
 
                 try {
 
-                    $student = SmStudent::where('school_id', $school_id)->find($request->id);
+                    $student = SmStudent::where('church_id', $church_id)->find($request->id);
                     $student->active_status = 0;
                     $student->save();
 
                     try {
                         if (count($siblings) == 1) {
-                            $parent = SmParent::where('school_id', $school_id)->find($student_detail->parent_id);
+                            $parent = SmParent::where('church_id', $church_id)->find($student_detail->parent_id);
                             $parent->active_status = 0;
                             $parent->save();
                         }
                         try {
 
-                            $student_user = User::where('school_id', $school_id)->find($student_detail->user_id);
+                            $student_user = User::where('church_id', $church_id)->find($student_detail->user_id);
                             $student_user->active_status = 0;
                             $student_user->save();
 
                             try {
 
                                 if (count($siblings) == 1) {
-                                    $parent_user = User::where('school_id', $school_id)->find($student_detail->parents->user_id);
+                                    $parent_user = User::where('church_id', $church_id)->find($student_detail->parents->user_id);
                                     $parent_user->active_status = 0;
                                     $parent_user->save();
                                 }
@@ -4269,8 +4269,8 @@ class SmApiController extends Controller
     {
         try {
             $student = SmStudent::find($id);
-            $classes = SmClass::where('active_status', '=', '1')->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-            $sections = SmSection::where('active_status', '=', '1')->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', '=', '1')->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+            $sections = SmSection::where('active_status', '=', '1')->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             $religions = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '2')->get();
             $blood_groups = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '3')->get();
             $genders = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '1')->get();
@@ -4302,22 +4302,22 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_studentEdit(Request $request, $school_id, $id)
+    public function saas_studentEdit(Request $request, $church_id, $id)
     {
         try {
-            $student = SmStudent::where('school_id', $school_id)->find($id);
-            $classes = SmClass::where('active_status', '=', '1')->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
-            $sections = SmSection::where('active_status', '=', '1')->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
-            $religions = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '2')->where('school_id', $school_id)->get();
-            $blood_groups = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '3')->where('school_id', $school_id)->get();
-            $genders = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '1')->where('school_id', $school_id)->get();
-            $route_lists = SmRoute::where('active_status', '=', '1')->where('school_id', $school_id)->get();
-            $vehicles = SmVehicle::where('active_status', '=', '1')->where('school_id', $school_id)->get();
-            $dormitory_lists = SmDormitoryList::where('active_status', '=', '1')->where('school_id', $school_id)->get();
-            $driver_lists = SmStaff::where([['active_status', '=', '1'], ['role_id', 9]])->where('school_id', $school_id)->get();
+            $student = SmStudent::where('church_id', $church_id)->find($id);
+            $classes = SmClass::where('active_status', '=', '1')->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
+            $sections = SmSection::where('active_status', '=', '1')->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
+            $religions = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '2')->where('church_id', $church_id)->get();
+            $blood_groups = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '3')->where('church_id', $church_id)->get();
+            $genders = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '1')->where('church_id', $church_id)->get();
+            $route_lists = SmRoute::where('active_status', '=', '1')->where('church_id', $church_id)->get();
+            $vehicles = SmVehicle::where('active_status', '=', '1')->where('church_id', $church_id)->get();
+            $dormitory_lists = SmDormitoryList::where('active_status', '=', '1')->where('church_id', $church_id)->get();
+            $driver_lists = SmStaff::where([['active_status', '=', '1'], ['role_id', 9]])->where('church_id', $church_id)->get();
             $categories = SmStudentCategory::all();
-            $sessions = SmAcademicYear::where('active_status', '=', '1')->where('school_id', $school_id)->get();
-            $siblings = SmStudent::where('parent_id', $student->parent_id)->where('school_id', $school_id)->get();
+            $sessions = SmAcademicYear::where('active_status', '=', '1')->where('church_id', $church_id)->get();
+            $siblings = SmStudent::where('parent_id', $student->parent_id)->where('church_id', $church_id)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
                 $data['student'] = $student;
@@ -4356,12 +4356,12 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_student_type_index(Request $request, $school_id)
+    public function saas_student_type_index(Request $request, $church_id)
     {
 
         try {
 
-            $student_types = SmStudentCategory::where('school_id', $school_id)->get();
+            $student_types = SmStudentCategory::where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($student_types, null);
@@ -4432,7 +4432,7 @@ class SmApiController extends Controller
         try {
             $student_type = new SmStudentCategory();
             $student_type->category_name = $request->category;
-            $student_type->school_id = $request->school_id;
+            $student_type->church_id = $request->church_id;
             $result = $student_type->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -4465,12 +4465,12 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_student_type_edit(Request $request, $school_id, $id)
+    public function saas_student_type_edit(Request $request, $church_id, $id)
     {
 
         try {
-            $student_type = SmStudentCategory::where('school_id', $school_id)->find($id);
-            $student_types = SmStudentCategory::where('school_id', $school_id)->get();
+            $student_type = SmStudentCategory::where('church_id', $church_id)->find($id);
+            $student_types = SmStudentCategory::where('church_id', $church_id)->get();
             return view('backEnd.studentInformation.student_category', compact('student_types', 'student_type'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
@@ -4521,7 +4521,7 @@ class SmApiController extends Controller
         $input = $request->all();
         $validator = Validator::make($input, [
             'category' => 'required|max:50|unique:sm_student_categories,category_name,' . $request->id,
-            'school_id' => 'required',
+            'church_id' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -4536,7 +4536,7 @@ class SmApiController extends Controller
         try {
             $student_type = SmStudentCategory::find($request->id);
             $student_type->category_name = $request->category;
-            $student_type->school_id = $request->school_id;
+            $student_type->church_id = $request->church_id;
             $result = $student_type->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -4591,7 +4591,7 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_student_type_delete(Request $request, $school_id, $id)
+    public function saas_student_type_delete(Request $request, $church_id, $id)
     {
         try {
             $id_key = 'student_category_id';
@@ -4599,7 +4599,7 @@ class SmApiController extends Controller
             $tables = tableList::getTableList($id_key, $id);
 
             try {
-                $delete_query = SmStudentCategory::where('school_id', $school_id)->where('id', $id)->delete();
+                $delete_query = SmStudentCategory::where('church_id', $church_id)->where('id', $id)->delete();
                 if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                     if ($delete_query) {
                         return ApiBaseMethod::sendResponse(null, 'Category has been deleted successfully');
@@ -4629,7 +4629,7 @@ class SmApiController extends Controller
     {
 
         try {
-            $student_groups = SmStudentGroup::where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $student_groups = SmStudentGroup::where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($student_groups, null);
@@ -4640,11 +4640,11 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_student_group_index(Request $request, $school_id)
+    public function saas_student_group_index(Request $request, $church_id)
     {
 
         try {
-            $student_groups = SmStudentGroup::where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+            $student_groups = SmStudentGroup::where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($student_groups, null);
@@ -4700,7 +4700,7 @@ class SmApiController extends Controller
         $input = $request->all();
         $validator = Validator::make($input, [
             'group' => 'required|unique:sm_student_groups,group',
-            'school_id' => 'required',
+            'church_id' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -4715,7 +4715,7 @@ class SmApiController extends Controller
         try {
             $student_group = new SmStudentGroup();
             $student_group->group = $request->group;
-            $student_group->school_id = $request->school_id;
+            $student_group->church_id = $request->church_id;
             $result = $student_group->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -4742,7 +4742,7 @@ class SmApiController extends Controller
 
         try {
             $student_group = SmStudentGroup::find($id);
-            $student_groups = SmStudentGroup::where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $student_groups = SmStudentGroup::where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -4755,12 +4755,12 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_student_group_edit(Request $request, $school_id, $id)
+    public function saas_student_group_edit(Request $request, $church_id, $id)
     {
 
         try {
-            $student_group = SmStudentGroup::where('school_id', $school_id)->find($id);
-            $student_groups = SmStudentGroup::where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+            $student_group = SmStudentGroup::where('church_id', $church_id)->find($id);
+            $student_groups = SmStudentGroup::where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -4818,7 +4818,7 @@ class SmApiController extends Controller
         $input = $request->all();
         $validator = Validator::make($input, [
             'group' => 'required|unique:sm_student_groups,group,' . $request->id,
-            'student_id' => 'required',
+            'member_id' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -4833,7 +4833,7 @@ class SmApiController extends Controller
         try {
             $student_group = SmStudentGroup::find($request->id);
             $student_group->group = $request->group;
-            $student_group->student_id = $request->student_id;
+            $student_group->member_id = $request->member_id;
             $result = $student_group->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -4880,11 +4880,11 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_student_group_delete(Request $request, $school_id, $id)
+    public function saas_student_group_delete(Request $request, $church_id, $id)
     {
 
         try {
-            $student_group = SmStudentGroup::where('school_id', $school_id)->where('id', $id)->delete();
+            $student_group = SmStudentGroup::where('church_id', $church_id)->where('id', $id)->delete();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 if ($student_group) {
@@ -4909,7 +4909,7 @@ class SmApiController extends Controller
     {
         try {
             $sessions = SmAcademicYear::where('active_status', 1)->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -4917,17 +4917,17 @@ class SmApiController extends Controller
                 $data['classes'] = $classes->toArray();
                 return ApiBaseMethod::sendResponse($data, null);
             }
-            $exams = SmExamType::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $exams = SmExamType::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             return view('backEnd.studentInformation.student_promote', compact('sessions', 'classes', 'exams'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_studentPromote_index(Request $request, $school_id)
+    public function saas_studentPromote_index(Request $request, $church_id)
     {
         try {
-            $sessions = SmAcademicYear::where('active_status', 1)->where('school_id', $school_id)->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+            $sessions = SmAcademicYear::where('active_status', 1)->where('church_id', $church_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -4935,7 +4935,7 @@ class SmApiController extends Controller
                 $data['classes'] = $classes->toArray();
                 return ApiBaseMethod::sendResponse($data, null);
             }
-            $exams = SmExamType::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $exams = SmExamType::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             return view('backEnd.studentInformation.student_promote', compact('sessions', 'classes', 'exams'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
@@ -4945,7 +4945,7 @@ class SmApiController extends Controller
     {
         try {
             $sessions = SmAcademicYear::where('active_status', 1)->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -4953,17 +4953,17 @@ class SmApiController extends Controller
                 $data['classes'] = $classes->toArray();
                 return ApiBaseMethod::sendResponse($data, null);
             }
-            $exams = SmExamType::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $exams = SmExamType::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             return view('backEnd.studentInformation.student_promote', compact('sessions', 'classes', 'exams'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_studentPromote(Request $request, $school_id)
+    public function saas_studentPromote(Request $request, $church_id)
     {
         try {
-            $sessions = SmAcademicYear::where('active_status', 1)->where('school_id', $school_id)->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+            $sessions = SmAcademicYear::where('active_status', 1)->where('church_id', $church_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -4971,7 +4971,7 @@ class SmApiController extends Controller
                 $data['classes'] = $classes->toArray();
                 return ApiBaseMethod::sendResponse($data, null);
             }
-            $exams = SmExamType::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $exams = SmExamType::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             return view('backEnd.studentInformation.student_promote', compact('sessions', 'classes', 'exams'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
@@ -5006,20 +5006,20 @@ class SmApiController extends Controller
                 }
 
                 foreach ($students['allresult_data'] as $key => $value) {
-                    $d = SmStudent::where('id', $value->student_id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->first();
+                    $d = SmStudent::where('id', $value->member_id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->first();
 
                     if ($d->count() != 0) {
                         array_push($students['students'], $d);
                     }
                 }
             } else {
-                $students = SmStudent::where('class_id', '=', $request->current_class)->where('session_id', '=', $request->current_session)->where('section_id', $request->section)->where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                $students = SmStudent::where('age_group_id', '=', $request->current_class)->where('session_id', '=', $request->current_session)->where('mgender_id', $request->section)->where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             }
             $current_session = $request->current_session;
             $current_class = $request->current_class;
-            $sessions = SmAcademicYear::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $sessions = SmAcademicYear::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             $UpYear = SmAcademicYear::find($current_session);
             $Upsessions = SmAcademicYear::where('active_status', 1)->whereYear('created_at', '>', date('Y', strtotime($UpYear->year)) . ' 00:00:00')->get();
             $Upcls = SmClass::find($current_class);
@@ -5038,13 +5038,13 @@ class SmApiController extends Controller
                 $data['current_class'] = $current_class;
                 return ApiBaseMethod::sendResponse($data, null);
             }
-            $exams = SmExamType::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $exams = SmExamType::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             return view('backEnd.studentInformation.student_promote', compact('exams', 'Upsessions', 'sessions', 'classes', 'students', 'current_session', 'current_class', 'Upclasses', 'Upcls', 'UpYear'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_studentCurrentSearch(Request $request, $school_id)
+    public function saas_studentCurrentSearch(Request $request, $church_id)
     {
         $input = $request->all();
         $validator = Validator::make($input, [
@@ -5075,20 +5075,20 @@ class SmApiController extends Controller
                 }
 
                 foreach ($students['allresult_data'] as $key => $value) {
-                    $d = SmStudent::where('id', $value->student_id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id) - first();
+                    $d = SmStudent::where('id', $value->member_id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id) - first();
 
                     if ($d->count() != 0) {
                         array_push($students['students'], $d);
                     }
                 }
             } else {
-                $students = SmStudent::where('class_id', '=', $request->current_class)->where('session_id', '=', $request->current_session)->where('section_id', $request->section)->where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+                $students = SmStudent::where('age_group_id', '=', $request->current_class)->where('session_id', '=', $request->current_session)->where('mgender_id', $request->section)->where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
             }
             $current_session = $request->current_session;
             $current_class = $request->current_class;
-            $sessions = SmAcademicYear::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id) - get();
+            $sessions = SmAcademicYear::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id) - get();
 
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id) - get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id) - get();
             $UpYear = SmAcademicYear::find($current_session);
             $Upsessions = SmAcademicYear::where('active_status', 1)->whereYear('created_at', '>', date('Y', strtotime($UpYear->year)) . ' 00:00:00')->get();
             $Upcls = SmClass::find($current_class);
@@ -5107,7 +5107,7 @@ class SmApiController extends Controller
                 $data['current_class'] = $current_class;
                 return ApiBaseMethod::sendResponse($data, null);
             }
-            $exams = SmExamType::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $exams = SmExamType::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             return view('backEnd.studentInformation.student_promote', compact('exams', 'Upsessions', 'sessions', 'classes', 'students', 'current_session', 'current_class', 'Upclasses', 'Upcls', 'UpYear'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
@@ -5125,7 +5125,7 @@ class SmApiController extends Controller
     {
         try {
             $sessions = SmAcademicYear::where('active_status', 1)->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -5133,17 +5133,17 @@ class SmApiController extends Controller
                 $data['classes'] = $classes->toArray();
                 return ApiBaseMethod::sendResponse($data, null);
             }
-            $exams = SmExamType::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $exams = SmExamType::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             return view('backEnd.studentInformation.student_promote', compact('sessions', 'classes', 'exams'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_studentPromote_store(Request $request, $school_id)
+    public function saas_studentPromote_store(Request $request, $church_id)
     {
         try {
-            $sessions = SmAcademicYear::where('active_status', 1)->where('school_id', $school_id)->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+            $sessions = SmAcademicYear::where('active_status', 1)->where('church_id', $church_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -5151,7 +5151,7 @@ class SmApiController extends Controller
                 $data['classes'] = $classes->toArray();
                 return ApiBaseMethod::sendResponse($data, null);
             }
-            $exams = SmExamType::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $exams = SmExamType::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             return view('backEnd.studentInformation.student_promote', compact('sessions', 'classes', 'exams'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
@@ -5180,14 +5180,14 @@ class SmApiController extends Controller
             $current_session = $request->current_session;
             $current_class = $request->current_class;
             $UpYear = SmAcademicYear::find($current_session);
-            $exams = SmExamType::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $exams = SmExamType::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             $Upsessions = SmAcademicYear::where('active_status', 1)->whereYear('created_at', '>', date('Y', strtotime($UpYear->year)) . ' 00:00:00')->get();
-            $sessions = SmAcademicYear::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $sessions = SmAcademicYear::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             $promot_year = SmAcademicYear::find($request->promote_session);
 
             if ($request->promote_class == "" || $request->promote_session == "") {
-                $students = SmStudent::where('class_id', '=', $request->promote_class)->where('session_id', '=', $request->promote_session)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                $students = SmStudent::where('age_group_id', '=', $request->promote_class)->where('session_id', '=', $request->promote_session)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
                 Session::flash('message-danger', 'Something went wrong, please try again');
 
@@ -5207,46 +5207,46 @@ class SmApiController extends Controller
 
                 try {
                     $std_info = [];
-                    foreach ($request->id as $student_id) {
-                        $student_details = SmStudent::findOrfail($student_id);
+                    foreach ($request->id as $member_id) {
+                        $student_details = SmStudent::findOrfail($member_id);
 
-                        $new_academic_year = SmAcademicYear::findOrfail($request->promote_session);
+                        $new_church_year = SmAcademicYear::findOrfail($request->promote_session);
 
-                        $old_section = SmSection::findOrfail($student_details->section_id);
+                        $old_section = SmSection::findOrfail($student_details->mgender_id);
 
                         $new_section = $request->promote_section;
 
-                        if ($request->result[$student_id] == 'P') {
-                            $merit_list = \App\SmTemporaryMeritlist::where(['student_id' => $student_id, 'class_id' => $request->current_class, 'section_id' => $student_details->section_id])->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->first();
+                        if ($request->result[$member_id] == 'P') {
+                            $merit_list = \App\SmTemporaryMeritlist::where(['member_id' => $member_id, 'age_group_id' => $request->current_class, 'mgender_id' => $student_details->mgender_id])->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->first();
                             $roll = $merit_list->merit_order;
                         } else {
                             $roll = null;
                             $merit_list = null;
                         }
                         $student_promote = new SmStudentPromotion();
-                        $student_promote->student_id = $student_id;
-                        $student_promote->previous_class_id = $request->current_class;
-                        $student_promote->current_class_id = $request->promote_class;
+                        $student_promote->member_id = $member_id;
+                        $student_promote->previous_age_group_id = $request->current_class;
+                        $student_promote->current_age_group_id = $request->promote_class;
                         $student_promote->previous_session_id = $request->current_session;
                         $student_promote->current_session_id = $request->promote_session;
 
-                        $student_promote->previous_section_id = $student_details->section_id;
-                        $student_promote->current_section_id = $new_section;
+                        $student_promote->previous_mgender_id = $student_details->mgender_id;
+                        $student_promote->current_mgender_id = $new_section;
 
-                        $student_promote->admission_number = $student_details->admission_no;
+                        $student_promote->admission_number = $student_details->registration_no;
                         $student_promote->student_info = $student_details->toJson();
                         $student_promote->merit_student_info = ($merit_list != null ? $merit_list->toJson() : $student_details->toJson());
 
                         $student_promote->previous_roll_number = $student_details->roll_no;
                         $student_promote->current_roll_number = $roll;
 
-                        $student_promote->result_status = $request->result[$student_id];
+                        $student_promote->result_status = $request->result[$member_id];
                         $student_promote->save();
 
-                        $student = SmStudent::find($student_id);
-                        $student->class_id = $request->promote_class;
+                        $student = SmStudent::find($member_id);
+                        $student->age_group_id = $request->promote_class;
                         $student->session_id = $request->promote_session;
-                        $student->section_id = $new_section;
+                        $student->mgender_id = $new_section;
                         $student->roll_no = $roll;
                         $student->created_at = $promot_year->starting_date . ' 12:00:00';
                         $student->save();
@@ -5254,7 +5254,7 @@ class SmApiController extends Controller
 
                     DB::commit();
 
-                    $students = SmStudent::where('class_id', '=', $request->promote_class)->where('session_id', '=', $request->promote_session)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                    $students = SmStudent::where('age_group_id', '=', $request->promote_class)->where('session_id', '=', $request->promote_session)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
                     if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                         return ApiBaseMethod::sendResponse(null, 'Student has been promoted successfully');
@@ -5263,7 +5263,7 @@ class SmApiController extends Controller
                     return redirect('student-promote');
                 } catch (\Exception $e) {
                     DB::rollback();
-                    $students = SmStudent::where('class_id', '=', $request->current_class)->where('session_id', '=', $request->current_session)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                    $students = SmStudent::where('age_group_id', '=', $request->current_class)->where('session_id', '=', $request->current_session)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
                     Session::flash('message-danger-table', 'Something went wrong, please try again');
 
@@ -5288,8 +5288,8 @@ class SmApiController extends Controller
     public function disabledStudent(Request $request)
     {
         try {
-            $students = SmStudent::where('active_status', 0)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $students = SmStudent::where('active_status', 0)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -5305,8 +5305,8 @@ class SmApiController extends Controller
     public function saas_disabledStudent(Request $request)
     {
         try {
-            $students = SmStudent::where('active_status', 0)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+            $students = SmStudent::where('active_status', 0)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -5323,12 +5323,12 @@ class SmApiController extends Controller
     {
         try {
             $students = SmStudent::query();
-            $students->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('active_status', 0);
+            $students->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('active_status', 0);
             if ($request->class != "") {
-                $students->where('class_id', $request->class);
+                $students->where('age_group_id', $request->class);
             }
             if ($request->section != "") {
-                $students->where('section_id', $request->section);
+                $students->where('mgender_id', $request->section);
             }
             if ($request->name != "") {
                 $students->where('full_name', 'like', '%' . $request->name . '%');
@@ -5336,12 +5336,12 @@ class SmApiController extends Controller
             if ($request->roll_no != "") {
                 $students->where('roll_no', 'like', '%' . $request->roll_no . '%');
             }
-            $students = $students->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $students = $students->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
-            $class_id = $request->class;
-            $section_id = $request->section;
+            $age_group_id = $request->class;
+            $mgender_id = $request->section;
             $name = $request->name;
             $roll_no = $request->roll_no;
 
@@ -5349,28 +5349,28 @@ class SmApiController extends Controller
                 $data = [];
                 $data['students'] = $students->toArray();
                 $data['classes'] = $classes->toArray();
-                $data['class_id'] = $class_id;
-                $data['section_id'] = $section_id;
+                $data['age_group_id'] = $age_group_id;
+                $data['mgender_id'] = $mgender_id;
                 $data['name'] = $name;
                 $data['roll_no'] = $roll_no;
                 return ApiBaseMethod::sendResponse($data, null);
             }
 
-            return view('backEnd.studentInformation.disabled_student', compact('students', 'classes', 'class_id', 'section_id', 'name', 'roll_no'));
+            return view('backEnd.studentInformation.disabled_student', compact('students', 'classes', 'age_group_id', 'mgender_id', 'name', 'roll_no'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_disabledStudentSearch(Request $request, $school_id)
+    public function saas_disabledStudentSearch(Request $request, $church_id)
     {
         try {
             $students = SmStudent::query();
-            $students->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('active_status', 0)->where('school_id', $school_id);
+            $students->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('active_status', 0)->where('church_id', $church_id);
             if ($request->class != "") {
-                $students->where('class_id', $request->class);
+                $students->where('age_group_id', $request->class);
             }
             if ($request->section != "") {
-                $students->where('section_id', $request->section);
+                $students->where('mgender_id', $request->section);
             }
             if ($request->name != "") {
                 $students->where('full_name', 'like', '%' . $request->name . '%');
@@ -5378,12 +5378,12 @@ class SmApiController extends Controller
             if ($request->roll_no != "") {
                 $students->where('roll_no', 'like', '%' . $request->roll_no . '%');
             }
-            $students = $students->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+            $students = $students->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
 
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
 
-            $class_id = $request->class;
-            $section_id = $request->section;
+            $age_group_id = $request->class;
+            $mgender_id = $request->section;
             $name = $request->name;
             $roll_no = $request->roll_no;
 
@@ -5391,14 +5391,14 @@ class SmApiController extends Controller
                 $data = [];
                 $data['students'] = $students->toArray();
                 $data['classes'] = $classes->toArray();
-                $data['class_id'] = $class_id;
-                $data['section_id'] = $section_id;
+                $data['age_group_id'] = $age_group_id;
+                $data['mgender_id'] = $mgender_id;
                 $data['name'] = $name;
                 $data['roll_no'] = $roll_no;
                 return ApiBaseMethod::sendResponse($data, null);
             }
 
-            return view('backEnd.studentInformation.disabled_student', compact('students', 'classes', 'class_id', 'section_id', 'name', 'roll_no'));
+            return view('backEnd.studentInformation.disabled_student', compact('students', 'classes', 'age_group_id', 'mgender_id', 'name', 'roll_no'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
@@ -5407,15 +5407,15 @@ class SmApiController extends Controller
     {
 
         try {
-            $contentTypes = SmContentType::where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $contentTypes = SmContentType::where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             if (Auth()->user()->role_id == 1) {
-                $uploadContents = SmTeacherUploadContent::where('available_for_admin', 1)->orWhere('created_by', Auth::user()->id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                $uploadContents = SmTeacherUploadContent::where('available_for_admin', 1)->orWhere('created_by', Auth::user()->id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             } else {
-                $uploadContents = SmTeacherUploadContent::Where('created_by', Auth::user()->id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                $uploadContents = SmTeacherUploadContent::Where('created_by', Auth::user()->id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             }
 
-            $classes = SmClass::where('active_status', '=', '1')->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', '=', '1')->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -5429,19 +5429,19 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_uploadContentList(Request $request, $school_id)
+    public function saas_uploadContentList(Request $request, $church_id)
     {
 
         try {
-            $contentTypes = SmContentType::where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+            $contentTypes = SmContentType::where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
 
             if (Auth()->user()->role_id == 1) {
-                $uploadContents = SmTeacherUploadContent::where('available_for_admin', 1)->orWhere('created_by', Auth::user()->id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+                $uploadContents = SmTeacherUploadContent::where('available_for_admin', 1)->orWhere('created_by', Auth::user()->id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
             } else {
-                $uploadContents = SmTeacherUploadContent::Where('created_by', Auth::user()->id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+                $uploadContents = SmTeacherUploadContent::Where('created_by', Auth::user()->id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
             }
 
-            $classes = SmClass::where('active_status', '=', '1')->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+            $classes = SmClass::where('active_status', '=', '1')->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -5554,17 +5554,17 @@ class SmApiController extends Controller
 
             foreach ($request->available_for as $value) {
                 if ($value == 'admin') {
-                    $roles = InfixRole::where('id', '=', 1) /* ->where('id', '!=', 2)->where('id', '!=', 3)->where('id', '!=', 9) */->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where(function ($q) {
-                        $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                    $roles = InfixRole::where('id', '=', 1) /* ->where('id', '!=', 2)->where('id', '!=', 3)->where('id', '!=', 9) */->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where(function ($q) {
+                        $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
                     })->get();
                     foreach ($roles as $role) {
-                        $staffs = SmStaff::where('role_id', $role->id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                        $staffs = SmStaff::where('role_id', $role->id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
                         foreach ($staffs as $staff) {
                             $notification = new SmNotification;
                             $notification->user_id = $staff->user_id;
                             $notification->role_id = $role->id;
-                            $notification->school_id = Auth::user()->school_id;
-                            $notification->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+                            $notification->church_id = Auth::user()->church_id;
+                            $notification->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
                             if ($request->content_type == 'as') {
                                 $notification->url = 'assignment-list';
                             } elseif ($request->content_type == 'st') {
@@ -5582,13 +5582,13 @@ class SmApiController extends Controller
                 }
                 if ($value == 'student') {
                     if (isset($request->all_classes)) {
-                        $students = SmStudent::select('id', 'user_id')->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                        $students = SmStudent::select('id', 'user_id')->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
                         foreach ($students as $student) {
                             $notification = new SmNotification;
                             $notification->user_id = $student->id;
                             $notification->role_id = 2;
-                            $notification->school_id = Auth::user()->school_id;
-                            $notification->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+                            $notification->church_id = Auth::user()->church_id;
+                            $notification->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
                             if ($request->content_type == 'as') {
                                 $notification->url = 'student-assignment';
                             } elseif ($request->content_type == 'st') {
@@ -5603,13 +5603,13 @@ class SmApiController extends Controller
                             $notification->save();
                         }
                     } else {
-                        $students = SmStudent::select('id')->where('class_id', $request->class)->where('section_id', $request->section)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                        $students = SmStudent::select('id')->where('age_group_id', $request->class)->where('mgender_id', $request->section)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
                         foreach ($students as $student) {
                             $notification = new SmNotification;
                             $notification->user_id = $student->id;
                             $notification->role_id = 2;
-                            $notification->school_id = Auth::user()->school_id;
-                            $notification->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+                            $notification->church_id = Auth::user()->church_id;
+                            $notification->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
                             if ($request->content_type == 'as') {
                                 $notification->url = 'student-assignment';
                             } elseif ($request->content_type == 'st') {
@@ -5667,11 +5667,11 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_deleteUploadContent(Request $request, $school_id, $id)
+    public function saas_deleteUploadContent(Request $request, $church_id, $id)
     {
 
         try {
-            $uploadContent = SmTeacherUploadContent::where('school_id', $school_id)->where('id', $id)->find();
+            $uploadContent = SmTeacherUploadContent::where('church_id', $church_id)->where('id', $id)->find();
             if ($uploadContent->upload_file != "") {
                 unlink($uploadContent->upload_file);
             }
@@ -5706,9 +5706,9 @@ class SmApiController extends Controller
             }
 
             if (Auth()->user()->id == 1) {
-                $uploadContents = SmTeacherUploadContent::where('content_type', 'as')->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                $uploadContents = SmTeacherUploadContent::where('content_type', 'as')->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             } else {
-                $uploadContents = SmTeacherUploadContent::where('content_type', 'as')->Where('created_by', Auth::user()->id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                $uploadContents = SmTeacherUploadContent::where('content_type', 'as')->Where('created_by', Auth::user()->id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             }
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -5720,19 +5720,19 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_assignmentList(Request $request, $school_id)
+    public function saas_assignmentList(Request $request, $church_id)
     {
 
         try {
             $user = Auth()->user();
             if (Auth()->user()->role_id == 1) {
-                SmNotification::where('user_id', $user->id)->where('role_id', 1)->where('school_id', $school_id)->update(['is_read' => 1]);
+                SmNotification::where('user_id', $user->id)->where('role_id', 1)->where('church_id', $church_id)->update(['is_read' => 1]);
             }
 
             if (Auth()->user()->id == 1) {
-                $uploadContents = SmTeacherUploadContent::where('content_type', 'as')->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                $uploadContents = SmTeacherUploadContent::where('content_type', 'as')->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             } else {
-                $uploadContents = SmTeacherUploadContent::where('content_type', 'as')->Where('created_by', Auth::user()->id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                $uploadContents = SmTeacherUploadContent::where('content_type', 'as')->Where('created_by', Auth::user()->id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             }
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -5749,9 +5749,9 @@ class SmApiController extends Controller
 
         try {
             if (Auth()->user()->id == 1) {
-                $uploadContents = SmTeacherUploadContent::where('content_type', 'st')->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                $uploadContents = SmTeacherUploadContent::where('content_type', 'st')->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             } else {
-                $uploadContents = SmTeacherUploadContent::where('content_type', 'st')->Where('created_by', Auth::user()->id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                $uploadContents = SmTeacherUploadContent::where('content_type', 'st')->Where('created_by', Auth::user()->id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             }
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -5762,14 +5762,14 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_studyMetarialList(Request $request, $school_id)
+    public function saas_studyMetarialList(Request $request, $church_id)
     {
 
         try {
             if (Auth()->user()->id == 1) {
-                $uploadContents = SmTeacherUploadContent::where('content_type', 'st')->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+                $uploadContents = SmTeacherUploadContent::where('content_type', 'st')->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
             } else {
-                $uploadContents = SmTeacherUploadContent::where('content_type', 'st')->Where('created_by', Auth::user()->id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+                $uploadContents = SmTeacherUploadContent::where('content_type', 'st')->Where('created_by', Auth::user()->id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
             }
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -5784,9 +5784,9 @@ class SmApiController extends Controller
     {
         try {
             if (Auth()->user()->id == 1) {
-                $uploadContents = SmTeacherUploadContent::where('content_type', 'sy')->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                $uploadContents = SmTeacherUploadContent::where('content_type', 'sy')->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             } else {
-                $uploadContents = SmTeacherUploadContent::where('content_type', 'sy')->Where('created_by', Auth::user()->id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                $uploadContents = SmTeacherUploadContent::where('content_type', 'sy')->Where('created_by', Auth::user()->id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             }
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -5797,13 +5797,13 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_syllabusList(Request $request, $school_id)
+    public function saas_syllabusList(Request $request, $church_id)
     {
         try {
             if (Auth()->user()->id == 1) {
-                $uploadContents = SmTeacherUploadContent::where('content_type', 'sy')->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+                $uploadContents = SmTeacherUploadContent::where('content_type', 'sy')->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
             } else {
-                $uploadContents = SmTeacherUploadContent::where('content_type', 'sy')->Where('created_by', Auth::user()->id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+                $uploadContents = SmTeacherUploadContent::where('content_type', 'sy')->Where('created_by', Auth::user()->id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
             }
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -5819,9 +5819,9 @@ class SmApiController extends Controller
 
         try {
             if (Auth()->user()->id == 1) {
-                $uploadContents = SmTeacherUploadContent::where('content_type', 'ot')->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                $uploadContents = SmTeacherUploadContent::where('content_type', 'ot')->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             } else {
-                $uploadContents = SmTeacherUploadContent::where('content_type', 'ot')->Where('created_by', Auth::user()->id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                $uploadContents = SmTeacherUploadContent::where('content_type', 'ot')->Where('created_by', Auth::user()->id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             }
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -5832,14 +5832,14 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_otherDownloadList(Request $request, $school_id)
+    public function saas_otherDownloadList(Request $request, $church_id)
     {
 
         try {
             if (Auth()->user()->id == 1) {
-                $uploadContents = SmTeacherUploadContent::where('content_type', 'ot')->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+                $uploadContents = SmTeacherUploadContent::where('content_type', 'ot')->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
             } else {
-                $uploadContents = SmTeacherUploadContent::where('content_type', 'ot')->Where('created_by', Auth::user()->id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+                $uploadContents = SmTeacherUploadContent::where('content_type', 'ot')->Where('created_by', Auth::user()->id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
             }
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -5853,7 +5853,7 @@ class SmApiController extends Controller
     public function collectFees(Request $request)
     {
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
 
                 return ApiBaseMethod::sendResponse($classes, null);
@@ -5863,10 +5863,10 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_collectFees(Request $request, $school_id)
+    public function saas_collectFees(Request $request, $church_id)
     {
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
 
                 return ApiBaseMethod::sendResponse($classes, null);
@@ -5880,14 +5880,14 @@ class SmApiController extends Controller
     {
         try {
             $student = SmStudent::where('user_id', $id)->first();
-            $fees_assigneds = SmFeesAssign::where('student_id', $id)->orderBy('id', 'desc')->get();
+            $fees_assigneds = SmFeesAssign::where('member_id', $id)->orderBy('id', 'desc')->get();
 
             $fees_assigneds2 = DB::table('sm_fees_assigns')
                 ->select('sm_fees_types.id as fees_type_id', 'sm_fees_types.name', 'sm_fees_masters.date as due_date', 'sm_fees_masters.amount as amount', 'applied_discount')
                 ->join('sm_fees_masters', 'sm_fees_masters.id', '=', 'sm_fees_assigns.fees_master_id')
                 ->join('sm_fees_types', 'sm_fees_types.id', '=', 'sm_fees_masters.fees_type_id')
 
-                ->where('sm_fees_assigns.student_id', $student->id)
+                ->where('sm_fees_assigns.member_id', $student->id)
                 ->get();
 
             $i = 0;
@@ -5898,14 +5898,14 @@ class SmApiController extends Controller
                 $d[$i]['fees_name'] = $row->name;
                 $d[$i]['due_date'] = $row->due_date;
                 $d[$i]['amount'] = $row->amount;
-                $d[$i]['paid'] = DB::table('sm_fees_payments')->where('fees_type_id', $row->fees_type_id)->where('student_id', $student->id)->sum('amount');
-                $d[$i]['fine'] = DB::table('sm_fees_payments')->where('fees_type_id', $row->fees_type_id)->where('student_id', $student->id)->sum('fine');
+                $d[$i]['paid'] = DB::table('sm_fees_payments')->where('fees_type_id', $row->fees_type_id)->where('member_id', $student->id)->sum('amount');
+                $d[$i]['fine'] = DB::table('sm_fees_payments')->where('fees_type_id', $row->fees_type_id)->where('member_id', $student->id)->sum('fine');
                 $d[$i]['discount_amount'] = $row->applied_discount;
                 $d[$i]['balance'] = ((float) $d[$i]['amount'] + (float) $d[$i]['fine']) - ((float) $d[$i]['paid'] + (float) $d[$i]['discount_amount']);
                 $i++;
             }
 
-            $fees_discounts = SmFeesAssignDiscount::where('student_id', $id)->get();
+            $fees_discounts = SmFeesAssignDiscount::where('member_id', $id)->get();
 
             $applied_discount = [];
             foreach ($fees_discounts as $fees_discount) {
@@ -5931,18 +5931,18 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_collectFeesStudentApi(Request $request, $school_id, $id)
+    public function saas_collectFeesStudentApi(Request $request, $church_id, $id)
     {
         try {
-            $student = SmStudent::where('user_id', $id)->where('school_id', $school_id)->first();
-            $fees_assigneds = SmFeesAssign::where('student_id', $id)->where('school_id', $school_id)->orderBy('id', 'desc')->get();
+            $student = SmStudent::where('user_id', $id)->where('church_id', $church_id)->first();
+            $fees_assigneds = SmFeesAssign::where('member_id', $id)->where('church_id', $church_id)->orderBy('id', 'desc')->get();
 
             $fees_assigneds2 = DB::table('sm_fees_assigns')
                 ->select('sm_fees_types.id as fees_type_id', 'sm_fees_types.name', 'sm_fees_masters.date as due_date', 'sm_fees_masters.amount as amount', 'applied_discount')
                 ->join('sm_fees_masters', 'sm_fees_masters.id', '=', 'sm_fees_assigns.fees_master_id')
                 ->join('sm_fees_types', 'sm_fees_types.id', '=', 'sm_fees_masters.fees_type_id')
-                ->where('sm_fees_assigns.student_id', $student->id)
-                ->where('sm_fees_assigns.school_id', $school_id)
+                ->where('sm_fees_assigns.member_id', $student->id)
+                ->where('sm_fees_assigns.church_id', $church_id)
                 ->get();
 
             $i = 0;
@@ -5953,14 +5953,14 @@ class SmApiController extends Controller
                 $d[$i]['fees_name'] = $row->name;
                 $d[$i]['due_date'] = $row->due_date;
                 $d[$i]['amount'] = $row->amount;
-                $d[$i]['paid'] = DB::table('sm_fees_payments')->where('fees_type_id', $row->fees_type_id)->where('student_id', $student->id)->sum('amount');
-                $d[$i]['fine'] = DB::table('sm_fees_payments')->where('fees_type_id', $row->fees_type_id)->where('student_id', $student->id)->sum('fine');
+                $d[$i]['paid'] = DB::table('sm_fees_payments')->where('fees_type_id', $row->fees_type_id)->where('member_id', $student->id)->sum('amount');
+                $d[$i]['fine'] = DB::table('sm_fees_payments')->where('fees_type_id', $row->fees_type_id)->where('member_id', $student->id)->sum('fine');
                 $d[$i]['discount_amount'] = $row->applied_discount;
                 $d[$i]['balance'] = ((float) $d[$i]['amount'] + (float) $d[$i]['fine']) - ((float) $d[$i]['paid'] + (float) $d[$i]['discount_amount']);
                 $i++;
             }
 
-            $fees_discounts = SmFeesAssignDiscount::where('student_id', $id)->get();
+            $fees_discounts = SmFeesAssignDiscount::where('member_id', $id)->get();
 
             $applied_discount = [];
             foreach ($fees_discounts as $fees_discount) {
@@ -6002,14 +6002,14 @@ class SmApiController extends Controller
         }
         try {
             $students = SmStudent::query();
-            $students->where('class_id', $request->class);
+            $students->where('age_group_id', $request->class);
             if ($request->section != "") {
-                $students->where('section_id', $request->section);
+                $students->where('mgender_id', $request->section);
             }
             if ($request->keyword != "") {
-                $students->where('full_name', 'like', '%' . $request->keyword . '%')->orWhere('admission_no', $request->keyword)->orWhere('roll_no', $request->keyword)->orWhere('national_id_no', $request->keyword)->orWhere('local_id_no', $request->keyword);
+                $students->where('full_name', 'like', '%' . $request->keyword . '%')->orWhere('registration_no', $request->keyword)->orWhere('roll_no', $request->keyword)->orWhere('national_id_no', $request->keyword)->orWhere('local_id_no', $request->keyword);
             }
-            $students = $students->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $students = $students->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             if ($students->isEmpty()) {
                 if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -6019,7 +6019,7 @@ class SmApiController extends Controller
                 return redirect('collect-fees')->with('message-danger', 'No result found');
             }
 
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -6029,10 +6029,10 @@ class SmApiController extends Controller
             }
 
             $class_info = SmClass::find($request->class);
-            $search_info['class_name'] = @$class_info->class_name;
+            $search_info['age_group_name'] = @$class_info->age_group_name;
             if ($request->section != "") {
                 $section_info = SmSection::find($request->section);
-                $search_info['section_name'] = @$section_info->section_name;
+                $search_info['mgender_name'] = @$section_info->mgender_name;
             }
 
             if ($request->keyword != "") {
@@ -6057,11 +6057,11 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_searchFeesPayment(Request $request, $school_id)
+    public function saas_searchFeesPayment(Request $request, $church_id)
     {
         try {
-            $fees_payments = SmFeesPayment::where('school_id', $school_id)->get();
-            $classes = SmClass::where('active_status', 1)->where('school_id', $school_id)->get();
+            $fees_payments = SmFeesPayment::where('church_id', $church_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_id', $church_id)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($fees_payments, null);
             }
@@ -6089,18 +6089,18 @@ class SmApiController extends Controller
         try {
             $classes = SmClass::where('active_status', 1)->get();
             $fees_payments = DB::table('sm_fees_payments')
-                ->join('sm_students', 'sm_fees_payments.student_id', '=', 'sm_students.id')
+                ->join('sm_students', 'sm_fees_payments.member_id', '=', 'sm_students.id')
                 ->join('sm_fees_masters', 'sm_fees_payments.fees_type_id', '=', 'sm_fees_masters.fees_type_id')
                 ->join('sm_fees_groups', 'sm_fees_masters.fees_type_id', '=', 'sm_fees_groups.id')
                 ->join('sm_fees_types', 'sm_fees_payments.fees_type_id', '=', 'sm_fees_types.id')
-                ->join('sm_classes', 'sm_students.class_id', '=', 'sm_classes.id')
-                ->join('sm_sections', 'sm_students.section_id', '=', 'sm_sections.id')
-                ->where('sm_students.class_id', $request->class)
-                ->where('sm_students.section_id', $request->section)
+                ->join('sm_classes', 'sm_students.age_group_id', '=', 'sm_classes.id')
+                ->join('sm_sections', 'sm_students.mgender_id', '=', 'sm_sections.id')
+                ->where('sm_students.age_group_id', $request->class)
+                ->where('sm_students.mgender_id', $request->section)
                 ->orwhere('sm_students.full_name', '%' . @$request->keyword . '%')
-                ->orwhere('sm_students.admission_no', '%' . @$request->keyword . '%')
+                ->orwhere('sm_students.registration_no', '%' . @$request->keyword . '%')
                 ->orwhere('sm_students.roll_no', '%' . @$request->keyword . '%')
-                ->select('sm_fees_payments.*', 'sm_students.full_name', 'sm_classes.class_name', 'sm_fees_groups.name', 'sm_fees_types.name as fees_type_name')
+                ->select('sm_fees_payments.*', 'sm_students.full_name', 'sm_classes.age_group_name', 'sm_fees_groups.name', 'sm_fees_types.name as fees_type_name')
                 ->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -6112,7 +6112,7 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_feesPaymentSearch(Request $request, $school_id)
+    public function saas_feesPaymentSearch(Request $request, $church_id)
     {
         $input = $request->all();
         $validator = Validator::make($input, [
@@ -6130,22 +6130,22 @@ class SmApiController extends Controller
                 ->withInput();
         }
         try {
-            $classes = SmClass::where('active_status', 1)->where('school_id', $school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_id', $church_id)->get();
             $fees_payments = DB::table('sm_fees_payments')
-                ->join('sm_students', 'sm_fees_payments.student_id', '=', 'sm_students.id')
+                ->join('sm_students', 'sm_fees_payments.member_id', '=', 'sm_students.id')
                 ->join('sm_fees_masters', 'sm_fees_payments.fees_type_id', '=', 'sm_fees_masters.fees_type_id')
                 ->join('sm_fees_groups', 'sm_fees_masters.fees_type_id', '=', 'sm_fees_groups.id')
                 ->join('sm_fees_types', 'sm_fees_payments.fees_type_id', '=', 'sm_fees_types.id')
-                ->join('sm_classes', 'sm_students.class_id', '=', 'sm_classes.id')
-                ->join('sm_sections', 'sm_students.section_id', '=', 'sm_sections.id')
-                ->where('sm_students.class_id', $request->class)
-                ->where('sm_students.section_id', $request->section)
-                ->where('sm_students.school_id', $request->school_id)
+                ->join('sm_classes', 'sm_students.age_group_id', '=', 'sm_classes.id')
+                ->join('sm_sections', 'sm_students.mgender_id', '=', 'sm_sections.id')
+                ->where('sm_students.age_group_id', $request->class)
+                ->where('sm_students.mgender_id', $request->section)
+                ->where('sm_students.church_id', $request->church_id)
                 ->orwhere('sm_students.full_name', '%' . @$request->keyword . '%')
-                ->orwhere('sm_students.admission_no', '%' . @$request->keyword . '%')
+                ->orwhere('sm_students.registration_no', '%' . @$request->keyword . '%')
                 ->orwhere('sm_students.roll_no', '%' . @$request->keyword . '%')
-                ->select('sm_fees_payments.*', 'sm_students.full_name', 'sm_classes.class_name', 'sm_fees_groups.name', 'sm_fees_types.name as fees_type_name')
-                ->where('sm_fees_payments.school_id', $school_id)->get();
+                ->select('sm_fees_payments.*', 'sm_students.full_name', 'sm_classes.age_group_name', 'sm_fees_groups.name', 'sm_fees_types.name as fees_type_name')
+                ->where('sm_fees_payments.church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($fees_payments, null);
@@ -6169,11 +6169,11 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_search_Fees_Payment(Request $request, $school_id)
+    public function saas_search_Fees_Payment(Request $request, $church_id)
     {
         try {
-            $fees_payments = SmFeesPayment::where('school_id', $school_id)->get();
-            $classes = SmClass::where('active_status', 1)->where('school_id', $school_id)->get();
+            $fees_payments = SmFeesPayment::where('church_id', $church_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_id', $church_id)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($fees_payments, null);
             }
@@ -6185,7 +6185,7 @@ class SmApiController extends Controller
     public function searchFeesDue(Request $request)
     {
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             $fees_masters = SmFeesMaster::select('fees_group_id')->where('active_status', 1)->distinct('fees_group_id')->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -6198,11 +6198,11 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_searchFeesDue(Request $request, $school_id)
+    public function saas_searchFeesDue(Request $request, $church_id)
     {
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
-            $fees_masters = SmFeesMaster::select('fees_group_id')->where('active_status', 1)->distinct('fees_group_id')->where('school_id', $school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
+            $fees_masters = SmFeesMaster::select('fees_group_id')->where('active_status', 1)->distinct('fees_group_id')->where('church_id', $church_id)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
                 $data['classes'] = $classes->toArray();
@@ -6236,12 +6236,12 @@ class SmApiController extends Controller
 
             $fees_master = SmFeesMaster::select('id', 'amount')->where('fees_group_id', $fees_group[0])->where('fees_type_id', $fees_group[1])->first();
             if ($fees_group[0] != 1 && $fees_group[0] != 2) {
-                $students = SmStudent::where('class_id', $request->class)->where('section_id', $request->section)->get();
+                $students = SmStudent::where('age_group_id', $request->class)->where('mgender_id', $request->section)->get();
             } else {
                 if ($fees_group[0] == 1) {
-                    $students = SmStudent::where('class_id', $request->class)->where('section_id', $request->section)->where('route_list_id', '!=', '')->get();
+                    $students = SmStudent::where('age_group_id', $request->class)->where('mgender_id', $request->section)->where('route_list_id', '!=', '')->get();
                 } else {
-                    $students = SmStudent::where('class_id', $request->class)->where('section_id', $request->section)->where('room_id', '!=', '')->get();
+                    $students = SmStudent::where('age_group_id', $request->class)->where('mgender_id', $request->section)->where('room_id', '!=', '')->get();
                 }
             }
 
@@ -6252,9 +6252,9 @@ class SmApiController extends Controller
                 $fees_master = SmFeesMaster::select('id', 'amount')->where('fees_group_id', $fees_group[0])->where('fees_type_id', $fees_group[1])->first();
                 $total_amount = $fees_master->amount;
 
-                $fees_assign = SmFeesAssign::where('student_id', $student->id)->where('fees_master_id', $fees_master->id)->first();
-                $discount_amount = SmFeesPayment::where('student_id', $student->id)->where('fees_type_id', $fees_group[1])->sum('discount_amount');
-                $amount = SmFeesPayment::where('student_id', $student->id)->where('fees_type_id', $fees_group[1])->sum('amount');
+                $fees_assign = SmFeesAssign::where('member_id', $student->id)->where('fees_master_id', $fees_master->id)->first();
+                $discount_amount = SmFeesPayment::where('member_id', $student->id)->where('fees_type_id', $fees_group[1])->sum('discount_amount');
+                $amount = SmFeesPayment::where('member_id', $student->id)->where('fees_type_id', $fees_group[1])->sum('amount');
 
                 $paid = $discount_amount + $amount;
 
@@ -6265,10 +6265,10 @@ class SmApiController extends Controller
                 }
             }
 
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             $fees_masters = SmFeesMaster::select('fees_group_id')->where('active_status', 1)->distinct('fees_group_id')->get();
 
-            $class_id = $request->class;
+            $age_group_id = $request->class;
             $fees_group_id = $fees_group[1];
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -6276,17 +6276,17 @@ class SmApiController extends Controller
                 $data['classes'] = $classes->toArray();
                 $data['fees_masters'] = $fees_masters;
                 $data['fees_dues'] = $fees_dues;
-                $data['class_id'] = $class_id;
+                $data['age_group_id'] = $age_group_id;
                 $data['fees_group_id'] = $fees_group_id;
                 return ApiBaseMethod::sendResponse($data, null);
             }
 
-            return view('backEnd.feesCollection.search_fees_due', compact('classes', 'fees_masters', 'fees_dues', 'class_id', 'fees_group_id'));
+            return view('backEnd.feesCollection.search_fees_due', compact('classes', 'fees_masters', 'fees_dues', 'age_group_id', 'fees_group_id'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_feesDueSearch(Request $request, $school_id)
+    public function saas_feesDueSearch(Request $request, $church_id)
     {
         $input = $request->all();
         $validator = Validator::make($input, [
@@ -6306,14 +6306,14 @@ class SmApiController extends Controller
         try {
             $fees_group = explode('-', $request->fees_group);
 
-            $fees_master = SmFeesMaster::select('id', 'amount')->where('fees_group_id', $fees_group[0])->where('fees_type_id', $fees_group[1])->where('school_id', $school_id)->first();
+            $fees_master = SmFeesMaster::select('id', 'amount')->where('fees_group_id', $fees_group[0])->where('fees_type_id', $fees_group[1])->where('church_id', $church_id)->first();
             if ($fees_group[0] != 1 && $fees_group[0] != 2) {
-                $students = SmStudent::where('class_id', $request->class)->where('section_id', $request->section)->where('school_id', $school_id)->get();
+                $students = SmStudent::where('age_group_id', $request->class)->where('mgender_id', $request->section)->where('church_id', $church_id)->get();
             } else {
                 if ($fees_group[0] == 1) {
-                    $students = SmStudent::where('class_id', $request->class)->where('section_id', $request->section)->where('school_id', $school_id)->where('route_list_id', '!=', '')->get();
+                    $students = SmStudent::where('age_group_id', $request->class)->where('mgender_id', $request->section)->where('church_id', $church_id)->where('route_list_id', '!=', '')->get();
                 } else {
-                    $students = SmStudent::where('class_id', $request->class)->where('section_id', $request->section)->where('school_id', $school_id)->where('room_id', '!=', '')->get();
+                    $students = SmStudent::where('age_group_id', $request->class)->where('mgender_id', $request->section)->where('church_id', $church_id)->where('room_id', '!=', '')->get();
                 }
             }
 
@@ -6321,12 +6321,12 @@ class SmApiController extends Controller
 
             foreach ($students as $student) {
 
-                $fees_master = SmFeesMaster::select('id', 'amount')->where('fees_group_id', $fees_group[0])->where('fees_type_id', $fees_group[1])->where('school_id', $school_id)->first();
+                $fees_master = SmFeesMaster::select('id', 'amount')->where('fees_group_id', $fees_group[0])->where('fees_type_id', $fees_group[1])->where('church_id', $church_id)->first();
                 $total_amount = $fees_master->amount;
 
-                $fees_assign = SmFeesAssign::where('student_id', $student->id)->where('fees_master_id', $fees_master->id)->where('school_id', $school_id)->first();
-                $discount_amount = SmFeesPayment::where('student_id', $student->id)->where('fees_type_id', $fees_group[1])->where('school_id', $school_id)->sum('discount_amount');
-                $amount = SmFeesPayment::where('student_id', $student->id)->where('fees_type_id', $fees_group[1])->where('school_id', $school_id)->sum('amount');
+                $fees_assign = SmFeesAssign::where('member_id', $student->id)->where('fees_master_id', $fees_master->id)->where('church_id', $church_id)->first();
+                $discount_amount = SmFeesPayment::where('member_id', $student->id)->where('fees_type_id', $fees_group[1])->where('church_id', $church_id)->sum('discount_amount');
+                $amount = SmFeesPayment::where('member_id', $student->id)->where('fees_type_id', $fees_group[1])->where('church_id', $church_id)->sum('amount');
 
                 $paid = $discount_amount + $amount;
 
@@ -6337,10 +6337,10 @@ class SmApiController extends Controller
                 }
             }
 
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
-            $fees_masters = SmFeesMaster::select('fees_group_id')->where('active_status', 1)->distinct('fees_group_id')->where('school_id', $school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
+            $fees_masters = SmFeesMaster::select('fees_group_id')->where('active_status', 1)->distinct('fees_group_id')->where('church_id', $church_id)->get();
 
-            $class_id = $request->class;
+            $age_group_id = $request->class;
             $fees_group_id = $fees_group[1];
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -6348,12 +6348,12 @@ class SmApiController extends Controller
                 $data['classes'] = $classes->toArray();
                 $data['fees_masters'] = $fees_masters;
                 $data['fees_dues'] = $fees_dues;
-                $data['class_id'] = $class_id;
+                $data['age_group_id'] = $age_group_id;
                 $data['fees_group_id'] = $fees_group_id;
                 return ApiBaseMethod::sendResponse($data, null);
             }
 
-            return view('backEnd.feesCollection.search_fees_due', compact('classes', 'fees_masters', 'fees_dues', 'class_id', 'fees_group_id'));
+            return view('backEnd.feesCollection.search_fees_due', compact('classes', 'fees_masters', 'fees_dues', 'age_group_id', 'fees_group_id'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
@@ -6361,7 +6361,7 @@ class SmApiController extends Controller
     public function search_FeesDue(Request $request)
     {
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             $fees_masters = SmFeesMaster::select('fees_group_id')->where('active_status', 1)->distinct('fees_group_id')->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -6374,11 +6374,11 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_search_FeesDue(Request $request, $school_id)
+    public function saas_search_FeesDue(Request $request, $church_id)
     {
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
-            $fees_masters = SmFeesMaster::select('fees_group_id')->where('active_status', 1)->distinct('fees_group_id')->where('school_id', $school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
+            $fees_masters = SmFeesMaster::select('fees_group_id')->where('active_status', 1)->distinct('fees_group_id')->where('church_id', $church_id)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
                 $data['classes'] = $classes->toArray();
@@ -6444,7 +6444,7 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_deleteSingle(Request $request, $school_id)
+    public function saas_deleteSingle(Request $request, $church_id)
     {
 
         try {
@@ -6453,7 +6453,7 @@ class SmApiController extends Controller
             $tables = tableList::getTableList($id_key, $request->id);
 
             try {
-                $delete_query = SmFeesMaster::where('school_id', $school_id)->destroy($request->id);
+                $delete_query = SmFeesMaster::where('church_id', $church_id)->destroy($request->id);
                 if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                     if ($delete_query) {
                         return ApiBaseMethod::sendResponse(null, 'Fees Master has been deleted successfully');
@@ -6530,7 +6530,7 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_deleteGroup(Request $request, $school_id)
+    public function saas_deleteGroup(Request $request, $church_id)
     {
         try {
             $id_key = 'fees_master_id';
@@ -6538,7 +6538,7 @@ class SmApiController extends Controller
             $tables = tableList::getTableList($id_key, $request->id);
 
             try {
-                $delete_query = SmFeesMaster::where('school_id', $school_id)->destroy($request->id);
+                $delete_query = SmFeesMaster::where('church_id', $church_id)->destroy($request->id);
                 if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                     if ($delete_query) {
                         return ApiBaseMethod::sendResponse(null, 'Fees Master has been deleted successfully');
@@ -6585,14 +6585,14 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_feesAssign(Request $request, $school_id, $id)
+    public function saas_feesAssign(Request $request, $church_id, $id)
     {
 
         try {
             $fees_group_id = $id;
-            $classes = SmClass::where('active_status', 1)->where('school_id', $school_id)->get();
-            $genders = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '1')->where('school_id', $school_id)->get();
-            $categories = SmStudentCategory::where('school_id', $school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_id', $church_id)->get();
+            $genders = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '1')->where('church_id', $church_id)->get();
+            $categories = SmStudentCategory::where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -6629,14 +6629,14 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_fees_Assign(Request $request, $school_id, $id)
+    public function saas_fees_Assign(Request $request, $church_id, $id)
     {
 
         try {
             $fees_group_id = $id;
-            $classes = SmClass::where('active_status', 1)->where('school_id', $school_id)->get();
-            $genders = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '1')->where('school_id', $school_id)->get();
-            $categories = SmStudentCategory::where('school_id', $school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_id', $church_id)->get();
+            $genders = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '1')->where('church_id', $church_id)->get();
+            $categories = SmStudentCategory::where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -6655,7 +6655,7 @@ class SmApiController extends Controller
     {
 
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             $genders = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '1')->get();
             $categories = SmStudentCategory::get();
             $fees_group_id = $request->fees_group_id;
@@ -6663,10 +6663,10 @@ class SmApiController extends Controller
             $students = SmStudent::query();
             $students->where('active_status', 1);
             if ($request->class != "") {
-                $students->where('class_id', $request->class);
+                $students->where('age_group_id', $request->class);
             }
             if ($request->section != "") {
-                $students->where('section_id', $request->section);
+                $students->where('mgender_id', $request->section);
             }
             if ($request->category != "") {
                 $students->where('student_category_id', $request->category);
@@ -6680,24 +6680,24 @@ class SmApiController extends Controller
             if ($request->fees_group_id == 2) {
                 $students->where('room_id', '!=', '');
             }
-            $students = $students->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $students = $students->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             $fees_masters = SmFeesMaster::where('fees_group_id', $request->fees_group_id)->get();
 
             $pre_assigned = [];
             foreach ($students as $student) {
                 foreach ($fees_masters as $fees_master) {
-                    $assigned_student = SmFeesAssign::select('student_id')->where('student_id', $student->id)->where('fees_master_id', $fees_master->id)->first();
+                    $assigned_student = SmFeesAssign::select('member_id')->where('member_id', $student->id)->where('fees_master_id', $fees_master->id)->first();
 
                     if ($assigned_student != "") {
-                        if (!in_array($assigned_student->student_id, $pre_assigned)) {
-                            $pre_assigned[] = $assigned_student->student_id;
+                        if (!in_array($assigned_student->member_id, $pre_assigned)) {
+                            $pre_assigned[] = $assigned_student->member_id;
                         }
                     }
                 }
             }
 
-            $class_id = $request->class;
+            $age_group_id = $request->class;
             $category_id = $request->category;
             $gender_id = $request->gender;
 
@@ -6712,32 +6712,32 @@ class SmApiController extends Controller
                 $data['fees_assign_groups'] = $fees_assign_groups->toArray();
                 $data['fees_group_id'] = $fees_group_id;
                 $data['pre_assigned'] = $pre_assigned;
-                $data['class_id'] = $class_id;
+                $data['age_group_id'] = $age_group_id;
                 $data['category_id'] = $category_id;
                 $data['gender_id'] = $gender_id;
                 return ApiBaseMethod::sendResponse($data, null);
             }
-            return view('backEnd.feesCollection.fees_assign', compact('classes', 'categories', 'genders', 'students', 'fees_assign_groups', 'fees_group_id', 'pre_assigned', 'class_id', 'category_id', 'gender_id'));
+            return view('backEnd.feesCollection.fees_assign', compact('classes', 'categories', 'genders', 'students', 'fees_assign_groups', 'fees_group_id', 'pre_assigned', 'age_group_id', 'category_id', 'gender_id'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_feesAssignSearch(Request $request, $school_id)
+    public function saas_feesAssignSearch(Request $request, $church_id)
     {
 
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
-            $genders = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '1')->where('school_id', $school_id)->get();
-            $categories = SmStudentCategory::where('school_id', $school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
+            $genders = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '1')->where('church_id', $church_id)->get();
+            $categories = SmStudentCategory::where('church_id', $church_id)->get();
             $fees_group_id = $request->fees_group_id;
 
             $students = SmStudent::query();
             $students->where('active_status', 1);
             if ($request->class != "") {
-                $students->where('class_id', $request->class);
+                $students->where('age_group_id', $request->class);
             }
             if ($request->section != "") {
-                $students->where('section_id', $request->section);
+                $students->where('mgender_id', $request->section);
             }
             if ($request->category != "") {
                 $students->where('student_category_id', $request->category);
@@ -6751,28 +6751,28 @@ class SmApiController extends Controller
             if ($request->fees_group_id == 2) {
                 $students->where('room_id', '!=', '');
             }
-            $students = $students->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+            $students = $students->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
 
-            $fees_masters = SmFeesMaster::where('fees_group_id', $request->fees_group_id)->where('school_id', $school_id)->get();
+            $fees_masters = SmFeesMaster::where('fees_group_id', $request->fees_group_id)->where('church_id', $church_id)->get();
 
             $pre_assigned = [];
             foreach ($students as $student) {
                 foreach ($fees_masters as $fees_master) {
-                    $assigned_student = SmFeesAssign::select('student_id')->where('student_id', $student->id)->where('fees_master_id', $fees_master->id)->where('school_id', $school_id)->first();
+                    $assigned_student = SmFeesAssign::select('member_id')->where('member_id', $student->id)->where('fees_master_id', $fees_master->id)->where('church_id', $church_id)->first();
 
                     if ($assigned_student != "") {
-                        if (!in_array($assigned_student->student_id, $pre_assigned)) {
-                            $pre_assigned[] = $assigned_student->student_id;
+                        if (!in_array($assigned_student->member_id, $pre_assigned)) {
+                            $pre_assigned[] = $assigned_student->member_id;
                         }
                     }
                 }
             }
 
-            $class_id = $request->class;
+            $age_group_id = $request->class;
             $category_id = $request->category;
             $gender_id = $request->gender;
 
-            $fees_assign_groups = SmFeesMaster::where('fees_group_id', $request->fees_group_id)->where('school_id', $school_id)->get();
+            $fees_assign_groups = SmFeesMaster::where('fees_group_id', $request->fees_group_id)->where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -6783,12 +6783,12 @@ class SmApiController extends Controller
                 $data['fees_assign_groups'] = $fees_assign_groups->toArray();
                 $data['fees_group_id'] = $fees_group_id;
                 $data['pre_assigned'] = $pre_assigned;
-                $data['class_id'] = $class_id;
+                $data['age_group_id'] = $age_group_id;
                 $data['category_id'] = $category_id;
                 $data['gender_id'] = $gender_id;
                 return ApiBaseMethod::sendResponse($data, null);
             }
-            return view('backEnd.feesCollection.fees_assign', compact('classes', 'categories', 'genders', 'students', 'fees_assign_groups', 'fees_group_id', 'pre_assigned', 'class_id', 'category_id', 'gender_id'));
+            return view('backEnd.feesCollection.fees_assign', compact('classes', 'categories', 'genders', 'students', 'fees_assign_groups', 'fees_group_id', 'pre_assigned', 'age_group_id', 'category_id', 'gender_id'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
@@ -6808,11 +6808,11 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_fees_group_index(Request $request, $school_id)
+    public function saas_fees_group_index(Request $request, $church_id)
     {
 
         try {
-            $fees_groups = SmFeesGroup::where('school_id', $school_id)->get();
+            $fees_groups = SmFeesGroup::where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($fees_groups, null);
@@ -6864,7 +6864,7 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_fees_group_store(Request $request, $school_id)
+    public function saas_fees_group_store(Request $request, $church_id)
     {
         $input = $request->all();
         $validator = Validator::make($input, [
@@ -6884,7 +6884,7 @@ class SmApiController extends Controller
             $visitor = new SmFeesGroup();
             $visitor->name = $request->name;
             $visitor->description = $request->description;
-            $visitor->school_id = $school_id;
+            $visitor->church_id = $church_id;
             $result = $visitor->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -6924,12 +6924,12 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_fees_group_edit(Request $request, $school_id, $id)
+    public function saas_fees_group_edit(Request $request, $church_id, $id)
     {
 
         try {
-            $fees_group = SmFeesGroup::where('school_id', $school_id)->find($id);
-            $fees_groups = SmFeesGroup::where('school_id', $school_id)->get();
+            $fees_group = SmFeesGroup::where('church_id', $church_id)->find($id);
+            $fees_groups = SmFeesGroup::where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -6984,7 +6984,7 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_fees_group_update(Request $request, $school_id)
+    public function saas_fees_group_update(Request $request, $church_id)
     {
         $input = $request->all();
         $validator = Validator::make($input, [
@@ -7002,10 +7002,10 @@ class SmApiController extends Controller
         }
 
         try {
-            $visitor = SmFeesGroup::where('school_id', $request->school_id)->find($request->id);
+            $visitor = SmFeesGroup::where('church_id', $request->church_id)->find($request->id);
             $visitor->name = $request->name;
             $visitor->description = $request->description;
-            $visitor->school_id = $school_id;
+            $visitor->church_id = $church_id;
             $result = $visitor->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -7052,11 +7052,11 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_fees_group_delete(Request $request, $school_id)
+    public function saas_fees_group_delete(Request $request, $church_id)
     {
 
         try {
-            $fees_group = SmFeesGroup::where('school_id', $school_id)->where('id', $request->id)->delete();
+            $fees_group = SmFeesGroup::where('church_id', $church_id)->where('id', $request->id)->delete();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 if ($fees_group) {
@@ -7092,12 +7092,12 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_fees_type_index(Request $request, $school_id)
+    public function saas_fees_type_index(Request $request, $church_id)
     {
 
         try {
-            $fees_types = SmFeesType::where('school_id', $school_id)->get();
-            $fees_groups = SmFeesGroup::where('school_id', $school_id)->get();
+            $fees_types = SmFeesType::where('church_id', $church_id)->get();
+            $fees_groups = SmFeesGroup::where('church_id', $church_id)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($fees_types, null);
             }
@@ -7153,7 +7153,7 @@ class SmApiController extends Controller
         $validator = Validator::make($input, [
             'name' => "required|max:50|unique:sm_fees_types",
             'fees_group' => "required",
-            'school_id' => "required",
+            'church_id' => "required",
         ]);
 
         if ($validator->fails()) {
@@ -7169,7 +7169,7 @@ class SmApiController extends Controller
             $fees_type->name = $request->name;
             $fees_type->fees_group_id = $request->fees_group;
             $fees_type->description = $request->description;
-            $fees_type->school_id = $request->school_id;
+            $fees_type->church_id = $request->church_id;
             $result = $fees_type->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -7206,12 +7206,12 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_fees_type_edit(Request $request, $school_id, $id)
+    public function saas_fees_type_edit(Request $request, $church_id, $id)
     {
         try {
-            $fees_type = SmFeesType::where('school_id', $school_id)->find($id);
-            $fees_types = SmFeesType::where('school_id', $school_id)->get();
-            $fees_groups = SmFeesGroup::where('school_id', $school_id)->get();
+            $fees_type = SmFeesType::where('church_id', $church_id)->find($id);
+            $fees_types = SmFeesType::where('church_id', $church_id)->get();
+            $fees_groups = SmFeesGroup::where('church_id', $church_id)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
                 $data['fees_type'] = $fees_type->toArray();
@@ -7270,7 +7270,7 @@ class SmApiController extends Controller
         $validator = Validator::make($input, [
             'name' => 'required|max:50|unique:sm_fees_types,name,' . $request->id,
             'fees_group' => "required|",
-            'school_id' => "required",
+            'church_id' => "required",
         ]);
 
         if ($validator->fails()) {
@@ -7283,11 +7283,11 @@ class SmApiController extends Controller
         }
 
         try {
-            $fees_type = SmFeesType::where('school_id', $request->school_id)->find($request->id);
+            $fees_type = SmFeesType::where('church_id', $request->church_id)->find($request->id);
             $fees_type->name = $request->name;
             $fees_type->fees_group_id = $request->fees_group;
             $fees_type->description = $request->description;
-            $fees_type->school_id = $request->school_id;
+            $fees_type->church_id = $request->church_id;
             $result = $fees_type->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -7338,7 +7338,7 @@ class SmApiController extends Controller
             return redirect()->back()->with('message-danger-delete', 'Something went wrong, please try again');
         }
     }
-    public function saas_fees_type_delete(Request $request, $school_id, $id)
+    public function saas_fees_type_delete(Request $request, $church_id, $id)
     {
         try {
             $id_key = 'fees_type_id';
@@ -7346,7 +7346,7 @@ class SmApiController extends Controller
             $tables = tableList::getTableList($id_key, $id);
 
             try {
-                $delete_query = SmFeesType::where('school_id', $school_id)->where('id', $id)->delete();
+                $delete_query = SmFeesType::where('church_id', $church_id)->where('id', $id)->delete();
                 if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                     if ($delete_query) {
                         return ApiBaseMethod::sendResponse(null, 'Fees Type has been deleted successfully');
@@ -7384,11 +7384,11 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_fees_discount_index(Request $request, $school_id)
+    public function saas_fees_discount_index(Request $request, $church_id)
     {
 
         try {
-            $fees_discounts = SmFeesDiscount::where('school_id', $school_id)->get();
+            $fees_discounts = SmFeesDiscount::where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($fees_discounts, null);
@@ -7450,7 +7450,7 @@ class SmApiController extends Controller
             'name' => "required|max:200|unique:sm_fees_discounts",
             'code' => "required|unique:sm_fees_discounts",
             'amount' => "required|integer|min:0",
-            'school_id' => "required",
+            'church_id' => "required",
         ]);
 
         if ($validator->fails()) {
@@ -7469,7 +7469,7 @@ class SmApiController extends Controller
             $fees_discount->type = $request->type;
             $fees_discount->amount = $request->amount;
             $fees_discount->description = $request->description;
-            $fees_discount->school_id = $request->school_id;
+            $fees_discount->church_id = $request->church_id;
             $result = $fees_discount->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -7508,12 +7508,12 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_fees_discount_edit(Request $request, $school_id, $id)
+    public function saas_fees_discount_edit(Request $request, $church_id, $id)
     {
 
         try {
-            $fees_discount = SmFeesDiscount::where('school_id', $school_id)->find($id);
-            $fees_discounts = SmFeesDiscount::where('school_id', $school_id)->get();
+            $fees_discount = SmFeesDiscount::where('church_id', $church_id)->find($id);
+            $fees_discounts = SmFeesDiscount::where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -7578,7 +7578,7 @@ class SmApiController extends Controller
             'name' => "required|max:200|unique:sm_fees_discounts,name," . $request->id,
             'code' => "required|unique:sm_fees_discounts,code," . $request->id,
             'amount' => "required|integer|min:0",
-            'school_id' => "required",
+            'church_id' => "required",
         ]);
 
         if ($validator->fails()) {
@@ -7591,13 +7591,13 @@ class SmApiController extends Controller
         }
 
         try {
-            $fees_discount = SmFeesDiscount::where('school_id', $school_id)->find($request->id);
+            $fees_discount = SmFeesDiscount::where('church_id', $church_id)->find($request->id);
             $fees_discount->name = $request->name;
             $fees_discount->code = $request->code;
             $fees_discount->type = $request->type;
             $fees_discount->amount = $request->amount;
             $fees_discount->description = $request->description;
-            $fees_discount->school_id = $request->school_id;
+            $fees_discount->church_id = $request->church_id;
             $result = $fees_discount->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -7649,7 +7649,7 @@ class SmApiController extends Controller
             return redirect()->back()->with('message-danger-delete', 'Something went wrong, please try again');
         }
     }
-    public function saas_fees_discount_delete(Request $request, $school_id, $id)
+    public function saas_fees_discount_delete(Request $request, $church_id, $id)
     {
 
         try {
@@ -7658,7 +7658,7 @@ class SmApiController extends Controller
             $tables = tableList::getTableList($id_key, $id);
 
             try {
-                $delete_query = SmFeesDiscount::where('school_id', $school_id)->destroy($request->id);
+                $delete_query = SmFeesDiscount::where('church_id', $church_id)->destroy($request->id);
                 if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                     if ($delete_query) {
                         return ApiBaseMethod::sendResponse(null, 'Fees Discount has been deleted successfully');
@@ -7703,14 +7703,14 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_feesDiscountAssign(Request $request, $school_id, $id)
+    public function saas_feesDiscountAssign(Request $request, $church_id, $id)
     {
 
         try {
             $fees_discount_id = $id;
-            $classes = SmClass::where('active_status', 1)->where('school_id', $school_id)->get();
-            $genders = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '1')->where('school_id', $school_id)->get();
-            $categories = SmStudentCategory::where('school_id', $school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_id', $church_id)->get();
+            $genders = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '1')->where('church_id', $church_id)->get();
+            $categories = SmStudentCategory::where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -7736,10 +7736,10 @@ class SmApiController extends Controller
             $students = SmStudent::query();
             $students->where('active_status', 1);
             if ($request->class != "") {
-                $students->where('class_id', $request->class);
+                $students->where('age_group_id', $request->class);
             }
             if ($request->section != "") {
-                $students->where('section_id', $request->section);
+                $students->where('mgender_id', $request->section);
             }
             if ($request->category != "") {
                 $students->where('student_category_id', $request->category);
@@ -7753,16 +7753,16 @@ class SmApiController extends Controller
 
             $pre_assigned = [];
             foreach ($students as $student) {
-                $assigned_student = SmFeesAssignDiscount::select('student_id')->where('student_id', $student->id)->where('fees_discount_id', $request->fees_discount_id)->first();
+                $assigned_student = SmFeesAssignDiscount::select('member_id')->where('member_id', $student->id)->where('fees_discount_id', $request->fees_discount_id)->first();
 
                 if ($assigned_student != "") {
-                    if (!in_array($assigned_student->student_id, $pre_assigned)) {
-                        $pre_assigned[] = $assigned_student->student_id;
+                    if (!in_array($assigned_student->member_id, $pre_assigned)) {
+                        $pre_assigned[] = $assigned_student->member_id;
                     }
                 }
             }
 
-            $class_id = $request->class;
+            $age_group_id = $request->class;
             $category_id = $request->category;
             $gender_id = $request->gender;
 
@@ -7775,32 +7775,32 @@ class SmApiController extends Controller
                 $data['fees_discount'] = $fees_discount;
                 $data['fees_discount_id'] = $fees_discount_id;
                 $data['pre_assigned'] = $pre_assigned;
-                $data['class_id'] = $class_id;
+                $data['age_group_id'] = $age_group_id;
                 $data['category_id'] = $category_id;
                 $data['gender_id'] = $gender_id;
                 return ApiBaseMethod::sendResponse($data, null);
             }
 
-            return view('backEnd.feesCollection.fees_discount_assign', compact('classes', 'categories', 'genders', 'students', 'fees_discount', 'fees_discount_id', 'pre_assigned', 'class_id', 'category_id', 'gender_id'));
+            return view('backEnd.feesCollection.fees_discount_assign', compact('classes', 'categories', 'genders', 'students', 'fees_discount', 'fees_discount_id', 'pre_assigned', 'age_group_id', 'category_id', 'gender_id'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_feesDiscountAssignSearch(Request $request, $school_id)
+    public function saas_feesDiscountAssignSearch(Request $request, $church_id)
     {
 
         try {
-            $classes = SmClass::where('active_status', 1)->where('school_id', $school_id)->get();
-            $genders = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '1')->where('school_id', $school_id)->get();
-            $categories = SmStudentCategory::where('school_id', $school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_id', $church_id)->get();
+            $genders = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '1')->where('church_id', $church_id)->get();
+            $categories = SmStudentCategory::where('church_id', $church_id)->get();
             $fees_discount_id = $request->fees_discount_id;
             $students = SmStudent::query();
             $students->where('active_status', 1);
             if ($request->class != "") {
-                $students->where('class_id', $request->class);
+                $students->where('age_group_id', $request->class);
             }
             if ($request->section != "") {
-                $students->where('section_id', $request->section);
+                $students->where('mgender_id', $request->section);
             }
             if ($request->category != "") {
                 $students->where('student_category_id', $request->category);
@@ -7810,20 +7810,20 @@ class SmApiController extends Controller
             }
             $students = $students->get();
 
-            $fees_discount = SmFeesDiscount::where('school_id', $school_id)->find($request->fees_discount_id);
+            $fees_discount = SmFeesDiscount::where('church_id', $church_id)->find($request->fees_discount_id);
 
             $pre_assigned = [];
             foreach ($students as $student) {
-                $assigned_student = SmFeesAssignDiscount::select('student_id')->where('student_id', $student->id)->where('fees_discount_id', $request->fees_discount_id)->first();
+                $assigned_student = SmFeesAssignDiscount::select('member_id')->where('member_id', $student->id)->where('fees_discount_id', $request->fees_discount_id)->first();
 
                 if ($assigned_student != "") {
-                    if (!in_array($assigned_student->student_id, $pre_assigned)) {
-                        $pre_assigned[] = $assigned_student->student_id;
+                    if (!in_array($assigned_student->member_id, $pre_assigned)) {
+                        $pre_assigned[] = $assigned_student->member_id;
                     }
                 }
             }
 
-            $class_id = $request->class;
+            $age_group_id = $request->class;
             $category_id = $request->category;
             $gender_id = $request->gender;
 
@@ -7836,13 +7836,13 @@ class SmApiController extends Controller
                 $data['fees_discount'] = $fees_discount;
                 $data['fees_discount_id'] = $fees_discount_id;
                 $data['pre_assigned'] = $pre_assigned;
-                $data['class_id'] = $class_id;
+                $data['age_group_id'] = $age_group_id;
                 $data['category_id'] = $category_id;
                 $data['gender_id'] = $gender_id;
                 return ApiBaseMethod::sendResponse($data, null);
             }
 
-            return view('backEnd.feesCollection.fees_discount_assign', compact('classes', 'categories', 'genders', 'students', 'fees_discount', 'fees_discount_id', 'pre_assigned', 'class_id', 'category_id', 'gender_id'));
+            return view('backEnd.feesCollection.fees_discount_assign', compact('classes', 'categories', 'genders', 'students', 'fees_discount', 'fees_discount_id', 'pre_assigned', 'age_group_id', 'category_id', 'gender_id'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
@@ -7853,13 +7853,13 @@ class SmApiController extends Controller
         try {
 
             foreach ($request->students as $student) {
-                $assign_discount = SmFeesAssignDiscount::where('fees_discount_id', $request->fees_discount_id)->where('student_id', $student)->delete();
+                $assign_discount = SmFeesAssignDiscount::where('fees_discount_id', $request->fees_discount_id)->where('member_id', $student)->delete();
             }
 
             if ($request->checked_ids != "") {
                 foreach ($request->checked_ids as $student) {
                     $assign_discount = new SmFeesAssignDiscount();
-                    $assign_discount->student_id = $student;
+                    $assign_discount->member_id = $student;
                     $assign_discount->fees_discount_id = $request->fees_discount_id;
                     $assign_discount->save();
                 }
@@ -7876,21 +7876,21 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_feesDiscountAssignStore(Request $request, $school_id)
+    public function saas_feesDiscountAssignStore(Request $request, $church_id)
     {
 
         try {
 
             foreach ($request->students as $student) {
-                $assign_discount = SmFeesAssignDiscount::where('fees_discount_id', $request->fees_discount_id)->where('student_id', $student)->where('school_id', $school_id)->delete();
+                $assign_discount = SmFeesAssignDiscount::where('fees_discount_id', $request->fees_discount_id)->where('member_id', $student)->where('church_id', $church_id)->delete();
             }
 
             if ($request->checked_ids != "") {
                 foreach ($request->checked_ids as $student) {
                     $assign_discount = new SmFeesAssignDiscount();
-                    $assign_discount->student_id = $student;
+                    $assign_discount->member_id = $student;
                     $assign_discount->fees_discount_id = $request->fees_discount_id;
-                    $assign_discount->school_id = $school_id;
+                    $assign_discount->church_id = $church_id;
                     $assign_discount->save();
                 }
             } else {
@@ -7906,17 +7906,17 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function feesGenerateModal(Request $request, $school_id, $amount, $student_id, $type)
+    public function feesGenerateModal(Request $request, $church_id, $amount, $member_id, $type)
     {
         try {
             $amount = $amount;
             $fees_type_id = $type;
-            $student_id = $student_id;
-            $discounts = SmFeesAssignDiscount::where('student_id', $student_id)->where('school_id', $school_id)->get();
+            $member_id = $member_id;
+            $discounts = SmFeesAssignDiscount::where('member_id', $member_id)->where('church_id', $church_id)->get();
 
             $applied_discount = [];
             foreach ($discounts as $fees_discount) {
-                $fees_payment = SmFeesPayment::select('fees_discount_id')->where('fees_discount_id', $fees_discount->id)->where('school_id', $school_id)->first();
+                $fees_payment = SmFeesPayment::select('fees_discount_id')->where('fees_discount_id', $fees_discount->id)->where('church_id', $church_id)->first();
                 if (isset($fees_payment->fees_discount_id)) {
                     $applied_discount[] = $fees_payment->fees_discount_id;
                 }
@@ -7927,12 +7927,12 @@ class SmApiController extends Controller
                 $data['amount'] = $amount;
                 $data['discounts'] = $discounts;
                 $data['fees_type_id'] = $fees_type_id;
-                $data['student_id'] = $student_id;
+                $data['member_id'] = $member_id;
                 $data['applied_discount'] = $applied_discount;
                 return ApiBaseMethod::sendResponse($data, null);
             }
 
-            return view('backEnd.feesCollection.fees_generate_modal', compact('amount', 'discounts', 'fees_type_id', 'student_id', 'applied_discount'));
+            return view('backEnd.feesCollection.fees_generate_modal', compact('amount', 'discounts', 'fees_type_id', 'member_id', 'applied_discount'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
@@ -7953,12 +7953,12 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_feesDiscountAmountSearch(Request $request, $school_id)
+    public function saas_feesDiscountAmountSearch(Request $request, $church_id)
     {
 
         try {
             $html = $request->fees_discount_id;
-            $discount_amount = SmFeesAssignDiscount::where('school_id', $school_id)->find($request->fees_discount_id);
+            $discount_amount = SmFeesAssignDiscount::where('church_id', $church_id)->find($request->fees_discount_id);
             $html = $discount_amount->feesDiscount->amount;
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -7993,10 +7993,10 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_feesPaymentDelete(Request $request, $school_id)
+    public function saas_feesPaymentDelete(Request $request, $church_id)
     {
         try {
-            $result = SmFeesPayment::where('school_id', $school_id)->where('id', $request->id)->delete();
+            $result = SmFeesPayment::where('church_id', $church_id)->where('id', $request->id)->delete();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 if ($result) {
@@ -8020,7 +8020,7 @@ class SmApiController extends Controller
     public function feesForward(Request $request)
     {
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($classes, null);
             }
@@ -8029,10 +8029,10 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_feesForward(Request $request, $school_id)
+    public function saas_feesForward(Request $request, $church_id)
     {
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($classes, null);
             }
@@ -8058,14 +8058,14 @@ class SmApiController extends Controller
                 ->withInput();
         }
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-            $students = SmStudent::where('class_id', $request->class)->where('section_id', $request->section)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+            $students = SmStudent::where('age_group_id', $request->class)->where('mgender_id', $request->section)->get();
             if ($students->count() != 0) {
                 foreach ($students as $student) {
-                    $fees_balance = SmFeesCarryForward::where('student_id', $student->id)->count();
+                    $fees_balance = SmFeesCarryForward::where('member_id', $student->id)->count();
                 }
 
-                $class_id = $request->class;
+                $age_group_id = $request->class;
 
                 if ($fees_balance == 0) {
 
@@ -8073,10 +8073,10 @@ class SmApiController extends Controller
                         $data = [];
                         $data['classes'] = $classes->toArray();
                         $data['students'] = $students->toArray();
-                        $data['class_id'] = $class_id;
+                        $data['age_group_id'] = $age_group_id;
                         return ApiBaseMethod::sendResponse($data, null);
                     }
-                    return view('backEnd.feesCollection.fees_forward', compact('classes', 'students', 'class_id'));
+                    return view('backEnd.feesCollection.fees_forward', compact('classes', 'students', 'age_group_id'));
                 } else {
                     $update = "";
 
@@ -8084,11 +8084,11 @@ class SmApiController extends Controller
                         $data = [];
                         $data['classes'] = $classes->toArray();
                         $data['students'] = $students->toArray();
-                        $data['class_id'] = $class_id;
+                        $data['age_group_id'] = $age_group_id;
                         $data['update'] = $update;
                         return ApiBaseMethod::sendResponse($data, null);
                     }
-                    return view('backEnd.feesCollection.fees_forward', compact('classes', 'students', 'update', 'class_id'));
+                    return view('backEnd.feesCollection.fees_forward', compact('classes', 'students', 'update', 'age_group_id'));
                 }
             } else {
 
@@ -8102,7 +8102,7 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_feesForwardSearch(Request $request, $school_id)
+    public function saas_feesForwardSearch(Request $request, $church_id)
     {
         $input = $request->all();
         $validator = Validator::make($input, [
@@ -8119,14 +8119,14 @@ class SmApiController extends Controller
                 ->withInput();
         }
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
-            $students = SmStudent::where('class_id', $request->class)->where('section_id', $request->section)->where('school_id', $school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
+            $students = SmStudent::where('age_group_id', $request->class)->where('mgender_id', $request->section)->where('church_id', $church_id)->get();
             if ($students->count() != 0) {
                 foreach ($students as $student) {
-                    $fees_balance = SmFeesCarryForward::where('student_id', $student->id)->where('school_id', $school_id)->count();
+                    $fees_balance = SmFeesCarryForward::where('member_id', $student->id)->where('church_id', $church_id)->count();
                 }
 
-                $class_id = $request->class;
+                $age_group_id = $request->class;
 
                 if ($fees_balance == 0) {
 
@@ -8134,10 +8134,10 @@ class SmApiController extends Controller
                         $data = [];
                         $data['classes'] = $classes->toArray();
                         $data['students'] = $students->toArray();
-                        $data['class_id'] = $class_id;
+                        $data['age_group_id'] = $age_group_id;
                         return ApiBaseMethod::sendResponse($data, null);
                     }
-                    return view('backEnd.feesCollection.fees_forward', compact('classes', 'students', 'class_id'));
+                    return view('backEnd.feesCollection.fees_forward', compact('classes', 'students', 'age_group_id'));
                 } else {
                     $update = "";
 
@@ -8145,11 +8145,11 @@ class SmApiController extends Controller
                         $data = [];
                         $data['classes'] = $classes->toArray();
                         $data['students'] = $students->toArray();
-                        $data['class_id'] = $class_id;
+                        $data['age_group_id'] = $age_group_id;
                         $data['update'] = $update;
                         return ApiBaseMethod::sendResponse($data, null);
                     }
-                    return view('backEnd.feesCollection.fees_forward', compact('classes', 'students', 'update', 'class_id'));
+                    return view('backEnd.feesCollection.fees_forward', compact('classes', 'students', 'update', 'age_group_id'));
                 }
             } else {
 
@@ -8166,7 +8166,7 @@ class SmApiController extends Controller
     public function fees_Forward(Request $request)
     {
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($classes, null);
             }
@@ -8175,10 +8175,10 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_fees_Forward(Request $request, $school_id)
+    public function saas_fees_Forward(Request $request, $church_id)
     {
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($classes, null);
             }
@@ -8200,7 +8200,7 @@ class SmApiController extends Controller
                     $fees_forward->save();
                 } else {
                     $fees_forward = new SmFeesCarryForward();
-                    $fees_forward->student_id = $student;
+                    $fees_forward->member_id = $student;
                     $fees_forward->balance = $request->balance[$student];
                     $fees_forward->save();
                 }
@@ -8221,7 +8221,7 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_feesForwardStore(Request $request, $school_id)
+    public function saas_feesForwardStore(Request $request, $church_id)
     {
         DB::beginTransaction();
         try {
@@ -8229,14 +8229,14 @@ class SmApiController extends Controller
 
                 if ($request->update == 1) {
 
-                    $fees_forward = SmFeesCarryForward::where('school_id', $school_id)->find($student);
+                    $fees_forward = SmFeesCarryForward::where('church_id', $church_id)->find($student);
                     $fees_forward->balance = $request->balance[$student];
                     $fees_forward->save();
                 } else {
                     $fees_forward = new SmFeesCarryForward();
-                    $fees_forward->student_id = $student;
+                    $fees_forward->member_id = $student;
                     $fees_forward->balance = $request->balance[$student];
-                    $fees_forward->school_id = $school_id;
+                    $fees_forward->church_id = $church_id;
                     $fees_forward->save();
                 }
             }
@@ -8259,7 +8259,7 @@ class SmApiController extends Controller
     public function Fees_fward(Request $request)
     {
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($classes, null);
             }
@@ -8268,10 +8268,10 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_Fees_fward(Request $request, $school_id)
+    public function saas_Fees_fward(Request $request, $church_id)
     {
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($classes, null);
             }
@@ -8306,18 +8306,18 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_profit(Request $request, $school_id)
+    public function saas_profit(Request $request, $church_id)
     {
         try {
-            $add_incomes = SmAddIncome::where('active_status', 1)->where('school_id', $school_id)->sum('amount');
-            $fees_payments = SmFeesPayment::where('active_status', 1)->where('school_id', $school_id)->sum('amount');
-            $item_sells = SmItemSell::where('active_status', 1)->where('school_id', $school_id)->sum('total_paid');
+            $add_incomes = SmAddIncome::where('active_status', 1)->where('church_id', $church_id)->sum('amount');
+            $fees_payments = SmFeesPayment::where('active_status', 1)->where('church_id', $church_id)->sum('amount');
+            $item_sells = SmItemSell::where('active_status', 1)->where('church_id', $church_id)->sum('total_paid');
 
             $total_income = $add_incomes + $fees_payments + $item_sells;
 
-            $add_expenses = SmAddExpense::where('active_status', 1)->where('school_id', $school_id)->sum('amount');
-            $item_receives = SmItemReceive::where('active_status', 1)->where('school_id', $school_id)->sum('total_paid');
-            $payroll_payments = SmHrPayrollGenerate::where('active_status', 1)->where('payroll_status', 'P')->where('school_id', $school_id)->sum('net_salary');
+            $add_expenses = SmAddExpense::where('active_status', 1)->where('church_id', $church_id)->sum('amount');
+            $item_receives = SmItemReceive::where('active_status', 1)->where('church_id', $church_id)->sum('total_paid');
+            $payroll_payments = SmHrPayrollGenerate::where('active_status', 1)->where('payroll_status', 'P')->where('church_id', $church_id)->sum('net_salary');
 
             $total_expense = $add_expenses + $item_receives + $payroll_payments;
 
@@ -8369,7 +8369,7 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_searchProfitByDate(Request $request, $school_id)
+    public function saas_searchProfitByDate(Request $request, $church_id)
     {
         try {
             date_default_timezone_set("Asia/Dhaka");
@@ -8380,15 +8380,15 @@ class SmApiController extends Controller
             $date_time_from = date('Y-m-d H:i:s', strtotime($request->date_from));
             $date_time_to = date('Y-m-d H:i:s', strtotime($request->date_to . ' ' . '23:59:00'));
             // Income
-            $add_incomes = SmAddIncome::where('date', '>=', $date_from)->where('date', '<=', $date_to)->where('active_status', 1)->where('school_id', $school_id)->sum('amount');
-            $fees_payments = SmFeesPayment::where('updated_at', '>=', $date_time_from)->where('updated_at', '<=', $date_time_to)->where('active_status', 1)->where('school_id', $school_id)->sum('amount');
-            $item_sells = SmItemSell::where('updated_at', '>=', $date_time_from)->where('updated_at', '<=', $date_time_to)->where('active_status', 1)->where('school_id', $school_id)->sum('total_paid');
+            $add_incomes = SmAddIncome::where('date', '>=', $date_from)->where('date', '<=', $date_to)->where('active_status', 1)->where('church_id', $church_id)->sum('amount');
+            $fees_payments = SmFeesPayment::where('updated_at', '>=', $date_time_from)->where('updated_at', '<=', $date_time_to)->where('active_status', 1)->where('church_id', $church_id)->sum('amount');
+            $item_sells = SmItemSell::where('updated_at', '>=', $date_time_from)->where('updated_at', '<=', $date_time_to)->where('active_status', 1)->where('church_id', $church_id)->sum('total_paid');
             $total_income = $add_incomes + $fees_payments + $item_sells;
 
             // expense
-            $add_expenses = SmAddExpense::where('date', '>=', $date_from)->where('date', '<=', $date_to)->where('active_status', 1)->where('school_id', $school_id)->sum('amount');
-            $item_receives = SmItemReceive::where('updated_at', '>=', $date_time_from)->where('updated_at', '<=', $date_time_to)->where('active_status', 1)->where('school_id', $school_id)->sum('total_paid');
-            $payroll_payments = SmHrPayrollGenerate::where('updated_at', '>=', $date_time_from)->where('updated_at', '<=', $date_time_to)->where('active_status', 1)->where('payroll_status', 'P')->where('school_id', $school_id)->sum('net_salary');
+            $add_expenses = SmAddExpense::where('date', '>=', $date_from)->where('date', '<=', $date_to)->where('active_status', 1)->where('church_id', $church_id)->sum('amount');
+            $item_receives = SmItemReceive::where('updated_at', '>=', $date_time_from)->where('updated_at', '<=', $date_time_to)->where('active_status', 1)->where('church_id', $church_id)->sum('total_paid');
+            $payroll_payments = SmHrPayrollGenerate::where('updated_at', '>=', $date_time_from)->where('updated_at', '<=', $date_time_to)->where('active_status', 1)->where('payroll_status', 'P')->where('church_id', $church_id)->sum('net_salary');
 
             // total profit
             $total_expense = $add_expenses + $item_receives + $payroll_payments;
@@ -8432,18 +8432,18 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_Accounts_Profit(Request $request, $school_id)
+    public function saas_Accounts_Profit(Request $request, $church_id)
     {
         try {
-            $add_incomes = SmAddIncome::where('active_status', 1)->where('school_id', $school_id)->sum('amount');
-            $fees_payments = SmFeesPayment::where('active_status', 1)->where('school_id', $school_id)->sum('amount');
-            $item_sells = SmItemSell::where('active_status', 1)->where('school_id', $school_id)->sum('total_paid');
+            $add_incomes = SmAddIncome::where('active_status', 1)->where('church_id', $church_id)->sum('amount');
+            $fees_payments = SmFeesPayment::where('active_status', 1)->where('church_id', $church_id)->sum('amount');
+            $item_sells = SmItemSell::where('active_status', 1)->where('church_id', $church_id)->sum('total_paid');
 
             $total_income = $add_incomes + $fees_payments + $item_sells;
 
-            $add_expenses = SmAddExpense::where('active_status', 1)->where('school_id', $school_id)->sum('amount');
-            $item_receives = SmItemReceive::where('active_status', 1)->where('school_id', $school_id)->sum('total_paid');
-            $payroll_payments = SmHrPayrollGenerate::where('active_status', 1)->where('payroll_status', 'P')->where('school_id', $school_id)->sum('net_salary');
+            $add_expenses = SmAddExpense::where('active_status', 1)->where('church_id', $church_id)->sum('amount');
+            $item_receives = SmItemReceive::where('active_status', 1)->where('church_id', $church_id)->sum('total_paid');
+            $payroll_payments = SmHrPayrollGenerate::where('active_status', 1)->where('payroll_status', 'P')->where('church_id', $church_id)->sum('net_salary');
 
             $total_expense = $add_expenses + $item_receives + $payroll_payments;
 
@@ -8482,14 +8482,14 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_income_index(Request $request, $school_id)
+    public function saas_income_index(Request $request, $church_id)
     {
 
         try {
-            $add_incomes = SmAddIncome::where('active_status', '=', 1)->where('school_id', $school_id)->get();
-            $income_heads = SmChartOfAccount::where('type', "I")->where('active_status', '=', 1)->where('school_id', $school_id)->get();
-            $bank_accounts = SmBankAccount::where('active_status', '=', 1)->where('school_id', $school_id)->get();
-            $payment_methods = SmPaymentMethhod::where('active_status', '=', 1)->where('school_id', $school_id)->get();
+            $add_incomes = SmAddIncome::where('active_status', '=', 1)->where('church_id', $church_id)->get();
+            $income_heads = SmChartOfAccount::where('type', "I")->where('active_status', '=', 1)->where('church_id', $church_id)->get();
+            $bank_accounts = SmBankAccount::where('active_status', '=', 1)->where('church_id', $church_id)->get();
+            $payment_methods = SmPaymentMethhod::where('active_status', '=', 1)->where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -8603,7 +8603,7 @@ class SmApiController extends Controller
                 'accounts' => "required|integer",
                 'payment_method' => "required|integer",
                 'amount' => "required|integer",
-                'school_id' => "required",
+                'church_id' => "required",
                 'file' => "sometimes|nullable|mimes:pdf,doc,docx,jpg,jpeg,png",
             ]);
         } else {
@@ -8613,7 +8613,7 @@ class SmApiController extends Controller
                 'date' => "required",
                 'payment_method' => "required|integer",
                 'amount' => "required|integer",
-                'school_id' => "required",
+                'church_id' => "required",
                 'file' => "sometimes|nullable|mimes:pdf,doc,docx,jpg,jpeg,png",
             ]);
         }
@@ -8661,7 +8661,7 @@ class SmApiController extends Controller
             $add_income->amount = $request->amount;
             $add_income->file = $fileName;
             $add_income->description = $request->description;
-            $add_income->school_id = $request->school_id;
+            $add_income->church_id = $request->church_id;
             $result = $add_income->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -8705,15 +8705,15 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_income_edit(Request $request, $school_id, $id)
+    public function saas_income_edit(Request $request, $church_id, $id)
     {
 
         try {
-            $add_income = SmAddIncome::where('school_id', $school_id)->find($id);
-            $add_incomes = SmAddIncome::where('active_status', 1)->where('school_id', $school_id)->get();
-            $income_heads = SmChartOfAccount::where('active_status', '=', 1)->where('school_id', $school_id)->get();
-            $bank_accounts = SmBankAccount::where('active_status', '=', 1)->where('school_id', $school_id)->get();
-            $payment_methods = SmPaymentMethhod::where('active_status', '=', 1)->where('school_id', $school_id)->get();
+            $add_income = SmAddIncome::where('church_id', $church_id)->find($id);
+            $add_incomes = SmAddIncome::where('active_status', 1)->where('church_id', $church_id)->get();
+            $income_heads = SmChartOfAccount::where('active_status', '=', 1)->where('church_id', $church_id)->get();
+            $bank_accounts = SmBankAccount::where('active_status', '=', 1)->where('church_id', $church_id)->get();
+            $payment_methods = SmPaymentMethhod::where('active_status', '=', 1)->where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -8825,7 +8825,7 @@ class SmApiController extends Controller
                 'accounts' => "required",
                 'payment_method' => "required",
                 'amount' => "required",
-                'school_id' => "required",
+                'church_id' => "required",
                 'file' => "sometimes|nullable|mimes:pdf,doc,docx,jpg,jpeg,png",
             ]);
         } else {
@@ -8835,7 +8835,7 @@ class SmApiController extends Controller
                 'date' => "required",
                 'payment_method' => "required",
                 'amount' => "required",
-                'school_id' => "required",
+                'church_id' => "required",
                 'file' => "sometimes|nullable|mimes:pdf,doc,docx,jpg,jpeg,png",
             ]);
         }
@@ -8891,7 +8891,7 @@ class SmApiController extends Controller
                 $add_income->file = $fileName;
             }
             $add_income->description = $request->description;
-            $add_income->school_id = $request->school_id;
+            $add_income->church_id = $request->church_id;
             $result = $add_income->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -8939,11 +8939,11 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_income_delete(Request $request, $school_id)
+    public function saas_income_delete(Request $request, $church_id)
     {
 
         try {
-            $add_income = SmAddIncome::where('school_id', $school_id)->where('id', $request->id)->find();
+            $add_income = SmAddIncome::where('church_id', $church_id)->where('id', $request->id)->find();
             if ($add_income->file != "") {
                 unlink($add_income->file);
             }
@@ -8981,11 +8981,11 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_payment_index(Request $request, $school_id)
+    public function saas_payment_index(Request $request, $church_id)
     {
 
         try {
-            $payment_methods = SmPaymentMethhod::where('school_id', $school_id)->get();
+            $payment_methods = SmPaymentMethhod::where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($payment_methods, null);
@@ -9040,7 +9040,7 @@ class SmApiController extends Controller
         $input = $request->all();
         $validator = Validator::make($input, [
             'method' => "required|unique:sm_payment_methhods,method",
-            'school_id' => "required",
+            'church_id' => "required",
         ]);
 
         if ($validator->fails()) {
@@ -9054,7 +9054,7 @@ class SmApiController extends Controller
         try {
             $payment_method = new SmPaymentMethhod();
             $payment_method->method = $request->method;
-            $payment_method->school_id = $request->school_id;
+            $payment_method->church_id = $request->church_id;
             $result = $payment_method->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -9095,12 +9095,12 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_payment_edit(Request $request, $school_id, $id)
+    public function saas_payment_edit(Request $request, $church_id, $id)
     {
 
         try {
-            $payment_method = SmPaymentMethhod::where('school_id', $school_id)->find($id);
-            $payment_methods = SmPaymentMethhod::where('school_id', $school_id)->get();
+            $payment_method = SmPaymentMethhod::where('church_id', $church_id)->find($id);
+            $payment_methods = SmPaymentMethhod::where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -9157,7 +9157,7 @@ class SmApiController extends Controller
         $input = $request->all();
         $validator = Validator::make($input, [
             'method' => "required|unique:sm_payment_methhods,method," . $request->id,
-            'school_id' => "required",
+            'church_id' => "required",
         ]);
 
         if ($validator->fails()) {
@@ -9171,7 +9171,7 @@ class SmApiController extends Controller
         try {
             $payment_method = SmPaymentMethhod::find($request->id);
             $payment_method->method = $request->method;
-            $payment_method->school_id = $request->school_id;
+            $payment_method->church_id = $request->church_id;
             $result = $payment_method->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -9218,11 +9218,11 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_payment_delete(Request $request, $school_id, $id)
+    public function saas_payment_delete(Request $request, $church_id, $id)
     {
 
         try {
-            $student_group = SmPaymentMethhod::where('school_id', $school_id)->where('id', $id)->delete();
+            $student_group = SmPaymentMethhod::where('church_id', $church_id)->where('id', $id)->delete();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 if ($student_group) {
@@ -9249,7 +9249,7 @@ class SmApiController extends Controller
         try {
             $staffs = SmStaff::where('active_status', 1)->get();
             $roles = InfixRole::where('active_status', '=', '1')->where('id', '!=', 2)->where('id', '!=', 3)->where(function ($q) {
-                $q->where('school_id', 1)->orWhere('type', 'System');
+                $q->where('church_id', 1)->orWhere('type', 'System');
             })->get();
 
             $staffs_api = DB::table('sm_staffs')
@@ -9270,13 +9270,13 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_staffList(Request $request, $school_id)
+    public function saas_staffList(Request $request, $church_id)
     {
 
         try {
-            $staffs = SmStaff::where('active_status', 1)->where('school_id', $school_id)->get();
+            $staffs = SmStaff::where('active_status', 1)->where('church_id', $church_id)->get();
             $roles = InfixRole::where('active_status', '=', '1')->where('id', '!=', 2)->where('id', '!=', 3)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
 
             $staffs_api = DB::table('sm_staffs')
@@ -9286,7 +9286,7 @@ class SmApiController extends Controller
                 ->join('sm_human_departments', 'sm_staffs.department_id', '=', 'sm_human_departments.id')
                 ->join('sm_designations', 'sm_staffs.designation_id', '=', 'sm_designations.id')
                 ->join('sm_base_setups', 'sm_staffs.gender_id', '=', 'sm_base_setups.id')
-                ->where('sm_staffs.school_id', $school_id)
+                ->where('sm_staffs.church_id', $church_id)
                 ->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -9304,7 +9304,7 @@ class SmApiController extends Controller
         try {
             $roles = InfixRole::where('active_status', '=', '1')
                 ->where(function ($q) {
-                    $q->where('school_id', 1)->orWhere('type', 'System');
+                    $q->where('church_id', 1)->orWhere('type', 'System');
                 })
                 ->select('id', 'name', 'type')
                 ->where('id', '!=', 2)
@@ -9319,13 +9319,13 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_staffRoles(Request $request, $school_id)
+    public function saas_staffRoles(Request $request, $church_id)
     {
 
         try {
             $roles = InfixRole::where('active_status', '=', '1')
-                ->where(function ($q) use ($school_id) {
-                    $q->where('school_id', $school_id)->orWhere('type', 'System');
+                ->where(function ($q) use ($church_id) {
+                    $q->where('church_id', $church_id)->orWhere('type', 'System');
                 })
                 ->select('id', 'name', 'type')
                 ->where('id', '!=', 2)
@@ -9363,7 +9363,7 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_roleStaffList(Request $request, $school_id, $role_id)
+    public function saas_roleStaffList(Request $request, $church_id, $role_id)
     {
 
         try {
@@ -9371,7 +9371,7 @@ class SmApiController extends Controller
 
                 ->where('sm_staffs.active_status', 1)
                 ->where('role_id', '=', $role_id)
-                ->where('sm_staffs.school_id', $school_id)
+                ->where('sm_staffs.church_id', $church_id)
                 ->join('roles', 'sm_staffs.role_id', '=', 'roles.id')
                 ->join('sm_human_departments', 'sm_staffs.department_id', '=', 'sm_human_departments.id')
                 ->join('sm_designations', 'sm_staffs.designation_id', '=', 'sm_designations.id')
@@ -9387,16 +9387,16 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function staffView(Request $request, $school_id, $id)
+    public function staffView(Request $request, $church_id, $id)
     {
 
         try {
-            $staffDetails = SmStaff::where('school_id', $school_id)->find($id);
+            $staffDetails = SmStaff::where('church_id', $church_id)->find($id);
             if (!empty($staffDetails)) {
-                $staffPayrollDetails = SmHrPayrollGenerate::where('staff_id', $id)->where('payroll_status', '!=', 'NG')->where('school_id', $school_id)->get();
-                $staffLeaveDetails = SmLeaveRequest::where('staff_id', $id)->where('school_id', $school_id)->get();
-                $staffDocumentsDetails = SmStudentDocument::where('student_staff_id', $id)->where('type', '=', 'stf')->where('school_id', $school_id)->get();
-                $timelines = SmStudentTimeline::where('staff_student_id', $id)->where('type', '=', 'stf')->where('school_id', $school_id)->get();
+                $staffPayrollDetails = SmHrPayrollGenerate::where('staff_id', $id)->where('payroll_status', '!=', 'NG')->where('church_id', $church_id)->get();
+                $staffLeaveDetails = SmLeaveRequest::where('staff_id', $id)->where('church_id', $church_id)->get();
+                $staffDocumentsDetails = SmStudentDocument::where('student_staff_id', $id)->where('type', '=', 'stf')->where('church_id', $church_id)->get();
+                $timelines = SmStudentTimeline::where('staff_member_id', $id)->where('type', '=', 'stf')->where('church_id', $church_id)->get();
 
                 if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                     $data = [];
@@ -9426,7 +9426,7 @@ class SmApiController extends Controller
         try {
             $staffs = SmStaff::where('active_status', 1)->get();
             $roles = InfixRole::where('active_status', '=', '1')->where('id', '!=', 2)->where('id', '!=', 3)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
 
             $staffs_api = DB::table('sm_staffs')
@@ -9447,19 +9447,19 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_staff_List(Request $request, $school_id)
+    public function saas_staff_List(Request $request, $church_id)
     {
 
         try {
-            $staffs = SmStaff::where('active_status', 1)->where('school_id', $school_id)->get();
+            $staffs = SmStaff::where('active_status', 1)->where('church_id', $church_id)->get();
             $roles = InfixRole::where('active_status', '=', '1')->where('id', '!=', 2)->where('id', '!=', 3)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
 
             $staffs_api = DB::table('sm_staffs')
 
                 ->where('sm_staffs.active_status', 1)
-                ->where('sm_staffsschool_id', $school_id)
+                ->where('sm_staffschurch_id', $church_id)
                 ->join('roles', 'sm_staffs.role_id', '=', 'roles.id')
                 ->join('sm_human_departments', 'sm_staffs.department_id', '=', 'sm_human_departments.id')
                 ->join('sm_designations', 'sm_staffs.designation_id', '=', 'sm_designations.id')
@@ -9508,7 +9508,7 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_searchStaff(Request $request, $school_id)
+    public function saas_searchStaff(Request $request, $church_id)
     {
 
         try {
@@ -9527,9 +9527,9 @@ class SmApiController extends Controller
             if ($request->staff_name != "") {
                 $staff->where('full_name', 'like', '%' . $request->staff_name . '%');
             }
-            $staffs = $staff->where('school_id', $school_id)->get();
+            $staffs = $staff->where('church_id', $church_id)->get();
             $roles = InfixRole::where('active_status', '=', '1')->where('id', '!=', 2)->where('id', '!=', 3)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -9562,16 +9562,16 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_deleteStaff($school_id, $id)
+    public function saas_deleteStaff($church_id, $id)
     {
 
         try {
-            $staffs = SmStaff::where('school_id', $school_id)->where('id', $id)->find();
+            $staffs = SmStaff::where('church_id', $church_id)->where('id', $id)->find();
             $staffs->active_status = 0;
             $result = $staffs->update();
 
             if ($result) {
-                $users = User::where('school_id', $school_id)->find($staffs->user_id);
+                $users = User::where('church_id', $church_id)->find($staffs->user_id);
                 $users->active_status = 0;
                 $results = $users->update();
             }
@@ -9586,7 +9586,7 @@ class SmApiController extends Controller
 
         try {
             $roles = InfixRole::where('active_status', '=', '1')->where('id', '!=', 1)->where('id', '!=', 2)->where('id', '!=', 3)->where('id', '!=', 10)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -9597,12 +9597,12 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_staffAttendance(Request $request, $school_id)
+    public function saas_staffAttendance(Request $request, $church_id)
     {
 
         try {
             $roles = InfixRole::where('active_status', '=', '1')->where('id', '!=', 1)->where('id', '!=', 2)->where('id', '!=', 3)->where('id', '!=', 10)
-                ->where('school_id', $school_id)->get();
+                ->where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($roles, null);
@@ -9675,7 +9675,7 @@ class SmApiController extends Controller
         $validator = Validator::make($input, [
             'role' => 'required',
             'attendance_date' => 'required',
-            'school_id' => 'required',
+            'church_id' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -9693,7 +9693,7 @@ class SmApiController extends Controller
                 $q->orWhere('type', 'System');
             })->get();
             $role_id = $request->role;
-            $staffs = SmStaff::whereRole($request->role)->where('school_id', $request->school_id)->get();
+            $staffs = SmStaff::whereRole($request->role)->where('church_id', $request->church_id)->get();
 
             if ($staffs->isEmpty()) {
                 return ApiBaseMethod::sendError('No result found', 'Failed');
@@ -9702,7 +9702,7 @@ class SmApiController extends Controller
             $new_staffs = [];
             $attendance_type = "";
             foreach ($staffs as $staff) {
-                $attendance = SmStaffAttendence::where('staff_id', $staff->id)->where('attendence_date', date('Y-m-d', strtotime($request->attendance_date)))->where('school_id', $request->school_id)->first();
+                $attendance = SmStaffAttendence::where('staff_id', $staff->id)->where('attendence_date', date('Y-m-d', strtotime($request->attendance_date)))->where('church_id', $request->church_id)->first();
                 if ($attendance != "") {
                     $already_assigned_staffs[] = $attendance;
                     $attendance_type = $attendance->attendence_type;
@@ -9763,7 +9763,7 @@ class SmApiController extends Controller
     {
         try {
             foreach ($request->id as $staff) {
-                $attendance = SmStaffAttendence::where('staff_id', $staff)->where('attendence_date', date('Y-m-d', strtotime($request->date)))->where('school_id', $request->school_id)->first();
+                $attendance = SmStaffAttendence::where('staff_id', $staff)->where('attendence_date', date('Y-m-d', strtotime($request->date)))->where('church_id', $request->church_id)->first();
 
                 if ($attendance != "") {
                     $attendance->delete();
@@ -9777,7 +9777,7 @@ class SmApiController extends Controller
                 } else {
                     $attendance->attendence_type = $request->attendance[$staff];
                     $attendance->notes = $request->note[$staff];
-                    $attendance->school_id = $request->school_id;
+                    $attendance->church_id = $request->church_id;
                 }
 
                 $attendance->attendence_date = date('Y-m-d', strtotime($request->date));
@@ -9796,7 +9796,7 @@ class SmApiController extends Controller
         try {
 
             $roles = InfixRole::where('active_status', '=', '1')->where('id', '!=', 1)->where('id', '!=', 2)->where('id', '!=', 3)->where('id', '!=', 10)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -9808,13 +9808,13 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_staffAttendanceReport(Request $request, $school_id)
+    public function saas_staffAttendanceReport(Request $request, $church_id)
     {
 
         try {
 
             $roles = InfixRole::where('active_status', '=', '1')->where('id', '!=', 1)->where('id', '!=', 2)->where('id', '!=', 3)->where('id', '!=', 10)->where(function ($q) {
-                $q->where('school_id', $school_id)->orWhere('type', 'System');
+                $q->where('church_id', $church_id)->orWhere('type', 'System');
             })->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -9853,7 +9853,7 @@ class SmApiController extends Controller
 
             $days = cal_days_in_month(CAL_GREGORIAN, $request->month, $request->year);
             $roles = InfixRole::where('id', '!=', 3)->where('id', '!=', 2)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
 
             $staffs = SmStaff::whereRole($request->role)->get();
@@ -9883,7 +9883,7 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_staffAttendanceReportSearch(Request $request, $school_id)
+    public function saas_staffAttendanceReportSearch(Request $request, $church_id)
     {
 
         $input = $request->all();
@@ -9910,14 +9910,14 @@ class SmApiController extends Controller
 
             $days = cal_days_in_month(CAL_GREGORIAN, $request->month, $request->year);
             $roles = InfixRole::where('id', '!=', 3)->where('id', '!=', 2)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
 
-            $staffs = SmStaff::whereRole($request->role)->where('school_id', $school_id)->get();
+            $staffs = SmStaff::whereRole($request->role)->where('church_id', $church_id)->get();
 
             $attendances = [];
             foreach ($staffs as $staff) {
-                $attendance = SmStaffAttendence::where('staff_id', $staff->id)->where('attendence_date', 'like', $request->year . '-' . $request->month . '%')->where('school_id', $school_id)->get();
+                $attendance = SmStaffAttendence::where('staff_id', $staff->id)->where('attendence_date', 'like', $request->year . '-' . $request->month . '%')->where('church_id', $church_id)->get();
                 if (count($attendance) != 0) {
                     $attendances[] = $attendance;
                 }
@@ -9953,7 +9953,7 @@ class SmApiController extends Controller
     //         }
     //         $leave_types = SmLeaveType::where('active_status', 1)->get();
     //         $roles = InfixRole::where('id', '!=', 1)->where('id', '!=', 2)->where('id', '!=', 3)->where(function ($q) {
-    //             $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+    //             $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
     //         })->get();
     //         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
     //             $data = [];
@@ -9968,20 +9968,20 @@ class SmApiController extends Controller
     //        return ApiBaseMethod::sendError('Error.', $e->getMessage());
     //     }
     // }
-    public function saas_Approve_Leave_index(Request $request, $school_id)
+    public function saas_Approve_Leave_index(Request $request, $church_id)
     {
 
         try {
             $user = Auth::user();
-            $staff = SmStaff::where('user_id', Auth::user()->id)->where('school_id', $school_id)->first();
+            $staff = SmStaff::where('user_id', Auth::user()->id)->where('church_id', $church_id)->first();
             if (Auth()->user()->role_id == 1) {
-                $apply_leaves = SmLeaveRequest::where([['active_status', 1], ['approve_status', '!=', 'P']])->where('school_id', $school_id)->get();
+                $apply_leaves = SmLeaveRequest::where([['active_status', 1], ['approve_status', '!=', 'P']])->where('church_id', $church_id)->get();
             } else {
-                $apply_leaves = SmLeaveRequest::where([['active_status', 1], ['approve_status', '!=', 'P'], ['staff_id', '=', $staff->id]])->where('school_id', $school_id)->get();
+                $apply_leaves = SmLeaveRequest::where([['active_status', 1], ['approve_status', '!=', 'P'], ['staff_id', '=', $staff->id]])->where('church_id', $church_id)->get();
             }
-            $leave_types = SmLeaveType::where('active_status', 1)->where('school_id', $school_id)->get();
+            $leave_types = SmLeaveType::where('active_status', 1)->where('church_id', $church_id)->get();
             $roles = InfixRole::where('id', '!=', 1)->where('id', '!=', 2)->where('id', '!=', 3)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -10088,7 +10088,7 @@ class SmApiController extends Controller
                 'reason' => "required",
                 'login_id' => "required",
                 'role_id' => "required",
-                'school_id' => "required",
+                'church_id' => "required",
             ]);
         } else {
             $validator = Validator::make($input, [
@@ -10098,7 +10098,7 @@ class SmApiController extends Controller
                 'leave_from' => "required",
                 'leave_to' => "required",
                 'reason' => "required",
-                'school_id' => "required",
+                'church_id' => "required",
             ]);
         }
         if ($validator->fails()) {
@@ -10136,7 +10136,7 @@ class SmApiController extends Controller
             $leave_request_data->leave_to = date('Y-m-d', strtotime($request->leave_to));
             $leave_request_data->approve_status = $request->approve_status;
             $leave_request_data->reason = $request->reason;
-            $leave_request_data->school_id = $request->school_id;
+            $leave_request_data->church_id = $request->church_id;
             $leave_request_data->file = $fileName;
             $result = $leave_request_data->save();
 
@@ -10166,7 +10166,7 @@ class SmApiController extends Controller
             $editData = SmLeaveRequest::find($id);
             $staffsByRole = SmStaff::where('role_id', '=', $editData->role_id)->get();
             $roles = InfixRole::where('active_status', 1)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
             $apply_leaves = SmLeaveRequest::where('active_status', 1)->get();
             $leave_types = SmLeaveType::where('active_status', 1)->get();
@@ -10185,17 +10185,17 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_Approve_Leave_edit(Request $request, $school_id, $id)
+    public function saas_Approve_Leave_edit(Request $request, $church_id, $id)
     {
 
         try {
-            $editData = SmLeaveRequest::where('school_id', $school_id)->find($id);
-            $staffsByRole = SmStaff::where('role_id', '=', $editData->role_id)->where('school_id', $school_id)->get();
+            $editData = SmLeaveRequest::where('church_id', $church_id)->find($id);
+            $staffsByRole = SmStaff::where('role_id', '=', $editData->role_id)->where('church_id', $church_id)->get();
             $roles = InfixRole::where('active_status', 1)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
-            $apply_leaves = SmLeaveRequest::where('active_status', 1)->where('school_id', $school_id)->get();
-            $leave_types = SmLeaveType::where('active_status', 1)->where('school_id', $school_id)->get();
+            $apply_leaves = SmLeaveRequest::where('active_status', 1)->where('church_id', $church_id)->get();
+            $leave_types = SmLeaveType::where('active_status', 1)->where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -10235,19 +10235,19 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_staffNameByRole(Request $request, $school_id)
+    public function saas_staffNameByRole(Request $request, $church_id)
     {
 
         try {
 
             if ($request->id != 3) {
-                $allStaffs = SmStaff::whereRole($request->id)->where('school_id', $school_id)->get();
+                $allStaffs = SmStaff::whereRole($request->id)->where('church_id', $church_id)->get();
                 $staffs = [];
                 foreach ($allStaffs as $staffsvalue) {
                     $staffs[] = SmStaff::find($staffsvalue->id);
                 }
             } else {
-                $staffs = SmParent::where('active_status', 1)->where('school_id', $school_id)->get();
+                $staffs = SmParent::where('active_status', 1)->where('church_id', $church_id)->get();
             }
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -10273,8 +10273,8 @@ class SmApiController extends Controller
             $notification = new SmNotification;
             $notification->user_id = $leave_request_data->student->id;
             $notification->role_id = $role_id;
-            $notification->school_id = Auth::user()->school_id;
-            $notification->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+            $notification->church_id = Auth::user()->church_id;
+            $notification->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
             $notification->date = date('Y-m-d');
             $notification->message = 'Leave status updated';
             $notification->save();
@@ -10298,12 +10298,12 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_updateApproveLeave(Request $request, $school_id)
+    public function saas_updateApproveLeave(Request $request, $church_id)
     {
 
         try {
 
-            $leave_request_data = SmLeaveRequest::where('school_id', $school_id)->find($request->id);
+            $leave_request_data = SmLeaveRequest::where('church_id', $church_id)->find($request->id);
             $staff_id = $leave_request_data->staff_id;
             $role_id = $leave_request_data->role_id;
             $leave_request_data->approve_status = $request->approve_status;
@@ -10312,8 +10312,8 @@ class SmApiController extends Controller
             $notification = new SmNotification;
             $notification->user_id = $leave_request_data->student->id;
             $notification->role_id = $role_id;
-            $notification->school_id = Auth::user()->school_id;
-            $notification->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+            $notification->church_id = Auth::user()->church_id;
+            $notification->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
             $notification->date = date('Y-m-d');
             $notification->message = 'Leave status updated';
             $notification->save();
@@ -10355,12 +10355,12 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_viewLeaveDetails(Request $request, $school_id, $id)
+    public function saas_viewLeaveDetails(Request $request, $church_id, $id)
     {
         try {
 
-            $leaveDetails = SmLeaveRequest::where('school_id', $school_id)->find($id);
-            $staff_leaves = SmLeaveDefine::where('role_id', $leaveDetails->role_id)->where('school_id', $school_id)->get();
+            $leaveDetails = SmLeaveRequest::where('church_id', $church_id)->find($id);
+            $staff_leaves = SmLeaveDefine::where('role_id', $leaveDetails->role_id)->where('church_id', $church_id)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
                 $data['leaveDetails'] = $leaveDetails->toArray();
@@ -10401,20 +10401,20 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_apply_leave_index(Request $request, $school_id)
+    public function saas_apply_leave_index(Request $request, $church_id)
     {
 
         try {
             $user = Auth::user();
 
             if ($user) {
-                $my_leaves = SmLeaveDefine::where('role_id', $user->role_id)->where('school_id', $school_id)->get();
-                $apply_leaves = SmLeaveRequest::where('role_id', $user->role_id)->where('active_status', 1)->where('school_id', $school_id)->get();
-                $leave_types = SmLeaveDefine::where('role_id', $user->role_id)->where('active_status', 1)->where('school_id', $school_id)->get();
+                $my_leaves = SmLeaveDefine::where('role_id', $user->role_id)->where('church_id', $church_id)->get();
+                $apply_leaves = SmLeaveRequest::where('role_id', $user->role_id)->where('active_status', 1)->where('church_id', $church_id)->get();
+                $leave_types = SmLeaveDefine::where('role_id', $user->role_id)->where('active_status', 1)->where('church_id', $church_id)->get();
             } else {
-                $my_leaves = SmLeaveDefine::where('role_id', $request->role_id)->where('school_id', $school_id)->get();
-                $apply_leaves = SmLeaveRequest::where('role_id', $request->role_id)->where('active_status', 1)->where('school_id', $school_id)->get();
-                $leave_types = SmLeaveDefine::where('role_id', $request->role_id)->where('active_status', 1)->where('school_id', $school_id)->get();
+                $my_leaves = SmLeaveDefine::where('role_id', $request->role_id)->where('church_id', $church_id)->get();
+                $apply_leaves = SmLeaveRequest::where('role_id', $request->role_id)->where('active_status', 1)->where('church_id', $church_id)->get();
+                $leave_types = SmLeaveDefine::where('role_id', $request->role_id)->where('active_status', 1)->where('church_id', $church_id)->get();
             }
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -10523,7 +10523,7 @@ class SmApiController extends Controller
                 'leave_to' => "required",
                 'login_id' => "required",
                 'role_id' => "required",
-                'school_id' => "required",
+                'church_id' => "required",
             ]);
         } else {
             $validator = Validator::make($input, [
@@ -10531,7 +10531,7 @@ class SmApiController extends Controller
                 'leave_type' => "required",
                 'leave_from' => 'required|before_or_equal:leave_to',
                 'leave_to' => "required",
-                'school_id' => "required",
+                'church_id' => "required",
             ]);
         }
         if ($validator->fails()) {
@@ -10571,7 +10571,7 @@ class SmApiController extends Controller
             $apply_leave->leave_to = date('Y-m-d', strtotime($request->leave_to));
             $apply_leave->approve_status = 'P';
             $apply_leave->reason = $request->reason;
-            $apply_leave->school_id = $request->school_id;
+            $apply_leave->church_id = $request->church_id;
             $apply_leave->file = $fileName;
             $result = $apply_leave->save();
 
@@ -10625,22 +10625,22 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_apply_leave_show(Request $request, $school_id, $id)
+    public function saas_apply_leave_show(Request $request, $church_id, $id)
     {
 
         try {
             $user = Auth::user();
             if ($user) {
-                $my_leaves = SmLeaveDefine::where('role_id', $user->role_id)->where('school_id', $school_id)->get();
-                $apply_leaves = SmLeaveRequest::where('role_id', $user->role_id)->where('active_status', 1)->where('school_id', $school_id)->get();
-                $leave_types = SmLeaveDefine::where('role_id', $user->role_id)->where('active_status', 1)->where('school_id', $school_id)->get();
+                $my_leaves = SmLeaveDefine::where('role_id', $user->role_id)->where('church_id', $church_id)->get();
+                $apply_leaves = SmLeaveRequest::where('role_id', $user->role_id)->where('active_status', 1)->where('church_id', $church_id)->get();
+                $leave_types = SmLeaveDefine::where('role_id', $user->role_id)->where('active_status', 1)->where('church_id', $church_id)->get();
             } else {
-                $my_leaves = SmLeaveDefine::where('role_id', $request->role_id)->where('school_id', $school_id)->get();
-                $apply_leaves = SmLeaveRequest::where('role_id', $request->role_id)->where('active_status', 1)->where('school_id', $school_id)->get();
-                $leave_types = SmLeaveDefine::where('role_id', $request->role_id)->where('active_status', 1)->where('school_id', $school_id)->get();
+                $my_leaves = SmLeaveDefine::where('role_id', $request->role_id)->where('church_id', $church_id)->get();
+                $apply_leaves = SmLeaveRequest::where('role_id', $request->role_id)->where('active_status', 1)->where('church_id', $church_id)->get();
+                $leave_types = SmLeaveDefine::where('role_id', $request->role_id)->where('active_status', 1)->where('church_id', $church_id)->get();
             }
 
-            $apply_leave = SmLeaveRequest::where('school_id', $school_id)->find($id);
+            $apply_leave = SmLeaveRequest::where('church_id', $church_id)->find($id);
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -10670,7 +10670,7 @@ class SmApiController extends Controller
                 'leave_to' => "required",
                 'login_id' => "required",
                 'role_id' => "required",
-                'school_id' => "required",
+                'church_id' => "required",
             ]);
         } else {
             $validator = Validator::make($input, [
@@ -10678,7 +10678,7 @@ class SmApiController extends Controller
                 'leave_type' => "required",
                 'leave_from' => 'required|before_or_equal:leave_to',
                 'leave_to' => "required",
-                'school_id' => "required",
+                'church_id' => "required",
             ]);
         }
 
@@ -10694,7 +10694,7 @@ class SmApiController extends Controller
         try {
             $fileName = "";
             if ($request->file('file') != "") {
-                $apply_leave = SmLeaveRequest::where('school_id', $request->school_id)->find($request->id);
+                $apply_leave = SmLeaveRequest::where('church_id', $request->church_id)->find($request->id);
                 if (file_exists($apply_leave->file)) {
                     unlink($apply_leave->file);
                 }
@@ -10724,7 +10724,7 @@ class SmApiController extends Controller
             $apply_leave->leave_to = date('Y-m-d', strtotime($request->leave_to));
             $apply_leave->approve_status = 'P';
             $apply_leave->reason = $request->reason;
-            $apply_leave->school_id = $request->school_id;
+            $apply_leave->church_id = $request->church_id;
             if ($fileName != "") {
                 $apply_leave->file = $fileName;
             }
@@ -10768,11 +10768,11 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_view_Leave_Details(Request $request, $school_id, $id)
+    public function saas_view_Leave_Details(Request $request, $church_id, $id)
     {
 
         try {
-            $leaveDetails = SmLeaveRequest::where('school_id', $school_id)->find($id);
+            $leaveDetails = SmLeaveRequest::where('church_id', $church_id)->find($id);
 
             $apply = "";
 
@@ -10820,11 +10820,11 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_apply_leave_destroy(Request $request, $school_id, $id)
+    public function saas_apply_leave_destroy(Request $request, $church_id, $id)
     {
 
         try {
-            $apply_leave = SmLeaveRequest::where('school_id', $school_id)->where('id', $id)->find();
+            $apply_leave = SmLeaveRequest::where('church_id', $church_id)->where('id', $id)->find();
             if ($apply_leave->file != "") {
 
                 if (file_exists($apply_leave->file)) {
@@ -10857,7 +10857,7 @@ class SmApiController extends Controller
     {
 
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($classes, null);
             }
@@ -10866,11 +10866,11 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_classRoutine(Request $request, $school_id)
+    public function saas_classRoutine(Request $request, $church_id)
     {
 
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($classes, null);
             }
@@ -10898,28 +10898,28 @@ class SmApiController extends Controller
 
         try {
             $class_times = SmClassTime::where('type', 'class')->get();
-            $class_id = $request->class;
-            $section_id = $request->section;
+            $age_group_id = $request->class;
+            $mgender_id = $request->section;
 
-            $sm_weekends = SmWeekend::where('school_id', Auth::user()->school_id)->orderBy('order', 'ASC')->where('active_status', 1)->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $sm_weekends = SmWeekend::where('church_id', Auth::user()->church_id)->orderBy('order', 'ASC')->where('active_status', 1)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
                 $data['classes'] = $classes->toArray();
                 $data['class_times'] = $class_times->toArray();
-                $data['class_id'] = $class_id;
-                $data['section_id'] = $section_id;
+                $data['age_group_id'] = $age_group_id;
+                $data['mgender_id'] = $mgender_id;
                 $data['sm_weekends'] = $sm_weekends;
                 return ApiBaseMethod::sendResponse($data, null);
             }
 
-            return view('backEnd.academics.class_routine_new', compact('classes', 'class_times', 'class_id', 'section_id', 'sm_weekends'));
+            return view('backEnd.academics.class_routine_new', compact('classes', 'class_times', 'age_group_id', 'mgender_id', 'sm_weekends'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_classRoutineSearch(Request $request, $school_id)
+    public function saas_classRoutineSearch(Request $request, $church_id)
     {
         $input = $request->all();
         $validator = Validator::make($input, [
@@ -10937,24 +10937,24 @@ class SmApiController extends Controller
         }
 
         try {
-            $class_times = SmClassTime::where('type', 'class')->where('school_id', $school_id)->get();
-            $class_id = $request->class;
-            $section_id = $request->section;
+            $class_times = SmClassTime::where('type', 'class')->where('church_id', $church_id)->get();
+            $age_group_id = $request->class;
+            $mgender_id = $request->section;
 
-            $sm_weekends = SmWeekend::where('school_id', Auth::user()->school_id)->orderBy('order', 'ASC')->where('active_status', 1)->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+            $sm_weekends = SmWeekend::where('church_id', Auth::user()->church_id)->orderBy('order', 'ASC')->where('active_status', 1)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
                 $data['classes'] = $classes->toArray();
                 $data['class_times'] = $class_times->toArray();
-                $data['class_id'] = $class_id;
-                $data['section_id'] = $section_id;
+                $data['age_group_id'] = $age_group_id;
+                $data['mgender_id'] = $mgender_id;
                 $data['sm_weekends'] = $sm_weekends;
                 return ApiBaseMethod::sendResponse($data, null);
             }
 
-            return view('backEnd.academics.class_routine_new', compact('classes', 'class_times', 'class_id', 'section_id', 'sm_weekends'));
+            return view('backEnd.academics.class_routine_new', compact('classes', 'class_times', 'age_group_id', 'mgender_id', 'sm_weekends'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
@@ -10972,11 +10972,11 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_assignSubject(Request $request, $school_id)
+    public function saas_assignSubject(Request $request, $church_id)
     {
 
         try {
-            $classes = SmClass::where('active_status', 1)->where('school_id', $school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_id', $church_id)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($classes, null);
             }
@@ -10998,11 +10998,11 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_assigSubjectCreate(Request $request, $school_id)
+    public function saas_assigSubjectCreate(Request $request, $church_id)
     {
 
         try {
-            $classes = SmClass::where('active_status', 1)->where('school_id', $school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_id', $church_id)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($classes, null);
             }
@@ -11028,12 +11028,12 @@ class SmApiController extends Controller
                 ->withInput();
         }
         try {
-            $assign_subjects = SmAssignSubject::where('class_id', $request->class)->where('section_id', $request->section)->get();
+            $assign_subjects = SmAssignSubject::where('age_group_id', $request->class)->where('mgender_id', $request->section)->get();
             $subjects = SmSubject::where('active_status', 1)->get();
             $teachers = SmStaff::where('active_status', 1)->where(function($q)  {
 	$q->where('role_id', 4)->orWhere('previous_role_id', 4);})->get();
-            $class_id = $request->class;
-            $section_id = $request->section;
+            $age_group_id = $request->class;
+            $mgender_id = $request->section;
             $classes = SmClass::where('active_status', 1)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -11041,16 +11041,16 @@ class SmApiController extends Controller
                 $data['assign_subjects'] = $assign_subjects->toArray();
                 $data['teachers'] = $teachers->toArray();
                 $data['subjects'] = $subjects->toArray();
-                $data['class_id'] = $class_id;
-                $data['section_id'] = $section_id;
+                $data['age_group_id'] = $age_group_id;
+                $data['mgender_id'] = $mgender_id;
                 return ApiBaseMethod::sendResponse($data, null);
             }
-            return view('backEnd.academics.assign_subject_create', compact('classes', 'assign_subjects', 'teachers', 'subjects', 'class_id', 'section_id'));
+            return view('backEnd.academics.assign_subject_create', compact('classes', 'assign_subjects', 'teachers', 'subjects', 'age_group_id', 'mgender_id'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_assignSubjectSearch(Request $request, $school_id)
+    public function saas_assignSubjectSearch(Request $request, $church_id)
     {
         $input = $request->all();
         $validator = Validator::make($input, [
@@ -11067,24 +11067,24 @@ class SmApiController extends Controller
                 ->withInput();
         }
         try {
-            $assign_subjects = SmAssignSubject::where('class_id', $request->class)->where('section_id', $request->section)->where('school_id', $school_id)->get();
-            $subjects = SmSubject::where('active_status', 1)->where('school_id', $school_id)->get();
+            $assign_subjects = SmAssignSubject::where('age_group_id', $request->class)->where('mgender_id', $request->section)->where('church_id', $church_id)->get();
+            $subjects = SmSubject::where('active_status', 1)->where('church_id', $church_id)->get();
             $teachers = SmStaff::where('active_status', 1)->where(function($q)  {
-	$q->where('role_id', 4)->orWhere('previous_role_id', 4);})->where('school_id', $school_id)->get();
-            $class_id = $request->class;
-            $section_id = $request->section;
-            $classes = SmClass::where('active_status', 1)->where('school_id', $school_id)->get();
+	$q->where('role_id', 4)->orWhere('previous_role_id', 4);})->where('church_id', $church_id)->get();
+            $age_group_id = $request->class;
+            $mgender_id = $request->section;
+            $classes = SmClass::where('active_status', 1)->where('church_id', $church_id)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
                 $data['classes'] = $classes->toArray();
                 $data['assign_subjects'] = $assign_subjects->toArray();
                 $data['teachers'] = $teachers->toArray();
                 $data['subjects'] = $subjects->toArray();
-                $data['class_id'] = $class_id;
-                $data['section_id'] = $section_id;
+                $data['age_group_id'] = $age_group_id;
+                $data['mgender_id'] = $mgender_id;
                 return ApiBaseMethod::sendResponse($data, null);
             }
-            return view('backEnd.academics.assign_subject_create', compact('classes', 'assign_subjects', 'teachers', 'subjects', 'class_id', 'section_id'));
+            return view('backEnd.academics.assign_subject_create', compact('classes', 'assign_subjects', 'teachers', 'subjects', 'age_group_id', 'mgender_id'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
@@ -11102,11 +11102,11 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_assign_Subject_Create(Request $request, $school_id)
+    public function saas_assign_Subject_Create(Request $request, $church_id)
     {
 
         try {
-            $classes = SmClass::where('active_status', 1)->where('school_id', $school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_id', $church_id)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($classes, null);
             }
@@ -11125,8 +11125,8 @@ class SmApiController extends Controller
                     foreach ($request->subjects as $subject) {
                         if ($subject != "") {
                             $assign_subject = new SmAssignSubject();
-                            $assign_subject->class_id = $request->class_id;
-                            $assign_subject->section_id = $request->section_id;
+                            $assign_subject->age_group_id = $request->age_group_id;
+                            $assign_subject->mgender_id = $request->mgender_id;
                             $assign_subject->subject_id = $subject;
                             $assign_subject->teacher_id = $request->teachers[$i];
                             $assign_subject->save();
@@ -11135,7 +11135,7 @@ class SmApiController extends Controller
                     }
                 }
             } elseif ($request->update == 1) {
-                $assign_subjects = SmAssignSubject::where('class_id', $request->class_id)->where('section_id', $request->section_id)->delete();
+                $assign_subjects = SmAssignSubject::where('age_group_id', $request->age_group_id)->where('mgender_id', $request->mgender_id)->delete();
 
                 $i = 0;
                 if (isset($request->subjects)) {
@@ -11143,8 +11143,8 @@ class SmApiController extends Controller
 
                         if ($subject != "") {
                             $assign_subject = new SmAssignSubject();
-                            $assign_subject->class_id = $request->class_id;
-                            $assign_subject->section_id = $request->section_id;
+                            $assign_subject->age_group_id = $request->age_group_id;
+                            $assign_subject->mgender_id = $request->mgender_id;
                             $assign_subject->subject_id = $subject;
                             $assign_subject->teacher_id = $request->teachers[$i];
                             $assign_subject->save();
@@ -11162,7 +11162,7 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_assignSubjectStore(Request $request, $school_id)
+    public function saas_assignSubjectStore(Request $request, $church_id)
     {
 
         try {
@@ -11172,18 +11172,18 @@ class SmApiController extends Controller
                     foreach ($request->subjects as $subject) {
                         if ($subject != "") {
                             $assign_subject = new SmAssignSubject();
-                            $assign_subject->class_id = $request->class_id;
-                            $assign_subject->section_id = $request->section_id;
+                            $assign_subject->age_group_id = $request->age_group_id;
+                            $assign_subject->mgender_id = $request->mgender_id;
                             $assign_subject->subject_id = $subject;
                             $assign_subject->teacher_id = $request->teachers[$i];
-                            $assign_subject->school_id = $school_id;
+                            $assign_subject->church_id = $church_id;
                             $assign_subject->save();
                             $i++;
                         }
                     }
                 }
             } elseif ($request->update == 1) {
-                $assign_subjects = SmAssignSubject::where('class_id', $request->class_id)->where('section_id', $request->section_id)->where('school_id', $school_id)->delete();
+                $assign_subjects = SmAssignSubject::where('age_group_id', $request->age_group_id)->where('mgender_id', $request->mgender_id)->where('church_id', $church_id)->delete();
 
                 $i = 0;
                 if (isset($request->subjects)) {
@@ -11191,11 +11191,11 @@ class SmApiController extends Controller
 
                         if ($subject != "") {
                             $assign_subject = new SmAssignSubject();
-                            $assign_subject->class_id = $request->class_id;
-                            $assign_subject->section_id = $request->section_id;
+                            $assign_subject->age_group_id = $request->age_group_id;
+                            $assign_subject->mgender_id = $request->mgender_id;
                             $assign_subject->subject_id = $subject;
                             $assign_subject->teacher_id = $request->teachers[$i];
-                            $assign_subject->school_id = $school_id;
+                            $assign_subject->church_id = $church_id;
                             $assign_subject->save();
                             $i++;
                         }
@@ -11224,11 +11224,11 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_assignSubject_Create(Request $request, $school_id)
+    public function saas_assignSubject_Create(Request $request, $church_id)
     {
 
         try {
-            $classes = SmClass::where('active_status', 1)->where('school_id', $school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_id', $church_id)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($classes, null);
             }
@@ -11253,7 +11253,7 @@ class SmApiController extends Controller
                 ->withInput();
         }
         try {
-            $assign_subjects = SmAssignSubject::where('class_id', $request->class)->where('section_id', $request->section)->get();
+            $assign_subjects = SmAssignSubject::where('age_group_id', $request->class)->where('mgender_id', $request->section)->get();
             $subjects = SmSubject::where('active_status', 1)->get();
             $teachers = SmStaff::where('active_status', 1)->where(function($q)  {
 	$q->where('role_id', 4)->orWhere('previous_role_id', 4);})->get();
@@ -11264,7 +11264,7 @@ class SmApiController extends Controller
                 }
                 return redirect()->back()->with('message-danger', 'No Result Found');
             } else {
-                $class_id = $request->class;
+                $age_group_id = $request->class;
 
                 if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                     $data = [];
@@ -11272,16 +11272,16 @@ class SmApiController extends Controller
                     $data['assign_subjects'] = $assign_subjects->toArray();
                     $data['teachers'] = $teachers->toArray();
                     $data['subjects'] = $subjects->toArray();
-                    $data['class_id'] = $class_id;
+                    $data['age_group_id'] = $age_group_id;
                     return ApiBaseMethod::sendResponse($data, null);
                 }
-                return view('backEnd.academics.assign_subject', compact('classes', 'assign_subjects', 'teachers', 'subjects', 'class_id'));
+                return view('backEnd.academics.assign_subject', compact('classes', 'assign_subjects', 'teachers', 'subjects', 'age_group_id'));
             }
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_assignSubjectFind(Request $request, $school_id)
+    public function saas_assignSubjectFind(Request $request, $church_id)
     {
         $input = $request->all();
         $validator = Validator::make($input, [
@@ -11297,18 +11297,18 @@ class SmApiController extends Controller
                 ->withInput();
         }
         try {
-            $assign_subjects = SmAssignSubject::where('class_id', $request->class)->where('section_id', $request->section)->where('school_id', $school_id)->get();
-            $subjects = SmSubject::where('active_status', 1)->where('school_id', $school_id)->get();
+            $assign_subjects = SmAssignSubject::where('age_group_id', $request->class)->where('mgender_id', $request->section)->where('church_id', $church_id)->get();
+            $subjects = SmSubject::where('active_status', 1)->where('church_id', $church_id)->get();
             $teachers = SmStaff::where('active_status', 1)->where(function($q)  {
-	$q->where('role_id', 4)->orWhere('previous_role_id', 4);})->where('school_id', $school_id)->get();
-            $classes = SmClass::where('active_status', 1)->where('school_id', $school_id)->get();
+	$q->where('role_id', 4)->orWhere('previous_role_id', 4);})->where('church_id', $church_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_id', $church_id)->get();
             if ($assign_subjects->count() == 0) {
                 if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                     return ApiBaseMethod::sendError('No Result Found');
                 }
                 return redirect()->back()->with('message-danger', 'No Result Found');
             } else {
-                $class_id = $request->class;
+                $age_group_id = $request->class;
 
                 if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                     $data = [];
@@ -11316,10 +11316,10 @@ class SmApiController extends Controller
                     $data['assign_subjects'] = $assign_subjects->toArray();
                     $data['teachers'] = $teachers->toArray();
                     $data['subjects'] = $subjects->toArray();
-                    $data['class_id'] = $class_id;
+                    $data['age_group_id'] = $age_group_id;
                     return ApiBaseMethod::sendResponse($data, null);
                 }
-                return view('backEnd.academics.assign_subject', compact('classes', 'assign_subjects', 'teachers', 'subjects', 'class_id'));
+                return view('backEnd.academics.assign_subject', compact('classes', 'assign_subjects', 'teachers', 'subjects', 'age_group_id'));
             }
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
@@ -11344,13 +11344,13 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_assignSubjectAjax(Request $request, $school_id)
+    public function saas_assignSubjectAjax(Request $request, $church_id)
     {
 
         try {
-            $subjects = SmSubject::where('active_status', 1)->where('school_id', $school_id)->get();
+            $subjects = SmSubject::where('active_status', 1)->where('church_id', $church_id)->get();
             $teachers = SmStaff::where('active_status', 1)->where(function($q)  {
-	$q->where('role_id', 4)->orWhere('previous_role_id', 4);})->where('school_id', $school_id)->get();
+	$q->where('role_id', 4)->orWhere('previous_role_id', 4);})->where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -11377,11 +11377,11 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_subject_index(Request $request, $school_id)
+    public function saas_subject_index(Request $request, $church_id)
     {
 
         try {
-            $subjects = SmSubject::where('active_status', 1)->orderBy('id', 'DESC')->where('school_id', $school_id)->get();
+            $subjects = SmSubject::where('active_status', 1)->orderBy('id', 'DESC')->where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($subjects, null);
@@ -11451,14 +11451,14 @@ class SmApiController extends Controller
                 'subject_name' => "required|max:200|unique:sm_subjects",
                 'subject_type' => "required",
                 'subject_code' => "sometimes|nullable|max:30",
-                'school_id' => "required",
+                'church_id' => "required",
             ]);
         } else {
             $validator = Validator::make($input, [
                 'subject_name' => "required|max:200|unique:sm_subjects",
                 'subject_type' => "required",
                 'subject_code' => "required|nullable|max:30",
-                'school_id' => "required",
+                'church_id' => "required",
             ]);
         }
         if ($validator->fails()) {
@@ -11475,7 +11475,7 @@ class SmApiController extends Controller
             $subject->subject_name = $request->subject_name;
             $subject->subject_type = $request->subject_type;
             $subject->subject_code = $request->subject_code;
-            $subject->school_id = $request->school_id;
+            $subject->church_id = $request->church_id;
             $result = $subject->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -11503,7 +11503,7 @@ class SmApiController extends Controller
 
         try {
             $subject = SmSubject::find($id);
-            $subjects = SmSubject::where('active_status', 1)->orderBy('id', 'DESC')->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $subjects = SmSubject::where('active_status', 1)->orderBy('id', 'DESC')->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -11516,12 +11516,12 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_subject_edit(Request $request, $school_id, $id)
+    public function saas_subject_edit(Request $request, $church_id, $id)
     {
 
         try {
-            $subject = SmSubject::where('school_id', $school_id)->find($id);
-            $subjects = SmSubject::where('active_status', 1)->orderBy('id', 'DESC')->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+            $subject = SmSubject::where('church_id', $church_id)->find($id);
+            $subjects = SmSubject::where('active_status', 1)->orderBy('id', 'DESC')->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -11596,14 +11596,14 @@ class SmApiController extends Controller
                 'subject_name' => "required|max:200|unique:sm_subjects,subject_name," . $request->id,
                 'subject_type' => "required",
                 'subject_code' => "required|nullable|max:30",
-                'school_id' => "required",
+                'church_id' => "required",
             ]);
         } else {
             $validator = Validator::make($input, [
                 'subject_name' => "required|max:200|unique:sm_subjects,subject_name," . $request->id,
                 'subject_type' => "required",
                 'subject_code' => "required|nullable|max:30",
-                'school_id' => "required",
+                'church_id' => "required",
             ]);
         }
         if ($validator->fails()) {
@@ -11616,11 +11616,11 @@ class SmApiController extends Controller
         }
 
         try {
-            $subject = SmSubject::where('school_id', $request->school_id)->find($request->id);
+            $subject = SmSubject::where('church_id', $request->church_id)->find($request->id);
             $subject->subject_name = $request->subject_name;
             $subject->subject_type = $request->subject_type;
             $subject->subject_code = $request->subject_code;
-            $subject->school_id = $request->school_id;
+            $subject->church_id = $request->church_id;
             $result = $subject->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -11689,7 +11689,7 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_subject_delete(Request $request, $school_id, $id)
+    public function saas_subject_delete(Request $request, $church_id, $id)
     {
         try {
             $column_name = 'subject_id';
@@ -11699,7 +11699,7 @@ class SmApiController extends Controller
             foreach ($tables as $table) {
                 try {
                     DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-                    DB::table($table)->where($column_name, '=', $id)->where('school_id', $school_id)->delete();
+                    DB::table($table)->where($column_name, '=', $id)->where('church_id', $church_id)->delete();
                 } catch (\Illuminate\Database\QueryException $e) {
                     $msg = 'Ops! Something went wrong. You are not allowed to remove this class.';
                     Toastr::error($msg, 'Failed');
@@ -11708,7 +11708,7 @@ class SmApiController extends Controller
             } //end foreach
 
             try {
-                $result = $delete_query = SmSubject::where('school_id', $school_id)->destroy($request->id);
+                $result = $delete_query = SmSubject::where('church_id', $church_id)->destroy($request->id);
 
                 if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                     if ($result) {
@@ -11738,8 +11738,8 @@ class SmApiController extends Controller
     public function class_index(Request $request)
     {
         try {
-            $sections = SmSection::where('active_status', '=', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-            $classes = SmClass::where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('active_status', '=', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $sections = SmSection::where('active_status', '=', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+            $classes = SmClass::where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('active_status', '=', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -11753,11 +11753,11 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_class_index(Request $request, $school_id)
+    public function saas_class_index(Request $request, $church_id)
     {
         try {
-            $sections = SmSection::where('active_status', '=', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
-            $classes = SmClass::where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('active_status', '=', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+            $sections = SmSection::where('active_status', '=', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
+            $classes = SmClass::where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('active_status', '=', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -11777,7 +11777,7 @@ class SmApiController extends Controller
         $validator = Validator::make(
             $input,
             [
-                'name' => "required|max:200|unique:sm_classes,class_name",
+                'name' => "required|max:200|unique:sm_classes,age_group_name",
             ]
         );
 
@@ -11794,7 +11794,7 @@ class SmApiController extends Controller
 
         try {
             $class = new SmClass();
-            $class->class_name = $request->name;
+            $class->age_group_name = $request->name;
             $class->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
             $class->save();
             $class->toArray();
@@ -11804,8 +11804,8 @@ class SmApiController extends Controller
                 if ($sections != '') {
                     foreach ($sections as $section) {
                         $smClassSection = new SmClassSection();
-                        $smClassSection->class_id = $class->id;
-                        $smClassSection->section_id = $section;
+                        $smClassSection->age_group_id = $class->id;
+                        $smClassSection->mgender_id = $section;
                         $smClassSection->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
                         $smClassSection->save();
                     }
@@ -11835,8 +11835,8 @@ class SmApiController extends Controller
         $validator = Validator::make(
             $input,
             [
-                'name' => "required|max:200|unique:sm_classes,class_name",
-                'school_id' => "required",
+                'name' => "required|max:200|unique:sm_classes,age_group_name",
+                'church_id' => "required",
             ]
         );
 
@@ -11853,8 +11853,8 @@ class SmApiController extends Controller
 
         try {
             $class = new SmClass();
-            $class->class_name = $request->name;
-            $class->school_id = $request->school_id;
+            $class->age_group_name = $request->name;
+            $class->church_id = $request->church_id;
             $class->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
             $class->save();
             $class->toArray();
@@ -11864,9 +11864,9 @@ class SmApiController extends Controller
                 if ($sections != '') {
                     foreach ($sections as $section) {
                         $smClassSection = new SmClassSection();
-                        $smClassSection->class_id = $class->id;
-                        $smClassSection->section_id = $section;
-                        $smClassSection->school_id = $school_id;
+                        $smClassSection->age_group_id = $class->id;
+                        $smClassSection->mgender_id = $section;
+                        $smClassSection->church_id = $church_id;
                         $smClassSection->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
                         $smClassSection->save();
                     }
@@ -11896,16 +11896,16 @@ class SmApiController extends Controller
         try {
             $classById = SmCLass::find($id);
 
-            $sectionByNames = SmClassSection::select('section_id')->where('class_id', '=', $classById->id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $sectionByNames = SmClassSection::select('mgender_id')->where('age_group_id', '=', $classById->id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             $sectionId = array();
             foreach ($sectionByNames as $sectionByName) {
-                $sectionId[] = $sectionByName->section_id;
+                $sectionId[] = $sectionByName->mgender_id;
             }
 
-            $sections = SmSection::where('active_status', '=', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $sections = SmSection::where('active_status', '=', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
-            $classes = SmClass::where('active_status', '=', 1)->orderBy('id', 'desc')->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', '=', 1)->orderBy('id', 'desc')->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -11921,22 +11921,22 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_class_edit(Request $request, $school_id, $id)
+    public function saas_class_edit(Request $request, $church_id, $id)
     {
 
         try {
-            $classById = SmCLass::where('school_id', $school_id)->find($id);
+            $classById = SmCLass::where('church_id', $church_id)->find($id);
 
-            $sectionByNames = SmClassSection::select('section_id')->where('class_id', '=', $classById->id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+            $sectionByNames = SmClassSection::select('mgender_id')->where('age_group_id', '=', $classById->id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
 
             $sectionId = array();
             foreach ($sectionByNames as $sectionByName) {
-                $sectionId[] = $sectionByName->section_id;
+                $sectionId[] = $sectionByName->mgender_id;
             }
 
-            $sections = SmSection::where('active_status', '=', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+            $sections = SmSection::where('active_status', '=', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
 
-            $classes = SmClass::where('active_status', '=', 1)->orderBy('id', 'desc')->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+            $classes = SmClass::where('active_status', '=', 1)->orderBy('id', 'desc')->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -11976,13 +11976,13 @@ class SmApiController extends Controller
                 ->withInput();
         }
 
-        SmCLassSection::where('class_id', $request->id)->delete();
+        SmCLassSection::where('age_group_id', $request->id)->delete();
 
         DB::beginTransaction();
 
         try {
             $class = SmClass::find($request->id);
-            $class->class_name = $request->name;
+            $class->age_group_name = $request->name;
             $class->save();
             $class->toArray();
             try {
@@ -11990,8 +11990,8 @@ class SmApiController extends Controller
 
                 foreach ($sections as $section) {
                     $smClassSection = new SmClassSection();
-                    $smClassSection->class_id = $class->id;
-                    $smClassSection->section_id = $section;
+                    $smClassSection->age_group_id = $class->id;
+                    $smClassSection->mgender_id = $section;
                     $smClassSection->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
                     $smClassSection->save();
                 }
@@ -12025,7 +12025,7 @@ class SmApiController extends Controller
 
                 'name' => "required|max:200",
                 'section' => 'required|array',
-                'school_id' => 'required',
+                'church_id' => 'required',
             ],
             [
                 'section.required' => 'At least one checkbox required!',
@@ -12041,13 +12041,13 @@ class SmApiController extends Controller
                 ->withInput();
         }
 
-        SmCLassSection::where('class_id', $request->id)->where('school_id', $request->school_id)->delete();
+        SmCLassSection::where('age_group_id', $request->id)->where('church_id', $request->church_id)->delete();
 
         DB::beginTransaction();
 
         try {
-            $class = SmClass::where('school_id', $request->school_id)->find($request->id);
-            $class->class_name = $request->name;
+            $class = SmClass::where('church_id', $request->church_id)->find($request->id);
+            $class->age_group_name = $request->name;
             $class->save();
             $class->toArray();
             try {
@@ -12055,8 +12055,8 @@ class SmApiController extends Controller
 
                 foreach ($sections as $section) {
                     $smClassSection = new SmClassSection();
-                    $smClassSection->class_id = $class->id;
-                    $smClassSection->section_id = $section;
+                    $smClassSection->age_group_id = $class->id;
+                    $smClassSection->mgender_id = $section;
                     $smClassSection->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
                     $smClassSection->save();
                 }
@@ -12085,7 +12085,7 @@ class SmApiController extends Controller
     {
 
         try {
-            $column_name = 'class_id';
+            $column_name = 'age_group_id';
             $t = false;
             $tables = tableList::ONLY_TABLE_LIST($column_name);
             foreach ($tables as $table) {
@@ -12106,7 +12106,7 @@ class SmApiController extends Controller
             } //end foreach
 
             try {
-                $delete_query = SmClassSection::where('class_id', $request->id)->update(['active_status' => 0]);
+                $delete_query = SmClassSection::where('age_group_id', $request->id)->update(['active_status' => 0]);
                 $delete_query = SmClass::where('id', $request->id)->update(['active_status' => 0]);
                 if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                     if ($delete_query) {
@@ -12132,17 +12132,17 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_class_delete(Request $request, $school_id, $id)
+    public function saas_class_delete(Request $request, $church_id, $id)
     {
 
         try {
-            $column_name = 'class_id';
+            $column_name = 'age_group_id';
             $t = false;
             $tables = tableList::ONLY_TABLE_LIST($column_name);
             foreach ($tables as $table) {
                 try {
                     DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-                    $d = DB::table($table)->where($column_name, '=', $id)->where('school_id', $school_id)->update(['active_status' => 0]);
+                    $d = DB::table($table)->where($column_name, '=', $id)->where('church_id', $church_id)->update(['active_status' => 0]);
                 } catch (\Illuminate\Database\QueryException $e) {
                     $tableName = $table;
                     if (!Schema::hasColumn($tableName, 'active_status')) {
@@ -12157,8 +12157,8 @@ class SmApiController extends Controller
             } //end foreach
 
             try {
-                $delete_query = SmClassSection::where('class_id', $request->id)->where('school_id', $school_id)->update(['active_status' => 0]);
-                $delete_query = SmClass::where('id', $request->id)->where('school_id', $school_id)->update(['active_status' => 0]);
+                $delete_query = SmClassSection::where('age_group_id', $request->id)->where('church_id', $church_id)->update(['active_status' => 0]);
+                $delete_query = SmClass::where('id', $request->id)->where('church_id', $church_id)->update(['active_status' => 0]);
                 if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                     if ($delete_query) {
                         return ApiBaseMethod::sendResponse(null, 'Class has been deleted successfully');
@@ -12187,7 +12187,7 @@ class SmApiController extends Controller
     {
 
         try {
-            $sections = SmSection::where('active_status', '=', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $sections = SmSection::where('active_status', '=', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($sections, null);
             }
@@ -12196,11 +12196,11 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_Section_index(Request $request, $school_id)
+    public function saas_Section_index(Request $request, $church_id)
     {
 
         try {
-            $sections = SmSection::where('active_status', '=', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+            $sections = SmSection::where('active_status', '=', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($sections, null);
             }
@@ -12213,7 +12213,7 @@ class SmApiController extends Controller
     {
         $input = $request->all();
         $validator = Validator::make($input, [
-            'name' => "required|max:200|unique:sm_sections,section_name",
+            'name' => "required|max:200|unique:sm_sections,mgender_name",
         ]);
         if ($validator->fails()) {
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -12225,7 +12225,7 @@ class SmApiController extends Controller
         }
         try {
             $section = new SmSection();
-            $section->section_name = $request->name;
+            $section->mgender_name = $request->name;
             $section->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
             $result = $section->save();
 
@@ -12253,8 +12253,8 @@ class SmApiController extends Controller
     {
         $input = $request->all();
         $validator = Validator::make($input, [
-            'name' => "required|max:200|unique:sm_sections,section_name",
-            'school_id' => "required",
+            'name' => "required|max:200|unique:sm_sections,mgender_name",
+            'church_id' => "required",
         ]);
         if ($validator->fails()) {
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -12266,8 +12266,8 @@ class SmApiController extends Controller
         }
         try {
             $section = new SmSection();
-            $section->section_name = $request->name;
-            $section->school_id = $request->school_id;
+            $section->mgender_name = $request->name;
+            $section->church_id = $request->church_id;
             $section->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
             $result = $section->save();
 
@@ -12296,7 +12296,7 @@ class SmApiController extends Controller
 
         try {
             $section = SmSection::find($id);
-            $sections = SmSection::where('active_status', '=', 1)->orderBy('id', 'desc')->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $sections = SmSection::where('active_status', '=', 1)->orderBy('id', 'desc')->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -12310,12 +12310,12 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_Section_edit(Request $request, $school_id, $id)
+    public function saas_Section_edit(Request $request, $church_id, $id)
     {
 
         try {
-            $section = SmSection::where('school_id', $school_id)->find($id);
-            $sections = SmSection::where('active_status', '=', 1)->orderBy('id', 'desc')->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+            $section = SmSection::where('church_id', $church_id)->find($id);
+            $sections = SmSection::where('active_status', '=', 1)->orderBy('id', 'desc')->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -12333,7 +12333,7 @@ class SmApiController extends Controller
     {
         $input = $request->all();
         $validator = Validator::make($input, [
-            'name' => "required|max:200|unique:sm_sections,section_name," . $request->id,
+            'name' => "required|max:200|unique:sm_sections,mgender_name," . $request->id,
         ]);
 
         if ($validator->fails()) {
@@ -12347,7 +12347,7 @@ class SmApiController extends Controller
 
         try {
             $section = SmSection::find($request->id);
-            $section->section_name = $request->name;
+            $section->mgender_name = $request->name;
             $result = $section->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -12374,8 +12374,8 @@ class SmApiController extends Controller
     {
         $input = $request->all();
         $validator = Validator::make($input, [
-            'name' => "required|max:200|unique:sm_sections,section_name," . $request->id,
-            'school_id' => "required",
+            'name' => "required|max:200|unique:sm_sections,mgender_name," . $request->id,
+            'church_id' => "required",
         ]);
 
         if ($validator->fails()) {
@@ -12388,9 +12388,9 @@ class SmApiController extends Controller
         }
 
         try {
-            $section = SmSection::where('school_id', $request->school_id)->find($request->id);
-            $section->section_name = $request->name;
-            $section->school_id = $request->school_id;
+            $section = SmSection::where('church_id', $request->church_id)->find($request->id);
+            $section->mgender_name = $request->name;
+            $section->church_id = $request->church_id;
             $result = $section->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -12417,7 +12417,7 @@ class SmApiController extends Controller
     {
 
         try {
-            $id = 'section_id';
+            $id = 'mgender_id';
             $tables = tableList::getTableList($id, $request->id);
             try {
                 $delete_query = $section = SmSection::destroy($request->id);
@@ -12447,14 +12447,14 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_Section_delete(Request $request, $school_id, $id)
+    public function saas_Section_delete(Request $request, $church_id, $id)
     {
 
         try {
-            $id = 'section_id';
+            $id = 'mgender_id';
             $tables = tableList::getTableList($id, $request->id);
             try {
-                $delete_query = $section = SmSection::where('school_id', $school_id)->destroy($request->id);
+                $delete_query = $section = SmSection::where('church_id', $church_id)->destroy($request->id);
 
                 if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                     if ($section) {
@@ -12498,30 +12498,30 @@ class SmApiController extends Controller
 
         $student_detail = SmStudent::where('user_id', $user_id)->first();
 
-        $class_id = $student_detail->class_id;
-        $section_id = $student_detail->section_id;
+        $age_group_id = $student_detail->age_group_id;
+        $mgender_id = $student_detail->mgender_id;
 
-        $sm_weekends = SmWeekend::where('school_id', $student_detail->school_id)->orderBy('order', 'ASC')->where('active_status', 1)->get();
-        $class_times = SmClassTime::where('type', 'class')->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+        $sm_weekends = SmWeekend::where('church_id', $student_detail->church_id)->orderBy('order', 'ASC')->where('active_status', 1)->get();
+        $class_times = SmClassTime::where('type', 'class')->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $data = [];
             $data['student_detail'] = $student_detail->toArray();
 
-            $weekenD = SmWeekend::where('school_id', $student_detail->school_id)->get();
+            $weekenD = SmWeekend::where('church_id', $student_detail->church_id)->get();
             foreach ($weekenD as $row) {
                 $data[$row->name] = DB::table('sm_class_routine_updates')
                     ->orderBy('sm_class_times.start_time', 'asc')
                     ->select('sm_class_times.period', 'sm_class_times.start_time', 'sm_class_times.end_time', 'sm_subjects.subject_name', 'sm_class_rooms.room_no')
-                    ->join('sm_classes', 'sm_classes.id', '=', 'sm_class_routine_updates.class_id')
-                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_class_routine_updates.section_id')
+                    ->join('sm_classes', 'sm_classes.id', '=', 'sm_class_routine_updates.age_group_id')
+                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_class_routine_updates.mgender_id')
                     ->join('sm_class_times', 'sm_class_times.id', '=', 'sm_class_routine_updates.class_period_id')
                     ->join('sm_subjects', 'sm_subjects.id', '=', 'sm_class_routine_updates.subject_id')
                     ->join('sm_class_rooms', 'sm_class_rooms.id', '=', 'sm_class_routine_updates.room_id')
 
                     ->where([
-                        ['sm_class_routine_updates.class_id', $class_id], ['sm_class_routine_updates.section_id', $section_id], ['sm_class_routine_updates.day', $row->id],
-                    ])->where('sm_class_routine_updates.academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                        ['sm_class_routine_updates.age_group_id', $age_group_id], ['sm_class_routine_updates.mgender_id', $mgender_id], ['sm_class_routine_updates.day', $row->id],
+                    ])->where('sm_class_routine_updates.church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             }
 
             return ApiBaseMethod::sendResponse($data, null);
@@ -12529,7 +12529,7 @@ class SmApiController extends Controller
 
         return ApiBaseMethod::sendError('Error.', null);
     }
-    public function saas_class_Routine(Request $request, $school_id, $id = null)
+    public function saas_class_Routine(Request $request, $church_id, $id = null)
     {
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -12544,39 +12544,39 @@ class SmApiController extends Controller
             }
         }
 
-        $student_detail = SmStudent::where('user_id', $user_id)->where('school_id', $school_id)->first();
+        $student_detail = SmStudent::where('user_id', $user_id)->where('church_id', $church_id)->first();
 
-        $class_id = $student_detail->class_id;
-        $section_id = $student_detail->section_id;
+        $age_group_id = $student_detail->age_group_id;
+        $mgender_id = $student_detail->mgender_id;
 
-        $sm_weekends = SmWeekend::orderBy('order', 'ASC')->where('active_status', 1)->where('academic_id', SmAcademicYear::API_ACADEMIC_YEAR($school_id))->where('school_id', $student_detail->school_id)->get();
-        $class_times = SmClassTime::where('type', 'class')->where('academic_id', SmAcademicYear::API_ACADEMIC_YEAR($school_id))->where('school_id', $school_id)->get();
+        $sm_weekends = SmWeekend::orderBy('order', 'ASC')->where('active_status', 1)->where('church_year_id', SmAcademicYear::API_church_year($church_id))->where('church_id', $student_detail->church_id)->get();
+        $class_times = SmClassTime::where('type', 'class')->where('church_year_id', SmAcademicYear::API_church_year($church_id))->where('church_id', $church_id)->get();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $data = [];
             $data['student_detail'] = $student_detail->toArray();
 
-            $weekenD = SmWeekend::where('school_id', $student_detail->school_id)->get();
+            $weekenD = SmWeekend::where('church_id', $student_detail->church_id)->get();
             foreach ($weekenD as $row) {
                 $data[$row->name] = DB::table('sm_class_routine_updates')
                     ->select('sm_class_times.period', 'sm_class_times.start_time', 'sm_class_times.end_time', 'sm_subjects.subject_name', 'sm_class_rooms.room_no')
-                    ->join('sm_classes', 'sm_classes.id', '=', 'sm_class_routine_updates.class_id')
-                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_class_routine_updates.section_id')
+                    ->join('sm_classes', 'sm_classes.id', '=', 'sm_class_routine_updates.age_group_id')
+                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_class_routine_updates.mgender_id')
                     ->join('sm_class_times', 'sm_class_times.id', '=', 'sm_class_routine_updates.class_period_id')
                     ->join('sm_subjects', 'sm_subjects.id', '=', 'sm_class_routine_updates.subject_id')
                     ->join('sm_class_rooms', 'sm_class_rooms.id', '=', 'sm_class_routine_updates.room_id')
 
                     ->where([
-                        ['sm_class_routine_updates.class_id', $class_id], ['sm_class_routine_updates.section_id', $section_id], ['sm_class_routine_updates.day', $row->id],
-                    ])->where('sm_class_routine_updates.academic_id', SmAcademicYear::API_ACADEMIC_YEAR($school_id))
-                    ->where('sm_class_routine_updates.school_id', $school_id)
+                        ['sm_class_routine_updates.age_group_id', $age_group_id], ['sm_class_routine_updates.mgender_id', $mgender_id], ['sm_class_routine_updates.day', $row->id],
+                    ])->where('sm_class_routine_updates.church_year_id', SmAcademicYear::API_church_year($church_id))
+                    ->where('sm_class_routine_updates.church_id', $church_id)
                     ->get();
             }
 
             return ApiBaseMethod::sendResponse($data, null);
         }
 
-        return view('backEnd.studentPanel.class_routine', compact('class_times', 'class_id', 'section_id', 'sm_weekends'));
+        return view('backEnd.studentPanel.class_routine', compact('class_times', 'age_group_id', 'mgender_id', 'sm_weekends'));
     }
 
     public function noticeList(Request $request)
@@ -12584,7 +12584,7 @@ class SmApiController extends Controller
         try {
             $allNotices = SmNoticeBoard::where('active_status', 1)
                 ->orderBy('id', 'DESC')
-                ->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())
+                ->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())
                 ->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -12595,13 +12595,13 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_noticeList(Request $request, $school_id)
+    public function saas_noticeList(Request $request, $church_id)
     {
         try {
             $allNotices = SmNoticeBoard::where('active_status', 1)
                 ->orderBy('id', 'DESC')
-                ->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())
-                ->where('school_id', $school_id)
+                ->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())
+                ->where('church_id', $church_id)
                 ->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -12617,7 +12617,7 @@ class SmApiController extends Controller
 
         try {
             $roles = InfixRole::where('active_status', 1)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($roles, null);
@@ -12627,11 +12627,11 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_sendMessage(Request $request, $school_id)
+    public function saas_sendMessage(Request $request, $church_id)
     {
 
         try {
-            $roles = InfixRole::where('school_id', $school_id)->get();
+            $roles = InfixRole::where('church_id', $church_id)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($roles, null);
             }
@@ -12722,14 +12722,14 @@ class SmApiController extends Controller
                 'notice_date' => "required",
                 'publish_on' => "required",
                 'login_id' => "required",
-                'school_id' => "required",
+                'church_id' => "required",
             ]);
         } else {
             $validator = Validator::make($input, [
                 'notice_title' => "required|max:50",
                 'notice_date' => "required",
                 'publish_on' => "required",
-                'school_id' => "required",
+                'church_id' => "required",
             ]);
         }
 
@@ -12767,7 +12767,7 @@ class SmApiController extends Controller
             $noticeData->publish_on = date('Y-m-d', strtotime($request->publish_on));
             $noticeData->inform_to = $roles_array;
             $noticeData->created_by = $login_id;
-            $noticeData->school_id = $request->school_id;
+            $noticeData->church_id = $request->church_id;
             $results = $noticeData->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -12794,7 +12794,7 @@ class SmApiController extends Controller
 
         try {
             $roles = InfixRole::where('active_status', 1)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
             $noticeDataDetails = SmNoticeBoard::find($notice_id);
 
@@ -12809,14 +12809,14 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_editNotice(Request $request, $school_id, $notice_id)
+    public function saas_editNotice(Request $request, $church_id, $notice_id)
     {
 
         try {
             $roles = InfixRole::where('active_status', 1)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
-            $noticeDataDetails = SmNoticeBoard::where('school_id', $school_id)->find($notice_id);
+            $noticeDataDetails = SmNoticeBoard::where('church_id', $church_id)->find($notice_id);
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -12911,14 +12911,14 @@ class SmApiController extends Controller
                 'notice_date' => "required",
                 'publish_on' => "required",
                 'login_id' => "required",
-                'school_id' => "required",
+                'church_id' => "required",
             ]);
         } else {
             $validator = Validator::make($input, [
                 'notice_title' => "required|max:50",
                 'notice_date' => "required",
                 'publish_on' => "required",
-                'school_id' => "required",
+                'church_id' => "required",
             ]);
         }
 
@@ -12946,7 +12946,7 @@ class SmApiController extends Controller
                 $login_id = $request->login_id;
             }
 
-            $noticeData = SmNoticeBoard::where('school_id', $request->school_id)->find($request->notice_id);
+            $noticeData = SmNoticeBoard::where('church_id', $request->church_id)->find($request->notice_id);
             if (isset($request->is_published)) {
                 $noticeData->is_published = $request->is_published;
             }
@@ -12956,7 +12956,7 @@ class SmApiController extends Controller
             $noticeData->publish_on = date('Y-m-d', strtotime($request->publish_on));
             $noticeData->inform_to = $roles_array;
             $noticeData->updated_by = $login_id;
-            $noticeData->school_id = $request->school_id;
+            $noticeData->church_id = $request->church_id;
             $results = $noticeData->update();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -12990,7 +12990,7 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_deleteNoticeView(Request $request, $school_id, $id)
+    public function saas_deleteNoticeView(Request $request, $church_id, $id)
     {
 
         try {
@@ -13006,9 +13006,9 @@ class SmApiController extends Controller
     {
         try {
             $roles = InfixRole::select('*')->where('id', '!=', 1)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
-            $classes = SmClass::where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -13022,13 +13022,13 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_sendEmailSmsView(Request $request, $school_id)
+    public function saas_sendEmailSmsView(Request $request, $church_id)
     {
         try {
             $roles = InfixRole::select('*')->where('id', '!=', 1)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
-            $classes = SmClass::where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+            $classes = SmClass::where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -13065,10 +13065,10 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_deleteNotice(Request $request, $school_id, $id)
+    public function saas_deleteNotice(Request $request, $church_id, $id)
     {
         try {
-            $result = SmNoticeBoard::where('school_id', $school_id)->where('id', $id)->delete();
+            $result = SmNoticeBoard::where('church_id', $church_id)->where('id', $id)->delete();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 if ($result) {
                     return ApiBaseMethod::sendResponse(null, 'Notice has been deleted successfully');
@@ -13100,7 +13100,7 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_deleteEventView(Request $request, $school_id, $id)
+    public function saas_deleteEventView(Request $request, $church_id, $id)
     {
         try {
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -13137,11 +13137,11 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_deleteEvent(Request $request, $school_id, $id)
+    public function saas_deleteEvent(Request $request, $church_id, $id)
     {
 
         try {
-            $result = SmEvent::where('school_id', $school_id)->where('id', $id)->delete();
+            $result = SmEvent::where('church_id', $church_id)->where('id', $id)->delete();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 if ($result) {
@@ -13181,14 +13181,14 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_Library_index(Request $request, $school_id)
+    public function saas_Library_index(Request $request, $church_id)
     {
 
         try {
             $books = DB::table('sm_books')
                 ->leftjoin('sm_subjects', 'sm_books.book_subject_id', '=', 'sm_subjects.id')
                 ->leftjoin('sm_book_categories', 'sm_books.book_category_id', '=', 'sm_book_categories.id')
-                ->where('sm_books.school_id', $school_id)
+                ->where('sm_books.church_id', $church_id)
                 ->select('sm_books.*', 'sm_subjects.subject_name', 'sm_book_categories.category_name')
                 ->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -13211,7 +13211,7 @@ class SmApiController extends Controller
                 'user_id' => "required",
                 'quantity' => "sometimes|nullable|integer|min:0",
                 'book_price' => "sometimes|nullable|integer|min:0",
-                'school_id' => "required",
+                'church_id' => "required",
             ]);
         } else {
             $validator = Validator::make($input, [
@@ -13219,7 +13219,7 @@ class SmApiController extends Controller
                 'book_category_id' => "required",
                 'quantity' => "sometimes|nullable|integer|min:0",
                 'book_price' => "sometimes|nullable|integer|min:0",
-                'school_id' => "required",
+                'church_id' => "required",
             ]);
         }
 
@@ -13249,7 +13249,7 @@ class SmApiController extends Controller
             $books->isbn_no = $request->isbn_no;
             $books->publisher_name = $request->publisher_name;
             $books->author_name = $request->author_name;
-            $books->school_id = $request->school_id;
+            $books->church_id = $request->church_id;
             if (@$request->subject) {
                 $books->subject_id = $request->subject;
             }
@@ -13295,7 +13295,7 @@ class SmApiController extends Controller
                 'user_id' => "required",
                 'quantity' => "sometimes|nullable|integer|min:0",
                 'book_price' => "sometimes|nullable|integer|min:0",
-                'school_id' => "required",
+                'church_id' => "required",
             ]);
         } else {
             $validator = Validator::make($input, [
@@ -13303,7 +13303,7 @@ class SmApiController extends Controller
                 'book_category_id' => "required",
                 'quantity' => "sometimes|nullable|integer|min:0",
                 'book_price' => "sometimes|nullable|integer|min:0",
-                'school_id' => "required",
+                'church_id' => "required",
             ]);
         }
 
@@ -13333,7 +13333,7 @@ class SmApiController extends Controller
             $books->isbn_no = $request->isbn_no;
             $books->publisher_name = $request->publisher_name;
             $books->author_name = $request->author_name;
-            $books->school_id = $request->school_id;
+            $books->church_id = $request->church_id;
             if (@$request->subject) {
                 $books->subject_id = $request->subject;
             }
@@ -13390,13 +13390,13 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_editBook(Request $request, $school_id, $id)
+    public function saas_editBook(Request $request, $church_id, $id)
     {
 
         try {
-            $editData = SmBook::where('school_id', $school_id)->find($id);
-            $categories = SmBookCategory::where('school_id', $school_id)->get();
-            $subjects = SmSubject::where('school_id', $school_id)->get();
+            $editData = SmBook::where('church_id', $church_id)->find($id);
+            $categories = SmBookCategory::where('church_id', $church_id)->get();
+            $subjects = SmSubject::where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -13502,7 +13502,7 @@ class SmApiController extends Controller
                 'user_id' => "required",
                 'quantity' => "sometimes|nullable|integer|min:0",
                 'book_price' => "sometimes|nullable|integer|min:0",
-                'school_id' => "required",
+                'church_id' => "required",
             ]);
         } else {
             $validator = Validator::make($input, [
@@ -13510,7 +13510,7 @@ class SmApiController extends Controller
                 'quantity' => "sometimes|nullable|integer|min:0",
                 'book_category_id' => "required",
                 'book_price' => "sometimes|nullable|integer|min:0",
-                'school_id' => "required",
+                'church_id' => "required",
             ]);
         }
 
@@ -13532,7 +13532,7 @@ class SmApiController extends Controller
                 $user_id = $request->user_id;
             }
 
-            $books = SmBook::where('school_id', $school_id)->find($id);
+            $books = SmBook::where('church_id', $church_id)->find($id);
             $books->book_title = $request->book_title;
             $books->book_category_id = $request->book_category_id;
             $books->book_number = $request->book_number;
@@ -13550,7 +13550,7 @@ class SmApiController extends Controller
                 $books->book_price = $request->book_price;
             }
             $books->details = $request->details;
-            $books->school_id = $request->school_id;
+            $books->church_id = $request->church_id;
             $books->post_date = date('Y-m-d');
             $books->updated_by = $user_id;
             $results = $books->update();
@@ -13588,12 +13588,12 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_deleteBookView(Request $request, $school_id, $id)
+    public function saas_deleteBookView(Request $request, $church_id, $id)
     {
 
         try {
             $title = "Are you sure to detete this Book?";
-            $url = url('school/' . $school_id . '/' . 'delete-book/' . $id);
+            $url = url('school/' . $church_id . '/' . 'delete-book/' . $id);
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($id, null);
             }
@@ -13602,13 +13602,13 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function deleteBook(Request $request, $school_id, $id)
+    public function deleteBook(Request $request, $church_id, $id)
     {
 
         try {
             $tables = \App\tableList::getTableList('book_id', $id);
             try {
-                $result = SmBook::where('school_id', $school_id)->destroy($id);
+                $result = SmBook::where('church_id', $church_id)->destroy($id);
                 if ($result) {
                     Toastr::success('Operation successful', 'Success');
                     return redirect()->back();
@@ -13640,11 +13640,11 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_memberList(Request $request, $school_id)
+    public function saas_memberList(Request $request, $church_id)
     {
 
         try {
-            $activeMembers = SmLibraryMember::where('active_status', '=', 1)->where('school_id', $school_id)->get();
+            $activeMembers = SmLibraryMember::where('active_status', '=', 1)->where('church_id', $church_id)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
 
                 return ApiBaseMethod::sendResponse($activeMembers, null);
@@ -13681,20 +13681,20 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_issueBooks(Request $request, $school_id, $member_type, $student_staff_id)
+    public function saas_issueBooks(Request $request, $church_id, $member_type, $student_staff_id)
     {
 
         try {
-            $memberDetails = SmLibraryMember::where('student_staff_id', '=', $student_staff_id)->where('school_id', $school_id)->first();
+            $memberDetails = SmLibraryMember::where('student_staff_id', '=', $student_staff_id)->where('church_id', $church_id)->first();
 
             if ($member_type == 2) {
-                $getMemberDetails = SmStudent::select('full_name', 'email', 'mobile', 'student_photo')->where('user_id', '=', $student_staff_id)->where('school_id', $school_id)->first();
+                $getMemberDetails = SmStudent::select('full_name', 'email', 'mobile', 'student_photo')->where('user_id', '=', $student_staff_id)->where('church_id', $church_id)->first();
             } else {
-                $getMemberDetails = SmStaff::select('full_name', 'email', 'mobile', 'staff_photo')->where('user_id', '=', $student_staff_id)->where('school_id', $school_id)->first();
+                $getMemberDetails = SmStaff::select('full_name', 'email', 'mobile', 'staff_photo')->where('user_id', '=', $student_staff_id)->where('church_id', $church_id)->first();
             }
 
-            $books = SmBook::where('school_id', $school_id)->get();
-            $totalIssuedBooks = SmBookIssue::where('member_id', '=', $student_staff_id)->where('school_id', $school_id)->get();
+            $books = SmBook::where('church_id', $church_id)->get();
+            $totalIssuedBooks = SmBookIssue::where('member_id', '=', $student_staff_id)->where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -13782,13 +13782,13 @@ class SmApiController extends Controller
                 'book_id' => "required",
                 'due_date' => "required",
                 'user_id' => "required",
-                'school_id' => "required",
+                'church_id' => "required",
             ]);
         } else {
             $validator = Validator::make($input, [
                 'book_id' => "required",
                 'due_date' => "required",
-                'school_id' => "required",
+                'church_id' => "required",
             ]);
         }
 
@@ -13816,12 +13816,12 @@ class SmApiController extends Controller
             $bookIssue->due_date = date('Y-m-d', strtotime($request->due_date));
             $bookIssue->issue_status = 'I';
             $bookIssue->created_by = $user_id;
-            $bookIssue->school_id = $request->school_id;
+            $bookIssue->church_id = $request->church_id;
             $results = $bookIssue->save();
             $bookIssue->toArray();
 
             if ($results) {
-                $books = SmBook::where('school_id', $request->school_id)->find($request->book_id);
+                $books = SmBook::where('church_id', $request->church_id)->find($request->book_id);
                 $books->quantity = $books->quantity - 1;
                 $result = $books->update();
 
@@ -13855,7 +13855,7 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_returnBookView(Request $request, $school_id, $issue_book_id)
+    public function saas_returnBookView(Request $request, $church_id, $issue_book_id)
     {
 
         try {
@@ -13906,7 +13906,7 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_returnBook(Request $request, $school_id, $issue_book_id)
+    public function saas_returnBook(Request $request, $church_id, $issue_book_id)
     {
         try {
             $user = Auth()->user();
@@ -13915,15 +13915,15 @@ class SmApiController extends Controller
             } else {
                 $updated_by = $request->updated_by;
             }
-            $return = SmBookIssue::where('school_id', $school_id)->find($issue_book_id);
+            $return = SmBookIssue::where('church_id', $church_id)->find($issue_book_id);
             $return->issue_status = "R";
             $return->updated_by = $updated_by;
             $results = $return->update();
 
             if ($results) {
 
-                $books_id = SmBookIssue::select('book_id')->where('id', $issue_book_id)->where('school_id', $school_id)->first();
-                $books = SmBook::where('school_id', $school_id)->find($books_id->book_id);
+                $books_id = SmBookIssue::select('book_id')->where('id', $issue_book_id)->where('church_id', $church_id)->first();
+                $books = SmBook::where('church_id', $church_id)->find($books_id->book_id);
                 $books->quantity = $books->quantity + 1;
                 $result = $books->update();
 
@@ -13970,18 +13970,18 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_allIssuedBook(Request $request, $school_id)
+    public function saas_allIssuedBook(Request $request, $church_id)
     {
 
         try {
-            $books = SmBook::select('id', 'book_title')->where('active_status', 1)->where('school_id', $school_id)->get();
-            $subjects = SmSubject::select('id', 'subject_name')->where('active_status', 1)->where('school_id', $school_id)->get();
+            $books = SmBook::select('id', 'book_title')->where('active_status', 1)->where('church_id', $church_id)->get();
+            $subjects = SmSubject::select('id', 'subject_name')->where('active_status', 1)->where('church_id', $church_id)->get();
 
             $issueBooks = DB::table('sm_book_issues')
                 ->join('sm_books', 'sm_book_issues.book_id', '=', 'sm_books.id')
                 ->join('sm_library_members', 'sm_book_issues.member_id', '=', 'sm_library_members.id')
                 ->join('sm_subjects', 'sm_subjects.id', '=', 'sm_books.subject_id')
-                ->where('sm_book_issues.school_id', $school_id)
+                ->where('sm_book_issues.church_id', $church_id)
                 ->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -14044,7 +14044,7 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_searchIssuedBook(Request $request, $school_id)
+    public function saas_searchIssuedBook(Request $request, $church_id)
     {
 
         try {
@@ -14073,8 +14073,8 @@ class SmApiController extends Controller
                     LEFT JOIN sm_subjects s ON b.subject_id = s.id
                     WHERE i.issue_status = 'I' $query"));
 
-            $books = SmBook::select('id', 'book_title')->where('active_status', 1)->where('school_id', $school_id)->get();
-            $subjects = SmSubject::select('id', 'subject_name')->where('active_status', 1)->where('school_id', $school_id)->get();
+            $books = SmBook::select('id', 'book_title')->where('active_status', 1)->where('church_id', $church_id)->get();
+            $subjects = SmSubject::select('id', 'subject_name')->where('active_status', 1)->where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -14117,18 +14117,18 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_all_IssuedBook(Request $request, $school_id)
+    public function saas_all_IssuedBook(Request $request, $church_id)
     {
 
         try {
-            $books = SmBook::select('id', 'book_title')->where('active_status', 1)->where('school_id', $school_id)->get();
-            $subjects = SmSubject::select('id', 'subject_name')->where('active_status', 1)->where('school_id', $school_id)->get();
+            $books = SmBook::select('id', 'book_title')->where('active_status', 1)->where('church_id', $church_id)->get();
+            $subjects = SmSubject::select('id', 'subject_name')->where('active_status', 1)->where('church_id', $church_id)->get();
 
             $issueBooks = DB::table('sm_book_issues')
                 ->join('sm_books', 'sm_book_issues.book_id', '=', 'sm_books.id')
                 ->join('sm_library_members', 'sm_book_issues.member_id', '=', 'sm_library_members.id')
                 ->join('sm_subjects', 'sm_subjects.id', '=', 'sm_books.subject_id')
-                ->where('sm_book_issues.school_id', $school_id)
+                ->where('sm_book_issues.church_id', $church_id)
                 ->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -14189,7 +14189,7 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_cancelMembership(Request $request, $school_id, $id)
+    public function saas_cancelMembership(Request $request, $church_id, $id)
     {
         try {
             $tables = "";
@@ -14199,14 +14199,14 @@ class SmApiController extends Controller
                 $isExist_member_id = SmBookIssue::select('id', 'issue_status')
                     ->where('member_id', '=', $id)
                     ->where('issue_status', '=', 'I')
-                    ->where('school_id', $school_id)
+                    ->where('church_id', $church_id)
                     ->first();
 
                 if (!empty($isExist_member_id)) {
                     Toastr::error('This member have to return book', 'Failed');
                     return redirect()->back();
                 } else {
-                    $members = SmLibraryMember::where('school_id', $school_id)->find($id);
+                    $members = SmLibraryMember::where('church_id', $church_id)->find($id);
                     $members->active_status = 0;
                     $results = $members->update();
 
@@ -14248,7 +14248,7 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_deleteItemCategoryView(Request $request, $school_id, $id)
+    public function saas_deleteItemCategoryView(Request $request, $church_id, $id)
     {
         try {
             $title = "Are you sure to detete this Item category?";
@@ -14298,12 +14298,12 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_deleteItemCategory(Request $request, $school_id, $id)
+    public function saas_deleteItemCategory(Request $request, $church_id, $id)
     {
         try {
             $tables = \App\tableList::getTableList('item_category_id', $id);
             try {
-                $result = SmItemCategory::where('school_id', $school_id)->where('id', $id)->delete();
+                $result = SmItemCategory::where('church_id', $church_id)->where('id', $id)->delete();
                 if ($result) {
 
                     if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -14673,11 +14673,11 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_Assign_Vehicle_delete(Request $request, $school_id)
+    public function saas_Assign_Vehicle_delete(Request $request, $church_id)
     {
 
         try {
-            $result = SmAssignVehicle::where('id', $request->id)->where('school_id', $school_id)->delete();
+            $result = SmAssignVehicle::where('id', $request->id)->where('church_id', $church_id)->delete();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 if ($result) {
@@ -14717,7 +14717,7 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_studentTransportReportApi(Request $request, $school_id)
+    public function saas_studentTransportReportApi(Request $request, $church_id)
     {
 
         try {
@@ -14727,7 +14727,7 @@ class SmApiController extends Controller
                     ->join('sm_routes', 'sm_assign_vehicles.route_id', '=', 'sm_routes.id')
                     ->join('sm_vehicles', 'sm_assign_vehicles.vehicle_id', '=', 'sm_vehicles.id')
                     ->join('sm_staffs', 'sm_vehicles.driver_id', '=', 'sm_staffs.id')
-                    ->where('sm_assign_vehicles.school_id', $school_id)
+                    ->where('sm_assign_vehicles.church_id', $church_id)
                     ->get();
 
                 return ApiBaseMethod::sendResponse($transport, null);
@@ -14744,10 +14744,10 @@ class SmApiController extends Controller
             $students = SmStudent::query();
             $students->where('active_status', 1);
             if ($request->class != "") {
-                $students->where('class_id', $request->class);
+                $students->where('age_group_id', $request->class);
             }
             if ($request->section != "") {
-                $students->where('section_id', $request->section);
+                $students->where('mgender_id', $request->section);
             }
             if ($request->route != "") {
                 $students->where('route_list_id', $request->route);
@@ -14766,7 +14766,7 @@ class SmApiController extends Controller
             $routes = SmRoute::where('active_status', 1)->get();
             $vehicles = SmVehicle::where('active_status', 1)->get();
 
-            $class_id = $request->class;
+            $age_group_id = $request->class;
             $route_id = $request->route;
             $vechile_id = $request->vehicle;
 
@@ -14776,46 +14776,46 @@ class SmApiController extends Controller
                 $data['routes'] = $routes->toArray();
                 $data['vehicles'] = $vehicles->toArray();
                 $data['students'] = $students->toArray();
-                $data['class_id'] = $class_id;
+                $data['age_group_id'] = $age_group_id;
                 $data['route_id'] = $route_id;
                 $data['vechile_id'] = $vechile_id;
                 return ApiBaseMethod::sendResponse($data, null);
             }
-            return view('backEnd.transport.student_transport_report', compact('classes', 'routes', 'vehicles', 'students', 'class_id', 'route_id', 'vechile_id'));
+            return view('backEnd.transport.student_transport_report', compact('classes', 'routes', 'vehicles', 'students', 'age_group_id', 'route_id', 'vechile_id'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_studentTransportReportSearch(Request $request, $school_id)
+    public function saas_studentTransportReportSearch(Request $request, $church_id)
     {
 
         try {
             $students = SmStudent::query();
-            $students->where('active_status', 1)->where('school_id', $school_id);
+            $students->where('active_status', 1)->where('church_id', $church_id);
             if ($request->class != "") {
-                $students->where('class_id', $request->class)->where('school_id', $school_id);
+                $students->where('age_group_id', $request->class)->where('church_id', $church_id);
             }
             if ($request->section != "") {
-                $students->where('section_id', $request->section)->where('school_id', $school_id);
+                $students->where('mgender_id', $request->section)->where('church_id', $church_id);
             }
             if ($request->route != "") {
-                $students->where('route_list_id', $request->route)->where('school_id', $school_id);
+                $students->where('route_list_id', $request->route)->where('church_id', $church_id);
             } else {
-                $students->where('route_list_id', '!=', '')->where('school_id', $school_id);
+                $students->where('route_list_id', '!=', '')->where('church_id', $church_id);
             }
             if ($request->vehicle != "") {
-                $students->where('vechile_id', $request->vehicle)->where('school_id', $school_id);
+                $students->where('vechile_id', $request->vehicle)->where('church_id', $church_id);
             } else {
-                $students->where('vechile_id', '!=', '')->where('school_id', $school_id);
+                $students->where('vechile_id', '!=', '')->where('church_id', $church_id);
             }
             $students = $students->get();
 
-            $classes = SmClass::where('active_status', 1)->where('school_id', $school_id)->get();
-            $classes = SmClass::where('active_status', 1)->where('school_id', $school_id)->get();
-            $routes = SmRoute::where('active_status', 1)->where('school_id', $school_id)->get();
-            $vehicles = SmVehicle::where('active_status', 1)->where('school_id', $school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_id', $church_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_id', $church_id)->get();
+            $routes = SmRoute::where('active_status', 1)->where('church_id', $church_id)->get();
+            $vehicles = SmVehicle::where('active_status', 1)->where('church_id', $church_id)->get();
 
-            $class_id = $request->class;
+            $age_group_id = $request->class;
             $route_id = $request->route;
             $vechile_id = $request->vehicle;
 
@@ -14825,12 +14825,12 @@ class SmApiController extends Controller
                 $data['routes'] = $routes->toArray();
                 $data['vehicles'] = $vehicles->toArray();
                 $data['students'] = $students->toArray();
-                $data['class_id'] = $class_id;
+                $data['age_group_id'] = $age_group_id;
                 $data['route_id'] = $route_id;
                 $data['vechile_id'] = $vechile_id;
                 return ApiBaseMethod::sendResponse($data, null);
             }
-            return view('backEnd.transport.student_transport_report', compact('classes', 'routes', 'vehicles', 'students', 'class_id', 'route_id', 'vechile_id'));
+            return view('backEnd.transport.student_transport_report', compact('classes', 'routes', 'vehicles', 'students', 'age_group_id', 'route_id', 'vechile_id'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
@@ -14838,10 +14838,10 @@ class SmApiController extends Controller
     public function studentDormitoryReport(Request $request)
     {
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())
                 ->get();
             $dormitories = SmDormitoryList::where('active_status', 1)->get();
-            $students = SmStudent::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())
+            $students = SmStudent::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())
                 ->where('dormitory_id', '!=', "")->limit(100)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -14856,14 +14856,14 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_studentDormitoryReport(Request $request, $school_id)
+    public function saas_studentDormitoryReport(Request $request, $church_id)
     {
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())
-                ->where('school_id', $school_id)->get();
-            $dormitories = SmDormitoryList::where('active_status', 1)->where('school_id', $school_id)->get();
-            $students = SmStudent::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())
-                ->where('dormitory_id', '!=', "")->limit(100)->where('school_id', $school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())
+                ->where('church_id', $church_id)->get();
+            $dormitories = SmDormitoryList::where('active_status', 1)->where('church_id', $church_id)->get();
+            $students = SmStudent::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())
+                ->where('dormitory_id', '!=', "")->limit(100)->where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -14884,24 +14884,24 @@ class SmApiController extends Controller
             $students = SmStudent::query();
             $students->where('active_status', 1);
             if ($request->class != "") {
-                $students->where('class_id', $request->class);
+                $students->where('age_group_id', $request->class);
             }
             if ($request->section != "") {
-                $students->where('section_id', $request->section);
+                $students->where('mgender_id', $request->section);
             }
             if ($request->dormitory != "") {
                 $students->where('dormitory_id', $request->dormitory);
             } else {
                 $students->where('dormitory_id', '!=', '');
             }
-            $students = $students->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())
+            $students = $students->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())
                 ->get();
 
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())
                 ->get();
             $dormitories = SmDormitoryList::where('active_status', 1)->get();
 
-            $class_id = $request->class;
+            $age_group_id = $request->class;
             $dormitory_id = $request->dormitory;
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -14909,41 +14909,41 @@ class SmApiController extends Controller
                 $data['classes'] = $classes->toArray();
                 $data['dormitories'] = $dormitories->toArray();
                 $data['students'] = $students->toArray();
-                $data['class_id'] = $class_id;
+                $data['age_group_id'] = $age_group_id;
                 $data['dormitory_id'] = $dormitory_id;
                 return ApiBaseMethod::sendResponse($data, null);
             }
 
-            return view('backEnd.dormitory.student_dormitory_report', compact('classes', 'dormitories', 'students', 'class_id', 'dormitory_id'));
+            return view('backEnd.dormitory.student_dormitory_report', compact('classes', 'dormitories', 'students', 'age_group_id', 'dormitory_id'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_studentDormitoryReportSearch(Request $request, $school_id)
+    public function saas_studentDormitoryReportSearch(Request $request, $church_id)
     {
 
         try {
             $students = SmStudent::query();
-            $students->where('active_status', 1)->where('school_id', $school_id);
+            $students->where('active_status', 1)->where('church_id', $church_id);
             if ($request->class != "") {
-                $students->where('class_id', $request->class)->where('school_id', $school_id);
+                $students->where('age_group_id', $request->class)->where('church_id', $church_id);
             }
             if ($request->section != "") {
-                $students->where('section_id', $request->section)->where('school_id', $school_id);
+                $students->where('mgender_id', $request->section)->where('church_id', $church_id);
             }
             if ($request->dormitory != "") {
-                $students->where('dormitory_id', $request->dormitory)->where('school_id', $school_id);
+                $students->where('dormitory_id', $request->dormitory)->where('church_id', $church_id);
             } else {
-                $students->where('dormitory_id', '!=', '')->where('school_id', $school_id);
+                $students->where('dormitory_id', '!=', '')->where('church_id', $church_id);
             }
-            $students = $students->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())
-                ->where('school_id', $school_id)->get();
+            $students = $students->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())
+                ->where('church_id', $church_id)->get();
 
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())
-                ->where('school_id', $school_id)->get();
-            $dormitories = SmDormitoryList::where('active_status', 1)->where('school_id', $school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())
+                ->where('church_id', $church_id)->get();
+            $dormitories = SmDormitoryList::where('active_status', 1)->where('church_id', $church_id)->get();
 
-            $class_id = $request->class;
+            $age_group_id = $request->class;
             $dormitory_id = $request->dormitory;
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -14951,12 +14951,12 @@ class SmApiController extends Controller
                 $data['classes'] = $classes->toArray();
                 $data['dormitories'] = $dormitories->toArray();
                 $data['students'] = $students->toArray();
-                $data['class_id'] = $class_id;
+                $data['age_group_id'] = $age_group_id;
                 $data['dormitory_id'] = $dormitory_id;
                 return ApiBaseMethod::sendResponse($data, null);
             }
 
-            return view('backEnd.dormitory.student_dormitory_report', compact('classes', 'dormitories', 'students', 'class_id', 'dormitory_id'));
+            return view('backEnd.dormitory.student_dormitory_report', compact('classes', 'dormitories', 'students', 'age_group_id', 'dormitory_id'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
@@ -14964,7 +14964,7 @@ class SmApiController extends Controller
     public function studentReport(Request $request)
     {
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             $types = SmStudentCategory::all();
             $genders = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '1')->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -14985,14 +14985,14 @@ class SmApiController extends Controller
         try {
             $students = SmStudent::query();
 
-            $students->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('active_status', 1);
+            $students->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('active_status', 1);
 
             if ($request->class != "") {
-                $students->where('class_id', $request->class);
+                $students->where('age_group_id', $request->class);
             }
 
             if ($request->section != "") {
-                $students->where('section_id', $request->section);
+                $students->where('mgender_id', $request->section);
             }
 
             if ($request->type != "") {
@@ -15002,13 +15002,13 @@ class SmApiController extends Controller
             if ($request->gender != "") {
                 $students->where('gender_id', $request->gender);
             }
-            $students = $students->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $students = $students->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             $types = SmStudentCategory::all();
-            $genders = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '1')->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $genders = SmBaseSetup::where('active_status', '=', '1')->where('base_group_id', '=', '1')->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
-            $class_id = $request->class;
+            $age_group_id = $request->class;
             $type_id = $request->type;
             $gender_id = $request->gender;
 
@@ -15018,13 +15018,13 @@ class SmApiController extends Controller
                 $data['classes'] = $classes->toArray();
                 $data['types'] = $types->toArray();
                 $data['genders'] = $genders->toArray();
-                $data['class_id'] = $class_id;
+                $data['age_group_id'] = $age_group_id;
                 $data['type_id'] = $type_id;
                 $data['gender_id'] = $gender_id;
                 return ApiBaseMethod::sendResponse($data, null);
             }
 
-            return view('backEnd.studentInformation.student_report', compact('students', 'classes', 'types', 'genders', 'class_id', 'type_id', 'gender_id'));
+            return view('backEnd.studentInformation.student_report', compact('students', 'classes', 'types', 'genders', 'age_group_id', 'type_id', 'gender_id'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
@@ -15032,8 +15032,8 @@ class SmApiController extends Controller
     public function guardianReport(Request $request)
     {
         try {
-            $students = SmStudent::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $students = SmStudent::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -15063,26 +15063,26 @@ class SmApiController extends Controller
         }
         try {
             $students = SmStudent::query();
-            $students->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('active_status', 1);
-            $students->where('class_id', $request->class);
+            $students->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('active_status', 1);
+            $students->where('age_group_id', $request->class);
             if ($request->section != "") {
-                $students->where('section_id', $request->section);
+                $students->where('mgender_id', $request->section);
             }
-            $students = $students->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $students = $students->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
-            $class_id = $request->class;
+            $age_group_id = $request->class;
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
                 $data['students'] = $students->toArray();
                 $data['classes'] = $classes->toArray();
-                $data['class_id'] = $class_id;
+                $data['age_group_id'] = $age_group_id;
                 return ApiBaseMethod::sendResponse($data, null);
             }
 
-            return view('backEnd.studentInformation.guardian_report', compact('students', 'classes', 'class_id'));
+            return view('backEnd.studentInformation.guardian_report', compact('students', 'classes', 'age_group_id'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
@@ -15090,8 +15090,8 @@ class SmApiController extends Controller
     public function guardian_Report(Request $request)
     {
         try {
-            $students = SmStudent::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $students = SmStudent::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -15107,12 +15107,12 @@ class SmApiController extends Controller
     public function studentHistory(Request $request)
     {
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-            $students = SmStudent::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-            $admission_years = SmStudent::groupBy('admission_date')->select('admission_date')->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+            $students = SmStudent::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+            $admission_years = SmStudent::groupBy('admission_date')->select('admission_date')->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             $years = SmStudent::select('admission_date')->where('active_status', 1)
-                ->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get()
+                ->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get()
                 ->groupBy(function ($val) {
                     return Carbon::parse($val->admission_date)->format('Y');
                 });
@@ -15146,25 +15146,25 @@ class SmApiController extends Controller
                 ->withInput();
         }
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             $students = SmStudent::query();
-            $students->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('active_status', 1);
-            $students->where('class_id', $request->class);
+            $students->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('active_status', 1);
+            $students->where('age_group_id', $request->class);
             $students->where('active_status', 1);
             if ($request->admission_year != "") {
                 $students->where('admission_date', 'like', $request->admission_year . '%');
             }
 
-            $students = $students->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $students = $students->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             $years = SmStudent::select('admission_date')->where('active_status', 1)
-                ->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get()
+                ->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get()
                 ->groupBy(function ($val) {
                     return Carbon::parse($val->admission_date)->format('Y');
                 });
 
-            $class_id = $request->class;
+            $age_group_id = $request->class;
             $year = $request->admission_year;
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -15172,12 +15172,12 @@ class SmApiController extends Controller
                 $data['students'] = $students->toArray();
                 $data['classes'] = $classes->toArray();
                 $data['years'] = $years->toArray();
-                $data['class_id'] = $class_id;
+                $data['age_group_id'] = $age_group_id;
                 $data['year'] = $year;
                 return ApiBaseMethod::sendResponse($data, null);
             }
 
-            return view('backEnd.studentInformation.student_history', compact('students', 'classes', 'years', 'class_id', 'year'));
+            return view('backEnd.studentInformation.student_history', compact('students', 'classes', 'years', 'age_group_id', 'year'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
@@ -15185,12 +15185,12 @@ class SmApiController extends Controller
     public function student_History(Request $request)
     {
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-            $students = SmStudent::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-            $admission_years = SmStudent::groupBy('admission_date')->select('admission_date')->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+            $students = SmStudent::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+            $admission_years = SmStudent::groupBy('admission_date')->select('admission_date')->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             $years = SmStudent::select('admission_date')->where('active_status', 1)
-                ->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get()
+                ->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get()
                 ->groupBy(function ($val) {
                     return Carbon::parse($val->admission_date)->format('Y');
                 });
@@ -15212,7 +15212,7 @@ class SmApiController extends Controller
     {
         try {
             $students = SmStudent::all();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -15242,24 +15242,24 @@ class SmApiController extends Controller
         }
         try {
             $students = SmStudent::query();
-            $students->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('active_status', 1);
-            $students->where('class_id', $request->class);
+            $students->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('active_status', 1);
+            $students->where('age_group_id', $request->class);
             if ($request->section != "") {
-                $students->where('section_id', $request->section);
+                $students->where('mgender_id', $request->section);
             }
-            $students = $students->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $students = $students->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-            $class_id = $request->class;
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+            $age_group_id = $request->class;
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
                 $data['students'] = $students->toArray();
                 $data['classes'] = $classes->toArray();
-                $data['class_id'] = $class_id;
+                $data['age_group_id'] = $age_group_id;
                 return ApiBaseMethod::sendResponse($data, null);
             }
-            return view('backEnd.studentInformation.login_info', compact('students', 'classes', 'class_id'));
+            return view('backEnd.studentInformation.login_info', compact('students', 'classes', 'age_group_id'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
@@ -15268,7 +15268,7 @@ class SmApiController extends Controller
     {
         try {
             $students = SmStudent::all();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -15317,7 +15317,7 @@ class SmApiController extends Controller
     public function feesStatemnt(Request $request)
     {
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             $fees_masters = SmFeesMaster::select('fees_group_id')->where('active_status', 1)->distinct('fees_group_id')->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -15349,11 +15349,11 @@ class SmApiController extends Controller
                 ->withInput();
         }
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             $fees_masters = SmFeesMaster::select('fees_group_id')->where('active_status', 1)->distinct('fees_group_id')->get();
             $student = SmStudent::find($request->student);
-            $fees_assigneds = SmFeesAssign::where('student_id', $request->student)->get();
-            $fees_discounts = SmFeesAssignDiscount::where('student_id', $request->student)->get();
+            $fees_assigneds = SmFeesAssign::where('member_id', $request->student)->get();
+            $fees_discounts = SmFeesAssignDiscount::where('member_id', $request->student)->get();
             $applied_discount = [];
             foreach ($fees_discounts as $fees_discount) {
                 $fees_payment = SmFeesPayment::select('fees_discount_id')->where('fees_discount_id', $fees_discount->id)->first();
@@ -15362,7 +15362,7 @@ class SmApiController extends Controller
                 }
             }
 
-            $class_id = $request->class;
+            $age_group_id = $request->class;
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -15372,11 +15372,11 @@ class SmApiController extends Controller
                 $data['fees_discounts'] = $fees_discounts->toArray();
                 $data['applied_discount'] = $applied_discount;
                 $data['student'] = $student;
-                $data['class_id'] = $class_id;
+                $data['age_group_id'] = $age_group_id;
                 return ApiBaseMethod::sendResponse($data, null);
             }
 
-            return view('backEnd.feesCollection.fees_statment', compact('classes', 'fees_masters', 'fees_assigneds', 'fees_discounts', 'applied_discount', 'student', 'class_id'));
+            return view('backEnd.feesCollection.fees_statment', compact('classes', 'fees_masters', 'fees_assigneds', 'fees_discounts', 'applied_discount', 'student', 'age_group_id'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
@@ -15384,7 +15384,7 @@ class SmApiController extends Controller
     public function balanceFeesReport(Request $request)
     {
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($classes, null);
             }
@@ -15410,7 +15410,7 @@ class SmApiController extends Controller
                 ->withInput();
         }
         try {
-            $students = SmStudent::where('class_id', $request->class)->where('section_id', $request->section)->get();
+            $students = SmStudent::where('age_group_id', $request->class)->where('mgender_id', $request->section)->get();
             $balance_students = [];
 
             $fees_masters = SmFeesMaster::where('active_status', 1)->get();
@@ -15420,11 +15420,11 @@ class SmApiController extends Controller
                 $total_discount = 0;
                 $total_amount = 0;
                 foreach ($fees_masters as $fees_master) {
-                    $fees_assign = SmFeesAssign::where('student_id', $student->id)->where('fees_master_id', $fees_master->id)->first();
+                    $fees_assign = SmFeesAssign::where('member_id', $student->id)->where('fees_master_id', $fees_master->id)->first();
                     if ($fees_assign != "") {
-                        $discount_amount = SmFeesPayment::where('student_id', $student->id)->where('fees_type_id', $fees_master->fees_type_id)->sum('discount_amount');
+                        $discount_amount = SmFeesPayment::where('member_id', $student->id)->where('fees_type_id', $fees_master->fees_type_id)->sum('discount_amount');
 
-                        $balance = SmFeesPayment::where('student_id', $student->id)->where('fees_type_id', $fees_master->fees_type_id)->sum('amount');
+                        $balance = SmFeesPayment::where('member_id', $student->id)->where('fees_type_id', $fees_master->fees_type_id)->sum('amount');
 
                         $total_balance += $balance;
                         $total_discount += $discount_amount;
@@ -15437,19 +15437,19 @@ class SmApiController extends Controller
                 }
             }
 
-            $class_id = $request->class;
+            $age_group_id = $request->class;
 
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
                 $data['classes'] = $classes->toArray();
                 $data['balance_students'] = $balance_students;
-                $data['class_id'] = $class_id;
+                $data['age_group_id'] = $age_group_id;
                 return ApiBaseMethod::sendResponse($data, null);
             }
 
-            return view('backEnd.feesCollection.balance_fees_report', compact('classes', 'balance_students', 'class_id'));
+            return view('backEnd.feesCollection.balance_fees_report', compact('classes', 'balance_students', 'age_group_id'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
@@ -15457,7 +15457,7 @@ class SmApiController extends Controller
     public function balance_Fees_Report(Request $request)
     {
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($classes, null);
             }
@@ -15483,7 +15483,7 @@ class SmApiController extends Controller
             $date_from = date('Y-m-d', strtotime($request->date_from));
             $date_to = date('Y-m-d', strtotime($request->date_to));
             $fees_payments = SmFeesPayment::where('payment_date', '>=', $date_from)->where('payment_date', '<=', $date_to)->get();
-            $fees_payments = $fees_payments->groupBy('student_id');
+            $fees_payments = $fees_payments->groupBy('member_id');
             $add_incomes = SmAddIncome::where('date', '>=', $date_from)->where('date', '<=', $date_to)->where('active_status', 1)->get();
             $add_expenses = SmAddExpense::where('date', '>=', $date_from)->where('date', '<=', $date_to)->where('active_status', 1)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -15512,7 +15512,7 @@ class SmApiController extends Controller
     public function classReport(Request $request)
     {
         try {
-            $classes = SmClass::where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('active_status', 1)->get();
+            $classes = SmClass::where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('active_status', 1)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($classes, null);
             }
@@ -15538,42 +15538,42 @@ class SmApiController extends Controller
         }
 
         try {
-            $class = SmClass::where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('id', $request->class)->first();
+            $class = SmClass::where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('id', $request->class)->first();
             if ($request->section != "") {
-                $section = SmSection::where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('id', $request->section)->first();
+                $section = SmSection::where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('id', $request->section)->first();
             } else {
                 $section = '';
             }
 
             $students = SmStudent::query();
-            $students->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('active_status', 1);
+            $students->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('active_status', 1);
             if ($request->section != "") {
-                $students->where('section_id', $request->section);
+                $students->where('mgender_id', $request->section);
             }
-            $students->where('class_id', $request->class);
+            $students->where('age_group_id', $request->class);
             $students = $students->get();
 
             $assign_subjects = SmAssignSubject::query();
-            $assign_subjects->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('active_status', 1);
+            $assign_subjects->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('active_status', 1);
             if ($request->section != "") {
-                $assign_subjects->where('section_id', $request->section);
+                $assign_subjects->where('mgender_id', $request->section);
             }
-            $assign_subjects->where('class_id', $request->class);
+            $assign_subjects->where('age_group_id', $request->class);
             $assign_subjects = $assign_subjects->get();
 
             $assign_subjects = SmAssignSubject::query();
-            $assign_subjects->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('active_status', 1);
+            $assign_subjects->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('active_status', 1);
             if ($request->section != "") {
-                $assign_subjects->where('section_id', $request->section);
+                $assign_subjects->where('mgender_id', $request->section);
             }
-            $assign_subjects->where('class_id', $request->class);
+            $assign_subjects->where('age_group_id', $request->class);
             $assign_subjects = $assign_subjects->get();
             $assign_class_teacher = SmAssignClassTeacher::query();
-            $assign_class_teacher->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('active_status', 1);
+            $assign_class_teacher->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('active_status', 1);
             if ($request->section != "") {
-                $assign_class_teacher->where('section_id', $request->section);
+                $assign_class_teacher->where('mgender_id', $request->section);
             }
-            $assign_class_teacher->where('class_id', $request->class);
+            $assign_class_teacher->where('age_group_id', $request->class);
             $assign_class_teacher = $assign_class_teacher->first();
             if ($assign_class_teacher != "") {
                 $assign_class_teachers = $assign_class_teacher->classTeachers->first();
@@ -15584,21 +15584,21 @@ class SmApiController extends Controller
             $total_collection = 0;
             $total_assign = 0;
             foreach ($students as $student) {
-                $fees_assigns = SmFeesAssign::where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where("student_id", $student->id)->where('active_status', 1)->get();
+                $fees_assigns = SmFeesAssign::where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where("member_id", $student->id)->where('active_status', 1)->get();
                 foreach ($fees_assigns as $fees_assign) {
-                    $fees_masters = SmFeesMaster::where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('id', $fees_assign->fees_master_id)->get();
+                    $fees_masters = SmFeesMaster::where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('id', $fees_assign->fees_master_id)->get();
                     foreach ($fees_masters as $fees_master) {
-                        $total_collection = $total_collection + SmFeesPayment::where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('student_id', $student->id)->where('fees_type_id', $fees_master->fees_type_id)->sum('amount');
+                        $total_collection = $total_collection + SmFeesPayment::where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('member_id', $student->id)->where('fees_type_id', $fees_master->fees_type_id)->sum('amount');
                     }
                 }
 
                 foreach ($fees_assigns as $fees_assign) {
-                    $fees_master = SmFeesMaster::where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('id', $fees_assign->fees_master_id)->first();
+                    $fees_master = SmFeesMaster::where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('id', $fees_assign->fees_master_id)->first();
                     $total_assign = $total_assign + $fees_master->amount;
                 }
             }
 
-            $classes = SmClass::where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('active_status', 1)->get();
+            $classes = SmClass::where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('active_status', 1)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -15622,7 +15622,7 @@ class SmApiController extends Controller
     {
 
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($classes, null);
             }
@@ -15649,20 +15649,20 @@ class SmApiController extends Controller
         }
         try {
             $class_times = SmClassTime::where('type', 'class')->get();
-            $class_id = $request->class;
-            $section_id = $request->section;
-            $sm_weekends = SmWeekend::where('school_id', Auth::user()->school_id)->orderBy('order', 'ASC')->where('active_status', 1)->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $age_group_id = $request->class;
+            $mgender_id = $request->section;
+            $sm_weekends = SmWeekend::where('church_id', Auth::user()->church_id)->orderBy('order', 'ASC')->where('active_status', 1)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
                 $data['classes'] = $classes->toArray();
                 $data['class_times'] = $class_times->toArray();
-                $data['class_id'] = $class_id;
-                $data['section_id'] = $section_id;
+                $data['age_group_id'] = $age_group_id;
+                $data['mgender_id'] = $mgender_id;
                 $data['sm_weekends'] = $sm_weekends->toArray();
                 return ApiBaseMethod::sendResponse($data, null);
             }
-            return view('backEnd.reports.class_routine_report', compact('classes', 'class_times', 'class_id', 'section_id', 'sm_weekends'));
+            return view('backEnd.reports.class_routine_report', compact('classes', 'class_times', 'age_group_id', 'mgender_id', 'sm_weekends'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
@@ -15672,7 +15672,7 @@ class SmApiController extends Controller
 
         try {
             $exam_types = SmExamType::get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
 
                 return ApiBaseMethod::sendResponse($exam_types, null);
@@ -15686,9 +15686,9 @@ class SmApiController extends Controller
     {
 
         try {
-            $exam_types = SmExamType::where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-            $exam_periods = SmClassTime::where('type', 'exam')->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-            $exam_routines = SmExamSchedule::where('exam_term_id', $request->exam)->orderBy('date', 'ASC')->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $exam_types = SmExamType::where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+            $exam_periods = SmClassTime::where('type', 'exam')->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+            $exam_routines = SmExamSchedule::where('exam_term_id', $request->exam)->orderBy('date', 'ASC')->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             $exam_routines = $exam_routines->groupBy('date');
 
             $exam_term_id = $request->exam;
@@ -15739,9 +15739,9 @@ class SmApiController extends Controller
         try {
             $class_times = SmClassTime::where('type', 'class')->get();
             $teacher_id = $request->teacher;
-            $sm_weekends = SmWeekend::where('school_id', Auth::user()->school_id)->orderBy('order', 'ASC')->where('active_status', 1)->get();
+            $sm_weekends = SmWeekend::where('church_id', Auth::user()->church_id)->orderBy('order', 'ASC')->where('active_status', 1)->get();
             $teachers = SmStaff::select('id', 'full_name')->where('active_status', 1)->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
                 $data['class_times'] = $class_times->toArray();
@@ -15758,8 +15758,8 @@ class SmApiController extends Controller
     public function meritListReport(Request $request)
     {
         try {
-            $exams = SmExamType::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $exams = SmExamType::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -15803,24 +15803,24 @@ class SmApiController extends Controller
                 $section = SmSection::find($InputSectionId);
                 $exam = SmExamType::find($InputExamId);
 
-                $optional_subject_setup = SmClassOptionalSubject::where('class_id', '=', $request->class)->first();
+                $optional_subject_setup = SmClassOptionalSubject::where('age_group_id', '=', $request->class)->first();
 
-                $is_data = DB::table('sm_mark_stores')->where([['class_id', $InputClassId], ['section_id', $InputSectionId], ['exam_term_id', $InputExamId]])->first();
+                $is_data = DB::table('sm_mark_stores')->where([['age_group_id', $InputClassId], ['mgender_id', $InputSectionId], ['exam_term_id', $InputExamId]])->first();
                 if (empty($is_data)) {
                     return redirect()->back()->with('message-danger', 'Your result is not found!');
                 }
 
-                $exams = SmExamType::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-                $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                $exams = SmExamType::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+                $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
-                $subjects = SmSubject::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-                $assign_subjects = SmAssignSubject::where('class_id', $class->id)->where('section_id', $section->id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-                $class_name = $class->class_name;
+                $subjects = SmSubject::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+                $assign_subjects = SmAssignSubject::where('age_group_id', $class->id)->where('mgender_id', $section->id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+                $age_group_name = $class->age_group_name;
 
                 $exam_name = $exam->title;
 
-                $eligible_subjects = SmAssignSubject::where('class_id', $InputClassId)->where('section_id', $InputSectionId)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-                $eligible_students = SmStudent::where('class_id', $InputClassId)->where('section_id', $InputSectionId)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                $eligible_subjects = SmAssignSubject::where('age_group_id', $InputClassId)->where('mgender_id', $InputSectionId)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+                $eligible_students = SmStudent::where('age_group_id', $InputClassId)->where('mgender_id', $InputSectionId)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
                 $subject_ids = [];
                 $subject_strings = '';
@@ -15833,9 +15833,9 @@ class SmApiController extends Controller
                         $subject_id_strings = (empty($subject_id_strings)) ? $subject->subject_id : $subject_id_strings . ',' . $subject->subject_id;
                         $getMark = SmResultStore::where([
                             ['exam_type_id', $InputExamId],
-                            ['class_id', $InputClassId],
-                            ['section_id', $InputSectionId],
-                            ['student_id', $SingleStudent->id],
+                            ['age_group_id', $InputClassId],
+                            ['mgender_id', $InputSectionId],
+                            ['member_id', $SingleStudent->id],
                             ['subject_id', $subject->subject_id],
                         ])->first();
                         if ($getMark == "") {
@@ -15855,30 +15855,30 @@ class SmApiController extends Controller
 
                     $results = SmResultStore::where([
                         ['exam_type_id', $InputExamId],
-                        ['class_id', $InputClassId],
-                        ['section_id', $InputSectionId],
-                        ['student_id', $SingleStudent->id],
-                    ])->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                        ['age_group_id', $InputClassId],
+                        ['mgender_id', $InputSectionId],
+                        ['member_id', $SingleStudent->id],
+                    ])->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
                     $is_absent = SmResultStore::where([
                         ['exam_type_id', $InputExamId],
-                        ['class_id', $InputClassId],
-                        ['section_id', $InputSectionId],
+                        ['age_group_id', $InputClassId],
+                        ['mgender_id', $InputSectionId],
                         ['is_absent', 1],
-                        ['student_id', $SingleStudent->id],
-                    ])->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                        ['member_id', $SingleStudent->id],
+                    ])->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
                     $total_gpa_point = SmResultStore::where([
                         ['exam_type_id', $InputExamId],
-                        ['class_id', $InputClassId],
-                        ['section_id', $InputSectionId],
-                        ['student_id', $SingleStudent->id],
+                        ['age_group_id', $InputClassId],
+                        ['mgender_id', $InputSectionId],
+                        ['member_id', $SingleStudent->id],
                     ])->sum('total_gpa_point');
 
                     $total_marks = SmResultStore::where([
                         ['exam_type_id', $InputExamId],
-                        ['class_id', $InputClassId],
-                        ['section_id', $InputSectionId],
-                        ['student_id', $SingleStudent->id],
+                        ['age_group_id', $InputClassId],
+                        ['mgender_id', $InputSectionId],
+                        ['member_id', $SingleStudent->id],
                     ])->sum('total_marks');
 
                     $sum_of_mark = ($total_marks == 0) ? 0 : $total_marks;
@@ -15887,18 +15887,18 @@ class SmApiController extends Controller
                     $total_GPA = ($total_gpa_point == 0) ? 0 : $total_gpa_point / $results->count();
                     $exart_gp_point = number_format($total_GPA, 2, '.', ''); //get gpa results
                     $full_name = $SingleStudent->full_name; //get name
-                    $admission_no = $SingleStudent->admission_no; //get admission no
-                    $student_id = $SingleStudent->id; //get admission no
+                    $registration_no = $SingleStudent->registration_no; //get admission no
+                    $member_id = $SingleStudent->id; //get admission no
 
-                    $is_existing_data = SmTemporaryMeritlist::where([['admission_no', $admission_no], ['class_id', $InputClassId], ['section_id', $InputSectionId], ['exam_id', $InputExamId]])->first();
+                    $is_existing_data = SmTemporaryMeritlist::where([['registration_no', $registration_no], ['age_group_id', $InputClassId], ['mgender_id', $InputSectionId], ['exam_id', $InputExamId]])->first();
 
                     if (empty($is_existing_data)) {
                         $insert_results = new SmTemporaryMeritlist();
                     } else {
                         $insert_results = SmTemporaryMeritlist::find($is_existing_data->id);
                     }
-                    $insert_results->student_name = $full_name;
-                    $insert_results->admission_no = $admission_no;
+                    $insert_results->member_name = $full_name;
+                    $insert_results->registration_no = $registration_no;
                     $insert_results->subjects_id_string = implode(',', array_unique($subject_ids));
                     $insert_results->subjects_string = $subject_strings;
                     $insert_results->marks_string = $marks_string;
@@ -15906,7 +15906,7 @@ class SmApiController extends Controller
                     $insert_results->average_mark = $average_mark;
                     $insert_results->gpa_point = $exart_gp_point;
                     $insert_results->iid = $iid;
-                    $insert_results->student_id = $SingleStudent->id;
+                    $insert_results->member_id = $SingleStudent->id;
                     $markGrades = SmMarksGrade::where([['from', '<=', $exart_gp_point], ['up', '>=', $exart_gp_point]])->first();
 
                     if ($is_absent == "") {
@@ -15914,8 +15914,8 @@ class SmApiController extends Controller
                     } else {
                         $insert_results->result = 'F';
                     }
-                    $insert_results->section_id = $InputSectionId;
-                    $insert_results->class_id = $InputClassId;
+                    $insert_results->mgender_id = $InputSectionId;
+                    $insert_results->age_group_id = $InputClassId;
                     $insert_results->exam_id = $InputExamId;
                     $insert_results->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
                     $insert_results->save();
@@ -15925,13 +15925,13 @@ class SmApiController extends Controller
                     $total_marks = 0;
                     $average = 0;
                     $exart_gp_point = 0;
-                    $admission_no = 0;
+                    $registration_no = 0;
                     $full_name = "";
                 }
 
                 $first_data = SmTemporaryMeritlist::where('iid', $iid)->first();
                 $subjectlist = explode(',', $first_data->subjects_string);
-                $allresult_data = SmTemporaryMeritlist::where('iid', $iid)->orderBy('gpa_point', 'desc')->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                $allresult_data = SmTemporaryMeritlist::where('iid', $iid)->orderBy('gpa_point', 'desc')->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
                 $merit_serial = 1;
                 foreach ($allresult_data as $row) {
                     $D = SmTemporaryMeritlist::where('iid', $iid)->where('id', $row->id)->first();
@@ -15939,7 +15939,7 @@ class SmApiController extends Controller
                     $D->save();
                 }
 
-                $allresult_data = SmTemporaryMeritlist::orderBy('merit_order', 'asc')->where('exam_id', '=', $InputClassId)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                $allresult_data = SmTemporaryMeritlist::orderBy('merit_order', 'asc')->where('exam_id', '=', $InputClassId)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
                 // return $allresult_data;
                 if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                     $data = [];
@@ -15951,13 +15951,13 @@ class SmApiController extends Controller
                     $data['exam'] = $exam;
                     $data['subjectlist'] = $subjectlist;
                     $data['allresult_data'] = $allresult_data;
-                    $data['class_name'] = $class_name;
+                    $data['age_group_name'] = $age_group_name;
                     $data['assign_subjects'] = $assign_subjects;
                     $data['exam_name'] = $exam_name;
                     return ApiBaseMethod::sendResponse($data, null);
                 }
 
-                return view('backEnd.reports.merit_list_report', compact('iid', 'exams', 'classes', 'subjects', 'class', 'section', 'exam', 'subjectlist', 'allresult_data', 'class_name', 'assign_subjects', 'exam_name', 'InputClassId', 'InputExamId', 'InputSectionId', 'optional_subject_setup'));
+                return view('backEnd.reports.merit_list_report', compact('iid', 'exams', 'classes', 'subjects', 'class', 'section', 'exam', 'subjectlist', 'allresult_data', 'age_group_name', 'assign_subjects', 'exam_name', 'InputClassId', 'InputExamId', 'InputSectionId', 'optional_subject_setup'));
             }
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
@@ -15967,8 +15967,8 @@ class SmApiController extends Controller
     {
 
         try {
-            $exams = SmOnlineExam::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $exams = SmOnlineExam::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -16005,9 +16005,9 @@ class SmApiController extends Controller
 
             $online_exam_question = SmOnlineExam::find($request->exam);
 
-            $students = SmStudent::where('class_id', $request->class)->where('section_id', $request->section)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $students = SmStudent::where('age_group_id', $request->class)->where('mgender_id', $request->section)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
-            $online_exam = SmOnlineExam::where('class_id', $request->class)->where('section_id', $request->section)->where('id', $request->exam)->where('end_date_time', '<', $present_date_time)->where('status', 1)->first();
+            $online_exam = SmOnlineExam::where('age_group_id', $request->class)->where('mgender_id', $request->section)->where('id', $request->exam)->where('end_date_time', '<', $present_date_time)->where('status', 1)->first();
 
             if ($students->count() == 0 && $online_exam == "") {
                 Toastr::error('No Result Found', 'Failed');
@@ -16016,7 +16016,7 @@ class SmApiController extends Controller
 
             $present_students = [];
             foreach ($students as $student) {
-                $take_exam = SmStudentTakeOnlineExam::where('student_id', $student->id)->where('online_exam_id', $online_exam_question->id)->first();
+                $take_exam = SmStudentTakeOnlineExam::where('member_id', $student->id)->where('online_exam_id', $online_exam_question->id)->first();
                 if ($take_exam != "") {
                     $present_students[] = $student->id;
                 }
@@ -16027,10 +16027,10 @@ class SmApiController extends Controller
                 $total_marks = $total_marks + $assignQuestion->questionBank->marks;
             }
 
-            $exams = SmOnlineExam::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $exams = SmOnlineExam::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
-            $class_id = $request->class;
+            $age_group_id = $request->class;
             $exam_id = $request->exam;
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -16041,12 +16041,12 @@ class SmApiController extends Controller
                 $data['total_marks'] = $total_marks;
                 $data['exams'] = $exams->toArray();
                 $data['classes'] = $classes->toArray();
-                $data['class_id'] = $class_id;
+                $data['age_group_id'] = $age_group_id;
                 $data['exam_id'] = $exam_id;
                 return ApiBaseMethod::sendResponse($data, null);
             }
 
-            return view('backEnd.reports.online_exam_report', compact('online_exam_question', 'students', 'present_students', 'total_marks', 'exams', 'classes', 'class_id', 'exam_id'));
+            return view('backEnd.reports.online_exam_report', compact('online_exam_question', 'students', 'present_students', 'total_marks', 'exams', 'classes', 'age_group_id', 'exam_id'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
@@ -16054,8 +16054,8 @@ class SmApiController extends Controller
     public function markSheetReportStudent(Request $request)
     {
         try {
-            $exams = SmExamType::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $exams = SmExamType::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -16079,9 +16079,9 @@ class SmApiController extends Controller
         ]);
 
         $input['exam_id'] = $request->exam;
-        $input['class_id'] = $request->class;
-        $input['section_id'] = $request->section;
-        $input['student_id'] = $request->student;
+        $input['age_group_id'] = $request->class;
+        $input['mgender_id'] = $request->section;
+        $input['member_id'] = $request->student;
 
         if ($validator->fails()) {
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -16091,31 +16091,31 @@ class SmApiController extends Controller
         }
 
         try {
-            $exams = SmExamType::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-            $exam_types = SmExamType::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $exams = SmExamType::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+            $exam_types = SmExamType::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
-            $subjects = SmAssignSubject::where([['class_id', $request->class], ['section_id', $request->section]])->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $subjects = SmAssignSubject::where([['age_group_id', $request->class], ['mgender_id', $request->section]])->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             $student_detail = $studentDetails = SmStudent::find($request->student);
             $section = SmSection::where('active_status', 1)->where('id', $request->section)->first();
-            $section_id = $request->section;
-            $class_id = $request->class;
-            $class_name = SmClass::find($class_id);
+            $mgender_id = $request->section;
+            $age_group_id = $request->class;
+            $age_group_name = SmClass::find($age_group_id);
             $exam_type_id = $request->exam;
-            $student_id = $request->student;
+            $member_id = $request->student;
             $exam_details = SmExamType::where('active_status', 1)->find($exam_type_id);
 
             $optional_subject = '';
 
-            $get_optional_subject = SmOptionalSubjectAssign::where('student_id', '=', $student_detail->id)->where('session_id', '=', $student_detail->session_id)->first();
+            $get_optional_subject = SmOptionalSubjectAssign::where('member_id', '=', $student_detail->id)->where('session_id', '=', $student_detail->session_id)->first();
             if ($get_optional_subject != '') {
                 $optional_subject = $get_optional_subject->subject_id;
             }
-            $optional_subject_setup = SmClassOptionalSubject::where('class_id', '=', $request->class)->first();
+            $optional_subject_setup = SmClassOptionalSubject::where('age_group_id', '=', $request->class)->first();
             // return $student_detail;
 
             foreach ($subjects as $subject) {
-                $mark_sheet = SmResultStore::where([['class_id', $request->class], ['exam_type_id', $request->exam], ['section_id', $request->section], ['student_id', $request->student]])->where('subject_id', $subject->subject_id)->first();
+                $mark_sheet = SmResultStore::where([['age_group_id', $request->class], ['exam_type_id', $request->exam], ['mgender_id', $request->section], ['member_id', $request->student]])->where('subject_id', $subject->subject_id)->first();
                 if ($mark_sheet == "") {
                     Toastr::error('Ops! Your result is not found! Please check mark register', 'Failed');
                     return redirect('mark-sheet-report-student');
@@ -16123,12 +16123,12 @@ class SmApiController extends Controller
             }
 
             $is_result_available = SmResultStore::where([
-                ['class_id', $request->class],
+                ['age_group_id', $request->class],
                 ['exam_type_id', $request->exam],
-                ['section_id', $request->section],
-                ['student_id', $request->student],
+                ['mgender_id', $request->section],
+                ['member_id', $request->student],
             ])
-                ->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())
+                ->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())
                 ->get();
 
             if ($is_result_available->count() > 0) {
@@ -16141,18 +16141,18 @@ class SmApiController extends Controller
                     $data['exams'] = $exams->toArray();
                     $data['subjects'] = $subjects->toArray();
                     $data['section'] = $section;
-                    $data['class_id'] = $class_id;
+                    $data['age_group_id'] = $age_group_id;
                     $data['student_detail'] = $student_detail;
                     $data['is_result_available'] = $is_result_available;
                     $data['exam_type_id'] = $exam_type_id;
-                    $data['section_id'] = $section_id;
-                    $data['student_id'] = $student_id;
+                    $data['mgender_id'] = $mgender_id;
+                    $data['member_id'] = $member_id;
                     $data['exam_details'] = $exam_details;
-                    $data['class_name'] = $class_name;
+                    $data['age_group_name'] = $age_group_name;
                     return ApiBaseMethod::sendResponse($data, null);
                 }
-                $student = $student_id;
-                return view('backEnd.reports.mark_sheet_report_student', compact('optional_subject_setup', 'exam_types', 'classes', 'studentDetails', 'exams', 'classes', 'subjects', 'section', 'class_id', 'student_detail', 'is_result_available', 'exam_type_id', 'section_id', 'student_id', 'exam_details', 'class_name', 'input', 'optional_subject'));
+                $student = $member_id;
+                return view('backEnd.reports.mark_sheet_report_student', compact('optional_subject_setup', 'exam_types', 'classes', 'studentDetails', 'exams', 'classes', 'subjects', 'section', 'age_group_id', 'student_detail', 'is_result_available', 'exam_type_id', 'mgender_id', 'member_id', 'exam_details', 'age_group_name', 'input', 'optional_subject'));
             } else {
 
                 if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -16162,20 +16162,20 @@ class SmApiController extends Controller
                 return redirect('mark-sheet-report-student');
             }
 
-            $marks_register = SmMarksRegister::where('exam_id', $request->exam)->where('student_id', $request->student)->first();
+            $marks_register = SmMarksRegister::where('exam_id', $request->exam)->where('member_id', $request->student)->first();
 
             $student_detail = SmStudent::where('id', $request->student)->first();
-            $subjects = SmAssignSubject::where('class_id', $request->class)->where('section_id', $request->section)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-            $exams = SmExamType::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-            $grades = SmMarksGrade::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $subjects = SmAssignSubject::where('age_group_id', $request->class)->where('mgender_id', $request->section)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+            $exams = SmExamType::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+            $grades = SmMarksGrade::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             $class = SmClass::find($request->class);
             $section = SmSection::find($request->section);
             $exam_detail = SmExam::find($request->exam);
             $exam_id = $request->exam;
-            $class_id = $request->class;
+            $age_group_id = $request->class;
 
-            return view('backEnd.reports.mark_sheet_report_student', compact('exam_types', 'optional_subject', 'classes', 'studentDetails', 'exams', 'classes', 'marks_register', 'subjects', 'class', 'section', 'exam_detail', 'grades', 'exam_id', 'class_id', 'student_detail', 'input'));
+            return view('backEnd.reports.mark_sheet_report_student', compact('exam_types', 'optional_subject', 'classes', 'studentDetails', 'exams', 'classes', 'marks_register', 'subjects', 'class', 'section', 'exam_detail', 'grades', 'exam_id', 'age_group_id', 'student_detail', 'input'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
@@ -16183,8 +16183,8 @@ class SmApiController extends Controller
     public function markSheetReport_Student(Request $request)
     {
         try {
-            $exams = SmExamType::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $exams = SmExamType::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -16208,9 +16208,9 @@ class SmApiController extends Controller
         ]);
 
         $input['exam_id'] = $request->exam;
-        $input['class_id'] = $request->class;
-        $input['section_id'] = $request->section;
-        $input['student_id'] = $request->student;
+        $input['age_group_id'] = $request->class;
+        $input['mgender_id'] = $request->section;
+        $input['member_id'] = $request->student;
 
         if ($validator->fails()) {
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -16220,38 +16220,38 @@ class SmApiController extends Controller
         }
 
         try {
-            $exams = SmExamType::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-            $exam_types = SmExamType::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $exams = SmExamType::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+            $exam_types = SmExamType::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
-            $subjects = SmAssignSubject::where([['class_id', $request->class], ['section_id', $request->section]])->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $subjects = SmAssignSubject::where([['age_group_id', $request->class], ['mgender_id', $request->section]])->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             $student_detail = $studentDetails = SmStudent::find($request->student);
             $section = SmSection::where('active_status', 1)->where('id', $request->section)->first();
-            $section_id = $request->section;
-            $class_id = $request->class;
-            $class_name = SmClass::find($class_id);
+            $mgender_id = $request->section;
+            $age_group_id = $request->class;
+            $age_group_name = SmClass::find($age_group_id);
             $exam_type_id = $request->exam;
-            $student_id = $request->student;
+            $member_id = $request->student;
             $exam_details = SmExamType::where('active_status', 1)->find($exam_type_id);
 
             $optional_subject = '';
 
-            $get_optional_subject = SmOptionalSubjectAssign::where('student_id', '=', $student_detail->id)->where('session_id', '=', $student_detail->session_id)->first();
+            $get_optional_subject = SmOptionalSubjectAssign::where('member_id', '=', $student_detail->id)->where('session_id', '=', $student_detail->session_id)->first();
             if ($get_optional_subject != '') {
                 $optional_subject = $get_optional_subject->subject_id;
             }
-            $optional_subject_setup = SmClassOptionalSubject::where('class_id', '=', $request->class)->first();
+            $optional_subject_setup = SmClassOptionalSubject::where('age_group_id', '=', $request->class)->first();
             // return $student_detail;
 
             foreach ($subjects as $subject) {
-                $mark_sheet = SmResultStore::where([['class_id', $request->class], ['exam_type_id', $request->exam], ['section_id', $request->section], ['student_id', $request->student]])->where('subject_id', $subject->subject_id)->first();
+                $mark_sheet = SmResultStore::where([['age_group_id', $request->class], ['exam_type_id', $request->exam], ['mgender_id', $request->section], ['member_id', $request->student]])->where('subject_id', $subject->subject_id)->first();
                 if ($mark_sheet == "") {
                     Toastr::error('Ops! Your result is not found! Please check mark register', 'Failed');
                     return redirect('mark-sheet-report-student');
                 }
             }
 
-            $is_result_available = SmResultStore::where([['class_id', $request->class], ['exam_type_id', $request->exam], ['section_id', $request->section], ['student_id', $request->student]])->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $is_result_available = SmResultStore::where([['age_group_id', $request->class], ['exam_type_id', $request->exam], ['mgender_id', $request->section], ['member_id', $request->student]])->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             if ($is_result_available->count() > 0) {
                 if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -16262,18 +16262,18 @@ class SmApiController extends Controller
                     $data['exams'] = $exams->toArray();
                     $data['subjects'] = $subjects->toArray();
                     $data['section'] = $section;
-                    $data['class_id'] = $class_id;
+                    $data['age_group_id'] = $age_group_id;
                     $data['student_detail'] = $student_detail;
                     $data['is_result_available'] = $is_result_available;
                     $data['exam_type_id'] = $exam_type_id;
-                    $data['section_id'] = $section_id;
-                    $data['student_id'] = $student_id;
+                    $data['mgender_id'] = $mgender_id;
+                    $data['member_id'] = $member_id;
                     $data['exam_details'] = $exam_details;
-                    $data['class_name'] = $class_name;
+                    $data['age_group_name'] = $age_group_name;
                     return ApiBaseMethod::sendResponse($data, null);
                 }
-                $student = $student_id;
-                return view('backEnd.reports.mark_sheet_report_student', compact('optional_subject_setup', 'exam_types', 'classes', 'studentDetails', 'exams', 'classes', 'subjects', 'section', 'class_id', 'student_detail', 'is_result_available', 'exam_type_id', 'section_id', 'student_id', 'exam_details', 'class_name', 'input', 'optional_subject'));
+                $student = $member_id;
+                return view('backEnd.reports.mark_sheet_report_student', compact('optional_subject_setup', 'exam_types', 'classes', 'studentDetails', 'exams', 'classes', 'subjects', 'section', 'age_group_id', 'student_detail', 'is_result_available', 'exam_type_id', 'mgender_id', 'member_id', 'exam_details', 'age_group_name', 'input', 'optional_subject'));
             } else {
                 if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                     return ApiBaseMethod::sendError('Ops! Your result is not found! Please check mark register');
@@ -16282,20 +16282,20 @@ class SmApiController extends Controller
                 return redirect('mark-sheet-report-student');
             }
 
-            $marks_register = SmMarksRegister::where('exam_id', $request->exam)->where('student_id', $request->student)->first();
+            $marks_register = SmMarksRegister::where('exam_id', $request->exam)->where('member_id', $request->student)->first();
 
             $student_detail = SmStudent::where('id', $request->student)->first();
-            $subjects = SmAssignSubject::where('class_id', $request->class)->where('section_id', $request->section)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-            $exams = SmExamType::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-            $grades = SmMarksGrade::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $subjects = SmAssignSubject::where('age_group_id', $request->class)->where('mgender_id', $request->section)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+            $exams = SmExamType::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+            $grades = SmMarksGrade::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             $class = SmClass::find($request->class);
             $section = SmSection::find($request->section);
             $exam_detail = SmExam::find($request->exam);
             $exam_id = $request->exam;
-            $class_id = $request->class;
+            $age_group_id = $request->class;
 
-            return view('backEnd.reports.mark_sheet_report_student', compact('exam_types', 'optional_subject', 'classes', 'studentDetails', 'exams', 'classes', 'marks_register', 'subjects', 'class', 'section', 'exam_detail', 'grades', 'exam_id', 'class_id', 'student_detail', 'input'));
+            return view('backEnd.reports.mark_sheet_report_student', compact('exam_types', 'optional_subject', 'classes', 'studentDetails', 'exams', 'classes', 'marks_register', 'subjects', 'class', 'section', 'exam_detail', 'grades', 'exam_id', 'age_group_id', 'student_detail', 'input'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
@@ -16303,8 +16303,8 @@ class SmApiController extends Controller
     public function tabulationSheetReport(Request $request)
     {
         try {
-            $exam_types = SmExamType::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $exam_types = SmExamType::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -16336,23 +16336,23 @@ class SmApiController extends Controller
         }
         try {
             $exam_term_id = $request->exam;
-            $class_id = $request->class;
-            $section_id = $request->section;
-            $student_id = $request->student;
+            $age_group_id = $request->class;
+            $mgender_id = $request->section;
+            $member_id = $request->student;
 
-            $optional_subject_setup = SmClassOptionalSubject::where('class_id', '=', $request->class)->first();
+            $optional_subject_setup = SmClassOptionalSubject::where('age_group_id', '=', $request->class)->first();
             // return $optional_subject_setup;
             if ($request->student == "") {
-                $eligible_subjects = SmAssignSubject::where('class_id', $class_id)->where('section_id', $section_id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-                $eligible_students = SmStudent::where('class_id', $class_id)->where('section_id', $section_id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                $eligible_subjects = SmAssignSubject::where('age_group_id', $age_group_id)->where('mgender_id', $mgender_id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+                $eligible_students = SmStudent::where('age_group_id', $age_group_id)->where('mgender_id', $mgender_id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
                 foreach ($eligible_students as $SingleStudent) {
                     foreach ($eligible_subjects as $subject) {
 
                         $getMark = SmResultStore::where([
                             ['exam_type_id', $exam_term_id],
-                            ['class_id', $class_id],
-                            ['section_id', $section_id],
-                            ['student_id', $SingleStudent->id],
+                            ['age_group_id', $age_group_id],
+                            ['mgender_id', $mgender_id],
+                            ['member_id', $SingleStudent->id],
                             ['subject_id', $subject->subject_id],
                         ])->first();
 
@@ -16363,15 +16363,15 @@ class SmApiController extends Controller
                 }
             } else {
 
-                $eligible_subjects = SmAssignSubject::where('class_id', $class_id)->where('section_id', $section_id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                $eligible_subjects = SmAssignSubject::where('age_group_id', $age_group_id)->where('mgender_id', $mgender_id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
                 foreach ($eligible_subjects as $subject) {
 
                     $getMark = SmResultStore::where([
                         ['exam_type_id', $exam_term_id],
-                        ['class_id', $class_id],
-                        ['section_id', $section_id],
-                        ['student_id', $request->student],
+                        ['age_group_id', $age_group_id],
+                        ['mgender_id', $mgender_id],
+                        ['member_id', $request->student],
                         ['subject_id', $subject->subject_id],
                     ])->first();
 
@@ -16384,56 +16384,56 @@ class SmApiController extends Controller
             if ($request->student != '') {
                 $marks = SmMarkStore::where([
                     ['exam_term_id', $request->exam],
-                    ['class_id', $request->class],
-                    ['section_id', $request->section],
-                    ['student_id', $request->student],
-                ])->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                    ['age_group_id', $request->class],
+                    ['mgender_id', $request->section],
+                    ['member_id', $request->student],
+                ])->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
                 $students = SmStudent::where([
-                    ['class_id', $request->class],
-                    ['section_id', $request->section],
+                    ['age_group_id', $request->class],
+                    ['mgender_id', $request->section],
                     ['id', $request->student],
-                ])->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                ])->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
                 $subjects = SmAssignSubject::where([
-                    ['class_id', $request->class],
-                    ['section_id', $request->section],
-                ])->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                    ['age_group_id', $request->class],
+                    ['mgender_id', $request->section],
+                ])->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
                 foreach ($subjects as $sub) {
                     $subject_list_name[] = $sub->subject->subject_name;
                 }
-                $grade_chart = SmMarksGrade::select('grade_name', 'gpa', 'percent_from as start', 'percent_upto as end', 'description')->where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get()->toArray();
+                $grade_chart = SmMarksGrade::select('grade_name', 'gpa', 'percent_from as start', 'percent_upto as end', 'description')->where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get()->toArray();
 
                 $single_student = SmStudent::find($request->student);
                 $single_exam_term = SmExamType::find($request->exam);
 
-                $tabulation_details['student_name'] = $single_student->full_name;
+                $tabulation_details['member_name'] = $single_student->full_name;
                 $tabulation_details['student_roll'] = $single_student->roll_no;
-                $tabulation_details['student_admission_no'] = $single_student->admission_no;
-                $tabulation_details['student_class'] = $single_student->ClassName->class_name;
-                $tabulation_details['student_section'] = $single_student->section->section_name;
+                $tabulation_details['member_registration_no'] = $single_student->registration_no;
+                $tabulation_details['member_group'] = $single_student->ClassName->age_group_name;
+                $tabulation_details['member_gender'] = $single_student->section->mgender_name;
                 $tabulation_details['exam_term'] = $single_exam_term->title;
                 $tabulation_details['subject_list'] = $subject_list_name;
                 $tabulation_details['grade_chart'] = $grade_chart;
             } else {
                 $marks = SmMarkStore::where([
                     ['exam_term_id', $request->exam],
-                    ['class_id', $request->class],
-                    ['section_id', $request->section],
-                ])->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                    ['age_group_id', $request->class],
+                    ['mgender_id', $request->section],
+                ])->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
                 $students = SmStudent::where([
-                    ['class_id', $request->class],
-                    ['section_id', $request->section],
-                ])->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                    ['age_group_id', $request->class],
+                    ['mgender_id', $request->section],
+                ])->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             }
 
-            $exam_types = SmExamType::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $exam_types = SmExamType::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             $single_class = SmClass::find($request->class);
             $single_section = SmSection::find($request->section);
             $subjects = SmAssignSubject::where([
-                ['class_id', $request->class],
-                ['section_id', $request->section],
-            ])->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                ['age_group_id', $request->class],
+                ['mgender_id', $request->section],
+            ])->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             foreach ($subjects as $sub) {
                 $subject_list_name[] = $sub->subject->subject_name;
@@ -16442,8 +16442,8 @@ class SmApiController extends Controller
 
             $single_exam_term = SmExamType::find($request->exam);
 
-            $tabulation_details['student_class'] = $single_class->class_name;
-            $tabulation_details['student_section'] = $single_section->section_name;
+            $tabulation_details['member_group'] = $single_class->age_group_name;
+            $tabulation_details['member_gender'] = $single_section->mgender_name;
             $tabulation_details['exam_term'] = $single_exam_term->title;
             $tabulation_details['subject_list'] = $subject_list_name;
             $tabulation_details['grade_chart'] = $grade_chart;
@@ -16455,8 +16455,8 @@ class SmApiController extends Controller
                 $data['marks'] = $marks->toArray();
                 $data['subjects'] = $subjects->toArray();
                 $data['exam_term_id'] = $exam_term_id;
-                $data['class_id'] = $class_id;
-                $data['section_id'] = $section_id;
+                $data['age_group_id'] = $age_group_id;
+                $data['mgender_id'] = $mgender_id;
                 $data['students'] = $students->toArray();
                 return ApiBaseMethod::sendResponse($data, null);
             }
@@ -16466,11 +16466,11 @@ class SmApiController extends Controller
             $get_section = SmSection::where('active_status', 1)
                 ->where('id', $request->section)
                 ->first();
-            $class_name = $get_class->class_name;
-            $section_name = $get_section->section_name;
+            $age_group_name = $get_class->age_group_name;
+            $mgender_name = $get_section->mgender_name;
             return view(
                 'backEnd.reports.tabulation_sheet_report',
-                compact('optional_subject_setup', 'exam_types', 'classes', 'marks', 'subjects', 'exam_term_id', 'class_id', 'section_id', 'class_name', 'section_name', 'students', 'student_id', 'tabulation_details')
+                compact('optional_subject_setup', 'exam_types', 'classes', 'marks', 'subjects', 'exam_term_id', 'age_group_id', 'mgender_id', 'age_group_name', 'mgender_name', 'students', 'member_id', 'tabulation_details')
             );
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
@@ -16479,8 +16479,8 @@ class SmApiController extends Controller
     public function progressCardReport(Request $request)
     {
         try {
-            $exams = SmExam::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $exams = SmExam::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -16514,28 +16514,28 @@ class SmApiController extends Controller
                 ->withInput();
         }
         try {
-            $exams = SmExam::where('active_status', 1)->where('class_id', $request->class)->where('section_id', $request->section)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $exams = SmExam::where('active_status', 1)->where('age_group_id', $request->class)->where('mgender_id', $request->section)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
-            $exam_types = SmExamType::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $exam_types = SmExamType::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             $studentDetails = SmStudent::where('sm_students.id', '=', $request->student)
                 ->join('sm_academic_years', 'sm_academic_years.id', '=', 'sm_students.session_id')
-                ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.class_id')
-                ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.section_id')
+                ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.age_group_id')
+                ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.mgender_id')
                 ->first();
 
-            $optional_subject_setup = SmClassOptionalSubject::where('class_id', '=', $request->class)->first();
+            $optional_subject_setup = SmClassOptionalSubject::where('age_group_id', '=', $request->class)->first();
 
-            $student_optional_subject = SmOptionalSubjectAssign::where('student_id', $request->student)->where('session_id', '=', $studentDetails->session_id)->first();
+            $student_optional_subject = SmOptionalSubjectAssign::where('member_id', $request->student)->where('session_id', '=', $studentDetails->session_id)->first();
 
-            $exam_setup = SmExamSetup::where([['class_id', $request->class], ['section_id', $request->section]])->get();
+            $exam_setup = SmExamSetup::where([['age_group_id', $request->class], ['mgender_id', $request->section]])->get();
 
-            $class_id = $request->class;
-            $section_id = $request->section;
-            $student_id = $request->student;
+            $age_group_id = $request->class;
+            $mgender_id = $request->section;
+            $member_id = $request->student;
 
-            $subjects = SmAssignSubject::where([['class_id', $request->class], ['section_id', $request->section]])->get();
+            $subjects = SmAssignSubject::where([['age_group_id', $request->class], ['mgender_id', $request->section]])->get();
 
             $assinged_exam_types = [];
             foreach ($exams as $exam) {
@@ -16544,7 +16544,7 @@ class SmApiController extends Controller
             $assinged_exam_types = array_unique($assinged_exam_types);
             foreach ($assinged_exam_types as $assinged_exam_type) {
                 foreach ($subjects as $subject) {
-                    $is_mark_available = SmResultStore::where([['class_id', $request->class], ['section_id', $request->section], ['student_id', $request->student], ['subject_id', $subject->subject_id], ['exam_type_id', $assinged_exam_type]])->first();
+                    $is_mark_available = SmResultStore::where([['age_group_id', $request->class], ['mgender_id', $request->section], ['member_id', $request->student], ['subject_id', $subject->subject_id], ['exam_type_id', $assinged_exam_type]])->first();
                     // return $is_mark_available;
                     if ($is_mark_available == "") {
                         return redirect('progress-card-report')->with('message-danger', 'Ops! Your result is not found! Please check mark register.');
@@ -16552,7 +16552,7 @@ class SmApiController extends Controller
                 }
             }
 
-            $is_result_available = SmResultStore::where([['class_id', $request->class], ['section_id', $request->section], ['student_id', $request->student]])->get();
+            $is_result_available = SmResultStore::where([['age_group_id', $request->class], ['mgender_id', $request->section], ['member_id', $request->student]])->get();
 
             if ($is_result_available->count() > 0) {
 
@@ -16563,14 +16563,14 @@ class SmApiController extends Controller
                     $data['studentDetails'] = $studentDetails;
                     $data['is_result_available'] = $is_result_available;
                     $data['subjects'] = $subjects->toArray();
-                    $data['class_id'] = $class_id;
-                    $data['section_id'] = $section_id;
-                    $data['student_id'] = $student_id;
+                    $data['age_group_id'] = $age_group_id;
+                    $data['mgender_id'] = $mgender_id;
+                    $data['member_id'] = $member_id;
                     $data['exam_types'] = $exam_types;
                     return ApiBaseMethod::sendResponse($data, null);
                 }
 
-                return view('backEnd.reports.progress_card_report', compact('exams', 'optional_subject_setup', 'student_optional_subject', 'classes', 'studentDetails', 'is_result_available', 'subjects', 'class_id', 'section_id', 'student_id', 'exam_types', 'assinged_exam_types'));
+                return view('backEnd.reports.progress_card_report', compact('exams', 'optional_subject_setup', 'student_optional_subject', 'classes', 'studentDetails', 'is_result_available', 'subjects', 'age_group_id', 'mgender_id', 'member_id', 'exam_types', 'assinged_exam_types'));
             } else {
                 return redirect('progress-card-report')->with('message-danger', 'Ops! Your result is not found! Please check mark register.');
             }
@@ -16606,7 +16606,7 @@ class SmApiController extends Controller
     public function userLog(Request $request)
     {
         try {
-            $user_logs = SmUserLog::where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            $user_logs = SmUserLog::where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($user_logs, null);
             }
@@ -16641,7 +16641,7 @@ class SmApiController extends Controller
             $languages = SmLanguage::all();
             $countries = SmCountry::select('currency')->groupBy('currency')->get();
             $currencies = SmCurrency::all();
-            $academic_years = SmAcademicYear::all();
+            $church_years = SmAcademicYear::all();
             $time_zones = SmTimeZone::all();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -16652,10 +16652,10 @@ class SmApiController extends Controller
                 $data['languages'] = $languages->toArray();
                 $data['countries'] = $countries->toArray();
                 $data['currencies'] = $currencies->toArray();
-                $data['academic_years'] = $academic_years->toArray();
+                $data['church_years'] = $church_years->toArray();
                 return ApiBaseMethod::sendResponse($data, 'apply leave');
             }
-            return view('backEnd.systemSettings.updateGeneralSettings', compact('editData', 'session_ids', 'dateFormats', 'languages', 'countries', 'currencies', 'academic_years', 'time_zones'));
+            return view('backEnd.systemSettings.updateGeneralSettings', compact('editData', 'session_ids', 'dateFormats', 'languages', 'countries', 'currencies', 'church_years', 'time_zones'));
         } catch (\Exception $e) {
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
@@ -16666,7 +16666,7 @@ class SmApiController extends Controller
         $input = $request->all();
 
         $validator = Validator::make($input, [
-            'school_name' => "required",
+            'church_name' => "required",
             'site_title' => "required",
             'phone' => "required",
             'email' => "required",
@@ -16675,7 +16675,7 @@ class SmApiController extends Controller
             'date_format_id' => "required",
             'currency' => "required",
             'currency_symbol' => "required",
-            'school_code' => "required",
+            'church_code' => "required",
             'time_zone' => "required",
 
         ]);
@@ -16692,9 +16692,9 @@ class SmApiController extends Controller
         try {
             $id = 1;
             $generalSettData = SmGeneralSettings::find($id);
-            $generalSettData->school_name = $request->school_name;
+            $generalSettData->church_name = $request->church_name;
             $generalSettData->site_title = $request->site_title;
-            $generalSettData->school_code = $request->school_code;
+            $generalSettData->church_code = $request->church_code;
             $generalSettData->address = $request->address;
             $generalSettData->phone = $request->phone;
             $generalSettData->email = $request->email;
@@ -16810,7 +16810,7 @@ class SmApiController extends Controller
     {
         try {
             $roles = InfixRole::where('active_status', '=', 1)->where('id', '!=', 2)->where('id', '!=', 3)->where('id', '!=', 9)->orderBy('id', 'desc')->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($roles, null);
@@ -16865,7 +16865,7 @@ class SmApiController extends Controller
         try {
             $role = InfixRole::find($id);
             $roles = InfixRole::where('active_status', '=', 1)->orderBy('id', 'desc')->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -17190,14 +17190,14 @@ class SmApiController extends Controller
             ->join('sm_staffs', 'sm_staffs.id', '=', 'sm_vehicles.driver_id')
             ->first();
         $siblings = SmStudent::where('parent_id', $student_detail->parent_id)->get();
-        $fees_assigneds = SmFeesAssign::where('student_id', $student_detail->id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-        $fees_discounts = SmFeesAssignDiscount::where('student_id', $student_detail->id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-        $documents = SmStudentDocument::where('student_staff_id', $student_detail->id)->where('type', 'stu')->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-        $timelines = SmStudentTimeline::where('staff_student_id', $student_detail->id)->where('type', 'stu')->where('visible_to_student', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-        $exams = SmExamSchedule::where('class_id', $student_detail->class_id)->where('section_id', $student_detail->section_id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
-        $grades = SmMarksGrade::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+        $fees_assigneds = SmFeesAssign::where('member_id', $student_detail->id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+        $fees_discounts = SmFeesAssignDiscount::where('member_id', $student_detail->id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+        $documents = SmStudentDocument::where('student_staff_id', $student_detail->id)->where('type', 'stu')->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+        $timelines = SmStudentTimeline::where('staff_member_id', $student_detail->id)->where('type', 'stu')->where('visible_to_student', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+        $exams = SmExamSchedule::where('age_group_id', $student_detail->age_group_id)->where('mgender_id', $student_detail->mgender_id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
+        $grades = SmMarksGrade::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
-        $academic_year = SmAcademicYear::find($student_detail->session_id);
+        $church_year = SmAcademicYear::find($student_detail->session_id);
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $data = [];
             $data['student_detail'] = $student_detail->toArray();
@@ -17211,9 +17211,9 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendResponse($data, null);
         }
 
-        return view('backEnd.studentPanel.my_profile', compact('driver', 'academic_year', 'student_detail', 'fees_assigneds', 'fees_discounts', 'exams', 'documents', 'timelines', 'siblings', 'grades'));
+        return view('backEnd.studentPanel.my_profile', compact('driver', 'church_year', 'student_detail', 'fees_assigneds', 'fees_discounts', 'exams', 'documents', 'timelines', 'siblings', 'grades'));
     }
-    public function saas_studentDashboard(Request $request, $school_id, $id = null)
+    public function saas_studentDashboard(Request $request, $church_id, $id = null)
     {
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -17228,20 +17228,20 @@ class SmApiController extends Controller
             }
         }
 
-        $student_detail = SmStudent::where('user_id', $user_id)->where('school_id', $school_id)->first();
+        $student_detail = SmStudent::where('user_id', $user_id)->where('church_id', $church_id)->first();
         $driver = SmVehicle::where('sm_vehicles.id', '=', @$student_detail->vechile_id)
             ->join('sm_staffs', 'sm_staffs.id', '=', 'sm_vehicles.driver_id')
-            ->where('sm_vehicles.school_id', $school_id)
+            ->where('sm_vehicles.church_id', $church_id)
             ->first();
-        $siblings = SmStudent::where('parent_id', @$student_detail->parent_id)->where('school_id', $school_id)->get();
-        $fees_assigneds = SmFeesAssign::where('student_id', @$student_detail->id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
-        $fees_discounts = SmFeesAssignDiscount::where('student_id', @$student_detail->id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
-        $documents = SmStudentDocument::where('student_staff_id', @$student_detail->id)->where('type', 'stu')->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
-        $timelines = SmStudentTimeline::where('staff_student_id', @$student_detail->id)->where('type', 'stu')->where('visible_to_student', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
-        $exams = SmExamSchedule::where('class_id', @$student_detail->class_id)->where('section_id', @$student_detail->section_id)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
-        $grades = SmMarksGrade::where('active_status', 1)->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+        $siblings = SmStudent::where('parent_id', @$student_detail->parent_id)->where('church_id', $church_id)->get();
+        $fees_assigneds = SmFeesAssign::where('member_id', @$student_detail->id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
+        $fees_discounts = SmFeesAssignDiscount::where('member_id', @$student_detail->id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
+        $documents = SmStudentDocument::where('student_staff_id', @$student_detail->id)->where('type', 'stu')->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
+        $timelines = SmStudentTimeline::where('staff_member_id', @$student_detail->id)->where('type', 'stu')->where('visible_to_student', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
+        $exams = SmExamSchedule::where('age_group_id', @$student_detail->age_group_id)->where('mgender_id', @$student_detail->mgender_id)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
+        $grades = SmMarksGrade::where('active_status', 1)->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
-        $academic_year = SmAcademicYear::find(@$student_detail->session_id);
+        $church_year = SmAcademicYear::find(@$student_detail->session_id);
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $data = [];
             $data['student_detail'] = @$student_detail->toArray();
@@ -17255,7 +17255,7 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendResponse($data, null);
         }
 
-        return view('backEnd.studentPanel.my_profile', compact('driver', 'academic_year', 'student_detail', 'fees_assigneds', 'fees_discounts', 'exams', 'documents', 'timelines', 'siblings', 'grades'));
+        return view('backEnd.studentPanel.my_profile', compact('driver', 'church_year', 'student_detail', 'fees_assigneds', 'fees_discounts', 'exams', 'documents', 'timelines', 'siblings', 'grades'));
     }
     public function studentMyAttendanceSearchAPI(Request $request, $id = null)
     {
@@ -17298,7 +17298,7 @@ class SmApiController extends Controller
         $previousMonthDetails['day'] = $days2;
         $previousMonthDetails['week_name'] = date('D', strtotime($previous_date));
 
-        $attendances = SmStudentAttendance::where('student_id', $student_detail->id)
+        $attendances = SmStudentAttendance::where('member_id', $student_detail->id)
             ->where('attendance_date', 'like', '%' . $request->year . '-' . $month . '%')
             ->select('attendance_type', 'attendance_date')
             ->get();
@@ -17316,7 +17316,7 @@ class SmApiController extends Controller
 
         return view('backEnd.studentPanel.student_attendance', compact('attendances', 'days', 'year', 'month', 'current_day'));
     }
-    public function saas_studentMyAttendanceSearchAPI(Request $request, $school_id, $id = null)
+    public function saas_studentMyAttendanceSearchAPI(Request $request, $church_id, $id = null)
     {
 
         $input = $request->all();
@@ -17333,7 +17333,7 @@ class SmApiController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $student_detail = SmStudent::where('user_id', $id)->where('school_id', $school_id)->first();
+        $student_detail = SmStudent::where('user_id', $id)->where('church_id', $church_id)->first();
 
         $year = $request->year;
         $month = $request->month;
@@ -17357,10 +17357,10 @@ class SmApiController extends Controller
         $previousMonthDetails['day'] = $days2;
         $previousMonthDetails['week_name'] = date('D', strtotime($previous_date));
 
-        $attendances = SmStudentAttendance::where('student_id', $student_detail->id)
+        $attendances = SmStudentAttendance::where('member_id', $student_detail->id)
             ->where('attendance_date', 'like', '%' . $request->year . '-' . $month . '%')
             ->select('attendance_type', 'attendance_date')
-            ->where('school_id', $school_id)
+            ->where('church_id', $church_id)
             ->get();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -17381,7 +17381,7 @@ class SmApiController extends Controller
         $data = [];
         $allNotices = SmNoticeBoard::where('active_status', 1)->where('inform_to', 'LIKE', '%2%')
             ->orderBy('id', 'DESC')
-            ->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            ->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
 
@@ -17391,12 +17391,12 @@ class SmApiController extends Controller
         }
         return view('backEnd.studentPanel.studentNoticeboard', compact('allNotices'));
     }
-    public function saas_studentNoticeboard(Request $request, $school_id)
+    public function saas_studentNoticeboard(Request $request, $church_id)
     {
         $data = [];
         $allNotices = SmNoticeBoard::where('active_status', 1)->where('inform_to', 'LIKE', '%2%')
             ->orderBy('id', 'DESC')
-            ->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+            ->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
 
@@ -17414,26 +17414,26 @@ class SmApiController extends Controller
             ->leftjoin('sm_subjects', 'sm_subjects.id', '=', 'sm_assign_subjects.subject_id')
             ->leftjoin('sm_staffs', 'sm_staffs.id', '=', 'sm_assign_subjects.teacher_id')
             ->select('sm_subjects.subject_name', 'sm_subjects.subject_code', 'sm_subjects.subject_type', 'sm_staffs.full_name as teacher_name')
-            ->where('sm_assign_subjects.class_id', '=', $student->class_id)
-            ->where('sm_assign_subjects.section_id', '=', $student->section_id)
-            ->where('sm_assign_subjects.academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            ->where('sm_assign_subjects.age_group_id', '=', $student->age_group_id)
+            ->where('sm_assign_subjects.mgender_id', '=', $student->mgender_id)
+            ->where('sm_assign_subjects.church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $data = [];
             $data['student_subjects'] = $assignSubjects->toArray();
             return ApiBaseMethod::sendResponse($data, null);
         }
     }
-    public function saas_studentSubjectApi(Request $request, $school_id, $id)
+    public function saas_studentSubjectApi(Request $request, $church_id, $id)
     {
 
-        $student = SmStudent::where('user_id', $id)->where('school_id', $school_id)->first();
+        $student = SmStudent::where('user_id', $id)->where('church_id', $church_id)->first();
         $assignSubjects = DB::table('sm_assign_subjects')
             ->leftjoin('sm_subjects', 'sm_subjects.id', '=', 'sm_assign_subjects.subject_id')
             ->leftjoin('sm_staffs', 'sm_staffs.id', '=', 'sm_assign_subjects.teacher_id')
             ->select('sm_subjects.subject_name', 'sm_subjects.subject_code', 'sm_subjects.subject_type', 'sm_staffs.full_name as teacher_name')
-            ->where('sm_assign_subjects.class_id', '=', @$student->class_id)
-            ->where('sm_assign_subjects.section_id', '=', @$student->section_id)
-            ->where('sm_assign_subjects.academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('sm_assign_subjects.school_id', $school_id)->get();
+            ->where('sm_assign_subjects.age_group_id', '=', @$student->age_group_id)
+            ->where('sm_assign_subjects.mgender_id', '=', @$student->mgender_id)
+            ->where('sm_assign_subjects.church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('sm_assign_subjects.church_id', $church_id)->get();
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $data = [];
             $data['student_subjects'] = $assignSubjects->toArray();
@@ -17456,14 +17456,14 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendResponse($data, null);
         }
     }
-    public function saas_studentLibrary(Request $request, $school_id, $id)
+    public function saas_studentLibrary(Request $request, $church_id, $id)
     {
 
-        $student = SmStudent::where('user_id', $id)->where('school_id', $school_id)->first();
+        $student = SmStudent::where('user_id', $id)->where('church_id', $church_id)->first();
         $issueBooks = DB::table('sm_book_issues')
             ->leftjoin('sm_books', 'sm_books.id', '=', 'sm_book_issues.book_id')
             ->where('sm_book_issues.member_id', '=', @$student->user_id)
-            ->where('sm_book_issues.school_id', $school_id)
+            ->where('sm_book_issues.church_id', $church_id)
             ->get();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -17484,15 +17484,15 @@ class SmApiController extends Controller
 
             ->distinct()
             ->select('sm_staffs.full_name', 'sm_staffs.email', 'sm_staffs.mobile')
-            ->where('sm_assign_subjects.class_id', '=', $student->class_id)
-            ->where('sm_assign_subjects.section_id', '=', $student->section_id)
+            ->where('sm_assign_subjects.age_group_id', '=', $student->age_group_id)
+            ->where('sm_assign_subjects.mgender_id', '=', $student->mgender_id)
             ->get();
 
         $class_teacher = DB::table('sm_class_teachers')
             ->join('sm_assign_class_teachers', 'sm_assign_class_teachers.id', '=', 'sm_class_teachers.assign_class_teacher_id')
             ->join('sm_staffs', 'sm_class_teachers.teacher_id', '=', 'sm_staffs.id')
-            ->where('sm_assign_class_teachers.class_id', '=', $student->class_id)
-            ->where('sm_assign_class_teachers.section_id', '=', $student->section_id)
+            ->where('sm_assign_class_teachers.age_group_id', '=', $student->age_group_id)
+            ->where('sm_assign_class_teachers.mgender_id', '=', $student->mgender_id)
             ->where('sm_assign_class_teachers.active_status', '=', 1)
             ->select('full_name')
             ->first();
@@ -17504,25 +17504,25 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendResponse($data, null);
         }
     }
-    public function saas_studentTeacherApi(Request $request, $school_id, $id)
+    public function saas_studentTeacherApi(Request $request, $church_id, $id)
     {
 
-        $student = SmStudent::where('user_id', $id)->where('school_id', $school_id)->first();
+        $student = SmStudent::where('user_id', $id)->where('church_id', $church_id)->first();
 
         $assignTeacher = DB::table('sm_assign_subjects')
             ->leftjoin('sm_subjects', 'sm_subjects.id', '=', 'sm_assign_subjects.subject_id')
             ->leftjoin('sm_staffs', 'sm_staffs.id', '=', 'sm_assign_subjects.teacher_id')
             ->select('sm_staffs.full_name', 'sm_staffs.email', 'sm_staffs.mobile')
-            ->where('sm_assign_subjects.class_id', '=', @$student->class_id)
-            ->where('sm_assign_subjects.section_id', '=', @$student->section_id)
+            ->where('sm_assign_subjects.age_group_id', '=', @$student->age_group_id)
+            ->where('sm_assign_subjects.mgender_id', '=', @$student->mgender_id)
             ->distinct()
             ->get();
 
         $class_teacher = DB::table('sm_class_teachers')
             ->join('sm_assign_class_teachers', 'sm_assign_class_teachers.id', '=', 'sm_class_teachers.assign_class_teacher_id')
             ->join('sm_staffs', 'sm_class_teachers.teacher_id', '=', 'sm_staffs.id')
-            ->where('sm_assign_class_teachers.class_id', '=', @$student->class_id)
-            ->where('sm_assign_class_teachers.section_id', '=', @$student->section_id)
+            ->where('sm_assign_class_teachers.age_group_id', '=', @$student->age_group_id)
+            ->where('sm_assign_class_teachers.mgender_id', '=', @$student->mgender_id)
             ->where('sm_assign_class_teachers.active_status', '=', 1)
             ->select('full_name')
             ->first();
@@ -17543,11 +17543,11 @@ class SmApiController extends Controller
      *    "student_detail": {
      *    "id": 2,
      *    "full_name": "Genevieve Wiggins",
-     *    "admission_no": 898,
+     *    "registration_no": 898,
      *    "email": "wybefo@mailinator.com",
      *    "mobile": "+1 (906) 497-2761",
-     *    "class_id": 42,
-     *    "section_id": 1
+     *    "age_group_id": 42,
+     *    "mgender_id": 1
      *    },
      *    "uploadContents": [
      *    {
@@ -17563,13 +17563,13 @@ class SmApiController extends Controller
     public function studentAssignmentApi(Request $request, $id)
     {
 
-        $student_detail = SmStudent::where('user_id', $id)->first(['id', 'full_name', 'admission_no', 'email', 'mobile', 'class_id', 'section_id']);
+        $student_detail = SmStudent::where('user_id', $id)->first(['id', 'full_name', 'registration_no', 'email', 'mobile', 'age_group_id', 'mgender_id']);
         $uploadContents = SmTeacherUploadContent::where('content_type', 'as')
             ->select('content_title', 'upload_date', 'description', 'upload_file')
             ->where(function ($query) use ($student_detail) {
                 $query->where('available_for_all_classes', 1)
-                    ->orWhere([['class', $student_detail->class_id], ['section', $student_detail->section_id]]);
-            })->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                    ->orWhere([['class', $student_detail->age_group_id], ['section', $student_detail->mgender_id]]);
+            })->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $data = [];
@@ -17587,11 +17587,11 @@ class SmApiController extends Controller
      *    "student_detail": {
      *    "id": 2,
      *    "full_name": "Genevieve Wiggins",
-     *    "admission_no": 898,
+     *    "registration_no": 898,
      *    "email": "wybefo@mailinator.com",
      *    "mobile": "+1 (906) 497-2761",
-     *    "class_id": 42,
-     *    "section_id": 1
+     *    "age_group_id": 42,
+     *    "mgender_id": 1
      *    },
      *    "uploadContents": [
      *    {
@@ -17607,13 +17607,13 @@ class SmApiController extends Controller
     public function studentSyllabusApi(Request $request, $id)
     {
 
-        $student_detail = SmStudent::where('user_id', $id)->first(['id', 'full_name', 'admission_no', 'email', 'mobile', 'class_id', 'section_id']);
+        $student_detail = SmStudent::where('user_id', $id)->first(['id', 'full_name', 'registration_no', 'email', 'mobile', 'age_group_id', 'mgender_id']);
         $uploadContents = SmTeacherUploadContent::where('content_type', 'sy')
             ->select('content_title', 'upload_date', 'description', 'upload_file')
             ->where(function ($query) use ($student_detail) {
                 $query->where('available_for_all_classes', 1)
-                    ->orWhere([['class', $student_detail->class_id], ['section', $student_detail->section_id]]);
-            })->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                    ->orWhere([['class', $student_detail->age_group_id], ['section', $student_detail->mgender_id]]);
+            })->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $data = [];
@@ -17631,11 +17631,11 @@ class SmApiController extends Controller
      *    "student_detail": {
      *    "id": 2,
      *    "full_name": "Genevieve Wiggins",
-     *    "admission_no": 898,
+     *    "registration_no": 898,
      *    "email": "wybefo@mailinator.com",
      *    "mobile": "+1 (906) 497-2761",
-     *    "class_id": 42,
-     *    "section_id": 1
+     *    "age_group_id": 42,
+     *    "mgender_id": 1
      *    },
      *    "uploadContents": [
      *    {
@@ -17651,13 +17651,13 @@ class SmApiController extends Controller
     public function studentOtherDownloadsApi(Request $request, $id)
     {
 
-        $student_detail = SmStudent::where('user_id', $id)->first(['id', 'full_name', 'admission_no', 'email', 'mobile', 'class_id', 'section_id']);
+        $student_detail = SmStudent::where('user_id', $id)->first(['id', 'full_name', 'registration_no', 'email', 'mobile', 'age_group_id', 'mgender_id']);
         $uploadContents = SmTeacherUploadContent::where('content_type', 'ot')
             ->select('content_title', 'upload_date', 'description', 'upload_file')
             ->where(function ($query) use ($student_detail) {
                 $query->where('available_for_all_classes', 1)
-                    ->orWhere([['class', $student_detail->class_id], ['section', $student_detail->section_id]]);
-            })->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                    ->orWhere([['class', $student_detail->age_group_id], ['section', $student_detail->mgender_id]]);
+            })->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $data = [];
@@ -17836,8 +17836,8 @@ class SmApiController extends Controller
     {
         try {
             $banks = SmBankAccount::where('active_status', 1)
-                ->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())
-                ->where('school_id', 1)->get(['id', 'bank_name', 'account_name', 'account_number']);
+                ->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())
+                ->where('church_id', 1)->get(['id', 'bank_name', 'account_name', 'account_number']);
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
                 $data['banks'] = $banks->toArray();
@@ -17856,8 +17856,8 @@ class SmApiController extends Controller
             $validator = Validator::make($input, [
 
                 'amount' => "required",
-                'class_id' => "required",
-                'section_id' => "required",
+                'age_group_id' => "required",
+                'mgender_id' => "required",
                 'user_id' => "required",
                 'fees_type_id' => "required",
                 'payment_mode' => "required",
@@ -17902,19 +17902,19 @@ class SmApiController extends Controller
             $payment->note = $request->note;
             $payment->slip = $fileName;
             $payment->fees_type_id = $request->fees_type_id;
-            $payment->student_id = $student->id;
+            $payment->member_id = $student->id;
             $payment->payment_mode = $request->payment_mode;
             if ($payment_method->id == 3) {
                 $payment->bank_id = $request->bank_id;
             }
-            $payment->class_id = $request->class_id;
-            $payment->section_id = $request->section_id;
-            $payment->school_id = 1;
-            $payment->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+            $payment->age_group_id = $request->age_group_id;
+            $payment->mgender_id = $request->mgender_id;
+            $payment->church_id = 1;
+            $payment->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
             $result = $payment->save();
 
             if ($result) {
-                $users = User::whereIn('role_id', [1, 5])->where('school_id', 1)->get();
+                $users = User::whereIn('role_id', [1, 5])->where('church_id', 1)->get();
                 foreach ($users as $user) {
                     $notification = new SmNotification();
                     $notification->message = $student->full_name . 'Payment Recieve';
@@ -17922,8 +17922,8 @@ class SmApiController extends Controller
                     $notification->url = "bank-payment-slip";
                     $notification->user_id = $user->id;
                     $notification->role_id = $user->role_id;
-                    $notification->school_id = 1;
-                    $notification->academic_id = $student->academic_id;
+                    $notification->church_id = 1;
+                    $notification->church_year_id = $student->church_year_id;
                     $notification->date = date('Y-m-d');
                     $notification->save();
                 }
@@ -17944,16 +17944,16 @@ class SmApiController extends Controller
         }
     }
 
-    public function saas_studentAssignmentApi(Request $request, $school_id, $id)
+    public function saas_studentAssignmentApi(Request $request, $church_id, $id)
     {
 
-        $student_detail = SmStudent::where('user_id', $id)->where('school_id', $school_id)->first();
+        $student_detail = SmStudent::where('user_id', $id)->where('church_id', $church_id)->first();
         $uploadContents = SmTeacherUploadContent::where('content_type', 'as')
             ->select('content_title', 'upload_date', 'description', 'upload_file')
             ->where(function ($query) use ($student_detail) {
                 $query->where('available_for_all_classes', 1)
-                    ->orWhere([['class', @$student_detail->class_id], ['section', @$student_detail->section_id]]);
-            })->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+                    ->orWhere([['class', @$student_detail->age_group_id], ['section', @$student_detail->mgender_id]]);
+            })->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $data = [];
@@ -17968,7 +17968,7 @@ class SmApiController extends Controller
         $student_detail = SmStudent::where('user_id', $id)->first();
         $documents = SmStudentDocument::where('student_staff_id', $student_detail->id)->where('type', 'stu')
             ->select('title', 'file')
-            ->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+            ->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $data = [];
@@ -17977,13 +17977,13 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendResponse($data, null);
         }
     }
-    public function saas_studentsDocumentApi(Request $request, $school_id, $id)
+    public function saas_studentsDocumentApi(Request $request, $church_id, $id)
     {
 
-        $student_detail = SmStudent::where('user_id', $id)->where('school_id', $school_id)->first();
+        $student_detail = SmStudent::where('user_id', $id)->where('church_id', $church_id)->first();
         $documents = SmStudentDocument::where('student_staff_id', @$student_detail->id)->where('type', 'stu')
             ->select('title', 'file')
-            ->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->where('school_id', $school_id)->get();
+            ->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->where('church_id', $church_id)->get();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $data = [];
@@ -18004,14 +18004,14 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendResponse($studentDormitory, null);
         }
     }
-    public function saas_studentDormitoryApi(Request $request, $school_id)
+    public function saas_studentDormitoryApi(Request $request, $church_id)
     {
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
 
             $studentDormitory = DB::table('sm_room_lists')
                 ->join('sm_dormitory_lists', 'sm_room_lists.dormitory_id', '=', 'sm_dormitory_lists.id')
                 ->join('sm_room_types', 'sm_room_lists.room_type_id', '=', 'sm_room_types.id')
-                ->select('sm_dormitory_lists.dormitory_name', 'sm_room_lists.name as room_number', 'sm_room_lists.number_of_bed', 'sm_room_lists.cost_per_bed', 'sm_room_lists.active_status')->where('sm_room_lists.school_id', $school_id)->get();
+                ->select('sm_dormitory_lists.dormitory_name', 'sm_room_lists.name as room_number', 'sm_room_lists.number_of_bed', 'sm_room_lists.cost_per_bed', 'sm_room_lists.active_status')->where('sm_room_lists.church_id', $church_id)->get();
 
             return ApiBaseMethod::sendResponse($studentDormitory, null);
         }
@@ -18024,35 +18024,35 @@ class SmApiController extends Controller
             $student_detail = SmStudent::where('user_id', $id)->first();
 
             $exam_schedule = DB::table('sm_exam_schedules')
-                ->join('sm_students', 'sm_students.class_id', '=', 'sm_exam_schedules.class_id')
+                ->join('sm_students', 'sm_students.age_group_id', '=', 'sm_exam_schedules.age_group_id')
                 ->join('sm_exam_types', 'sm_exam_types.id', '=', 'sm_exam_schedules.exam_term_id')
                 ->join('sm_exam_schedule_subjects', 'sm_exam_schedule_subjects.exam_schedule_id', '=', 'sm_exam_schedules.id')
                 ->join('sm_subjects', 'sm_subjects.id', '=', 'sm_exam_schedules.subject_id')
-                ->select('sm_subjects.subject_name', 'sm_exam_schedule_subjects.start_time', 'sm_exam_schedule_subjects.end_time', 'sm_exam_schedule_subjects.date', 'sm_exam_schedule_subjects.room', 'sm_exam_schedules.class_id', 'sm_exam_schedules.section_id')
+                ->select('sm_subjects.subject_name', 'sm_exam_schedule_subjects.start_time', 'sm_exam_schedule_subjects.end_time', 'sm_exam_schedule_subjects.date', 'sm_exam_schedule_subjects.room', 'sm_exam_schedules.age_group_id', 'sm_exam_schedules.mgender_id')
 
-                ->where('sm_exam_schedules.section_id', '=', $student_detail->section_id)
-                ->where('sm_exam_schedules.academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                ->where('sm_exam_schedules.mgender_id', '=', $student_detail->mgender_id)
+                ->where('sm_exam_schedules.church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             return ApiBaseMethod::sendResponse($exam_schedule, null);
         }
     }
-    public function saas_studentExamScheduleApi(Request $request, $school_id, $id)
+    public function saas_studentExamScheduleApi(Request $request, $church_id, $id)
     {
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
 
-            $student_detail = SmStudent::where('user_id', $id)->where('school_id', $school_id)->first();
+            $student_detail = SmStudent::where('user_id', $id)->where('church_id', $church_id)->first();
 
             $exam_schedule = DB::table('sm_exam_schedules')
-                ->join('sm_students', 'sm_students.class_id', '=', 'sm_exam_schedules.class_id')
+                ->join('sm_students', 'sm_students.age_group_id', '=', 'sm_exam_schedules.age_group_id')
                 ->join('sm_exam_types', 'sm_exam_types.id', '=', 'sm_exam_schedules.exam_term_id')
                 ->join('sm_exam_schedule_subjects', 'sm_exam_schedule_subjects.exam_schedule_id', '=', 'sm_exam_schedules.id')
                 ->join('sm_subjects', 'sm_subjects.id', '=', 'sm_exam_schedules.subject_id')
-                ->select('sm_subjects.subject_name', 'sm_exam_schedule_subjects.start_time', 'sm_exam_schedule_subjects.end_time', 'sm_exam_schedule_subjects.date', 'sm_exam_schedule_subjects.room', 'sm_exam_schedules.class_id', 'sm_exam_schedules.section_id')
+                ->select('sm_subjects.subject_name', 'sm_exam_schedule_subjects.start_time', 'sm_exam_schedule_subjects.end_time', 'sm_exam_schedule_subjects.date', 'sm_exam_schedule_subjects.room', 'sm_exam_schedules.age_group_id', 'sm_exam_schedules.mgender_id')
 
-                ->where('sm_exam_schedules.section_id', '=', @$student_detail->section_id)
-                ->where('sm_exam_schedules.academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->
-                where('sm_exam_schedules.school_id', $school_id)->get();
+                ->where('sm_exam_schedules.mgender_id', '=', @$student_detail->mgender_id)
+                ->where('sm_exam_schedules.church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->
+                where('sm_exam_schedules.church_id', $church_id)->get();
 
             return ApiBaseMethod::sendResponse($exam_schedule, null);
         }
@@ -18063,31 +18063,31 @@ class SmApiController extends Controller
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
 
             $timelines = DB::table('sm_student_timelines')
-                ->leftjoin('sm_students', 'sm_students.id', '=', 'sm_student_timelines.staff_student_id')
+                ->leftjoin('sm_students', 'sm_students.id', '=', 'sm_student_timelines.staff_member_id')
                 ->where('sm_student_timelines.type', '=', 'stu')
                 ->where('sm_student_timelines.active_status', '=', 1)
                 ->where('sm_students.user_id', '=', $id)
                 ->select('title', 'date', 'description', 'file', 'sm_student_timelines.active_status')
 
-                ->where('sm_student_timelines.academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->get();
+                ->where('sm_student_timelines.church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->get();
 
             return ApiBaseMethod::sendResponse($timelines, null);
         }
     }
-    public function saas_studentTimelineApi(Request $request, $school_id, $id)
+    public function saas_studentTimelineApi(Request $request, $church_id, $id)
     {
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
 
             $timelines = DB::table('sm_student_timelines')
-                ->leftjoin('sm_students', 'sm_students.id', '=', 'sm_student_timelines.staff_student_id')
+                ->leftjoin('sm_students', 'sm_students.id', '=', 'sm_student_timelines.staff_member_id')
                 ->where('sm_student_timelines.type', '=', 'stu')
                 ->where('sm_student_timelines.active_status', '=', 1)
                 ->where('sm_students.user_id', '=', $id)
                 ->select('title', 'date', 'description', 'file', 'sm_student_timelines.active_status')
 
-                ->where('sm_student_timelines.academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())->
-                where('sm_student_timelines.school_id', $school_id)->get();
+                ->where('sm_student_timelines.church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())->
+                where('sm_student_timelines.church_id', $church_id)->get();
 
             return ApiBaseMethod::sendResponse($timelines, null);
         }
@@ -18104,16 +18104,16 @@ class SmApiController extends Controller
 
                 $student = SmStudent::where('user_id', $id)->first();
                 $time_zone_setup = SmGeneralSettings::join('sm_time_zones', 'sm_time_zones.id', '=', 'sm_general_settings.time_zone_id')
-                    ->where('school_id', $student->school_id)->first();
+                    ->where('church_id', $student->church_id)->first();
                 date_default_timezone_set($time_zone_setup->time_zone);
                 $now = date('g:i:s');
                 $today = date('Y-m-d');
 
                 $online_exams = SmOnlineExam::where('active_status', 1)
-                    ->where('academic_id', SmAcademicYear::API_ACADEMIC_YEAR($student->school_id))
-                    ->where('status', 1)->where('class_id', $student->class_id)
-                    ->where('section_id', $student->section_id)
-                    ->where('school_id', $student->school_id)
+                    ->where('church_year_id', SmAcademicYear::API_church_year($student->church_id))
+                    ->where('status', 1)->where('age_group_id', $student->age_group_id)
+                    ->where('mgender_id', $student->mgender_id)
+                    ->where('church_id', $student->church_id)
                     ->get();
 
                 foreach ($online_exams as $online_exam) {
@@ -18141,12 +18141,12 @@ class SmApiController extends Controller
                 }
 
                 $online_exams = SmOnlineExam::where('sm_online_exams.active_status', 1)
-                    ->where('sm_online_exams.academic_id', SmAcademicYear::API_ACADEMIC_YEAR($student->school_id))
+                    ->where('sm_online_exams.church_year_id', SmAcademicYear::API_church_year($student->church_id))
                     ->join('sm_subjects', 'sm_subjects.id', '=', 'sm_online_exams.subject_id')
 
-                    ->where('class_id', $student->class_id)
-                    ->where('section_id', $student->section_id)
-                    ->where('sm_online_exams.school_id', $student->school_id)
+                    ->where('age_group_id', $student->age_group_id)
+                    ->where('mgender_id', $student->mgender_id)
+                    ->where('sm_online_exams.church_id', $student->church_id)
                     ->select('sm_online_exams.id as exam_id', 'sm_online_exams.title as exam_title', 'sm_subjects.subject_name', 'sm_online_exams.date', 'sm_online_exams.status as onlineExamStatus', 'sm_online_exams.is_taken as onlineExamTakeStatus', 'is_running', 'is_waiting', 'is_closed')
                     ->get();
                 $examStatus = '0 = Pending , 1 Published';
@@ -18161,26 +18161,26 @@ class SmApiController extends Controller
         }
     }
 
-    public function saas_studentOnlineExamApi(Request $request, $school_id, $id)
+    public function saas_studentOnlineExamApi(Request $request, $church_id, $id)
     {
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
 
             $data = [];
 
-            $student = SmStudent::where('user_id', $id)->where('school_id', $school_id)->first();
+            $student = SmStudent::where('user_id', $id)->where('church_id', $church_id)->first();
 
             $now = date('H:i:s');
             $today = date('Y-m-d');
 
             $online_exams = SmOnlineExam::where('sm_online_exams.status', '=', 1)
-                ->join('sm_subjects', 'sm_online_exams.class_id', '=', 'sm_subjects.id')
-                ->where('class_id', @$student->class_id)
-                ->where('section_id', @$student->section_id)
+                ->join('sm_subjects', 'sm_online_exams.age_group_id', '=', 'sm_subjects.id')
+                ->where('age_group_id', @$student->age_group_id)
+                ->where('mgender_id', @$student->mgender_id)
                 ->where('end_time', '>', $now)
                 ->where('date', '=', $today)
                 ->select('sm_online_exams.id as exam_id', 'sm_online_exams.title as exam_title', 'sm_subjects.subject_name', 'sm_online_exams.date', 'sm_online_exams.status as onlineExamStatus', 'sm_online_exams.status as onlineExamTakeStatus')
-                ->where('sm_online_exams.school_id', $school_id)->get();
+                ->where('sm_online_exams.church_id', $church_id)->get();
             $examStatus = '0 = Pending , 1 Published';
             $examTakenStatus = '0 = Take Exam , 1 = Alreday Submitted';
             $data['online_exams'] = $online_exams->toArray();
@@ -18196,26 +18196,26 @@ class SmApiController extends Controller
             $student = SmStudent::where('user_id', $id)->first();
 
             $student_exams = DB::table('sm_online_exams')
-                ->where('class_id', $student->class_id)
-                ->where('section_id', $student->section_id)
-                ->where('school_id', $student->school_id)
+                ->where('age_group_id', $student->age_group_id)
+                ->where('mgender_id', $student->mgender_id)
+                ->where('church_id', $student->church_id)
                 ->select('sm_online_exams.title as exam_name', 'id as exam_id')
                 ->get();
             return ApiBaseMethod::sendResponse($student_exams, null);
         }
     }
-    public function saas_chooseExamApi(Request $request, $school_id, $id)
+    public function saas_chooseExamApi(Request $request, $church_id, $id)
     {
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
 
-            $student = SmStudent::where('user_id', $id)->where('school_id', $school_id)->first();
+            $student = SmStudent::where('user_id', $id)->where('church_id', $church_id)->first();
 
             $student_exams = DB::table('sm_online_exams')
-                ->where('class_id', @$student->class_id)
-                ->where('section_id', @$student->section_id)
-                ->where('school_id', @$student->school_id)
+                ->where('age_group_id', @$student->age_group_id)
+                ->where('mgender_id', @$student->mgender_id)
+                ->where('church_id', @$student->church_id)
                 ->select('sm_online_exams.title as exam_name', 'id as exam_id')
-                ->where('school_id', $school_id)
+                ->where('church_id', $church_id)
                 ->get();
             return ApiBaseMethod::sendResponse($student_exams, null);
         }
@@ -18227,17 +18227,17 @@ class SmApiController extends Controller
             $student = SmStudent::where('user_id', $id)->first();
 
             $student_exams = DB::table('sm_online_exams')
-                ->where('class_id', $student->class_id)
-                ->where('section_id', $student->section_id)
-                ->where('school_id', $student->school_id)
+                ->where('age_group_id', $student->age_group_id)
+                ->where('mgender_id', $student->mgender_id)
+                ->where('church_id', $student->church_id)
                 ->select('sm_online_exams.title as exam_name', 'sm_online_exams.id as exam_id')
                 ->get();
 
             $exam_result = DB::table('sm_student_take_online_exams')
                 ->join('sm_online_exams', 'sm_online_exams.id', '=', 'online_exam_id')
                 ->join('sm_subjects', 'sm_online_exams.subject_id', '=', 'sm_subjects.id')
-                ->where('sm_student_take_online_exams.student_id', $student->id)
-                ->where('sm_student_take_online_exams.school_id', $student->school_id)
+                ->where('sm_student_take_online_exams.member_id', $student->id)
+                ->where('sm_student_take_online_exams.church_id', $student->church_id)
                 ->where('sm_online_exams.id', $exam_id)
                 ->where('sm_online_exams.status', '=', 1)
                 ->select(
@@ -18275,24 +18275,24 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendResponse($data, null);
         }
     }
-    public function saas_examResultApi(Request $request, $school_id, $id, $exam_id)
+    public function saas_examResultApi(Request $request, $church_id, $id, $exam_id)
     {
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $data = [];
-            $student = SmStudent::where('user_id', $id)->where('school_id', $school_id)->first();
+            $student = SmStudent::where('user_id', $id)->where('church_id', $church_id)->first();
 
             $student_exams = DB::table('sm_online_exams')
-                ->where('class_id', @$student->class_id)
-                ->where('section_id', @$student->section_id)
-                ->where('school_id', @$student->school_id)
+                ->where('age_group_id', @$student->age_group_id)
+                ->where('mgender_id', @$student->mgender_id)
+                ->where('church_id', @$student->church_id)
                 ->select('sm_online_exams.title as exam_name', 'sm_online_exams.id as exam_id')
-                ->where('school_id', $school_id)->get();
+                ->where('church_id', $church_id)->get();
 
             $exam_result = DB::table('sm_student_take_online_exams')
                 ->join('sm_online_exams', 'sm_online_exams.id', '=', 'online_exam_id')
                 ->join('sm_subjects', 'sm_online_exams.subject_id', '=', 'sm_subjects.id')
-                ->where('sm_student_take_online_exams.student_id', @$student->id)
-                ->where('sm_student_take_online_exams.school_id', @$student->school_id)
+                ->where('sm_student_take_online_exams.member_id', @$student->id)
+                ->where('sm_student_take_online_exams.church_id', @$student->church_id)
                 ->where('sm_online_exams.id', $exam_id)
                 ->where('sm_online_exams.status', '=', 1)
                 ->select(
@@ -18303,7 +18303,7 @@ class SmApiController extends Controller
                     'sm_online_exams.percentage as pass_mark_percentage',
                     'sm_student_take_online_exams.total_marks'
                 )
-                ->where('sm_student_take_online_exams.school_id', $school_id)->get();
+                ->where('sm_student_take_online_exams.church_id', $church_id)->get();
             $gradeArray = [];
             foreach ($exam_result as $row) {
 
@@ -18312,7 +18312,7 @@ class SmApiController extends Controller
                     ->where('percent_from', '<=', $mark)
                     ->where('percent_upto', '>=', $mark)
                     ->select('grade_name')
-                    ->where('school_id', $school_id)->first();
+                    ->where('church_id', $church_id)->first();
                 $gradeArray[] = array(
                     "grade" => $grades->grade_name,
                     "exam_id" => $row->exam_id,
@@ -18343,7 +18343,7 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendResponse($grades, null);
         }
     }
-    public function saas_getGrades(Request $request, $school_id, $marks)
+    public function saas_getGrades(Request $request, $church_id, $marks)
     {
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
 
@@ -18351,7 +18351,7 @@ class SmApiController extends Controller
                 ->where('percent_from', '<=', floor($marks))
                 ->where('percent_upto', '>=', floor($marks))
                 ->select('grade_name')
-                ->where('school_id', $school_id)->first();
+                ->where('church_id', $church_id)->first();
 
             return ApiBaseMethod::sendResponse($grades, null);
         }
@@ -18411,8 +18411,8 @@ class SmApiController extends Controller
 
             $exam_List = DB::table('sm_exam_types')
                 ->join('sm_exams', 'sm_exams.exam_type_id', '=', 'sm_exam_types.id')
-                ->where('sm_exams.class_id', '=', $student->class_id)
-                ->where('sm_exams.section_id', '=', $student->section_id)
+                ->where('sm_exams.age_group_id', '=', $student->age_group_id)
+                ->where('sm_exams.mgender_id', '=', $student->mgender_id)
                 ->distinct()
                 ->select('sm_exam_types.id as exam_id', 'sm_exam_types.title as exam_name')
                 ->get();
@@ -18420,17 +18420,17 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendResponse($exam_List, null);
         }
     }
-    public function saas_examListApi(Request $request, $school_id, $id)
+    public function saas_examListApi(Request $request, $church_id, $id)
     {
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
 
-            $student = SmStudent::where('user_id', $id)->where('school_id', $school_id)->first();
+            $student = SmStudent::where('user_id', $id)->where('church_id', $church_id)->first();
 
             $exam_List = DB::table('sm_exam_types')
                 ->join('sm_exams', 'sm_exams.exam_type_id', '=', 'sm_exam_types.id')
-                ->where('sm_exams.class_id', '=', @$student->class_id)
-                ->where('sm_exams.section_id', '=', @$student->section_id)
+                ->where('sm_exams.age_group_id', '=', @$student->age_group_id)
+                ->where('sm_exams.mgender_id', '=', @$student->mgender_id)
                 ->distinct()
                 ->select('sm_exam_types.id as exam_id', 'sm_exam_types.title as exam_name')
                 ->get();
@@ -18453,9 +18453,9 @@ class SmApiController extends Controller
                 ->join('sm_class_times', 'sm_class_times.id', '=', 'sm_exam_schedules.exam_period_id')
 
                 ->where('sm_exam_schedules.exam_term_id', '=', $exam_id)
-                ->where('sm_exam_schedules.school_id', '=', $student->school_id)
-                ->where('sm_exam_schedules.class_id', '=', $student->class_id)
-                ->where('sm_exam_schedules.section_id', '=', $student->section_id)
+                ->where('sm_exam_schedules.church_id', '=', $student->church_id)
+                ->where('sm_exam_schedules.age_group_id', '=', $student->age_group_id)
+                ->where('sm_exam_schedules.mgender_id', '=', $student->mgender_id)
 
                 ->where('sm_exam_schedules.active_status', '=', 1)
 
@@ -18466,12 +18466,12 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendResponse($exam_schedule, null);
         }
     }
-    public function saas_examScheduleApi(Request $request, $school_id, $id, $exam_id)
+    public function saas_examScheduleApi(Request $request, $church_id, $id, $exam_id)
     {
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
 
-            $student = SmStudent::where('user_id', $id)->where('school_id', $school_id)->first();
+            $student = SmStudent::where('user_id', $id)->where('church_id', $church_id)->first();
 
             $exam_schedule = DB::table('sm_exam_schedules')
                 ->join('sm_exam_types', 'sm_exam_types.id', '=', 'sm_exam_schedules.exam_term_id')
@@ -18481,15 +18481,15 @@ class SmApiController extends Controller
                 ->join('sm_class_times', 'sm_class_times.id', '=', 'sm_exam_schedules.exam_period_id')
 
                 ->where('sm_exam_schedules.exam_term_id', '=', $exam_id)
-                ->where('sm_exam_schedules.school_id', '=', @$student->school_id)
-                ->where('sm_exam_schedules.class_id', '=', @$student->class_id)
-                ->where('sm_exam_schedules.section_id', '=', @$student->section_id)
+                ->where('sm_exam_schedules.church_id', '=', @$student->church_id)
+                ->where('sm_exam_schedules.age_group_id', '=', @$student->age_group_id)
+                ->where('sm_exam_schedules.mgender_id', '=', @$student->mgender_id)
 
                 ->where('sm_exam_schedules.active_status', '=', 1)
 
                 ->select('sm_exam_types.id', 'sm_exam_types.title as exam_name', 'sm_subjects.subject_name', 'date', 'sm_class_rooms.room_no', 'sm_class_times.start_time', 'sm_class_times.end_time')
 
-                ->where('sm_exam_schedules.school_id', $school_id)->get();
+                ->where('sm_exam_schedules.church_id', $church_id)->get();
 
             return ApiBaseMethod::sendResponse($exam_schedule, null);
         }
@@ -18507,10 +18507,10 @@ class SmApiController extends Controller
                 ->join('sm_exams', 'sm_exams.id', '=', 'sm_exam_types.id')
                 ->join('sm_subjects', 'sm_subjects.id', '=', 'sm_result_stores.subject_id')
                 ->where('sm_exams.id', '=', $exam_id)
-                ->where('sm_result_stores.school_id', '=', $student->school_id)
-                ->where('sm_result_stores.class_id', '=', $student->class_id)
-                ->where('sm_result_stores.section_id', '=', $student->section_id)
-                ->where('sm_result_stores.student_id', '=', $student->id)
+                ->where('sm_result_stores.church_id', '=', $student->church_id)
+                ->where('sm_result_stores.age_group_id', '=', $student->age_group_id)
+                ->where('sm_result_stores.mgender_id', '=', $student->mgender_id)
+                ->where('sm_result_stores.member_id', '=', $student->id)
                 ->select('sm_exams.id', 'sm_exam_types.title as exam_name', 'sm_subjects.subject_name', 'sm_result_stores.total_marks as obtained_marks', 'sm_exams.exam_mark as total_marks', 'sm_result_stores.total_gpa_grade as grade')
                 ->get();
 
@@ -18520,25 +18520,25 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendResponse($data, null);
         }
     }
-    public function saas_examResult_Api(Request $request, $school_id, $id, $exam_id)
+    public function saas_examResult_Api(Request $request, $church_id, $id, $exam_id)
     {
         $data = [];
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
 
-            $student = SmStudent::where('user_id', $id)->where('school_id', $school_id)->first();
+            $student = SmStudent::where('user_id', $id)->where('church_id', $church_id)->first();
 
             $exam_result = DB::table('sm_result_stores')
                 ->join('sm_exam_types', 'sm_exam_types.id', '=', 'sm_result_stores.exam_type_id')
                 ->join('sm_exams', 'sm_exams.id', '=', 'sm_exam_types.id')
                 ->join('sm_subjects', 'sm_subjects.id', '=', 'sm_result_stores.subject_id')
                 ->where('sm_exams.id', '=', $exam_id)
-                ->where('sm_result_stores.school_id', '=', @$student->school_id)
-                ->where('sm_result_stores.class_id', '=', @$student->class_id)
-                ->where('sm_result_stores.section_id', '=', @$student->section_id)
-                ->where('sm_result_stores.student_id', '=', @$student->id)
+                ->where('sm_result_stores.church_id', '=', @$student->church_id)
+                ->where('sm_result_stores.age_group_id', '=', @$student->age_group_id)
+                ->where('sm_result_stores.mgender_id', '=', @$student->mgender_id)
+                ->where('sm_result_stores.member_id', '=', @$student->id)
                 ->select('sm_exams.id', 'sm_exam_types.title as exam_name', 'sm_subjects.subject_name', 'sm_result_stores.total_marks as obtained_marks', 'sm_exams.exam_mark as total_marks', 'sm_result_stores.total_gpa_grade as grade')
-                ->where('sm_result_stores.school_id', $school_id)->get();
+                ->where('sm_result_stores.church_id', $church_id)->get();
 
             $data['exam_result'] = @$exam_result->toArray();
             $data['pass_marks'] = 0;
@@ -18587,10 +18587,10 @@ class SmApiController extends Controller
         }
 
     }
-    public function saas_updatePassowrdStoreApi(Request $request, $school_id)
+    public function saas_updatePassowrdStoreApi(Request $request, $church_id)
     {
 
-        $user = User::where('school_id', $school_id)->find($request->id);
+        $user = User::where('church_id', $church_id)->find($request->id);
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
 
@@ -18611,12 +18611,12 @@ class SmApiController extends Controller
 
         $parent = SmParent::where('user_id', $id)->first();
         $student_info = DB::table('sm_students')
-            ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.class_id')
-            ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.section_id')
+            ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.age_group_id')
+            ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.mgender_id')
 
             ->where('sm_students.parent_id', '=', $parent->id)
 
-            ->select('sm_students.user_id', 'student_photo', 'sm_students.full_name as student_name', 'class_name', 'section_name', 'roll_no')
+            ->select('sm_students.user_id', 'student_photo', 'sm_students.full_name as member_name', 'age_group_name', 'mgender_name', 'roll_no')
 
             ->get();
 
@@ -18625,19 +18625,19 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendResponse($student_info, null);
         }
     }
-    public function saas_childListApi(Request $request, $school_id, $id)
+    public function saas_childListApi(Request $request, $church_id, $id)
     {
 
-        $parent = SmParent::where('user_id', $id)->where('school_id', $school_id)->first();
+        $parent = SmParent::where('user_id', $id)->where('church_id', $church_id)->first();
         $student_info = DB::table('sm_students')
-            ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.class_id')
-            ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.section_id')
+            ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.age_group_id')
+            ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.mgender_id')
 
             ->where('sm_students.parent_id', '=', @$parent->id)
 
-            ->select('sm_students.user_id', 'student_photo', 'sm_students.full_name as student_name', 'class_name', 'section_name', 'roll_no')
+            ->select('sm_students.user_id', 'student_photo', 'sm_students.full_name as member_name', 'age_group_name', 'mgender_name', 'roll_no')
 
-            ->where('sm_students.school_id', $school_id)->get();
+            ->where('sm_students.church_id', $church_id)->get();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
 
@@ -18648,11 +18648,11 @@ class SmApiController extends Controller
     {
         $student_detail = SmStudent::where('id', $id)->first();
         $siblings = SmStudent::where('parent_id', $student_detail->parent_id)->where('active_status', 1)->get();
-        $fees_assigneds = SmFeesAssign::where('student_id', $student_detail->id)->get();
-        $fees_discounts = SmFeesAssignDiscount::where('student_id', $student_detail->id)->get();
+        $fees_assigneds = SmFeesAssign::where('member_id', $student_detail->id)->get();
+        $fees_discounts = SmFeesAssignDiscount::where('member_id', $student_detail->id)->get();
         $documents = SmStudentDocument::where('student_staff_id', $student_detail->id)->where('type', 'stu')->get();
-        $timelines = SmStudentTimeline::where('staff_student_id', $student_detail->id)->where('type', 'stu')->where('visible_to_student', 1)->get();
-        $exams = SmExamSchedule::where('class_id', $student_detail->class_id)->where('section_id', $student_detail->section_id)->get();
+        $timelines = SmStudentTimeline::where('staff_member_id', $student_detail->id)->where('type', 'stu')->where('visible_to_student', 1)->get();
+        $exams = SmExamSchedule::where('age_group_id', $student_detail->age_group_id)->where('mgender_id', $student_detail->mgender_id)->get();
         $grades = SmMarksGrade::where('active_status', 1)->get();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -18669,16 +18669,16 @@ class SmApiController extends Controller
         }
 
     }
-    public function saas_childProfileApi(Request $request, $school_id, $id)
+    public function saas_childProfileApi(Request $request, $church_id, $id)
     {
-        $student_detail = SmStudent::where('id', $id)->where('school_id', $school_id)->first();
-        $siblings = SmStudent::where('parent_id', @$student_detail->parent_id)->where('active_status', 1)->where('school_id', $school_id)->get();
-        $fees_assigneds = SmFeesAssign::where('student_id', @$student_detail->id)->where('school_id', $school_id)->get();
-        $fees_discounts = SmFeesAssignDiscount::where('student_id', @$student_detail->id)->where('school_id', $school_id)->get();
-        $documents = SmStudentDocument::where('student_staff_id', @$student_detail->id)->where('type', 'stu')->where('school_id', $school_id)->get();
-        $timelines = SmStudentTimeline::where('staff_student_id', @$student_detail->id)->where('type', 'stu')->where('visible_to_student', 1)->where('school_id', $school_id)->get();
-        $exams = SmExamSchedule::where('class_id', @$student_detail->class_id)->where('section_id', @$student_detail->section_id)->where('school_id', $school_id)->get();
-        $grades = SmMarksGrade::where('active_status', 1)->where('school_id', $school_id)->get();
+        $student_detail = SmStudent::where('id', $id)->where('church_id', $church_id)->first();
+        $siblings = SmStudent::where('parent_id', @$student_detail->parent_id)->where('active_status', 1)->where('church_id', $church_id)->get();
+        $fees_assigneds = SmFeesAssign::where('member_id', @$student_detail->id)->where('church_id', $church_id)->get();
+        $fees_discounts = SmFeesAssignDiscount::where('member_id', @$student_detail->id)->where('church_id', $church_id)->get();
+        $documents = SmStudentDocument::where('student_staff_id', @$student_detail->id)->where('type', 'stu')->where('church_id', $church_id)->get();
+        $timelines = SmStudentTimeline::where('staff_member_id', @$student_detail->id)->where('type', 'stu')->where('visible_to_student', 1)->where('church_id', $church_id)->get();
+        $exams = SmExamSchedule::where('age_group_id', @$student_detail->age_group_id)->where('mgender_id', @$student_detail->mgender_id)->where('church_id', $church_id)->get();
+        $grades = SmMarksGrade::where('active_status', 1)->where('church_id', $church_id)->get();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $data = [];
@@ -18698,14 +18698,14 @@ class SmApiController extends Controller
     {
 
         $student = SmStudent::where('id', $id)->first();
-        $fees_assigneds = SmFeesAssign::where('student_id', $id)->orderBy('id', 'desc')->get();
+        $fees_assigneds = SmFeesAssign::where('member_id', $id)->orderBy('id', 'desc')->get();
 
         $fees_assigneds2 = DB::table('sm_fees_assigns')
             ->select('sm_fees_types.id as fees_type_id', 'sm_fees_types.name', 'sm_fees_masters.date as due_date', 'sm_fees_masters.amount as amount')
             ->join('sm_fees_masters', 'sm_fees_masters.id', '=', 'sm_fees_assigns.fees_master_id')
             ->join('sm_fees_types', 'sm_fees_types.id', '=', 'sm_fees_masters.fees_type_id')
             ->join('sm_fees_payments', 'sm_fees_payments.fees_type_id', '=', 'sm_fees_masters.fees_type_id')
-            ->where('sm_fees_assigns.student_id', $student->id)
+            ->where('sm_fees_assigns.member_id', $student->id)
 
             ->get();
         $i = 0;
@@ -18721,7 +18721,7 @@ class SmApiController extends Controller
             $i++;
         }
 
-        $fees_discounts = SmFeesAssignDiscount::where('student_id', $id)->get();
+        $fees_discounts = SmFeesAssignDiscount::where('member_id', $id)->get();
 
         $applied_discount = [];
         foreach ($fees_discounts as $fees_discount) {
@@ -18740,34 +18740,34 @@ class SmApiController extends Controller
 
         return view('backEnd.feesCollection.collect_fees_student_wise', compact('student', 'fees_assigneds', 'fees_discounts', 'applied_discount'));
     }
-    public function saas_collectFeesChildApi(Request $request, $school_id, $id)
+    public function saas_collectFeesChildApi(Request $request, $church_id, $id)
     {
 
-        $student = SmStudent::where('id', $id)->where('school_id', $school_id)->first();
-        $fees_assigneds = SmFeesAssign::where('student_id', $id)->orderBy('id', 'desc')->where('school_id', $school_id)->get();
+        $student = SmStudent::where('id', $id)->where('church_id', $church_id)->first();
+        $fees_assigneds = SmFeesAssign::where('member_id', $id)->orderBy('id', 'desc')->where('church_id', $church_id)->get();
 
         $fees_assigneds2 = DB::table('sm_fees_assigns')
             ->select('sm_fees_types.id as fees_type_id', 'sm_fees_types.name', 'sm_fees_masters.date as due_date', 'sm_fees_masters.amount as amount')
             ->join('sm_fees_masters', 'sm_fees_masters.id', '=', 'sm_fees_assigns.fees_master_id')
             ->join('sm_fees_types', 'sm_fees_types.id', '=', 'sm_fees_masters.fees_type_id')
             ->join('sm_fees_payments', 'sm_fees_payments.fees_type_id', '=', 'sm_fees_masters.fees_type_id')
-            ->where('sm_fees_assigns.student_id', @$student->id)
+            ->where('sm_fees_assigns.member_id', @$student->id)
 
-            ->where('sm_fees_assigns.school_id', $school_id)->get();
+            ->where('sm_fees_assigns.church_id', $church_id)->get();
         $i = 0;
         return $fees_assigneds2;
         foreach ($fees_assigneds2 as $row) {
             $d[$i]['fees_name'] = $row->name;
             $d[$i]['due_date'] = $row->due_date;
             $d[$i]['amount'] = $row->amount;
-            $d[$i]['paid'] = DB::table('sm_fees_payments')->where('fees_type_id', $row->fees_type_id)->where('school_id', $school_id)->sum('amount');
-            $d[$i]['fine'] = DB::table('sm_fees_payments')->where('fees_type_id', $row->fees_type_id)->where('school_id', $school_id)->sum('fine');
-            $d[$i]['discount_amount'] = DB::table('sm_fees_payments')->where('fees_type_id', $row->fees_type_id)->where('school_id', $school_id)->sum('discount_amount');
+            $d[$i]['paid'] = DB::table('sm_fees_payments')->where('fees_type_id', $row->fees_type_id)->where('church_id', $church_id)->sum('amount');
+            $d[$i]['fine'] = DB::table('sm_fees_payments')->where('fees_type_id', $row->fees_type_id)->where('church_id', $church_id)->sum('fine');
+            $d[$i]['discount_amount'] = DB::table('sm_fees_payments')->where('fees_type_id', $row->fees_type_id)->where('church_id', $church_id)->sum('discount_amount');
             $d[$i]['balance'] = ((float) $d[$i]['amount'] + (float) $d[$i]['fine']) - ((float) $d[$i]['paid'] + (float) $d[$i]['discount_amount']);
             $i++;
         }
 
-        $fees_discounts = SmFeesAssignDiscount::where('student_id', $id)->get();
+        $fees_discounts = SmFeesAssignDiscount::where('member_id', $id)->get();
 
         $applied_discount = [];
         foreach ($fees_discounts as $fees_discount) {
@@ -18803,28 +18803,28 @@ class SmApiController extends Controller
 
         $student_detail = SmStudent::where('id', $id)->first();
 
-        $class_id = $student_detail->class_id;
-        $section_id = $student_detail->section_id;
+        $age_group_id = $student_detail->age_group_id;
+        $mgender_id = $student_detail->mgender_id;
 
-        $sm_weekends = SmWeekend::where('school_id', Auth::user()->school_id)->orderBy('order', 'ASC')->where('active_status', 1)->get();
+        $sm_weekends = SmWeekend::where('church_id', Auth::user()->church_id)->orderBy('order', 'ASC')->where('active_status', 1)->get();
         $class_times = SmClassTime::where('type', 'class')->get();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $data = [];
             $data['student_detail'] = $student_detail->toArray();
 
-            $weekenD = SmWeekend::where('school_id', Auth::user()->school_id)->get();
+            $weekenD = SmWeekend::where('church_id', Auth::user()->church_id)->get();
             foreach ($weekenD as $row) {
                 $data[$row->name] = DB::table('sm_class_routine_updates')
                     ->select('sm_class_times.period', 'sm_class_times.start_time', 'sm_class_times.end_time', 'sm_subjects.subject_name', 'sm_class_rooms.room_no')
-                    ->join('sm_classes', 'sm_classes.id', '=', 'sm_class_routine_updates.class_id')
-                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_class_routine_updates.section_id')
+                    ->join('sm_classes', 'sm_classes.id', '=', 'sm_class_routine_updates.age_group_id')
+                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_class_routine_updates.mgender_id')
                     ->join('sm_class_times', 'sm_class_times.id', '=', 'sm_class_routine_updates.class_period_id')
                     ->join('sm_subjects', 'sm_subjects.id', '=', 'sm_class_routine_updates.subject_id')
                     ->join('sm_class_rooms', 'sm_class_rooms.id', '=', 'sm_class_routine_updates.room_id')
 
                     ->where([
-                        ['sm_class_routine_updates.class_id', $class_id], ['sm_class_routine_updates.section_id', $section_id], ['sm_class_routine_updates.day', $row->id],
+                        ['sm_class_routine_updates.age_group_id', $age_group_id], ['sm_class_routine_updates.mgender_id', $mgender_id], ['sm_class_routine_updates.day', $row->id],
                     ])->get();
             }
 
@@ -18832,7 +18832,7 @@ class SmApiController extends Controller
         }
 
     }
-    public function saas_classRoutineApi(Request $request, $school_id, $id)
+    public function saas_classRoutineApi(Request $request, $church_id, $id)
     {
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -18847,30 +18847,30 @@ class SmApiController extends Controller
             }
         }
 
-        $student_detail = SmStudent::where('id', $id)->where('school_id', $school_id)->first();
-        $class_id = @$student_detail->class_id;
-        $section_id = @$student_detail->section_id;
+        $student_detail = SmStudent::where('id', $id)->where('church_id', $church_id)->first();
+        $age_group_id = @$student_detail->age_group_id;
+        $mgender_id = @$student_detail->mgender_id;
 
-        $sm_weekends = SmWeekend::where('school_id', Auth::user()->school_id)->orderBy('order', 'ASC')->where('active_status', 1)->get();
+        $sm_weekends = SmWeekend::where('church_id', Auth::user()->church_id)->orderBy('order', 'ASC')->where('active_status', 1)->get();
         $class_times = SmClassTime::where('type', 'class')->get();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $data = [];
             $data['student_detail'] = @$student_detail->toArray();
 
-            $weekenD = SmWeekend::where('school_id', Auth::user()->school_id)->get();
+            $weekenD = SmWeekend::where('church_id', Auth::user()->church_id)->get();
             foreach ($weekenD as $row) {
                 $data[$row->name] = DB::table('sm_class_routine_updates')
                     ->select('sm_class_times.period', 'sm_class_times.start_time', 'sm_class_times.end_time', 'sm_subjects.subject_name', 'sm_class_rooms.room_no')
-                    ->join('sm_classes', 'sm_classes.id', '=', 'sm_class_routine_updates.class_id')
-                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_class_routine_updates.section_id')
+                    ->join('sm_classes', 'sm_classes.id', '=', 'sm_class_routine_updates.age_group_id')
+                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_class_routine_updates.mgender_id')
                     ->join('sm_class_times', 'sm_class_times.id', '=', 'sm_class_routine_updates.class_period_id')
                     ->join('sm_subjects', 'sm_subjects.id', '=', 'sm_class_routine_updates.subject_id')
                     ->join('sm_class_rooms', 'sm_class_rooms.id', '=', 'sm_class_routine_updates.room_id')
 
                     ->where([
-                        ['sm_class_routine_updates.class_id', $class_id], ['sm_class_routine_updates.section_id', $section_id], ['sm_class_routine_updates.day', $row->id],
-                    ])->where('sm_class_routine_updates.school_id', $school_id)->get();
+                        ['sm_class_routine_updates.age_group_id', $age_group_id], ['sm_class_routine_updates.mgender_id', $mgender_id], ['sm_class_routine_updates.day', $row->id],
+                    ])->where('sm_class_routine_updates.church_id', $church_id)->get();
             }
 
             return ApiBaseMethod::sendResponse($data, null);
@@ -18883,8 +18883,8 @@ class SmApiController extends Controller
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $student_detail = SmStudent::where('id', $id)->first();
 
-            $class_id = $student_detail->class->id;
-            $subject_list = SmAssignSubject::where([['class_id', $class_id], ['section_id', $student_detail->section_id]])->get();
+            $age_group_id = $student_detail->class->id;
+            $subject_list = SmAssignSubject::where([['age_group_id', $age_group_id], ['mgender_id', $student_detail->mgender_id]])->get();
 
             $i = 0;
             foreach ($subject_list as $subject) {
@@ -18894,10 +18894,10 @@ class SmApiController extends Controller
                     ->select('sm_homeworks.description', 'sm_subjects.subject_name', 'sm_homeworks.homework_date', 'sm_homeworks.submission_date', 'sm_homeworks.evaluation_date', 'sm_homeworks.file', 'sm_homeworks.marks', 'sm_homework_students.complete_status as status')
                     ->leftjoin('sm_homework_students', 'sm_homework_students.homework_id', '=', 'sm_homeworks.id')
                     ->leftjoin('sm_subjects', 'sm_subjects.id', '=', 'sm_homeworks.subject_id')
-                    ->where('class_id', $student_detail->class_id)->where('section_id', $student_detail->section_id)->where('subject_id', $subject->subject_id)->get();
+                    ->where('age_group_id', $student_detail->age_group_id)->where('mgender_id', $student_detail->mgender_id)->where('subject_id', $subject->subject_id)->get();
             }
 
-            $homeworkLists = SmHomework::where('class_id', $student_detail->class_id)->where('section_id', $student_detail->section_id)->get();
+            $homeworkLists = SmHomework::where('age_group_id', $student_detail->age_group_id)->where('mgender_id', $student_detail->mgender_id)->get();
         }
         $data = [];
 
@@ -18910,14 +18910,14 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendResponse($data, null);
         }
     }
-    public function saas_childHomework(Request $request, $school_id, $id)
+    public function saas_childHomework(Request $request, $church_id, $id)
     {
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
-            $student_detail = SmStudent::where('id', $id)->where('school_id', $school_id)->first();
+            $student_detail = SmStudent::where('id', $id)->where('church_id', $church_id)->first();
 
-            $class_id = @$student_detail->class->id;
-            $subject_list = SmAssignSubject::where([['class_id', $class_id], ['section_id', @$student_detail->section_id]])->where('school_id', $school_id)->get();
+            $age_group_id = @$student_detail->class->id;
+            $subject_list = SmAssignSubject::where([['age_group_id', $age_group_id], ['mgender_id', @$student_detail->mgender_id]])->where('church_id', $church_id)->get();
 
             $i = 0;
             foreach ($subject_list as $subject) {
@@ -18927,10 +18927,10 @@ class SmApiController extends Controller
                     ->select('sm_homeworks.description', 'sm_subjects.subject_name', 'sm_homeworks.homework_date', 'sm_homeworks.submission_date', 'sm_homeworks.evaluation_date', 'sm_homeworks.file', 'sm_homeworks.marks', 'sm_homework_students.complete_status as status')
                     ->leftjoin('sm_homework_students', 'sm_homework_students.homework_id', '=', 'sm_homeworks.id')
                     ->leftjoin('sm_subjects', 'sm_subjects.id', '=', 'sm_homeworks.subject_id')
-                    ->where('class_id', @$student_detail->class_id)->where('section_id', @$student_detail->section_id)->where('subject_id', $subject->subject_id)->where('sm_homeworks.school_id', $school_id)->get();
+                    ->where('age_group_id', @$student_detail->age_group_id)->where('mgender_id', @$student_detail->mgender_id)->where('subject_id', $subject->subject_id)->where('sm_homeworks.church_id', $church_id)->get();
             }
 
-            $homeworkLists = SmHomework::where('class_id', @$student_detail->class_id)->where('section_id', @$student_detail->section_id)->where('school_id', $school_id)->get();
+            $homeworkLists = SmHomework::where('age_group_id', @$student_detail->age_group_id)->where('mgender_id', @$student_detail->mgender_id)->where('church_id', $church_id)->get();
         }
         $data = [];
 
@@ -18978,7 +18978,7 @@ class SmApiController extends Controller
         $previousMonthDetails['day'] = $days2;
         $previousMonthDetails['week_name'] = date('D', strtotime($previous_date));
 
-        $attendances = SmStudentAttendance::where('student_id', $student_detail->id)
+        $attendances = SmStudentAttendance::where('member_id', $student_detail->id)
             ->where('attendance_date', 'like', '%' . $request->year . '-' . $month . '%')
             ->select('attendance_type', 'attendance_date')
             ->get();
@@ -18995,7 +18995,7 @@ class SmApiController extends Controller
         }
 
     }
-    public function saas_childAttendanceAPI(Request $request, $school_id, $id)
+    public function saas_childAttendanceAPI(Request $request, $church_id, $id)
     {
 
         $input = $request->all();
@@ -19012,7 +19012,7 @@ class SmApiController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $student_detail = SmStudent::where('id', $id)->where('school_id', $school_id)->first();
+        $student_detail = SmStudent::where('id', $id)->where('church_id', $church_id)->first();
 
         $year = $request->year;
         $month = $request->month;
@@ -19030,10 +19030,10 @@ class SmApiController extends Controller
         $previousMonthDetails['day'] = $days2;
         $previousMonthDetails['week_name'] = date('D', strtotime($previous_date));
 
-        $attendances = SmStudentAttendance::where('student_id', @$student_detail->id)
+        $attendances = SmStudentAttendance::where('member_id', @$student_detail->id)
             ->where('attendance_date', 'like', '%' . $request->year . '-' . $month . '%')
             ->select('attendance_type', 'attendance_date')
-            ->where('school_id', $school_id)->get();
+            ->where('church_id', $church_id)->get();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $data['attendances'] = $attendances;
@@ -19060,8 +19060,8 @@ class SmApiController extends Controller
 
                 $data['userDetails'] = DB::table('sm_students')->select('sm_students.*', 'sm_parents.*', 'sm_classes.*', 'sm_sections.*')
                     ->join('sm_parents', 'sm_parents.id', '=', 'sm_students.parent_id')
-                    ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.class_id')
-                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.section_id')
+                    ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.age_group_id')
+                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.mgender_id')
                     ->where('sm_students.id', $user->id)
                     ->first();
 
@@ -19088,40 +19088,40 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_childInfo(Request $request, $school_id, $user_id)
+    public function saas_childInfo(Request $request, $church_id, $user_id)
     {
 
         try {
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
 
-                $user = SmStudent::where('user_id', $user_id)->where('school_id', $school_id)->first();
+                $user = SmStudent::where('user_id', $user_id)->where('church_id', $church_id)->first();
                 $data = [];
 
                 $data['user'] = @$user->toArray();
 
                 $data['userDetails'] = DB::table('sm_students')->select('sm_students.*', 'sm_parents.*', 'sm_classes.*', 'sm_sections.*')
                     ->join('sm_parents', 'sm_parents.id', '=', 'sm_students.parent_id')
-                    ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.class_id')
-                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.section_id')
+                    ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.age_group_id')
+                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.mgender_id')
                     ->where('sm_students.id', $user->id)
-                    ->where('sm_students.school_id', $school_id)->first();
+                    ->where('sm_students.church_id', $church_id)->first();
 
                 $data['religion'] = DB::table('sm_students')->select('sm_base_setups.base_setup_name as name')
                     ->join('sm_base_setups', 'sm_base_setups.id', '=', 'sm_students.religion_id')
                     ->where('sm_students.id', $user->id)
-                    ->where('sm_students.school_id', $school_id)->first();
+                    ->where('sm_students.church_id', $church_id)->first();
 
                 $data['blood_group'] = DB::table('sm_students')->select('sm_base_setups.base_setup_name as name')
                     ->join('sm_base_setups', 'sm_base_setups.id', '=', 'sm_students.bloodgroup_id')
                     ->where('sm_students.id', $user->id)
-                    ->where('sm_students.school_id', $school_id)->first();
+                    ->where('sm_students.church_id', $church_id)->first();
 
                 $data['transport'] = DB::table('sm_students')
                     ->select('sm_vehicles.vehicle_no', 'sm_vehicles.vehicle_model', 'sm_staffs.full_name as driver_name', 'sm_vehicles.note')
                     ->join('sm_vehicles', 'sm_vehicles.id', '=', 'sm_students.vechile_id')
                     ->join('sm_staffs', 'sm_staffs.id', '=', 'sm_students.vechile_id')
                     ->where('sm_students.id', $user->id)
-                    ->where('sm_students.school_id', $school_id)->first();
+                    ->where('sm_students.church_id', $church_id)->first();
 
                 return ApiBaseMethod::sendResponse($data, null);
             }
@@ -19135,8 +19135,8 @@ class SmApiController extends Controller
         $about = DB::table('sm_general_settings')
             ->join('sm_languages', 'sm_general_settings.language_id', '=', 'sm_languages.id')
             ->join('sm_academic_years', 'sm_general_settings.session_id', '=', 'sm_academic_years.id')
-            ->join('sm_about_pages', 'sm_general_settings.school_id', '=', 'sm_about_pages.school_id')
-            ->select('main_description', 'school_name', 'site_title', 'school_code', 'address', 'phone', 'email', 'logo', 'sm_languages.language_name', 'year as session', 'copyright_text')
+            ->join('sm_about_pages', 'sm_general_settings.church_id', '=', 'sm_about_pages.church_id')
+            ->select('main_description', 'church_name', 'site_title', 'church_code', 'address', 'phone', 'email', 'logo', 'sm_languages.language_name', 'year as session', 'copyright_text')
             ->first();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -19144,15 +19144,15 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendResponse($about, null);
         }
     }
-    public function saas_aboutApi(request $request, $school_id)
+    public function saas_aboutApi(request $request, $church_id)
     {
 
         $about = DB::table('sm_general_settings')
             ->join('sm_languages', 'sm_general_settings.language_id', '=', 'sm_languages.id')
             ->join('sm_academic_years', 'sm_general_settings.session_id', '=', 'sm_academic_years.id')
-            ->join('sm_about_pages', 'sm_general_settings.school_id', '=', 'sm_about_pages.school_id')
-            ->select('main_description', 'school_name', 'site_title', 'school_code', 'address', 'phone', 'email', 'logo', 'sm_languages.language_name', 'year as session', 'copyright_text')
-            ->where('sm_general_settings.school_id', $school_id)->first();
+            ->join('sm_about_pages', 'sm_general_settings.church_id', '=', 'sm_about_pages.church_id')
+            ->select('main_description', 'church_name', 'site_title', 'church_code', 'address', 'phone', 'email', 'logo', 'sm_languages.language_name', 'year as session', 'copyright_text')
+            ->where('sm_general_settings.church_id', $church_id)->first();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
 
@@ -19162,8 +19162,8 @@ class SmApiController extends Controller
     public function searchStudent(Request $request)
     {
 
-        $class_id = $request->class;
-        $section_id = $request->section;
+        $age_group_id = $request->class;
+        $mgender_id = $request->section;
         $name = $request->name;
         $roll_no = $request->roll_no;
 
@@ -19172,35 +19172,35 @@ class SmApiController extends Controller
 
         if (!empty($request->class) && !empty($request->section)) {
             $students = DB::table('sm_students')
-                ->select('sm_students.id', 'student_photo', 'full_name', 'roll_no', 'class_name', 'section_name', 'user_id')
-                ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.section_id')
-                ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.class_id')
-                ->where('sm_students.class_id', $request->class)
-                ->where('sm_students.section_id', $request->section)
+                ->select('sm_students.id', 'student_photo', 'full_name', 'roll_no', 'age_group_name', 'mgender_name', 'user_id')
+                ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.mgender_id')
+                ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.age_group_id')
+                ->where('sm_students.age_group_id', $request->class)
+                ->where('sm_students.mgender_id', $request->section)
                 ->get();
             $msg = "Student Found";
         } elseif (!empty($request->class)) {
             $students = DB::table('sm_students')
-                ->select('sm_students.id', 'student_photo', 'full_name', 'roll_no', 'class_name', 'section_name', 'user_id')
-                ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.section_id')
-                ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.class_id')
-                ->where('sm_students.class_id', $class_id)
+                ->select('sm_students.id', 'student_photo', 'full_name', 'roll_no', 'age_group_name', 'mgender_name', 'user_id')
+                ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.mgender_id')
+                ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.age_group_id')
+                ->where('sm_students.age_group_id', $age_group_id)
 
                 ->get();
             $msg = "Student Found";
         } elseif ($request->name != "") {
             $students = DB::table('sm_students')
-                ->select('sm_students.id', 'student_photo', 'full_name', 'roll_no', 'class_name', 'section_name', 'user_id')
-                ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.section_id')
-                ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.class_id')
+                ->select('sm_students.id', 'student_photo', 'full_name', 'roll_no', 'age_group_name', 'mgender_name', 'user_id')
+                ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.mgender_id')
+                ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.age_group_id')
                 ->where('sm_students.full_name', 'like', '%' . $request->name . '%')
                 ->get();
             $msg = "Student Found";
         } elseif ($request->roll_no != "") {
             $students = DB::table('sm_students')
-                ->select('sm_students.id', 'student_photo', 'full_name', 'roll_no', 'class_name', 'section_name', 'user_id')
-                ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.section_id')
-                ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.class_id')
+                ->select('sm_students.id', 'student_photo', 'full_name', 'roll_no', 'age_group_name', 'mgender_name', 'user_id')
+                ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.mgender_id')
+                ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.age_group_id')
                 ->where('sm_students.roll_no', $request->roll_no)
                 ->get();
             $msg = "Student Found";
@@ -19216,11 +19216,11 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendResponse($data, $msg);
         }
     }
-    public function saas_searchStudent(Request $request, $school_id)
+    public function saas_searchStudent(Request $request, $church_id)
     {
 
-        $class_id = $request->class;
-        $section_id = $request->section;
+        $age_group_id = $request->class;
+        $mgender_id = $request->section;
         $name = $request->name;
         $roll_no = $request->roll_no;
 
@@ -19229,37 +19229,37 @@ class SmApiController extends Controller
 
         if (!empty($request->class) && !empty($request->section)) {
             $students = DB::table('sm_students')
-                ->select('sm_students.id', 'student_photo', 'full_name', 'roll_no', 'class_name', 'section_name', 'user_id')
-                ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.section_id')
-                ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.class_id')
-                ->where('sm_students.class_id', $request->class)
-                ->where('sm_students.section_id', $request->section)
-                ->where('sm_students.school_id', $school_id)->get();
+                ->select('sm_students.id', 'student_photo', 'full_name', 'roll_no', 'age_group_name', 'mgender_name', 'user_id')
+                ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.mgender_id')
+                ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.age_group_id')
+                ->where('sm_students.age_group_id', $request->class)
+                ->where('sm_students.mgender_id', $request->section)
+                ->where('sm_students.church_id', $church_id)->get();
             $msg = "Student Found";
         } elseif (!empty($request->class)) {
             $students = DB::table('sm_students')
-                ->select('sm_students.id', 'student_photo', 'full_name', 'roll_no', 'class_name', 'section_name', 'user_id')
-                ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.section_id')
-                ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.class_id')
-                ->where('sm_students.class_id', $class_id)
+                ->select('sm_students.id', 'student_photo', 'full_name', 'roll_no', 'age_group_name', 'mgender_name', 'user_id')
+                ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.mgender_id')
+                ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.age_group_id')
+                ->where('sm_students.age_group_id', $age_group_id)
 
-                ->where('sm_students.school_id', $school_id)->get();
+                ->where('sm_students.church_id', $church_id)->get();
             $msg = "Student Found";
         } elseif ($request->name != "") {
             $students = DB::table('sm_students')
-                ->select('sm_students.id', 'student_photo', 'full_name', 'roll_no', 'class_name', 'section_name', 'user_id')
-                ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.section_id')
-                ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.class_id')
+                ->select('sm_students.id', 'student_photo', 'full_name', 'roll_no', 'age_group_name', 'mgender_name', 'user_id')
+                ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.mgender_id')
+                ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.age_group_id')
                 ->where('full_name', 'like', '%' . $request->name . '%')
-                ->where('sm_students.school_id', $school_id)->first();
+                ->where('sm_students.church_id', $church_id)->first();
             $msg = "Student Found";
         } elseif ($request->roll_no != "") {
             $students = DB::table('sm_students')
-                ->select('sm_students.id', 'student_photo', 'full_name', 'roll_no', 'class_name', 'section_name', 'user_id')
-                ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.section_id')
-                ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.class_id')
+                ->select('sm_students.id', 'student_photo', 'full_name', 'roll_no', 'age_group_name', 'mgender_name', 'user_id')
+                ->join('sm_sections', 'sm_sections.id', '=', 'sm_students.mgender_id')
+                ->join('sm_classes', 'sm_classes.id', '=', 'sm_students.age_group_id')
                 ->where('roll_no', 'like', '%' . $request->roll_no . '%')
-                ->where('sm_students.school_id', $school_id)->first();
+                ->where('sm_students.church_id', $church_id)->first();
             $msg = "Student Found";
         } else {
 
@@ -19285,12 +19285,12 @@ class SmApiController extends Controller
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $data = [];
-            $weekenD = SmWeekend::where('school_id', $teacher->school_id)->get();
+            $weekenD = SmWeekend::where('church_id', $teacher->church_id)->get();
             foreach ($weekenD as $row) {
                 $data[$row->name] = DB::table('sm_class_routine_updates')
-                    ->select('class_id', 'class_name', 'section_id', 'section_name', 'sm_class_times.period', 'sm_class_times.start_time', 'sm_class_times.end_time', 'sm_subjects.subject_name', 'sm_class_rooms.room_no')
-                    ->join('sm_classes', 'sm_classes.id', '=', 'sm_class_routine_updates.class_id')
-                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_class_routine_updates.section_id')
+                    ->select('age_group_id', 'age_group_name', 'mgender_id', 'mgender_name', 'sm_class_times.period', 'sm_class_times.start_time', 'sm_class_times.end_time', 'sm_subjects.subject_name', 'sm_class_rooms.room_no')
+                    ->join('sm_classes', 'sm_classes.id', '=', 'sm_class_routine_updates.age_group_id')
+                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_class_routine_updates.mgender_id')
                     ->join('sm_class_times', 'sm_class_times.id', '=', 'sm_class_routine_updates.class_period_id')
                     ->join('sm_subjects', 'sm_subjects.id', '=', 'sm_class_routine_updates.subject_id')
                     ->join('sm_class_rooms', 'sm_class_rooms.id', '=', 'sm_class_routine_updates.room_id')
@@ -19303,31 +19303,31 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendResponse($data, null);
         }
     }
-    public function saas_myRoutine(Request $request, $school_id, $id)
+    public function saas_myRoutine(Request $request, $church_id, $id)
     {
         $teacher = DB::table('sm_staffs')
             ->where('user_id', '=', $id)
-            ->where('school_id', $school_id)->first();
+            ->where('church_id', $church_id)->first();
         $teacher_id = @$teacher->id;
 
-        $sm_weekends = SmWeekend::where('school_id', Auth::user()->school_id)->orderBy('order', 'ASC')->where('active_status', 1)->get();
-        $class_times = SmClassTime::where('type', 'class')->where('school_id', $school_id)->get();
+        $sm_weekends = SmWeekend::where('church_id', Auth::user()->church_id)->orderBy('order', 'ASC')->where('active_status', 1)->get();
+        $class_times = SmClassTime::where('type', 'class')->where('church_id', $church_id)->get();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $data = [];
-            $weekenD = SmWeekend::where('school_id', Auth::user()->school_id)->get();
+            $weekenD = SmWeekend::where('church_id', Auth::user()->church_id)->get();
             foreach ($weekenD as $row) {
                 $data[$row->name] = DB::table('sm_class_routine_updates')
-                    ->select('class_id', 'class_name', 'section_id', 'section_name', 'sm_class_times.period', 'sm_class_times.start_time', 'sm_class_times.end_time', 'sm_subjects.subject_name', 'sm_class_rooms.room_no')
-                    ->join('sm_classes', 'sm_classes.id', '=', 'sm_class_routine_updates.class_id')
-                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_class_routine_updates.section_id')
+                    ->select('age_group_id', 'age_group_name', 'mgender_id', 'mgender_name', 'sm_class_times.period', 'sm_class_times.start_time', 'sm_class_times.end_time', 'sm_subjects.subject_name', 'sm_class_rooms.room_no')
+                    ->join('sm_classes', 'sm_classes.id', '=', 'sm_class_routine_updates.age_group_id')
+                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_class_routine_updates.mgender_id')
                     ->join('sm_class_times', 'sm_class_times.id', '=', 'sm_class_routine_updates.class_period_id')
                     ->join('sm_subjects', 'sm_subjects.id', '=', 'sm_class_routine_updates.subject_id')
                     ->join('sm_class_rooms', 'sm_class_rooms.id', '=', 'sm_class_routine_updates.room_id')
 
                     ->where([
                         ['sm_class_routine_updates.teacher_id', @_id], ['sm_class_routine_updates.day', $row->id],
-                    ])->where('sm_class_routine_updates.school_id', $school_id)->get();
+                    ])->where('sm_class_routine_updates.church_id', $church_id)->get();
             }
 
             return ApiBaseMethod::sendResponse($data, null);
@@ -19340,25 +19340,25 @@ class SmApiController extends Controller
             ->first();
         $teacher_id = $teacher->id;
 
-        $sm_weekends = SmWeekend::where('school_id', $teacher->school_id)->orderBy('order', 'ASC')->where('active_status', 1)->get();
+        $sm_weekends = SmWeekend::where('church_id', $teacher->church_id)->orderBy('order', 'ASC')->where('active_status', 1)->get();
         $class_times = SmClassTime::where('type', 'class')->get();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $data = [];
-            $weekenD = SmWeekend::where('school_id', $teacher->school_id)->get();
+            $weekenD = SmWeekend::where('church_id', $teacher->church_id)->get();
             foreach ($weekenD as $row) {
                 $data[$row->name] = DB::table('sm_class_routine_updates')
                     ->select('sm_class_times.period', 'sm_class_times.start_time', 'sm_class_times.end_time', 'sm_subjects.subject_name', 'sm_class_rooms.room_no')
-                    ->join('sm_classes', 'sm_classes.id', '=', 'sm_class_routine_updates.class_id')
-                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_class_routine_updates.section_id')
+                    ->join('sm_classes', 'sm_classes.id', '=', 'sm_class_routine_updates.age_group_id')
+                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_class_routine_updates.mgender_id')
                     ->join('sm_class_times', 'sm_class_times.id', '=', 'sm_class_routine_updates.class_period_id')
                     ->join('sm_subjects', 'sm_subjects.id', '=', 'sm_class_routine_updates.subject_id')
                     ->join('sm_class_rooms', 'sm_class_rooms.id', '=', 'sm_class_routine_updates.room_id')
 
                     ->where([
                         ['sm_class_routine_updates.teacher_id', $teacher_id],
-                        ['sm_class_routine_updates.class_id', $class],
-                        ['sm_class_routine_updates.section_id', $section],
+                        ['sm_class_routine_updates.age_group_id', $class],
+                        ['sm_class_routine_updates.mgender_id', $section],
                         ['sm_class_routine_updates.day', $row->id],
                     ])->get();
             }
@@ -19366,34 +19366,34 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendResponse($data, null);
         }
     }
-    public function saas_sectionRoutine(Request $request, $school_id, $id, $class, $section)
+    public function saas_sectionRoutine(Request $request, $church_id, $id, $class, $section)
     {
         $teacher = DB::table('sm_staffs')
             ->where('user_id', '=', $id)
-            ->where('school_id', $school_id)->first();
+            ->where('church_id', $church_id)->first();
         $teacher_id = @$teacher->id;
 
-        $sm_weekends = SmWeekend::where('school_id', Auth::user()->school_id)->orderBy('order', 'ASC')->where('active_status', 1)->get();
-        $class_times = SmClassTime::where('type', 'class')->where('school_id', $school_id)->get();
+        $sm_weekends = SmWeekend::where('church_id', Auth::user()->church_id)->orderBy('order', 'ASC')->where('active_status', 1)->get();
+        $class_times = SmClassTime::where('type', 'class')->where('church_id', $church_id)->get();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $data = [];
-            $weekenD = SmWeekend::where('school_id', Auth::user()->school_id)->get();
+            $weekenD = SmWeekend::where('church_id', Auth::user()->church_id)->get();
             foreach ($weekenD as $row) {
                 $data[$row->name] = DB::table('sm_class_routine_updates')
                     ->select('sm_class_times.period', 'sm_class_times.start_time', 'sm_class_times.end_time', 'sm_subjects.subject_name', 'sm_class_rooms.room_no')
-                    ->join('sm_classes', 'sm_classes.id', '=', 'sm_class_routine_updates.class_id')
-                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_class_routine_updates.section_id')
+                    ->join('sm_classes', 'sm_classes.id', '=', 'sm_class_routine_updates.age_group_id')
+                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_class_routine_updates.mgender_id')
                     ->join('sm_class_times', 'sm_class_times.id', '=', 'sm_class_routine_updates.class_period_id')
                     ->join('sm_subjects', 'sm_subjects.id', '=', 'sm_class_routine_updates.subject_id')
                     ->join('sm_class_rooms', 'sm_class_rooms.id', '=', 'sm_class_routine_updates.room_id')
 
                     ->where([
                         ['sm_class_routine_updates.teacher_id', $teacher_id],
-                        ['sm_class_routine_updates.class_id', $class],
-                        ['sm_class_routine_updates.section_id', $section],
+                        ['sm_class_routine_updates.age_group_id', $class],
+                        ['sm_class_routine_updates.mgender_id', $section],
                         ['sm_class_routine_updates.day', $row->id],
-                    ])->where('sm_class_routine_updates.school_id', $school_id)->get();
+                    ])->where('sm_class_routine_updates.church_id', $church_id)->get();
             }
 
             return ApiBaseMethod::sendResponse($data, null);
@@ -19410,21 +19410,21 @@ class SmApiController extends Controller
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $data = [];
             $teacher_classes = DB::table('sm_assign_subjects')
-                ->join('sm_classes', 'sm_classes.id', '=', 'sm_assign_subjects.class_id')
-                ->join('sm_sections', 'sm_sections.id', '=', 'sm_assign_subjects.section_id')
-                ->distinct('class_id')
+                ->join('sm_classes', 'sm_classes.id', '=', 'sm_assign_subjects.age_group_id')
+                ->join('sm_sections', 'sm_sections.id', '=', 'sm_assign_subjects.mgender_id')
+                ->distinct('age_group_id')
 
                 ->where('teacher_id', $teacher_id)
                 ->get();
 
             foreach ($teacher_classes as $class) {
-                $data[$class->class_name] = DB::table('sm_assign_subjects')
+                $data[$class->age_group_name] = DB::table('sm_assign_subjects')
                     ->join('sm_subjects', 'sm_subjects.id', '=', 'sm_assign_subjects.subject_id')
-                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_assign_subjects.section_id')
-                    ->select('section_name', 'subject_name')
-                    ->distinct('section_id')
+                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_assign_subjects.mgender_id')
+                    ->select('mgender_name', 'subject_name')
+                    ->distinct('mgender_id')
                     ->where([
-                        ['sm_assign_subjects.class_id', $class->id],
+                        ['sm_assign_subjects.age_group_id', $class->id],
                         ['sm_assign_subjects.teacher_id', $teacher_id],
                     ])->get();
             }
@@ -19432,34 +19432,34 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendResponse($data, null);
         }
     }
-    public function saas_classSection(Request $request, $school_id, $id)
+    public function saas_classSection(Request $request, $church_id, $id)
     {
 
         $teacher = DB::table('sm_staffs')
             ->where('user_id', '=', $id)
-            ->where('school_id', $school_id)->first();
+            ->where('church_id', $church_id)->first();
         $teacher_id = @$teacher->id;
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $data = [];
             $teacher_classes = DB::table('sm_assign_subjects')
-                ->join('sm_classes', 'sm_classes.id', '=', 'sm_assign_subjects.class_id')
-                ->join('sm_sections', 'sm_sections.id', '=', 'sm_assign_subjects.section_id')
-                ->distinct('class_id')
+                ->join('sm_classes', 'sm_classes.id', '=', 'sm_assign_subjects.age_group_id')
+                ->join('sm_sections', 'sm_sections.id', '=', 'sm_assign_subjects.mgender_id')
+                ->distinct('age_group_id')
 
                 ->where('teacher_id', $teacher_id)
-                ->where('sm_assign_subjects.school_id', $school_id)->get();
+                ->where('sm_assign_subjects.church_id', $church_id)->get();
 
             foreach ($teacher_classes as $class) {
-                $data[$class->class_name] = DB::table('sm_assign_subjects')
+                $data[$class->age_group_name] = DB::table('sm_assign_subjects')
                     ->join('sm_subjects', 'sm_subjects.id', '=', 'sm_assign_subjects.subject_id')
-                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_assign_subjects.section_id')
-                    ->select('section_name', 'subject_name')
-                    ->distinct('section_id')
+                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_assign_subjects.mgender_id')
+                    ->select('mgender_name', 'subject_name')
+                    ->distinct('mgender_id')
                     ->where([
-                        ['sm_assign_subjects.class_id', $class->id],
+                        ['sm_assign_subjects.age_group_id', $class->id],
                         ['sm_assign_subjects.teacher_id', $teacher_id],
-                    ])->where('sm_assign_subjects.school_id', $school_id)->get();
+                    ])->where('sm_assign_subjects.church_id', $church_id)->get();
             }
 
             return ApiBaseMethod::sendResponse($data, null);
@@ -19486,11 +19486,11 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendResponse($data, null);
         }
     }
-    public function saas_subjectsName(Request $request, $school_id, $id)
+    public function saas_subjectsName(Request $request, $church_id, $id)
     {
         $teacher = DB::table('sm_staffs')
             ->where('user_id', '=', $id)
-            ->where('school_id', $school_id)->first();
+            ->where('church_id', $church_id)->first();
         $teacher_id = @$teacher->id;
 
         $subjectsName = DB::table('sm_assign_subjects')
@@ -19499,7 +19499,7 @@ class SmApiController extends Controller
             ->where('sm_assign_subjects.active_status', 1)
             ->where('teacher_id', $teacher_id)
             ->distinct('subject_id')
-            ->where('sm_assign_subjects.school_id', $school_id)->get();
+            ->where('sm_assign_subjects.church_id', $church_id)->get();
         $subject_type = 'T=Theory, P=Practical';
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $data['subjectsName'] = $subjectsName->toArray();
@@ -19533,17 +19533,17 @@ class SmApiController extends Controller
             if ($teacher->role_id == 1) {
                 $teacher_classes = DB::table('sm_classes')
                     ->where('active_status', 1)
-                    ->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())
-                    ->where('school_id', $teacher->school_id)
+                    ->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())
+                    ->where('church_id', $teacher->church_id)
                     ->get();
             } else {
                 $teacher_classes = DB::table('sm_assign_subjects')
-                    ->join('sm_classes', 'sm_classes.id', '=', 'sm_assign_subjects.class_id')
-                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_assign_subjects.section_id')
-                    ->distinct('class_id')
-                    ->select('class_id', 'class_name')
+                    ->join('sm_classes', 'sm_classes.id', '=', 'sm_assign_subjects.age_group_id')
+                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_assign_subjects.mgender_id')
+                    ->distinct('age_group_id')
+                    ->select('age_group_id', 'age_group_name')
                     ->where('teacher_id', $teacher_id)
-                    ->where('sm_classes.academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())
+                    ->where('sm_classes.church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())
                     ->get();
             }
 
@@ -19551,7 +19551,7 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendResponse($data, null);
         }
     }
-    public function saas_teacherClassList(Request $request, $school_id)
+    public function saas_teacherClassList(Request $request, $church_id)
     {
         $input = $request->all();
         $validator = Validator::make($input, [
@@ -19574,18 +19574,18 @@ class SmApiController extends Controller
             if ($teacher->role_id == 1) {
                 $teacher_classes = DB::table('sm_classes')
                     ->where('active_status', 1)
-                    ->where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())
-                    ->where('school_id', $teacher->school_id)
-                    ->select('id as class_id', 'class_name')
+                    ->where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())
+                    ->where('church_id', $teacher->church_id)
+                    ->select('id as age_group_id', 'age_group_name')
                     ->get();
             } else {
                 $teacher_classes = DB::table('sm_assign_subjects')
-                    ->join('sm_classes', 'sm_classes.id', '=', 'sm_assign_subjects.class_id')
-                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_assign_subjects.section_id')
-                    ->distinct('class_id')
-                    ->select('class_id', 'class_name')
+                    ->join('sm_classes', 'sm_classes.id', '=', 'sm_assign_subjects.age_group_id')
+                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_assign_subjects.mgender_id')
+                    ->distinct('age_group_id')
+                    ->select('age_group_id', 'age_group_name')
                     ->where('teacher_id', $teacher_id)
-                    ->where('sm_classes.academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())
+                    ->where('sm_classes.church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())
                     ->get();
             }
             $data['teacher_classes'] = $teacher_classes->toArray();
@@ -19619,22 +19619,22 @@ class SmApiController extends Controller
             $data = [];
             if ($teacher->role_id == 1) {
                 $teacher_classes = DB::table('sm_class_sections')
-                    ->join('sm_classes', 'sm_classes.id', '=', 'sm_class_sections.class_id')
-                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_class_sections.section_id')
-                    ->distinct('section_id')
-                    ->select('section_id', 'section_name')
-                    ->where('sm_class_sections.class_id', $request->class)
-                    ->orderby('sm_class_sections.section_id', 'ASC')
+                    ->join('sm_classes', 'sm_classes.id', '=', 'sm_class_sections.age_group_id')
+                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_class_sections.mgender_id')
+                    ->distinct('mgender_id')
+                    ->select('mgender_id', 'mgender_name')
+                    ->where('sm_class_sections.age_group_id', $request->class)
+                    ->orderby('sm_class_sections.mgender_id', 'ASC')
                     ->get();
             } else {
                 $teacher_classes = DB::table('sm_assign_subjects')
-                    ->join('sm_classes', 'sm_classes.id', '=', 'sm_assign_subjects.class_id')
-                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_assign_subjects.section_id')
-                    ->distinct('section_id')
-                    ->select('section_id', 'section_name')
+                    ->join('sm_classes', 'sm_classes.id', '=', 'sm_assign_subjects.age_group_id')
+                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_assign_subjects.mgender_id')
+                    ->distinct('mgender_id')
+                    ->select('mgender_id', 'mgender_name')
                     ->where('teacher_id', $teacher_id)
-                    ->where('class_id', $request->class)
-                    ->orderby('sm_assign_subjects.section_id', 'ASC')
+                    ->where('age_group_id', $request->class)
+                    ->orderby('sm_assign_subjects.mgender_id', 'ASC')
                     ->get();
             }
 
@@ -19642,7 +19642,7 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendResponse($data, null);
         }
     }
-    public function saas_teacherSectionList(Request $request, $school_id)
+    public function saas_teacherSectionList(Request $request, $church_id)
     {
         $input = $request->all();
         $validator = Validator::make($input, [
@@ -19662,7 +19662,7 @@ class SmApiController extends Controller
 
         $teacher = DB::table('sm_staffs')
             ->where('user_id', '=', $request->id)
-            ->where('school_id', $school_id)->first();
+            ->where('church_id', $church_id)->first();
         $teacher_id = @$teacher->id;
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -19670,21 +19670,21 @@ class SmApiController extends Controller
 
             if ($teacher->role_id == 1) {
                 $teacher_classes = DB::table('sm_class_sections')
-                    ->join('sm_classes', 'sm_classes.id', '=', 'sm_class_sections.class_id')
-                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_class_sections.section_id')
-                    ->distinct('section_id')
-                    ->select('section_id', 'section_name')
-                    ->where('sm_class_sections.class_id', $request->class)
+                    ->join('sm_classes', 'sm_classes.id', '=', 'sm_class_sections.age_group_id')
+                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_class_sections.mgender_id')
+                    ->distinct('mgender_id')
+                    ->select('mgender_id', 'mgender_name')
+                    ->where('sm_class_sections.age_group_id', $request->class)
                     ->get();
             } else {
                 $teacher_classes = DB::table('sm_assign_subjects')
-                    ->join('sm_classes', 'sm_classes.id', '=', 'sm_assign_subjects.class_id')
-                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_assign_subjects.section_id')
-                    ->distinct('section_id')
-                    ->select('section_id', 'section_name')
+                    ->join('sm_classes', 'sm_classes.id', '=', 'sm_assign_subjects.age_group_id')
+                    ->join('sm_sections', 'sm_sections.id', '=', 'sm_assign_subjects.mgender_id')
+                    ->distinct('mgender_id')
+                    ->select('mgender_id', 'mgender_name')
                     ->where('teacher_id', $teacher_id)
-                    ->where('class_id', $request->class)
-                    ->where('sm_assign_subjects.school_id', $school_id)->get();
+                    ->where('age_group_id', $request->class)
+                    ->where('sm_assign_subjects.church_id', $church_id)->get();
             }
 
             $data['teacher_sections'] = @$teacher_classes->toArray();
@@ -19757,7 +19757,7 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_teacherMyAttendanceSearchAPI(Request $request, $school_id, $id = null)
+    public function saas_teacherMyAttendanceSearchAPI(Request $request, $church_id, $id = null)
     {
 
         $input = $request->all();
@@ -19775,7 +19775,7 @@ class SmApiController extends Controller
         }
 
         try {
-            $teacher = SmStaff::where('user_id', $id)->where('school_id', $school_id)->first();
+            $teacher = SmStaff::where('user_id', $id)->where('church_id', $church_id)->first();
 
             $year = $request->year;
             $month = $request->month;
@@ -19806,7 +19806,7 @@ class SmApiController extends Controller
             $attendances = SmStaffAttendence::where('staff_id', $teacher->id)
                 ->where('attendence_date', 'like', '%' . $request->year . '-' . $month . '%')
                 ->select('attendence_type as attendance_type', 'attendence_date as attendance_date')
-                ->where('school_id', $school_id)->get();
+                ->where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data['attendances'] = $attendances;
@@ -19841,7 +19841,7 @@ class SmApiController extends Controller
         }
 
     }
-    public function saas_leaveTypeList(Request $request, $school_id)
+    public function saas_leaveTypeList(Request $request, $church_id)
     {
         $leave_type = DB::table('sm_leave_defines')
             ->where('role_id', 4)
@@ -19849,7 +19849,7 @@ class SmApiController extends Controller
             ->where('sm_leave_defines.active_status', 1)
             ->select('sm_leave_types.id', 'type', 'total_days')
             ->distinct('sm_leave_defines.type_id')
-            ->where('sm_leave_defines.school_id', $school_id)->get();
+            ->where('sm_leave_defines.church_id', $church_id)->get();
 
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             return ApiBaseMethod::sendResponse($leave_type, null);
@@ -19918,7 +19918,7 @@ class SmApiController extends Controller
                 'leave_to' => "required",
                 'teacher_id' => "required",
                 'reason' => "required",
-                'school_id' => "required",
+                'church_id' => "required",
 
             ]);
         }
@@ -19947,7 +19947,7 @@ class SmApiController extends Controller
         $apply_leave->leave_to = $request->input('leave_to');
         $apply_leave->approve_status = 'P';
         $apply_leave->reason = $request->input('reason');
-        $apply_leave->school_id = $request->input('school_id');
+        $apply_leave->church_id = $request->input('church_id');
         if ($fileName != "") {
             $apply_leave->file = $fileName;
         }
@@ -19977,16 +19977,16 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendResponse($data, null);
         }
     }
-    public function saas_staffLeaveList(Request $request, $school_id, $id)
+    public function saas_staffLeaveList(Request $request, $church_id, $id)
     {
 
-        $teacher = SmStaff::where('user_id', '=', $id)->where('school_id', $school_id)->first();
+        $teacher = SmStaff::where('user_id', '=', $id)->where('church_id', $church_id)->first();
         $teacher_id = @$teacher->id;
 
         $leave_list = SmLeaveRequest::where('staff_id', '=', $teacher_id)
             ->join('sm_leave_defines', 'sm_leave_defines.id', '=', 'sm_leave_requests.leave_define_id')
             ->join('sm_leave_types', 'sm_leave_types.id', '=', 'sm_leave_defines.type_id')
-            ->where('sm_leave_defines.school_id', $school_id)->get();
+            ->where('sm_leave_defines.church_id', $church_id)->get();
         $status = 'P for Pending, A for Approve, R for reject';
         $data = [];
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -20064,7 +20064,7 @@ class SmApiController extends Controller
 
         if ($request->input('available_for') == 'admin') {
             $roles = InfixRole::where('id', '!=', 1)->where('id', '!=', 2)->where('id', '!=', 3)->where('id', '!=', 9)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
 
             foreach ($roles as $role) {
@@ -20073,8 +20073,8 @@ class SmApiController extends Controller
                     $notification = new SmNotification;
                     $notification->user_id = $staff->id;
                     $notification->role_id = $role->id;
-                    $notification->school_id = Auth::user()->school_id;
-                    $notification->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+                    $notification->church_id = Auth::user()->church_id;
+                    $notification->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
                     $notification->date = date('Y-m-d');
                     $notification->message = $purpose . ' ' . app('translator')->get('common.updated');
                     $notification->save();
@@ -20090,8 +20090,8 @@ class SmApiController extends Controller
                     $notification = new SmNotification;
                     $notification->user_id = $student->id;
                     $notification->role_id = 2;
-                    $notification->school_id = Auth::user()->school_id;
-                    $notification->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+                    $notification->church_id = Auth::user()->church_id;
+                    $notification->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
                     $notification->date = date('Y-m-d');
                     $notification->message = $purpose . ' ' . app('translator')->get('common.updated');
                     $notification->save();
@@ -20099,13 +20099,13 @@ class SmApiController extends Controller
                     Notification::send($user, new StudyMeterialCreatedNotification($notification));
                 }
             } else {
-                $students = SmStudent::select('id')->where('class_id', $request->input('class'))->where('section_id', $request->input('section'))->get();
+                $students = SmStudent::select('id')->where('age_group_id', $request->input('class'))->where('mgender_id', $request->input('section'))->get();
                 foreach ($students as $student) {
                     $notification = new SmNotification;
                     $notification->user_id = $student->id;
                     $notification->role_id = 2;
-                    $notification->school_id = Auth::user()->school_id;
-                    $notification->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+                    $notification->church_id = Auth::user()->church_id;
+                    $notification->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
                     $notification->date = date('Y-m-d');
                     $notification->message = $purpose . ' ' . app('translator')->get('common.updated');
                     $notification->save();
@@ -20133,7 +20133,7 @@ class SmApiController extends Controller
                 'content_type' => "required",
                 'upload_date' => "required",
                 'description' => "required",
-                'school_id' => "required",
+                'church_id' => "required",
 
             ]);
         }
@@ -20177,7 +20177,7 @@ class SmApiController extends Controller
         $uploadContents->upload_date = date('Y-m-d', strtotime($request->input('upload_date')));
         $uploadContents->description = $request->input('description');
         $uploadContents->upload_file = $fileName;
-        $uploadContents->school_id = $request->input('school_id');
+        $uploadContents->church_id = $request->input('church_id');
         $uploadContents->created_by = $request->input('created_by');
         $results = $uploadContents->save();
 
@@ -20193,7 +20193,7 @@ class SmApiController extends Controller
 
         if ($request->input('available_for') == 'admin') {
             $roles = InfixRole::where('id', '!=', 1)->where('id', '!=', 2)->where('id', '!=', 3)->where('id', '!=', 9)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
 
             foreach ($roles as $role) {
@@ -20202,8 +20202,8 @@ class SmApiController extends Controller
                     $notification = new SmNotification;
                     $notification->user_id = $staff->id;
                     $notification->role_id = $role->id;
-                    $notification->school_id = Auth::user()->school_id;
-                    $notification->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+                    $notification->church_id = Auth::user()->church_id;
+                    $notification->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
                     $notification->date = date('Y-m-d');
                     $notification->message = $purpose . ' updated';
                     $notification->save();
@@ -20217,20 +20217,20 @@ class SmApiController extends Controller
                     $notification = new SmNotification;
                     $notification->user_id = $student->id;
                     $notification->role_id = 2;
-                    $notification->school_id = Auth::user()->school_id;
-                    $notification->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+                    $notification->church_id = Auth::user()->church_id;
+                    $notification->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
                     $notification->date = date('Y-m-d');
                     $notification->message = $purpose . ' updated';
                     $notification->save();
                 }
             } else {
-                $students = SmStudent::select('id')->where('class_id', $request->input('class'))->where('section_id', $request->input('section'))->get();
+                $students = SmStudent::select('id')->where('age_group_id', $request->input('class'))->where('mgender_id', $request->input('section'))->get();
                 foreach ($students as $student) {
                     $notification = new SmNotification;
                     $notification->user_id = $student->id;
                     $notification->role_id = 2;
-                    $notification->school_id = Auth::user()->school_id;
-                    $notification->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+                    $notification->church_id = Auth::user()->church_id;
+                    $notification->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
                     $notification->date = date('Y-m-d');
                     $notification->message = $purpose . ' updated';
                     $notification->save();
@@ -20258,10 +20258,10 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendResponse($data, null);
         }
     }
-    public function saas_contentList(Request $request, $school_id)
+    public function saas_contentList(Request $request, $church_id)
     {
-        $uploadContents = SmTeacherUploadContent::where('academic_id', SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR())
-            ->where('school_id', $school_id)
+        $uploadContents = SmTeacherUploadContent::where('church_year_id', SmAcademicYear::SINGLE_SCHOOL_API_church_year())
+            ->where('church_id', $church_id)
             ->get();
         $contents = [];
         foreach ($uploadContents as $data) {
@@ -20283,7 +20283,7 @@ class SmApiController extends Controller
                 $d['available_for'] = 'all classes student';
             }
             if ($data->classes != "" && $data->sections != "") {
-                $d['available_for'] = 'All Students Of (' . $data->classes->class_name . '->' . @$data->sections->section_name . ')';
+                $d['available_for'] = 'All Students Of (' . $data->classes->age_group_name . '->' . @$data->sections->mgender_name . ')';
             }
             $d['upload_date'] = $data->upload_date;
             $d['description'] = $data->description;
@@ -20309,9 +20309,9 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendResponse($data, null);
         }
     }
-    public function saas_deleteContent(Request $request, $school_id, $id)
+    public function saas_deleteContent(Request $request, $church_id, $id)
     {
-        $content = DB::table('sm_teacher_upload_contents')->where('id', $id)->where('school_id', $school_id)->delete();
+        $content = DB::table('sm_teacher_upload_contents')->where('id', $id)->where('church_id', $church_id)->delete();
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $data = '';
             return ApiBaseMethod::sendResponse($data, null);
@@ -20360,7 +20360,7 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_pendingLeave(Request $request, $school_id)
+    public function saas_pendingLeave(Request $request, $church_id)
     {
         if (ApiBaseMethod::checkUrl($request->fullUrl())) {
             $pendingRequest = SmLeaveRequest::where('sm_leave_requests.active_status', 1)
@@ -20369,7 +20369,7 @@ class SmApiController extends Controller
                 ->join('sm_staffs', 'sm_leave_requests.staff_id', '=', 'sm_staffs.id')
                 ->leftjoin('sm_leave_types', 'sm_leave_requests.type_id', '=', 'sm_leave_types.id')
                 ->where('sm_leave_requests.approve_status', '=', 'P')
-                ->where('sm_leave_requests.school_id', $school_id)->get();
+                ->where('sm_leave_requests.church_id', $church_id)->get();
             $data = [];
             $data['pending_request'] = $pendingRequest->toArray();
             return ApiBaseMethod::sendResponse($data, null);
@@ -20385,7 +20385,7 @@ class SmApiController extends Controller
             }
             $leave_types = SmLeaveType::where('active_status', 1)->get();
             $roles = InfixRole::where('id', '!=', 1)->where('id', '!=', 3)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
 
             $pendingRequest = SmLeaveRequest::where('sm_leave_requests.active_status', 1)
@@ -20426,7 +20426,7 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_approvedLeave(Request $request, $school_id)
+    public function saas_approvedLeave(Request $request, $church_id)
     {
 
         try {
@@ -20436,7 +20436,7 @@ class SmApiController extends Controller
                 ->join('sm_staffs', 'sm_leave_requests.staff_id', '=', 'sm_staffs.id')
                 ->join('sm_leave_types', 'sm_leave_requests.type_id', '=', 'sm_leave_types.id')
                 ->where('sm_leave_requests.approve_status', '=', 'A')
-                ->where('sm_leave_requests.school_id', $school_id)->get();
+                ->where('sm_leave_requests.church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -20468,7 +20468,7 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_rejectLeave(Request $request, $school_id)
+    public function saas_rejectLeave(Request $request, $church_id)
     {
         try {
             $reject_request = SmLeaveRequest::where('sm_leave_requests.active_status', 1)
@@ -20478,7 +20478,7 @@ class SmApiController extends Controller
                 ->join('sm_leave_types', 'sm_leave_requests.type_id', '=', 'sm_leave_types.id')
                 ->where('sm_leave_requests.approve_status', '=', 'R')
 
-                ->where('sm_leave_requests.school_id', $school_id)->get();
+                ->where('sm_leave_requests.church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -20554,7 +20554,7 @@ class SmApiController extends Controller
                 'leave_to' => "required",
                 'staff_id' => "required",
                 'reason' => "required",
-                'school_id' => "required",
+                'church_id' => "required",
 
             ]);
         }
@@ -20584,7 +20584,7 @@ class SmApiController extends Controller
             $apply_leave->leave_to = $request->input('leave_to');
             $apply_leave->approve_status = 'P';
             $apply_leave->reason = $request->input('reason');
-            $apply_leave->school_id = $request->input('school_id');
+            $apply_leave->church_id = $request->input('church_id');
             if ($fileName != "") {
                 $apply_leave->file = $fileName;
             }
@@ -20612,8 +20612,8 @@ class SmApiController extends Controller
             $notification = new SmNotification;
             $notification->user_id = $staff_id;
             $notification->role_id = $role_id;
-            $notification->school_id = Auth::user()->school_id;
-            $notification->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+            $notification->church_id = Auth::user()->church_id;
+            $notification->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
             $notification->date = date('Y-m-d');
             $notification->message = 'Leave status updated';
             $notification->save();
@@ -20626,11 +20626,11 @@ class SmApiController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_updateLeave(Request $request, $school_id)
+    public function saas_updateLeave(Request $request, $church_id)
     {
 
         try {
-            $leave_request_data = SmLeaveRequest::where('school_id', $school_id)->find($request->id);
+            $leave_request_data = SmLeaveRequest::where('church_id', $church_id)->find($request->id);
             $staff_id = $leave_request_data->staff_id;
             $role_id = $leave_request_data->role_id;
             $leave_request_data->approve_status = $request->status;
@@ -20639,8 +20639,8 @@ class SmApiController extends Controller
             $notification = new SmNotification;
             $notification->user_id = $staff_id;
             $notification->role_id = $role_id;
-            $notification->school_id = Auth::user()->school_id;
-            $notification->academic_id = SmAcademicYear::SINGLE_SCHOOL_API_ACADEMIC_YEAR();
+            $notification->church_id = Auth::user()->church_id;
+            $notification->church_year_id = SmAcademicYear::SINGLE_SCHOOL_API_church_year();
             $notification->date = date('Y-m-d');
             $notification->message = 'Leave status updated';
             $notification->save();
@@ -20715,10 +20715,10 @@ class SmApiController extends Controller
             }
         }
     }
-    public function saas_groupToken(Request $request, $school_id)
+    public function saas_groupToken(Request $request, $church_id)
     {
         try {
-            $users = User::where('role_id', $request->id)->where('school_id', $school_id)->get();
+            $users = User::where('role_id', $request->id)->where('church_id', $church_id)->get();
             foreach ($users as $user) {
 
                 if ($user->notificationToken != '') {
@@ -20829,7 +20829,7 @@ class SmApiController extends Controller
     public function HomeWorkNotification(Request $request)
     {
         try {
-            $students = SmStudent::where('class_id', $request->class_id)->where('section_id', $request->section_id)->get();
+            $students = SmStudent::where('age_group_id', $request->age_group_id)->where('mgender_id', $request->mgender_id)->get();
 
             foreach ($students as $student) {
                 $user = User::where('id', $student->id)->first();
@@ -20941,13 +20941,13 @@ class SmApiController extends Controller
     public function dbCorrections(Request $request)
     {
         $data1 = [];
-        $schools = SmSchool::select('id', 'school_name')->get();
+        $schools = SmSchool::select('id', 'church_name')->get();
         $years = ['2020', '2021', '2022', '2023', '2024'];
         foreach ($years as $year) {
             foreach ($schools as $school) {
-                $duplicates[$year][$school->id] = DB::table('sm_classes')->where('school_id', $school->id)->where('created_at', 'LIKE', '%' . $year . '%')
-                    ->select('class_name', DB::raw('COUNT(*) as `count`'))
-                    ->groupBy('class_name')
+                $duplicates[$year][$school->id] = DB::table('sm_classes')->where('church_id', $school->id)->where('created_at', 'LIKE', '%' . $year . '%')
+                    ->select('age_group_name', DB::raw('COUNT(*) as `count`'))
+                    ->groupBy('age_group_name')
                     ->havingRaw('COUNT(*) > 1')
                     ->get();
             }

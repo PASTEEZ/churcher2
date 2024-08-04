@@ -79,7 +79,7 @@ class ApiSmStaffAttendanceController extends Controller
             return ApiBaseMethod::sendError('Error.', $e->getMessage());
         }
     }
-    public function saas_teacherMyAttendanceSearchAPI(Request $request, $school_id, $id = null)
+    public function saas_teacherMyAttendanceSearchAPI(Request $request, $church_id, $id = null)
     {
 
         $input = $request->all();
@@ -98,7 +98,7 @@ class ApiSmStaffAttendanceController extends Controller
 
 
         try {
-            $teacher = SmStaff::where('user_id', $id)->where('school_id', $school_id)->first();
+            $teacher = SmStaff::where('user_id', $id)->where('church_id', $church_id)->first();
 
             $year = $request->year;
             $month = $request->month;
@@ -133,7 +133,7 @@ class ApiSmStaffAttendanceController extends Controller
             $attendances = SmStaffAttendence::where('staff_id', $teacher->id)
                 ->where('attendence_date', 'like', '%' . $request->year . '-' . $month . '%')
                 ->select('attendence_type as attendance_type', 'attendence_date as attendance_date')
-                ->where('school_id', $school_id)->get();
+                ->where('church_id', $church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data['attendances'] = $attendances;

@@ -47,14 +47,14 @@ class SmHomeworkController extends Controller
             set_time_limit(900);
             $homeworkLists = SmHomework::query();
             if (teacherAccess()) {
-                $homeworkLists = SmHomework::where('academic_id', getAcademicId())
-                ->where('school_id',Auth::user()->school_id)
+                $homeworkLists = SmHomework::where('church_year_id', getAcademicId())
+                ->where('church_id',Auth::user()->church_id)
                 ->orderby('id','DESC')
                 ->get();
 
             } else {
-                $homeworkLists = SmHomework::where('academic_id', getAcademicId())
-                ->where('school_id',Auth::user()->school_id)
+                $homeworkLists = SmHomework::where('church_year_id', getAcademicId())
+                ->where('church_id',Auth::user()->church_id)
                 ->where('created_by',Auth::user()->id)
                 ->orderby('id','DESC')
                 ->get();
@@ -86,46 +86,46 @@ class SmHomeworkController extends Controller
                 ->get();
             }else{
                 $homeworkLists->with('classes','sections','subjects','users');
-                if ($request->class_id != "") {
-                    $homeworkLists->where('class_id', $request->class_id);
+                if ($request->age_group_id != "") {
+                    $homeworkLists->where('age_group_id', $request->age_group_id);
                 }
-                if ($request->section_id != "") {
-                    $homeworkLists->where('section_id', $request->section_id);
+                if ($request->mgender_id != "") {
+                    $homeworkLists->where('mgender_id', $request->mgender_id);
                 }
                 if ($request->subject_id != "") {
                     $homeworkLists->where('subject_id', $request->subject_id);
                 }
     
                 if (Auth::user()->role_id == 1) {
-                    $homeworkLists = $homeworkLists->where('academic_id', getAcademicId())
+                    $homeworkLists = $homeworkLists->where('church_year_id', getAcademicId())
                                 ->where('course_id', '=', null)
                                 ->where('chapter_id', '=', null)
                                 ->where('lesson_id', '=', null)
-                                ->where('school_id',Auth::user()->school_id)
+                                ->where('church_id',Auth::user()->church_id)
                                 ->orderby('id','DESC')
                                 ->get();
                 } else {
-                    $homeworkLists = $homeworkLists->where('academic_id', getAcademicId())
+                    $homeworkLists = $homeworkLists->where('church_year_id', getAcademicId())
                                 ->where('course_id', '=', null)
                                 ->where('chapter_id', '=', null)
                                 ->where('lesson_id', '=', null)
-                                ->where('school_id',Auth::user()->school_id)
+                                ->where('church_id',Auth::user()->church_id)
                                 ->where('created_by',Auth()->user()->id)
                                 ->orderby('id','DESC')
                                 ->get();
                     
                 }
                 $classes = SmClass::where('active_status', '=', '1')
-                        ->where('academic_id', getAcademicId())
-                        ->where('school_id',Auth::user()->school_id)
+                        ->where('church_year_id', getAcademicId())
+                        ->where('church_id',Auth::user()->church_id)
                         ->get();
 
             }
-            $search_info['class_id'] = $request->class_id;
+            $search_info['age_group_id'] = $request->age_group_id;
             $search_info['subject_id'] = $request->subject_id;
-            $search_info['section_id'] = $request->section_id;
-            $classSubjects = classSubjects($request->class_id) ?? null;
-            $subjectSections = subjectSections($request->class_id, $request->subject_id);
+            $search_info['mgender_id'] = $request->mgender_id;
+            $classSubjects = classSubjects($request->age_group_id) ?? null;
+            $subjectSections = subjectSections($request->age_group_id, $request->subject_id);
             return view('backEnd.homework.homeworkList', compact('homeworkLists', 'classes', 'search_info', 'classSubjects', 'subjectSections', 'search_info'));
         } catch (\Exception $e) {
           
@@ -161,7 +161,7 @@ class SmHomeworkController extends Controller
                 $labels = UnSemesterLabel::find($request->un_semester_label_id);
                 $sections = $labels->labelSections;
 
-                if(is_null($request->section_id)){
+                if(is_null($request->mgender_id)){
                     foreach($sections as $section){
                         $homeworks = new SmHomework();
                         $homeworks->un_subject_id = $request->un_subject_id;
@@ -171,10 +171,10 @@ class SmHomeworkController extends Controller
                         $homeworks->description = $request->description;
                         $homeworks->file = $upload_file;
                         $homeworks->created_by = auth()->user()->id;
-                        $homeworks->school_id = auth()->user()->school_id;
+                        $homeworks->church_id = auth()->user()->church_id;
                         $interface = App::make(UnCommonRepositoryInterface::class);
                         $interface->storeUniversityData($homeworks, $request);
-                        $homeworks->un_section_id = $section->id;
+                        $homeworks->un_mgender_id = $section->id;
                         $homeworks->save();
                     }  
                 }else{
@@ -186,7 +186,7 @@ class SmHomeworkController extends Controller
                     $homeworks->description = $request->description;
                     $homeworks->file = $upload_file;
                     $homeworks->created_by = auth()->user()->id;
-                    $homeworks->school_id = auth()->user()->school_id;
+                    $homeworks->church_id = auth()->user()->church_id;
                     $interface = App::make(UnCommonRepositoryInterface::class);
                     $interface->storeUniversityData($homeworks, $request);
                     $homeworks->save();
@@ -194,19 +194,19 @@ class SmHomeworkController extends Controller
             }
             else{
                 if($request->status == "lmsHomework"){
-                    $classes = SmClassSection::when($request->class_id, function ($query) use ($request) {
-                                $query->where('class_id', $request->class_id);
+                    $classes = SmClassSection::when($request->age_group_id, function ($query) use ($request) {
+                                $query->where('age_group_id', $request->age_group_id);
                             })
-                            ->when($request->section_id, function ($query) use ($request) {
-                                $query->where('section_id', $request->section_id);
+                            ->when($request->mgender_id, function ($query) use ($request) {
+                                $query->where('mgender_id', $request->mgender_id);
                             })
-                            ->where('school_id', auth()->user()->school_id)
+                            ->where('church_id', auth()->user()->church_id)
                             ->get();
 
                         foreach($classes as $classe){
                             $homeworks = new SmHomework();
-                            $homeworks->class_id = $classe->class_id;
-                            $homeworks->section_id = $classe->section_id;
+                            $homeworks->age_group_id = $classe->age_group_id;
+                            $homeworks->mgender_id = $classe->mgender_id;
                             $homeworks->subject_id = $request->subject_id;
                             $homeworks->homework_date = date('Y-m-d', strtotime($request->homework_date));
                             $homeworks->submission_date = date('Y-m-d', strtotime($request->submission_date));
@@ -214,8 +214,8 @@ class SmHomeworkController extends Controller
                             $homeworks->description = $request->description;
                             $homeworks->file = $upload_file;
                             $homeworks->created_by = auth()->user()->id;
-                            $homeworks->school_id = auth()->user()->school_id;
-                            $homeworks->academic_id = getAcademicId();
+                            $homeworks->church_id = auth()->user()->church_id;
+                            $homeworks->church_year_id = getAcademicId();
                             if($request->status == 'lmsHomework'){
                                 $homeworks->course_id = $request->course_id;
                                 $homeworks->chapter_id = $request->chapter_id;
@@ -225,11 +225,11 @@ class SmHomeworkController extends Controller
                             $homeworks->save();
                         }
                 }else{
-                    foreach($request->section_id as $section){
+                    foreach($request->mgender_id as $section){
                         $sections[]=$section;
                         $homeworks = new SmHomework();
-                        $homeworks->class_id = $request->class_id;
-                        $homeworks->section_id = $section;
+                        $homeworks->age_group_id = $request->age_group_id;
+                        $homeworks->mgender_id = $section;
                         $homeworks->subject_id = $request->subject_id;
                         $homeworks->homework_date = date('Y-m-d', strtotime($request->homework_date));
                         $homeworks->submission_date = date('Y-m-d', strtotime($request->submission_date));
@@ -237,33 +237,33 @@ class SmHomeworkController extends Controller
                         $homeworks->description = $request->description;
                         $homeworks->file = $upload_file;
                         $homeworks->created_by = Auth()->user()->id;
-                        $homeworks->school_id = Auth::user()->school_id;
-                        $homeworks->academic_id = getAcademicId();
+                        $homeworks->church_id = Auth::user()->church_id;
+                        $homeworks->church_year_id = getAcademicId();
                         $homeworks->save();
                     }
                 }
-                $student_ids = StudentRecord::when($request->class, function ($query) use ($request) {
-                    $query->where('class_id', $request->class_id);
+                $member_ids = StudentRecord::when($request->class, function ($query) use ($request) {
+                    $query->where('age_group_id', $request->age_group_id);
                 })
-                ->when($request->section_id, function ($query) use ($sections) {
-                    $query->whereIn('section_id', $sections);
+                ->when($request->mgender_id, function ($query) use ($sections) {
+                    $query->whereIn('mgender_id', $sections);
                 })
-                ->when(!$request->academic_year, function ($query) use ($request) {
-                    $query->where('academic_id', getAcademicId());
-                })->where('school_id', auth()->user()->school_id)->pluck('student_id')->unique();
+                ->when(!$request->church_year, function ($query) use ($request) {
+                    $query->where('church_year_id', getAcademicId());
+                })->where('church_id', auth()->user()->church_id)->pluck('member_id')->unique();
             }
             
             if(moduleStatusCheck('University')){
-                $records = StudentRecord::where('un_semester_label_id', $request->un_semester_lable_id)->pluck('student_id')->unique();
-              $student_ids = [];
+                $records = StudentRecord::where('un_semester_label_id', $request->un_semester_lable_id)->pluck('member_id')->unique();
+              $member_ids = [];
               foreach($records as $record){
-                $student_ids[] = $record;
+                $member_ids[] = $record;
               }
-              $students = SmStudent::whereIn('id',$student_ids)
+              $students = SmStudent::whereIn('id',$member_ids)
                                     ->get();
             }else{
-                $students = SmStudent::where('class_id', $request->class_id)
-                                        ->whereIn('id',$student_ids)
+                $students = SmStudent::where('age_group_id', $request->age_group_id)
+                                        ->whereIn('id',$member_ids)
                                         ->get();
             }
 
@@ -274,11 +274,11 @@ class SmHomeworkController extends Controller
                 $notification->role_id = 2;
                 $notification->date = date('Y-m-d');
                 $notification->message = app('translator')->get('common.homework_assigned');
-                $notification->school_id = Auth::user()->school_id;
+                $notification->church_id = Auth::user()->church_id;
                 if(moduleStatusCheck('University')){
-                    $notification->un_academic_id = getAcademicId();
+                    $notification->un_church_year_id = getAcademicId();
                 }else{
-                    $notification->academic_id = getAcademicId();
+                    $notification->church_year_id = getAcademicId();
                 }
                 $notification->save();
                 
@@ -299,11 +299,11 @@ class SmHomeworkController extends Controller
                         $notification->date = date('Y-m-d');
                         $notification->user_id = $parent->user_id;
                         $notification->url = "homework-list";
-                        $notification->school_id = Auth::user()->school_id;
+                        $notification->church_id = Auth::user()->church_id;
                         if(moduleStatusCheck('University')){
-                            $notification->un_academic_id = getAcademicId();
+                            $notification->un_church_year_id = getAcademicId();
                         }else{
-                            $notification->academic_id = getAcademicId();
+                            $notification->church_year_id = getAcademicId();
                         }
                         $notification->save();
 
@@ -332,10 +332,10 @@ class SmHomeworkController extends Controller
         }
     }
 
-    public function downloadHomeworkData($id, $student_id)
+    public function downloadHomeworkData($id, $member_id)
     {
         try{
-            $hwContent=SmUploadHomeworkContent::where('homework_id',$id)->where('student_id',$student_id)->get();           
+            $hwContent=SmUploadHomeworkContent::where('homework_id',$id)->where('member_id',$member_id)->get();           
 
 
             $file_paths=[];
@@ -382,13 +382,13 @@ class SmHomeworkController extends Controller
     public function unEvaluationHomework($sem_label_id ,$homework_id){
         try {
             $homeworkDetails = SmHomework::find($homework_id);
-            $student_records = StudentRecord::where('un_semester_label_id', $sem_label_id)->groupBy('student_id')->get('student_id');
-            $student_ids = [];
+            $student_records = StudentRecord::where('un_semester_label_id', $sem_label_id)->groupBy('member_id')->get('member_id');
+            $member_ids = [];
             foreach($student_records as $record){
-                $student_ids[] =  $record->student_id;
+                $member_ids[] =  $record->member_id;
             }
 
-            $students = SmStudent::whereIn('id', $student_ids)->where('school_id', auth()->user()->school_id)->get();
+            $students = SmStudent::whereIn('id', $member_ids)->where('church_id', auth()->user()->church_id)->get();
 
             return view('backEnd.homework.evaluationHomework', compact('homeworkDetails', 'students', 'homework_id'));
         } catch (\Exception $e) {
@@ -398,21 +398,21 @@ class SmHomeworkController extends Controller
 
     }
 
-    public function evaluationHomework(Request $request, $class_id, $section_id, $homework_id)
+    public function evaluationHomework(Request $request, $age_group_id, $mgender_id, $homework_id)
     {
 
         try {
-            $student_ids = SmStudentReportController::classSectionStudent($request->merge([
-                'class'=>$class_id,
-                'section'=>$section_id,
+            $member_ids = SmStudentReportController::classSectionStudent($request->merge([
+                'class'=>$age_group_id,
+                'section'=>$mgender_id,
             ]));
            
-            $homeworkDetails = SmHomework::where('class_id', $class_id)
-                            ->where('section_id', $section_id)
+            $homeworkDetails = SmHomework::where('age_group_id', $age_group_id)
+                            ->where('mgender_id', $mgender_id)
                             ->where('id', $homework_id) 
                             ->first();
 
-            $students = SmStudent::whereIn('id', $student_ids)->where('school_id', auth()->user()->school_id)->get();
+            $students = SmStudent::whereIn('id', $member_ids)->where('church_id', auth()->user()->church_id)->get();
 
             return view('backEnd.homework.evaluationHomework', compact('homeworkDetails', 'students', 'homework_id'));
         } catch (\Exception $e) {
@@ -424,33 +424,33 @@ class SmHomeworkController extends Controller
     public function saveHomeworkEvaluationData(Request $request)
     {
         try {
-            if (!$request->student_id) {
+            if (!$request->member_id) {
                 Toastr::error('Their are no students selected', 'Failed');
                 return redirect()->back();
             } else {
-                $student_idd = count($request->student_id);
-                if ($student_idd > 0) {
-                    for ($i = 0; $i < $student_idd; $i++) {
+                $member_idd = count($request->member_id);
+                if ($member_idd > 0) {
+                    for ($i = 0; $i < $member_idd; $i++) {
                          if (checkAdmin()) {
-                            SmHomeworkStudent::where('student_id', $request->student_id[$i])
+                            SmHomeworkStudent::where('member_id', $request->member_id[$i])
                             ->where('homework_id', $request->homework_id)
                             ->delete();
                         }else{
-                             SmHomeworkStudent::where('student_id', $request->student_id[$i])
+                             SmHomeworkStudent::where('member_id', $request->member_id[$i])
                              ->where('homework_id', $request->homework_id)
-                             ->where('school_id',Auth::user()->school_id)
+                             ->where('church_id',Auth::user()->church_id)
                              ->delete();
                         }
                         $homework= SmHomework::find($request->homework_id);
                         $homeworkstudent = new SmHomeworkStudent();
                         $homeworkstudent->homework_id = $request->homework_id;
-                        $homeworkstudent->student_id = $request->student_id[$i];
+                        $homeworkstudent->member_id = $request->member_id[$i];
                         $homeworkstudent->marks = $request->marks[$i];
-                        $homeworkstudent->teacher_comments = $request->teacher_comments[$request->student_id[$i]];
-                        $homeworkstudent->complete_status = $request->homework_status[$request->student_id[$i]];
+                        $homeworkstudent->teacher_comments = $request->teacher_comments[$request->member_id[$i]];
+                        $homeworkstudent->complete_status = $request->homework_status[$request->member_id[$i]];
                         $homeworkstudent->created_by = Auth()->user()->id;
-                        $homeworkstudent->school_id = Auth::user()->school_id;
-                        $homeworkstudent->academic_id = getAcademicId();
+                        $homeworkstudent->church_id = Auth::user()->church_id;
+                        $homeworkstudent->church_year_id = getAcademicId();
 
                         if(moduleStatusCheck('University')){
                             $homeworkstudent->un_semester_label_id = $homework->un_semester_label_id;
@@ -510,15 +510,15 @@ class SmHomeworkController extends Controller
                 //  ->with(array('user' => function($query) {
                 //     $query->select('id','full_name');
                 // }));
-                if($request->class_id !=null){
-                  $homeworkLists ->where('class_id', '=', $request->class_id);
+                if($request->age_group_id !=null){
+                  $homeworkLists ->where('age_group_id', '=', $request->age_group_id);
                 }
                 if($request->subject_id !=null){
                     $homeworkLists->where('subject_id', '=', $request->subject_id);
                 }
-                if($request->section_id !=null){
+                if($request->mgender_id !=null){
 
-                    $homeworkLists->where('section_id', '=', $request->section_id);
+                    $homeworkLists->where('mgender_id', '=', $request->mgender_id);
                 }
                 if (teacherAccess()) {
                     $homeworkLists->where('created_by',Auth::user()->id);
@@ -530,17 +530,17 @@ class SmHomeworkController extends Controller
                 } else {
                     $classes = SmClass::get();
                 }
-                $class_id = $request->class_id;
+                $age_group_id = $request->age_group_id;
                 $subject_id = $request->subject_id;
-                $section_id = $request->section_id;
-                $smClass = SmClass::find($class_id);
-                $subjects = SmAssignSubject::when($class_id, function($q) use ($class_id) {
-                    $q->where('class_id', $class_id);
-                })->when($section_id, function($q) use ($section_id) {
-                    $q->where('section_id', $section_id);
-                })->groupBy('section_id')->get();
+                $mgender_id = $request->mgender_id;
+                $smClass = SmClass::find($age_group_id);
+                $subjects = SmAssignSubject::when($age_group_id, function($q) use ($age_group_id) {
+                    $q->where('age_group_id', $age_group_id);
+                })->when($mgender_id, function($q) use ($mgender_id) {
+                    $q->where('mgender_id', $mgender_id);
+                })->groupBy('mgender_id')->get();
 
-                return view('backEnd.reports.evaluation', compact('homeworkLists', 'classes', 'class_id', 'section_id', 'subject_id', 'smClass', 'subjects'));
+                return view('backEnd.reports.evaluation', compact('homeworkLists', 'classes', 'age_group_id', 'mgender_id', 'subject_id', 'smClass', 'subjects'));
             }
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -555,16 +555,16 @@ class SmHomeworkController extends Controller
         //  ->with(array('user' => function($query) {
         //     $query->select('id','full_name');
         // }));
-        if($request->class_id !=null){
-          $homeworkLists ->where('class_id', '=', $request->class_id);
+        if($request->age_group_id !=null){
+          $homeworkLists ->where('age_group_id', '=', $request->age_group_id);
         }
         if($request->subject_id !=null){
             $homeworkLists->where('subject_id', '=', $request->subject_id);
         }
 
-        if($request->section_id !=null){
+        if($request->mgender_id !=null){
 
-            $homeworkLists->where('section_id', '=', $request->section_id);
+            $homeworkLists->where('mgender_id', '=', $request->mgender_id);
         }
         if (teacherAccess()) {
             $homeworkLists->where('created_by',Auth::user()->id);
@@ -629,10 +629,10 @@ class SmHomeworkController extends Controller
         } else {
                $classes = SmClass::get();
         }
-            $sections = SmClassSection::where('class_id', '=', $homeworkList->class_id)->get();
+            $sections = SmClassSection::where('age_group_id', '=', $homeworkList->age_group_id)->get();
 
-            $subjects = SmAssignSubject::where('class_id', $homeworkList->class_id)
-                        ->where('section_id', $homeworkList->section_id)
+            $subjects = SmAssignSubject::where('age_group_id', $homeworkList->age_group_id)
+                        ->where('mgender_id', $homeworkList->mgender_id)
                         ->get();
 
             $data['homeworkList'] =  $homeworkList;
@@ -682,8 +682,8 @@ class SmHomeworkController extends Controller
                 $homeworks->save();
             }else{
                 $homeworks = SmHomework::find($request->id);
-                $homeworks->class_id = $request->class_id;
-                $homeworks->section_id = $request->section_id;
+                $homeworks->age_group_id = $request->age_group_id;
+                $homeworks->mgender_id = $request->mgender_id;
                 $homeworks->subject_id = $request->subject_id;
                 $homeworks->homework_date = date('Y-m-d', strtotime($request->homework_date));
                 $homeworks->submission_date = date('Y-m-d', strtotime($request->submission_date));

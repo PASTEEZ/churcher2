@@ -24,10 +24,10 @@ class SmGeneralSettingsRequest extends FormRequest
     public function rules()
     {
         return [
-            'school_name' => "required",
+            'church_name' => "required",
             'site_title' => "required",
             'session_id' => "required",
-            'school_code' => "required",
+            'church_code' => "required",
             'phone' => "required",
             'email' => "required",
             'income_head' => "required",

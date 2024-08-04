@@ -49,7 +49,7 @@
                                 <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="class_subject" name="class">
                                     <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                     @foreach($classes as $class)
-                                        <option value="{{$class->id}}" {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{$class->class_name}}</option>
+                                        <option value="{{$class->id}}" {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{$class->age_group_name}}</option>
                                     @endforeach
                                 </select>
                                 @if ($errors->has('class'))
@@ -107,7 +107,7 @@
                 <div class="col-lg-6 col-md-6">
                     <div class="main-title">
                         <h3 class="mb-30">@lang('exam.add_marks') | 
-                        <small>@lang('exam.exam'): {{$search_info['exam_name']}}, @lang('common.class'): {{$search_info['class_name']}}, @lang('common.section'): {{$search_info['section_name']}}
+                        <small>@lang('exam.exam'): {{$search_info['exam_name']}}, @lang('common.class'): {{$search_info['age_group_name']}}, @lang('common.section'): {{$search_info['mgender_name']}}
                         </h3>
                     </div>
                 </div>
@@ -115,8 +115,8 @@
 
             {{ Form::open(['class' => 'form-horizontal', 'route' => 'marks_register_store', 'method' => 'POST', 'id' => 'marks_register_store']) }} 
             <input type="hidden" name="exam_id" value="{{$exam_id}}">
-            <input type="hidden" name="class_id" value="{{$class_id}}">
-            <input type="hidden" name="section_id" value="{{$section_id}}">
+            <input type="hidden" name="age_group_id" value="{{$age_group_id}}">
+            <input type="hidden" name="mgender_id" value="{{$mgender_id}}">
             <input type="hidden" name="subject_id" value="{{$subject_id}}"> 
 
             <div class="row">
@@ -124,7 +124,7 @@
                     <table class="display school-table school-table-style" cellspacing="0" width="100%" >
                         <thead>
                             <tr>
-                                <th rowspan="2" >@lang('student.admission_no').</th>
+                                <th rowspan="2" >@lang('student.registration_no').</th>
                                 <th rowspan="2" >@lang('student.roll_no').</th>
                                 <th rowspan="2" >@lang('common.class_Sec')</th>
                                 <th rowspan="2" >@lang('common.student')</th>
@@ -142,20 +142,20 @@
                             @php $colspan = 3; $counter = 0;  @endphp
                             @foreach($students as $record)
                             @php
-                                $absent_check = App\SmMarksRegister::is_absent_check($exam_id, $class_id, $record->section_id, $subject_id, $record->student_id, $record->id);
+                                $absent_check = App\SmMarksRegister::is_absent_check($exam_id, $age_group_id, $record->mgender_id, $subject_id, $record->member_id, $record->id);
                             @endphp
                             <tr>
                                 <td>
                                     <input type="hidden" name="markStore[{{$record->id}}]" value="{{$record->id}}">
-                                    <input type="hidden" name="markStore[{{$record->id}}][student]" value="{{$record->student_id}}">
-                                    <input type="hidden" name="markStore[{{$record->id}}][class]" value="{{$record->class_id}}">
-                                    <input type="hidden" name="markStore[{{$record->id}}][section]" value="{{$record->student_id}}">
+                                    <input type="hidden" name="markStore[{{$record->id}}][student]" value="{{$record->member_id}}">
+                                    <input type="hidden" name="markStore[{{$record->id}}][class]" value="{{$record->age_group_id}}">
+                                    <input type="hidden" name="markStore[{{$record->id}}][section]" value="{{$record->member_id}}">
                                     <input type="hidden" name="markStore[{{$record->id}}][roll_no]" value="{{$record->roll_no}}">
-                                    <input type="hidden" name="markStore[{{$record->id}}][adimission_no]" value="{{$record->studentDetail->admission_no}}">
-                                    {{$record->studentDetail->admission_no}}
+                                    <input type="hidden" name="markStore[{{$record->id}}][adimission_no]" value="{{$record->studentDetail->registration_no}}">
+                                    {{$record->studentDetail->registration_no}}
                                 </td>
                                 <td>{{$record->roll_no}}</td>
-                                <td>{{$record->class->class_name.'('.$record->section->section_name .')' }}</td>
+                                <td>{{$record->class->age_group_name.'('.$record->section->mgender_name .')' }}</td>
                                 <td>{{$record->studentDetail->full_name}}</td>
                                 @php $entry_form_count=0; @endphp
                                 @foreach($marks_entry_form as $part)
@@ -165,7 +165,7 @@
                                     <div class="input-effect mt-10">
                                     <input type="hidden" name="exam_setup_ids[]" value="{{$part->id}}">
                                     <?php 
-                                    $search_mark = App\SmMarkStore::get_mark_by_part($record->student_id, $part->exam_term_id, $part->class_id, $part->section_id, $part->subject_id, $part->id); 
+                                    $search_mark = App\SmMarkStore::get_mark_by_part($record->member_id, $part->exam_term_id, $part->age_group_id, $part->mgender_id, $part->subject_id, $part->id); 
                                     ?>
                                         <input oninput="numberCheckWithDot(this)" class="primary-input marks_input" type="text" step="any" max="{{@$part->exam_mark}}"
                                         name="markStore[{{$record->id}}][marks][{{$part->subject_id}}]" value="{{!empty($search_mark)?$search_mark:0}}" {{@$absent_check->attendance_type == 'A' || @$absent_check->attendance_type == ''? 'readonly':''}}>
@@ -180,7 +180,7 @@
                                 </td>
                                 @endforeach
                                 <?php 
-                                $teacher_remarks = App\SmMarkStore::teacher_remarks($record->student_id, $exam_id, $record->class_id, $record->section_id, $subject_id); 
+                                $teacher_remarks = App\SmMarkStore::teacher_remarks($record->member_id, $exam_id, $record->age_group_id, $record->mgender_id, $subject_id); 
                                 ?>
                                 <td>
                                    
@@ -191,7 +191,7 @@
                                 </div>
                                 </td>
 
-                                <?php $is_absent_check = App\SmMarkStore::is_absent_check($record->student_id, $part->exam_term_id, $part->class_id, $part->section_id, $part->subject_id); ?>
+                                <?php $is_absent_check = App\SmMarkStore::is_absent_check($record->member_id, $part->exam_term_id, $part->age_group_id, $part->mgender_id, $part->subject_id); ?>
 
                                 <td>
                                     <div class="input-effect">
@@ -203,7 +203,7 @@
 
 
                                         @if(@$absent_check->attendance_type == 'A')
-                                        <input type="hidden" name="absent_students[]" value="{{$record->student_id}}">
+                                        <input type="hidden" name="absent_students[]" value="{{$record->member_id}}">
                                         @endif
                                     </div>
                                         

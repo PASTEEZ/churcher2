@@ -27,7 +27,7 @@ class SmStudentCertificateController extends Controller
     {
 
         try {
-            $certificates = SmStudentCertificate::where('active_status', 1)->where('school_id',Auth::user()->school_id)->get();
+            $certificates = SmStudentCertificate::where('active_status', 1)->where('church_id',Auth::user()->church_id)->get();
             return view('backEnd.admin.student_certificate', compact('certificates'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -66,8 +66,8 @@ class SmStudentCertificateController extends Controller
             $certificate->footer_right_text = $request->footer_right_text;
             $certificate->student_photo = $request->student_photo;
             $certificate->file = $fileName;
-            $certificate->school_id = Auth::user()->school_id;
-            $certificate->academic_id = getAcademicId();
+            $certificate->church_id = Auth::user()->church_id;
+            $certificate->church_year_id = getAcademicId();
 
             $result = $certificate->save();
 
@@ -107,7 +107,7 @@ class SmStudentCertificateController extends Controller
             if (checkAdmin()) {
                 $certificate = SmStudentCertificate::find($request->id);
             }else{
-                $certificate = SmStudentCertificate::where('id',$request->id)->where('school_id',Auth::user()->school_id)->first();
+                $certificate = SmStudentCertificate::where('id',$request->id)->where('church_id',Auth::user()->church_id)->first();
             }
             $certificate->name = $request->name;
             $certificate->header_left_text = $request->header_left_text;
@@ -138,7 +138,7 @@ class SmStudentCertificateController extends Controller
             if (checkAdmin()) {
                 $certificate = SmStudentCertificate::find($id);
             }else{
-                $certificate = SmStudentCertificate::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+                $certificate = SmStudentCertificate::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
             }
             unlink($certificate->file);
             $result = $certificate->delete();
@@ -158,7 +158,7 @@ class SmStudentCertificateController extends Controller
     {
 
         try {
-            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id',Auth::user()->school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id',Auth::user()->church_id)->get();
             $certificates = SmStudentCertificate::get();
             return view('backEnd.admin.generate_certificate', compact('classes', 'certificates'));
         } catch (\Exception $e) {
@@ -173,24 +173,24 @@ class SmStudentCertificateController extends Controller
 
         try {
             $certificate_id = $request->certificate;
-            $class_id = $request->class;
+            $age_group_id = $request->class;
 
-            $students = StudentRecord::when($request->academic_year, function ($query) use ($request) {
-                $query->where('academic_id', $request->academic_year);
+            $students = StudentRecord::when($request->church_year, function ($query) use ($request) {
+                $query->where('church_year_id', $request->church_year);
             })
                 ->when($request->class, function ($query) use ($request) {
-                    $query->where('class_id', $request->class);
+                    $query->where('age_group_id', $request->class);
                 })
                 ->when($request->section, function ($query) use ($request) {
-                    $query->where('section_id', $request->section);
+                    $query->where('mgender_id', $request->section);
                 })
-                ->when(!$request->academic_year, function ($query) use ($request) {
-                    $query->where('academic_id', getAcademicId());
-                })->where('school_id', auth()->user()->school_id)->get();
+                ->when(!$request->church_year, function ($query) use ($request) {
+                    $query->where('church_year_id', getAcademicId());
+                })->where('church_id', auth()->user()->church_id)->get();
 
-            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id',Auth::user()->school_id)->get();
-            $certificates = SmStudentCertificate::where('active_status', 1)->where('school_id',Auth::user()->school_id)->get();
-            return view('backEnd.admin.generate_certificate', compact('classes', 'certificates', 'certificate_id', 'certificates', 'students', 'class_id'));
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id',Auth::user()->church_id)->get();
+            $certificates = SmStudentCertificate::where('active_status', 1)->where('church_id',Auth::user()->church_id)->get();
+            return view('backEnd.admin.generate_certificate', compact('classes', 'certificates', 'certificate_id', 'certificates', 'students', 'age_group_id'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();

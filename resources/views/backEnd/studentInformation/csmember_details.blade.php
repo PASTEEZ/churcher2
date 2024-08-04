@@ -62,16 +62,16 @@
                             @else
                                 <div class="col-lg-3">
                                     <div class="input-effect sm2_mb_20 md_mb_20">
-                                        <select class="niceSelect w-100 bb form-control{{ $errors->has('academic_year') ? ' is-invalid' : '' }}" name="academic_year" id="academic_year">
-                                            <option data-display="@lang('common.academic_year') *" value="">@lang('common.academic_year') *</option>
+                                        <select class="niceSelect w-100 bb form-control{{ $errors->has('church_year') ? ' is-invalid' : '' }}" name="church_year" id="church_year">
+                                            <option data-display="@lang('common.church_year') *" value="">@lang('common.church_year') *</option>
                                             @foreach($sessions as $session)
-                                                <option value="{{$session->id}}" {{isset($academic_year) && $academic_year == $session->id? 'selected': ''}}>{{$session->year}}[{{$session->title}}]</option>
+                                                <option value="{{$session->id}}" {{isset($church_year) && $church_year == $session->id? 'selected': ''}}>{{$session->year}}[{{$session->title}}]</option>
                                             @endforeach
                                         </select>
                                         <span class="focus-border"></span>
-                                        @if ($errors->has('academic_year'))
+                                        @if ($errors->has('church_year'))
                                             <span class="invalid-feedback invalid-select" role="alert">
-                                        <strong>{{ $errors->first('academic_year') }}</strong>
+                                        <strong>{{ $errors->first('church_year') }}</strong>
                                     </span>
                                         @endif
                                     </div>
@@ -79,9 +79,9 @@
                                 <div class="col-lg-3 sm_mb_20 sm2_mb_20 md_mb_20" id="class-div">
                                     <select class="niceSelect w-100 bb form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="classSelectStudent" name="class">
                                         <option data-display="@lang('student.select_class') *" value="">@lang('student.select_class')</option>
-                                        @isset($academic_year)
+                                        @isset($church_year)
                                             @foreach($classes as $class)
-                                                <option value="{{$class->id}}" {{isset($class_id) && $class_id == $class->id ? 'selected' : ''}}>{{$class->class_name}}</option>
+                                                <option value="{{$class->id}}" {{isset($age_group_id) && $age_group_id == $class->id ? 'selected' : ''}}>{{$class->age_group_name}}</option>
                                             @endforeach
                                         @endisset
                                     </select>
@@ -132,17 +132,17 @@
                     </div>
                 </div>
             </div>
-            <input type="hidden" id="academic_id" value="{{@$academic_year}}">
-            <input type="hidden" id="class" value="{{@$class_id}}">
+            <input type="hidden" id="church_year_id" value="{{@$church_year}}">
+            <input type="hidden" id="class" value="{{@$age_group_id}}">
             <input type="hidden" id="section" value="{{@$section}}">
             <input type="hidden" id="roll" value="{{@$roll_no}}">
             <input type="hidden" id="name" value="{{@$name}}">
                                 <input type="hidden" id="un_session" value="{{@$data['un_session_id']}}">
-                                <input type="hidden" id="un_academic" value="{{@$data['un_academic_id']}}">
+                                <input type="hidden" id="un_academic" value="{{@$data['un_church_year_id']}}">
                                 <input type="hidden" id="un_faculty" value="{{@$data['un_faculty_id']}}">
                                 <input type="hidden" id="un_department" value="{{@$data['un_department_id']}}">
                                 <input type="hidden" id="un_semester_label" value="{{@$data['un_semester_label_id']}}">
-                                <input type="hidden" id="un_section" value="{{@$data['un_section_id']}}">
+                                <input type="hidden" id="un_section" value="{{@$data['un_mgender_id']}}">
 
 
                         
@@ -162,7 +162,7 @@
                             <table id="table_id" class="display data-table school-table" cellspacing="0" width="100%">
                                 <thead>
                                 <tr>
-                                    <th>@lang('student.admission_no')</th>
+                                    <th>@lang('student.registration_no')</th>
                                     <th>@lang('common.type')</th>
                                     <th>@lang('student.name')</th>
                                    
@@ -214,10 +214,10 @@
     </div>
    
     @php
-        if(isset($academic_year) || isset($class_id)){
-            $ajax_url=url('student-list-datatable?academic_year='.
-            $academic_year.'&class='.
-            $class_id.'&section='.
+        if(isset($church_year) || isset($age_group_id)){
+            $ajax_url=url('student-list-datatable?church_year='.
+            $church_year.'&class='.
+            $age_group_id.'&section='.
             $section.'&roll_no='.
             $roll_no.'&name='.$name);
         }else{
@@ -238,22 +238,22 @@
                 "ajax": $.fn.dataTable.pipeline( {
                     url: "{{url('csmember-list-datatable')}}",
                     data: {
-                        academic_year: $('#academic_id').val(),
+                        church_year: $('#church_year_id').val(),
                         class: $('#class').val(),
                         section: $('#section').val(),
                         roll_no: $('#roll').val(),
                         name: $('#name').val(),
                         un_session_id: $('#un_session').val(),
-                        un_academic_id: $('#un_academic').val(),
+                        un_church_year_id: $('#un_academic').val(),
                         un_faculty_id: $('#un_faculty').val(),
                         un_department_id: $('#un_department').val(),
                         un_semester_label_id: $('#un_semester_label').val(),
-                        un_section_id: $('#un_section').val(),
+                        un_mgender_id: $('#un_section').val(),
                     },
                     pages: "{{generalSetting()->ss_page_load}}" // number of pages to cache
                 } ),
                 columns: [
-                    {data: 'admission_no', name: 'admission_no'},  
+                    {data: 'registration_no', name: 'registration_no'},  
                     {data: 'category.category_name', name: 'category.category_name'},
                             
                     {data: 'full_name', name: 'full_name'},  

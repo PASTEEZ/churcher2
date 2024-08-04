@@ -51,7 +51,7 @@
                                                     <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                                         <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class')*</option>
                                                         @foreach($classes as $class)
-                                                        <option value="{{@$class->id}}"  {{( old("class") == @$class->id ? "selected":"")}}>{{@$class->class_name}}</option>
+                                                        <option value="{{@$class->id}}"  {{( old("class") == @$class->id ? "selected":"")}}>{{@$class->age_group_name}}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>
@@ -123,13 +123,13 @@
                                         <td>
                                             <input type="hidden" id="id" value="{{@$student->user_id}}">
                                             <input type="hidden" id="role" value="{{@$role}}">
-                                             {{@$student->admission_no}}
+                                             {{@$student->registration_no}}
                                         </td>
                                         <td> {{@$student->roll_no}}</td>
                                         <td>{{@$student->first_name.' '.@$student->last_name}}  </td>
                                         <td>
                                             @foreach($student->studentRecords as $record)
-                                            {{!empty(@$record->class)?@$record->class->class_name:''}} ({{!empty(@$record->section)?@$record->section->section_name:''}})
+                                            {{!empty(@$record->class)?@$record->class->age_group_name:''}} ({{!empty(@$record->section)?@$record->section->mgender_name:''}})
                                             @endforeach
                                             
                                         </td>

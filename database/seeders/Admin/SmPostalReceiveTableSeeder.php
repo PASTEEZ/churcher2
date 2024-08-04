@@ -12,11 +12,11 @@ class SmPostalReceiveTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run($school_id, $academic_id, $count=10)
+    public function run($church_id, $church_year_id, $count=10)
     {
         SmPostalReceive::factory()->times($count)->create([
-            'school_id'=>$school_id,
-            'academic_id'=>$academic_id,
+            'church_id'=>$church_id,
+            'church_year_id'=>$church_year_id,
         ]);
     }
 }

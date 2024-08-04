@@ -35,7 +35,7 @@
                 @$system_setting=generalSetting();
                 @$system_setting=@$system_setting->session_id;
 
-                @$check_exist=App\CustomResultSetting::where('academic_year','=',@$system_setting)->first();
+                @$check_exist=App\CustomResultSetting::where('church_year','=',@$system_setting)->first();
             @endphp
           
             <div class="col-lg-12 mt-20">

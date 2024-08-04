@@ -40,7 +40,7 @@
                                     <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                         <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class')*</option>
                                         @foreach($classes as $class)
-                                        <option value="{{@$class->id}}"  {{isset($class_id)? (@$class_id == @$class->id? 'selected':''):''}}>{{@$class->class_name}}</option>
+                                        <option value="{{@$class->id}}"  {{isset($age_group_id)? (@$age_group_id == @$class->id? 'selected':''):''}}>{{@$class->age_group_name}}</option>
                                         @endforeach
                                     </select>
                                     @if ($errors->has('class'))
@@ -52,10 +52,10 @@
                                 <div class="col-lg-3 mt-30" id="select_section_div">
                                     <select class="w-100 bb niceSelect form-control{{ $errors->has('section') ? ' is-invalid' : '' }} select_section" id="select_section" name="section">
                                         <option data-display="@lang('common.select_section') *" value="">@lang('common.select_section') *</option>
-                                        @if(isset($class_id))
+                                        @if(isset($age_group_id))
                                             @foreach ($class->classSection as $section)
                                             <option value="{{ $section->sectionName->id }}" {{ old('section')==$section->sectionName->id ? 'selected' : '' }} >
-                                                {{ $section->sectionName->section_name }}</option>
+                                                {{ $section->sectionName->mgender_name }}</option>
                                             @endforeach
                                         @endif
                                     </select>
@@ -125,8 +125,8 @@
                                         @if(!moduleStatusCheck('University'))
                                         <th>@lang('common.class_Sec')</th>
                                         @endif 
-                                        <th>@lang('student.admission_no')</th>
-                                        <th>@lang('student.student_name')</th>
+                                        <th>@lang('student.registration_no')</th>
+                                        <th>@lang('student.member_name')</th>
                                         <th>@lang('common.mobile')</th>
                                         <th>@lang('student.father_name')</th>
                                         <th>@lang('student.father_phone')</th>
@@ -143,28 +143,28 @@
                                     <tr>
                                         @if(!moduleStatusCheck('University'))
                                         <td>
-                                            @if(isset($class_id))
-                                            @php if(!empty($student->recordClass)){ echo $student->recordClass->class->class_name; }else { echo ''; } @endphp
-                                            @if(isset($section_id))
+                                            @if(isset($age_group_id))
+                                            @php if(!empty($student->recordClass)){ echo $student->recordClass->class->age_group_name; }else { echo ''; } @endphp
+                                            @if(isset($mgender_id))
                                             
-                                            ({{$student->recordSection != ""? $student->recordSection->section->section_name:""}})
+                                            ({{$student->recordSection != ""? $student->recordSection->section->mgender_name:""}})
                                             @else   
                                             (@foreach ($student->recordClasses as $section)
-                                            {{$section->section->section_name}} {{ !$loop->last ? ', ':'' }}
+                                            {{$section->section->mgender_name}} {{ !$loop->last ? ', ':'' }}
                                             @endforeach)
                                             @endif                                              
                                             
                                            @else  
                                            @foreach ($student->studentRecords as $record)
-                                           {{__('common.class') }} : {{ $record->class->class_name}}
-                                           ({{ $record->section->section_name}}) {{ !$loop->last ? ', ':'' }} <br>
+                                           {{__('common.class') }} : {{ $record->class->age_group_name}}
+                                           ({{ $record->section->mgender_name}}) {{ !$loop->last ? ', ':'' }} <br>
                                             @endforeach
                                            @endif
                                           
-                                        <input type="hidden" name="id[]" value="{{@$student->student_id}}">
+                                        <input type="hidden" name="id[]" value="{{@$student->member_id}}">
                                     </td>
                                     @endif   
-                                        <td>{{ @$student->admission_no}}</td>
+                                        <td>{{ @$student->registration_no}}</td>
                                         <td>{{ @$student->full_name}}</td>
                                         <td>{{ @$student->mobile}}</td>
                                         <td>{{ @$student->parents !=""?@$student->parents->fathers_name:""}}</td>

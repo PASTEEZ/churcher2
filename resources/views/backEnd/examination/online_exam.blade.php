@@ -76,7 +76,7 @@
                                         <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="classSelectStudentHomeWork" name="class">
                                             <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                             @foreach($classes as $class)
-                                                <option value="{{$class->id}}" {{isset($online_exam)? ($class->id == $online_exam->class_id? 'selected':''): (old('class') == $class->id? 'selected':'')}}>{{$class->class_name}}</option>
+                                                <option value="{{$class->id}}" {{isset($online_exam)? ($class->id == $online_exam->age_group_id? 'selected':''): (old('class') == $class->id? 'selected':'')}}>{{$class->age_group_name}}</option>
                                             @endforeach
                                         </select>
                                         @if ($errors->has('class'))
@@ -116,7 +116,7 @@
                                             <option data-display="@lang('common.select_section') *" value="">@lang('common.select_section') *</option>
                                             @if(isset($online_exam))
                                                 @foreach($sections as $section)
-                                                    <option value="{{$section->section_id}}" {{$online_exam->section_id == $section->section_id? 'selected': ''}}>{{$section->section->section_name}}</option>
+                                                    <option value="{{$section->mgender_id}}" {{$online_exam->mgender_id == $section->mgender_id? 'selected': ''}}>{{$section->section->mgender_name}}</option>
                                                 @endforeach
                                             @endif
                                         </select>
@@ -332,7 +332,7 @@
                                     <td>
                                         @php
                                         if($online_exam->class !="" && $online_exam->section !="" ){
-                                         echo $online_exam->class->class_name.'  ('.$online_exam->section->section_name.')';
+                                         echo $online_exam->class->age_group_name.'  ('.$online_exam->section->mgender_name.')';
                                         }
                                         @endphp
                                        </td>

@@ -40,8 +40,8 @@ class SmSubjectController extends Controller
                 $subject->pass_mark = $request->pass_mark;
             }
             $subject->created_by   = auth()->user()->id;
-            $subject->school_id    = auth()->user()->school_id;
-            $subject->academic_id  = getAcademicId();
+            $subject->church_id    = auth()->user()->church_id;
+            $subject->church_year_id  = getAcademicId();
             $result = $subject->save();
             Toastr::success('Operation successful', 'Success');
             return redirect()->back();

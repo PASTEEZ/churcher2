@@ -409,10 +409,10 @@
                             <td style="padding: 0">
                                 <div class="logo_img">
                                     <div class="thumb_logo">
-                                        <img  src="{{asset('/')}}{{generalSetting()->logo }}" alt="{{generalSetting()->school_name}}">
+                                        <img  src="{{asset('/')}}{{generalSetting()->logo }}" alt="{{generalSetting()->church_name}}">
                                     </div>
                                     <div class="company_info">
-                                        <h3>{{isset(generalSetting()->school_name)? generalSetting()->school_name:'Infix School Management ERP'}} </h3>
+                                        <h3>{{isset(generalSetting()->church_name)? generalSetting()->church_name:'Infix School Management ERP'}} </h3>
                                         <h5>{{isset(generalSetting()->address)? generalSetting()->address:'Infix School Address'}}</h5>
                                         <h5>
                                             @lang('common.email'): {{isset(generalSetting()->email)?generalSetting()->email:'admin@infixedu.com'}} 
@@ -461,7 +461,7 @@
                                        <td>
                                             <p class="line_grid" >
                                                 <span>
-                                                    <span>@lang('common.academic_year')</span>
+                                                    <span>@lang('common.church_year')</span>
                                                     <span>:</span>
                                                 </span>
                                                 {{generalSetting()->session_year}}
@@ -473,7 +473,7 @@
                                                     <span>@lang('common.class')</span>
                                                     <span>:</span>
                                                 </span>
-                                                {{@$studentDetails->class_name}}
+                                                {{@$studentDetails->age_group_name}}
                                             </p>
                                         </td>
                                    </tr>
@@ -494,7 +494,7 @@
                                                     <span>@lang('common.section')</span>
                                                     <span>:</span>
                                                 </span>
-                                                {{ $studentDetails->section_name }}
+                                                {{ $studentDetails->mgender_name }}
                                             </p>
                                         </td>
                                    </tr>
@@ -503,10 +503,10 @@
                                         <td>
                                             <p class="line_grid" >
                                                 <span>
-                                                    <span>@lang('student.admission_no')</span>
+                                                    <span>@lang('student.registration_no')</span>
                                                     <span>:</span>
                                                 </span>
-                                                {{$studentDetails->admission_no}}
+                                                {{$studentDetails->registration_no}}
                                             </p>
                                         </td>
                                         <td>
@@ -601,10 +601,10 @@
                                 $totalSubjectFail= 0;
                                 $TotalSum= 0;
                             foreach($assinged_exam_types as $assinged_exam_type){
-                                $mark_parts = App\SmAssignSubject::getNumberOfPart($data->subject_id, $class_id, $section_id, $assinged_exam_type);
-                                $result = App\SmResultStore::GetResultBySubjectId($class_id, $section_id, $data->subject_id,$assinged_exam_type ,$student_id);
+                                $mark_parts = App\SmAssignSubject::getNumberOfPart($data->subject_id, $age_group_id, $mgender_id, $assinged_exam_type);
+                                $result = App\SmResultStore::GetResultBySubjectId($age_group_id, $mgender_id, $data->subject_id,$assinged_exam_type ,$member_id);
                                 if(!empty($result)){
-                                    $final_results = App\SmResultStore::GetFinalResultBySubjectId($class_id, $section_id, $data->subject_id,$assinged_exam_type ,$student_id);
+                                    $final_results = App\SmResultStore::GetFinalResultBySubjectId($age_group_id, $mgender_id, $data->subject_id,$assinged_exam_type ,$member_id);
                                 }
                                 $subject_full_mark=subjectFullMark($assinged_exam_type, $data->subject_id);
                                 if($result->count()>0){
@@ -691,30 +691,30 @@
                             @foreach($assinged_exam_types as $assinged_exam_type)
                             @php
                                 $exam_type = App\SmExamType::examType($assinged_exam_type);
-                                $term_base_gpa=termWiseGpa($assinged_exam_type, $student_id);
+                                $term_base_gpa=termWiseGpa($assinged_exam_type, $member_id);
                                 $with_percent_average_gpa +=$term_base_gpa;
     
-                                $term_base_full_mark=termWiseTotalMark($assinged_exam_type, $student_id);
+                                $term_base_full_mark=termWiseTotalMark($assinged_exam_type, $member_id);
                                 $average_gpa+=$term_base_full_mark;
     
                                 if($optional_subject_setup!='' && $student_optional_subject!=''){
     
-                                    $optional_subject_gpa = optionalSubjectFullMark($assinged_exam_type,$student_id,@$optional_subject_setup->gpa_above,"optional_sub_gpa");
+                                    $optional_subject_gpa = optionalSubjectFullMark($assinged_exam_type,$member_id,@$optional_subject_setup->gpa_above,"optional_sub_gpa");
                                     $optional_subject_total_gpa += $optional_subject_gpa;
     
-                                    $optional_subject_above_gpa = optionalSubjectFullMark($assinged_exam_type,$student_id,@$optional_subject_setup->gpa_above,"with_optional_sub_gpa");
+                                    $optional_subject_above_gpa = optionalSubjectFullMark($assinged_exam_type,$member_id,@$optional_subject_setup->gpa_above,"with_optional_sub_gpa");
                                     $optional_subject_total_above_gpa += $optional_subject_above_gpa;
     
-                                    $without_subject_gpa = optionalSubjectFullMark($assinged_exam_type,$student_id,@$optional_subject_setup->gpa_above,"without_optional_sub_gpa");
+                                    $without_subject_gpa = optionalSubjectFullMark($assinged_exam_type,$member_id,@$optional_subject_setup->gpa_above,"without_optional_sub_gpa");
                                     $without_additional_subject_total_gpa += $without_subject_gpa;
                                     
-                                    $with_additional_subject_gpa = termWiseAddOptionalMark($assinged_exam_type,$student_id,@$optional_subject_setup->gpa_above);
+                                    $with_additional_subject_gpa = termWiseAddOptionalMark($assinged_exam_type,$member_id,@$optional_subject_setup->gpa_above);
                                     $with_additional_subject_addition += $with_additional_subject_gpa;
     
-                                    $with_optional_subject_extra_gpa = termWiseTotalMark($assinged_exam_type,$student_id,"optional_subject");
+                                    $with_optional_subject_extra_gpa = termWiseTotalMark($assinged_exam_type,$member_id,"optional_subject");
                                     $total_with_optional_subject_extra_gpa += $with_optional_subject_extra_gpa;
     
-                                    $with_optional_percentages=termWiseGpa($assinged_exam_type, $student_id,$with_optional_subject_extra_gpa);
+                                    $with_optional_percentages=termWiseGpa($assinged_exam_type, $member_id,$with_optional_subject_extra_gpa);
                                     $total_with_optional_percentage += $with_optional_percentages;
                                 }
                             @endphp
@@ -802,7 +802,7 @@
                             </td>
                             @else
                                 <td colspan="{{$colspan / $col_for_result + 9}}">
-                                    {{gradeName(number_format(termWiseFullMark($assinged_exam_types,$student_id),2,'.',''))}}
+                                    {{gradeName(number_format(termWiseFullMark($assinged_exam_types,$member_id),2,'.',''))}}
                                 </td>
                             @endif
                         </tr>
@@ -822,7 +822,7 @@
                             </td>
                             @else
                                 <td colspan="{{$colspan / $col_for_result + 9}}">
-                                    {{number_format(termWiseFullMark($assinged_exam_types,$student_id),2,'.','')}}
+                                    {{number_format(termWiseFullMark($assinged_exam_types,$member_id),2,'.','')}}
                                 </td>
                             @endif
                         </tr>
@@ -840,7 +840,7 @@
                                     @lang('reports.remarks')
                                 </td>
                                 <td colspan="{{$colspan / $col_for_result + 9}}">
-                                    {{remarks(number_format(termWiseFullMark($assinged_exam_types,$student_id),2,'.',''))}}
+                                    {{remarks(number_format(termWiseFullMark($assinged_exam_types,$member_id),2,'.',''))}}
                                 </td>
                             @endif
                         </tr>

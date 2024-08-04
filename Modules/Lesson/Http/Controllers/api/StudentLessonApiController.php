@@ -41,9 +41,9 @@ class StudentLessonApiController extends Controller
                 $dates[] = $date->format('Y-m-d');
             }
 
-            $student_id = SmStudent::where('user_id', $user_id)->value('id');
+            $member_id = SmStudent::where('user_id', $user_id)->value('id');
             //return $student_detail;
-            $weeks = SmWeekend::orderBy('order', 'ASC')->where('active_status', 1)->where('school_id', Auth::user()->school_id)->get()
+            $weeks = SmWeekend::orderBy('order', 'ASC')->where('active_status', 1)->where('church_id', Auth::user()->church_id)->get()
 
                 ->map(function ($value, $index) use ($period) {
                     $dates = [];
@@ -72,30 +72,30 @@ class StudentLessonApiController extends Controller
     {
         try {
 
-            $student_id = SmStudent::where('user_id', $user_id)->value('id');
+            $member_id = SmStudent::where('user_id', $user_id)->value('id');
             //return $student_detail;
 
-            $sm_weekends = SmWeekend::orderBy('order', 'ASC')->where('active_status', 1)->where('school_id', Auth::user()->school_id)->get();
+            $sm_weekends = SmWeekend::orderBy('order', 'ASC')->where('active_status', 1)->where('church_id', Auth::user()->church_id)->get();
 
 
-            $record = studentRecords(null, $student_id)->where('id', $record_id)->first();
-            $class_id = $record->class_id;
-            $section_id = $record->section_id;
+            $record = studentRecords(null, $member_id)->where('id', $record_id)->first();
+            $age_group_id = $record->age_group_id;
+            $mgender_id = $record->mgender_id;
 
             $routine = SmClassRoutineUpdate::where('day', $day_id)
-                ->where('class_id', $class_id)
-                ->where('section_id', $section_id)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', auth()->user()->school_id)->get()
+                ->where('age_group_id', $age_group_id)
+                ->where('mgender_id', $mgender_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', auth()->user()->church_id)->get()
                 ->map(function ($value) use ($date) {
                     $lp = LessonPlanner::with('topics.topicName', 'lessonName')
                         ->where('lesson_date', $date)
-                        ->where('class_id', $value->class_id)
-                        ->where('section_id', $value->section_id)
+                        ->where('age_group_id', $value->age_group_id)
+                        ->where('mgender_id', $value->mgender_id)
                         ->where('subject_id', $value->subject_id)
                         ->where('routine_id', $value->id)
-                        ->where('academic_id', getAcademicId())
-                        ->where('school_id', Auth::user()->school_id)->first();
+                        ->where('church_year_id', getAcademicId())
+                        ->where('church_id', Auth::user()->church_id)->first();
                     return [
                         'day' => $value->weekend ? $value->weekend->name : '',
                         'room' => $value->classRoom ? $value->classRoom->room_no : '',
@@ -130,7 +130,7 @@ class StudentLessonApiController extends Controller
             $period = CarbonPeriod::create($start_date, $end_date);
 
             //return $student_detail;
-            $weeks = SmWeekend::orderBy('order', 'ASC')->where('active_status', 1)->where('school_id', Auth::user()->school_id)->get()
+            $weeks = SmWeekend::orderBy('order', 'ASC')->where('active_status', 1)->where('church_id', Auth::user()->church_id)->get()
 
                 ->map(function ($value, $index) use ($period) {
                     $dates = [];
@@ -166,7 +166,7 @@ class StudentLessonApiController extends Controller
 
             $period = CarbonPeriod::create($start_date, $end_date);
 
-            $weeks = SmWeekend::orderBy('order', 'ASC')->where('active_status', 1)->where('school_id', Auth::user()->school_id)->get()
+            $weeks = SmWeekend::orderBy('order', 'ASC')->where('active_status', 1)->where('church_id', Auth::user()->church_id)->get()
 
                 ->map(function ($value, $index) use ($period) {
                     $dates = [];

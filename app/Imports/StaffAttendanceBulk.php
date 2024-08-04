@@ -13,7 +13,7 @@ class StaffAttendanceBulk implements ToModel, WithStartRow, WithHeadingRow
 {
     public function model(array $row)
     {
-        // $student = SmStaff::select('staff_no')->where('staff_no', $row['staff_no'])->where('school_id', Auth::user()->school_id)->first();
+        // $student = SmStaff::select('staff_no')->where('staff_no', $row['staff_no'])->where('church_id', Auth::user()->church_id)->first();
 
         return new SmStaffAttendanceImport([
             // "attendence_date" =>$row['attendence_date'],
@@ -23,8 +23,8 @@ class StaffAttendanceBulk implements ToModel, WithStartRow, WithHeadingRow
             "attendance_type" => $row['attendance_type'],
             "notes" => $row['notes'],
             "staff_id" => $row['staff_no'],
-            "school_id" => Auth::user()->school_id,
-            "academic_id" => getAcademicId(),
+            "church_id" => Auth::user()->church_id,
+            "church_year_id" => getAcademicId(),
         ]);
     }
 

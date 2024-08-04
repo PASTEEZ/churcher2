@@ -447,10 +447,10 @@
                             <td style="padding: 0">
                                 <div class="logo_img">
                                     <div class="thumb_logo">
-                                        <img  src="{{asset('/')}}{{generalSetting()->logo }}" alt="{{generalSetting()->school_name}}">
+                                        <img  src="{{asset('/')}}{{generalSetting()->logo }}" alt="{{generalSetting()->church_name}}">
                                     </div>
                                     <div class="company_info">
-                                        <h3>{{isset(generalSetting()->school_name)? generalSetting()->school_name:'Infix School Management ERP'}} </h3>
+                                        <h3>{{isset(generalSetting()->church_name)? generalSetting()->church_name:'Infix School Management ERP'}} </h3>
                                         <h5>{{isset(generalSetting()->address)? generalSetting()->address:'Infix School Address'}}</h5>
                                         <h5>
                                             @lang('common.email'): {{isset(generalSetting()->email)?generalSetting()->email:'admin@infixedu.com'}} 
@@ -487,10 +487,10 @@
                                        <td>
                                             <p class="line_grid" >
                                                 <span>
-                                                    <span>@lang('common.academic_year')</span>
+                                                    <span>@lang('common.church_year')</span>
                                                     <span>:</span>
                                                 </span>
-                                                {{ @generalSetting()->academic_year->year}}
+                                                {{ @generalSetting()->church_year->year}}
                                             </p>
                                         </td>
                                         <td>
@@ -518,7 +518,7 @@
                                                     <span>@lang('common.class')</span>
                                                     <span>:</span>
                                                 </span>
-                                                {{@$class->class_name}}
+                                                {{@$class->age_group_name}}
                                             </p>
                                         </td>
                                         <td>
@@ -528,11 +528,11 @@
                                                     <span>:</span>
                                                 </span>
                                                 @if(!is_null($section))
-                                                {{$section->section_name}}
+                                                {{$section->mgender_name}}
                                                 @else 
                                                     @if(@$class->groupclassSections)
                                                           @foreach ($class->groupclassSections as $section)
-                                                          {{@$section->sectionName->section_name}} ,
+                                                          {{@$section->sectionName->mgender_name}} ,
                                                           @endforeach
                                                     @endif
                                                     @endif 
@@ -544,10 +544,10 @@
                                         <td>
                                             <p class="line_grid" >
                                                 <span>
-                                                    <span>@lang('student.admission_no')</span>
+                                                    <span>@lang('student.registration_no')</span>
                                                     <span>:</span>
                                                 </span>
-                                                {{ @generalSetting()->academic_year->year}} [{{@generalSetting()->academic_year->title}}]
+                                                {{ @generalSetting()->church_year->year}} [{{@generalSetting()->church_year->title}}]
                                             </p>
                                         </td>
                                         <td>
@@ -604,7 +604,7 @@
                 <thead>
                       <tr>
                             <th>@lang('common.name')</th>
-                            <th>@lang('student.admission_no')</th>
+                            <th>@lang('student.registration_no')</th>
                             <th>@lang('exam.id_no')</th>
                             <th>@lang('exam.position')</th>
                             @if(count($result_setting) > 0) 
@@ -637,8 +637,8 @@
                
                   @foreach($finalMarkSheets as $finalMarkSheet)
                       <tr>
-                            <td>{{@$finalMarkSheet->get('student_name')}}</td>
-                            <td>{{@$finalMarkSheet->get('admission_no')}}</td>
+                            <td>{{@$finalMarkSheet->get('member_name')}}</td>
+                            <td>{{@$finalMarkSheet->get('registration_no')}}</td>
                             <td>{{@$finalMarkSheet->get('roll_no')}}</td>
                             <td>{{$loop->iteration}}</td>
                             @foreach($finalMarkSheet->get('examTypeMarks') as $examMark)

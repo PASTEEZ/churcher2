@@ -32,8 +32,8 @@ class CreateInfixModuleStudentParentInfosTable extends Migration
             $table->integer('updated_by')->nullable()->default(1)->unsigned();
             $table->foreign('updated_by')->references('id')->on('users')->onDelete('cascade');
 
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
 
             $table->integer('type')->nullable()->comment('1 for module, 2 for module link, 3 for module options');
             $table->integer('user_type')->nullable()->comment('1 for student, 2 for parent');
@@ -45,7 +45,7 @@ class CreateInfixModuleStudentParentInfosTable extends Migration
         DB::table('infix_module_student_parent_infos')->truncate();
         DB::statement('SET foreign_key_checks=1');
 
-        $sql = "INSERT INTO `infix_module_student_parent_infos` (`id`, `module_id`, `parent_id`, `type`, `user_type`, `name`, `route`, `lang_name`, `icon_class`, `active_status`, `created_by`, `updated_by`, `school_id`, `created_at`, `updated_at`) VALUES
+        $sql = "INSERT INTO `infix_module_student_parent_infos` (`id`, `module_id`, `parent_id`, `type`, `user_type`, `name`, `route`, `lang_name`, `icon_class`, `active_status`, `created_by`, `updated_by`, `church_id`, `created_at`, `updated_at`) VALUES
         -- student Dashboard
         (1, 1, 0, '1', 1, 'Dashboard Menu','student-dashboard','dashboard','flaticon-resume', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22'),
         (2, 1, 1, '3', 1, 'Subject','','','', 1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22'),

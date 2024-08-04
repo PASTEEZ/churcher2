@@ -102,7 +102,7 @@ return [
     'ending'=>'Ending',
     'without_additional'=>'Without Additional',
     'gpa_without_additional'=>'GPA Without Additional',
-    'academic_year'=>'Academic Year',
+    'church_year'=>'Academic Year',
     'result'=>'Result',
     'mark_sheet_report_student'=>'Mark Sheet Report Student',
     'subject_name'=>'Subject Name',

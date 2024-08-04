@@ -95,7 +95,7 @@ class InstituteRegisteredListener
 
             ];
         foreach ($request_fields as $key=>$value) {
-            $exit = SmStaffRegistrationField::where('school_id', $school->id)->where('field_name', $value)->first();
+            $exit = SmStaffRegistrationField::where('church_id', $school->id)->where('field_name', $value)->first();
             if (!$exit) {
                 $field=new SmStaffRegistrationField;
                 $field->position=$key+1;
@@ -103,7 +103,7 @@ class InstituteRegisteredListener
                 $field->label_name=$value;
                 $field->is_required = in_array($value, $required_fields);
                 $field->staff_edit = in_array($value, $staff_edit);
-                $field->school_id = $school->id;
+                $field->church_id = $school->id;
                 $field->save();
             }
         }
@@ -183,7 +183,7 @@ class InstituteRegisteredListener
             'current_address', 'permanent_address'];
 
         foreach ($request_fields as $key => $value) {
-            $exit = SmStudentRegistrationField::where('school_id', $school->id)->where('field_name', $value)->first();
+            $exit = SmStudentRegistrationField::where('church_id', $school->id)->where('field_name', $value)->first();
             if (!$exit) {
                 $field = new SmStudentRegistrationField;
                 $field->position = $key + 1;
@@ -193,7 +193,7 @@ class InstituteRegisteredListener
                 $field->is_required = in_array($value, $required_fields);
                 $field->student_edit = in_array($value, $student_edit);
                 $field->parent_edit = in_array($value, $parent_edit);
-                $field->school_id = $school->id;
+                $field->church_id = $school->id;
                 $field->save();
             }
         }
@@ -215,7 +215,7 @@ class InstituteRegisteredListener
             foreach ($request_fields as $key => $value) {
                 $fields[$key] = [
                     'position' => $key + 1,
-                    'school_id' => $school->id,
+                    'church_id' => $school->id,
                     'field_name' => $value,
                     'is_required' => in_array($value, $required) ? 1 : 0,
                     'created_at' => now(),

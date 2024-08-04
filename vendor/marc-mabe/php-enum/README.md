@@ -63,7 +63,7 @@ class UserStatus extends Enum
     const TRAIT     = 'trait';
     const INTERFACE = 'interface';
 
-    // Doesn't work - see https://wiki.php.net/rfc/class_name_scalars
+    // Doesn't work - see https://wiki.php.net/rfc/age_group_name_scalars
     // const CLASS = 'class';
 }
 

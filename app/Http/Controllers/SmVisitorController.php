@@ -24,7 +24,7 @@ class SmVisitorController extends Controller
     public function index(Request $request)
     {
         try {
-            $visitors = SmVisitor::where('school_id',Auth::user()->school_id)->where('academic_id', getAcademicId())->orderby('id','DESC')->get();
+            $visitors = SmVisitor::where('church_id',Auth::user()->church_id)->where('church_year_id', getAcademicId())->orderby('id','DESC')->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 return ApiBaseMethod::sendResponse($visitors->toArray(), 'Visitors retrieved successfully.');
             }
@@ -90,8 +90,8 @@ class SmVisitorController extends Controller
             $visitor->in_time = $request->in_time;
             $visitor->out_time = $request->out_time;
             $visitor->file = $fileName;
-            $visitor->school_id = Auth::user()->school_id;
-            $visitor->academic_id = getAcademicId();
+            $visitor->church_id = Auth::user()->church_id;
+            $visitor->church_year_id = getAcademicId();
             $result = $visitor->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -122,10 +122,10 @@ class SmVisitorController extends Controller
              if (checkAdmin()) {
                 $visitor = SmVisitor::find($id);
             }else{
-                $visitor = SmVisitor::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+                $visitor = SmVisitor::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
             }
 
-            $visitors = SmVisitor::where('school_id',Auth::user()->school_id)->get();
+            $visitors = SmVisitor::where('church_id',Auth::user()->church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -197,7 +197,7 @@ class SmVisitorController extends Controller
              if (checkAdmin()) {
                 $visitor = SmVisitor::find($request->id);
             }else{
-                $visitor = SmVisitor::where('id',$request->id)->where('school_id',Auth::user()->school_id)->first();
+                $visitor = SmVisitor::where('id',$request->id)->where('church_id',Auth::user()->church_id)->first();
             }
             $visitor->name = $request->name;
             $visitor->phone = $request->phone;
@@ -240,7 +240,7 @@ class SmVisitorController extends Controller
              if (checkAdmin()) {
                 $visitor = SmVisitor::find($id);
             }else{
-                $visitor = SmVisitor::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+                $visitor = SmVisitor::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
             }
             if ($visitor->file != "") {
                 $path = url('/') . '/public/uploads/visitor/' . $visitor->file;
@@ -277,7 +277,7 @@ class SmVisitorController extends Controller
          if (checkAdmin()) {
             $visitor = SmVisitor::find($id);
         }else{
-            $visitor = SmVisitor::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+            $visitor = SmVisitor::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
         }
         try {
             if (file_exists($visitor->file)) {

@@ -19,9 +19,9 @@ class CreateFeesInvoicesTable extends Migration
             $table->id();
             $table->string('prefix')->nullable();
             $table->integer('start_form')->nullable();
-            $table->integer('un_academic_id')->nullable()->default(1)->unsigned();
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('un_church_year_id')->nullable()->default(1)->unsigned();
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
             $table->timestamps();
         });
 
@@ -30,7 +30,7 @@ class CreateFeesInvoicesTable extends Migration
             $store = new FeesInvoice();
             $store->prefix = 'infixEdu';
             $store->start_form = 101 + $school->id;
-            $store->school_id = $school->id;
+            $store->church_id = $school->id;
             $store->save();
         }
     }

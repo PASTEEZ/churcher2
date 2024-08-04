@@ -46,7 +46,7 @@ class AddColumToInfixModuleStudentParentInfos extends Migration
             $examPlan->active_status = $value[9];
             $examPlan->created_by = $value[10];
             $examPlan->updated_by = $value[11];
-            $examPlan->school_id = $value[12];
+            $examPlan->church_id = $value[12];
             $examPlan->created_at = $value[13];
             $examPlan->updated_at = $value[14];
             $examPlan->save();

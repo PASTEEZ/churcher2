@@ -12,7 +12,7 @@ class SmHolidayTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run($school_id, $academic_id, $count=5)
+    public function run($church_id, $church_year_id, $count=5)
     {
         DB::table('sm_holidays')->insert([
             [
@@ -20,24 +20,24 @@ class SmHolidayTableSeeder extends Seeder
                 'from_date' => '2019-01-22',
                 'to_date' => '2019-01-28',
                 'created_at' => date('Y-m-d h:i:s'),
-                'school_id' => $school_id,
-                'academic_id' => $academic_id,
+                'church_id' => $church_id,
+                'church_year_id' => $church_year_id,
             ],
             [
                 'holiday_title' => 'Summer Vacation',
                 'from_date' => '2019-05-02',
                 'to_date' => '2019-05-08',
                 'created_at' => date('Y-m-d h:i:s'),
-                'school_id' => $school_id,
-                'academic_id' => $academic_id,
+                'church_id' => $church_id,
+                'church_year_id' => $church_year_id,
             ],
             [
                 'holiday_title' => 'Public Holiday',
                 'from_date' => '2019-05-10',
                 'to_date' => '2019-05-11',
                 'created_at' => date('Y-m-d h:i:s'),
-                'school_id' => $school_id,
-                'academic_id' => $academic_id,
+                'church_id' => $church_id,
+                'church_year_id' => $church_year_id,
             ],
         ]);
     }

@@ -108,7 +108,7 @@
                                         <input type="checkbox" id="checkAll" class="common-checkbox generate-id-card-print-all" name="checkAll" value="">
                                         <label for="checkAll">@lang('common.all')</label>
                                     </th>
-                                    <th>@lang('student.admission_no')</th>
+                                    <th>@lang('student.registration_no')</th>
                                     <th>@lang('common.name')</th>
                                     <th>@lang('common.class_Sec')</th>
                                     <th>@lang('student.father_name')</th>
@@ -126,10 +126,10 @@
                                             <label for="student.{{@$student->id}}"></label>
                                         </td>
                                     <td>
-                                        {{@$student->admission_no}}
+                                        {{@$student->registration_no}}
                                     </td>
                                     <td>{{@$student->full_name}}</td>
-                                    <td>{{@$student->class !=""?@$student->class->class_name:""}} ({{@$student->section!=""?@$student->section->section_name:""}})</td>
+                                    <td>{{@$student->class !=""?@$student->class->age_group_name:""}} ({{@$student->section!=""?@$student->section->mgender_name:""}})</td>
                                     <td>{{@$student->parents !=""?@$student->parents->fathers_name:""}}</td>
                                     <td> 
                                         {{@$student->date_of_birth != ""? dateConvert(@$student->date_of_birth):''}}
@@ -181,7 +181,7 @@ $(document).ready(function() {
                                         text: role.name,
                                     })
                                 );
-                                // $("#selectSectionsDiv ul").append("<li data-value='"+section.id+"' class='option'>"+section.section_name+"</li>");
+                                // $("#selectSectionsDiv ul").append("<li data-value='"+section.id+"' class='option'>"+section.mgender_name+"</li>");
                             });
                         } else {
                             $("#selectSectionsDiv .current").html("SELECT SECTION *");

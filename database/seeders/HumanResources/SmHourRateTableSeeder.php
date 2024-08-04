@@ -12,11 +12,11 @@ class SmHourRateTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run($school_id, $academic_id, $count=5)
+    public function run($church_id, $church_year_id, $count=5)
     {
         SmHourRateFactory::factory()->times($count)->create([
-            'school_id'=> $school_id,
-            'academic_id'=> $academic_id,
+            'church_id'=> $church_id,
+            'church_year_id'=> $church_year_id,
         ]);
 
     }

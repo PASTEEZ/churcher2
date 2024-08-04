@@ -30,7 +30,7 @@ class SmAssignClassTeacherController extends Controller
             $teachers = SmStaff::status()->where(function($q)  {                
                 $q->where('role_id', 4)->orWhere('previous_role_id', 4);             
             })->get();
-            $assign_class_teachers = SmAssignClassTeacher::with('class', 'section', 'classTeachers')->where('academic_id', getAcademicId())->status()->orderBy('class_id', 'ASC')->orderBy('section_id', 'ASC')->get();
+            $assign_class_teachers = SmAssignClassTeacher::with('class', 'section', 'classTeachers')->where('church_year_id', getAcademicId())->status()->orderBy('age_group_id', 'ASC')->orderBy('mgender_id', 'ASC')->get();
 
             return view('backEnd.academics.assign_class_teacher', compact('classes', 'teachers', 'assign_class_teachers'));
         } catch (\Exception $e) {
@@ -44,25 +44,25 @@ class SmAssignClassTeacherController extends Controller
         DB::beginTransaction();
         try {
             $assigned_class_teacher = SmAssignClassTeacher::where('active_status', 1)
-                ->where('class_id', $request->class)->where('section_id', $request->section)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('age_group_id', $request->class)->where('mgender_id', $request->section)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->first();
 
             if (empty($assigned_class_teacher)) {
                 $assign_class_teacher = new SmAssignClassTeacher();
-                $assign_class_teacher->class_id = $request->class;
-                $assign_class_teacher->section_id = $request->section;
-                $assign_class_teacher->school_id = Auth::user()->school_id;
-                $assign_class_teacher->academic_id = getAcademicId();
+                $assign_class_teacher->age_group_id = $request->class;
+                $assign_class_teacher->mgender_id = $request->section;
+                $assign_class_teacher->church_id = Auth::user()->church_id;
+                $assign_class_teacher->church_year_id = getAcademicId();
                 $assign_class_teacher->save();
                
                 foreach ($request->teacher as $teacher) {
                     $class_teacher = new SmClassTeacher();
                     $class_teacher->assign_class_teacher_id = $assign_class_teacher->id;
                     $class_teacher->teacher_id = $teacher;
-                    $class_teacher->school_id = Auth::user()->school_id;
-                    $class_teacher->academic_id = getAcademicId();
+                    $class_teacher->church_id = Auth::user()->church_id;
+                    $class_teacher->church_year_id = getAcademicId();
                     $class_teacher->save();
                     event(new ClassTeacherGetAllStudent($assign_class_teacher, $class_teacher));
 
@@ -92,7 +92,7 @@ class SmAssignClassTeacherController extends Controller
             $teachers = SmStaff::status()->where(function($q)  {                
                 $q->where('role_id', 4)->orWhere('previous_role_id', 4);             
             })->get();
-            $assign_class_teachers = SmAssignClassTeacher::with('class', 'section', 'classTeachers')->where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $assign_class_teachers = SmAssignClassTeacher::with('class', 'section', 'classTeachers')->where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
             $assign_class_teacher = SmAssignClassTeacher::find($id);
             $sections = SmSection::get();
 
@@ -111,7 +111,7 @@ class SmAssignClassTeacherController extends Controller
     public function update(SmAssignClassTeacherRequest $request, $id)
     {
 
-        $is_duplicate = SmAssignClassTeacher::where('school_id', Auth::user()->school_id)->where('academic_id', getAcademicId())->where('class_id', $request->class)->where('section_id', $request->section)->where('id', '!=', $request->id)->first();
+        $is_duplicate = SmAssignClassTeacher::where('church_id', Auth::user()->church_id)->where('church_year_id', getAcademicId())->where('age_group_id', $request->class)->where('mgender_id', $request->section)->where('id', '!=', $request->id)->first();
         if ($is_duplicate) {
             Toastr::warning('Duplicate entry found!', 'Warning');
             return redirect()->back();
@@ -122,9 +122,9 @@ class SmAssignClassTeacherController extends Controller
             SmClassTeacher::where('assign_class_teacher_id', $request->id)->delete();
 
             $assign_class_teacher = SmAssignClassTeacher::find($request->id);
-            $assign_class_teacher->class_id = $request->class;
-            $assign_class_teacher->academic_id = getAcademicId();
-            $assign_class_teacher->section_id = $request->section;
+            $assign_class_teacher->age_group_id = $request->class;
+            $assign_class_teacher->church_year_id = getAcademicId();
+            $assign_class_teacher->mgender_id = $request->section;
             $assign_class_teacher->save();
             $assign_class_teacher_collection = $assign_class_teacher;
             $assign_class_teacher->toArray();
@@ -133,8 +133,8 @@ class SmAssignClassTeacherController extends Controller
                 $class_teacher = new SmClassTeacher();
                 $class_teacher->assign_class_teacher_id = $assign_class_teacher->id;
                 $class_teacher->teacher_id = $teacher;
-                $class_teacher->school_id = Auth::user()->school_id;
-                $class_teacher->academic_id = getAcademicId();
+                $class_teacher->church_id = Auth::user()->church_id;
+                $class_teacher->church_year_id = getAcademicId();
                 $class_teacher->save();
                 event(new ClassTeacherGetAllStudent($assign_class_teacher_collection, $class_teacher, 'update'));
 

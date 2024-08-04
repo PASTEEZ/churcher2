@@ -113,7 +113,7 @@ if(empty($login_background)){
                         <h4 class="text-center text-white">@lang('auth.school') {{ $loop->iteration }}</h4>
                         <hr>
                         <a target="_blank" href="//{{ $school->domain.'.'.config('app.short_url') }}/home"
-                           class="primary-btn fix-gr-bg  mt-10 text-center col-lg-12">{{ Str::limit($school->school_name, 20, '...') }}</a>
+                           class="primary-btn fix-gr-bg  mt-10 text-center col-lg-12">{{ Str::limit($school->church_name, 20, '...') }}</a>
                     </div>
                 @endforeach
 

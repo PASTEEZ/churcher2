@@ -47,7 +47,7 @@
 
                             <div class="col-lg-3">
                                                     <select class="niceSelect w-100 bb promote_session form-control{{ $errors->has('promote_session') ? ' is-invalid' : '' }}" name="promote_session" id="promote_session">
-                                                        <option data-display="@lang('common.select_academic_year') *" value="">@lang('common.select_academic_year') *</option>
+                                                        <option data-display="@lang('common.select_church_year') *" value="">@lang('common.select_church_year') *</option>
                                                         @foreach(academicYears() as $session)
                                                         @if (@$current_session != $session->id)
                                                           <option value="{{$session->id}}" {{( old("promote_session") == $session->id ? "selected":"")}}>{{$session->year}}</option>

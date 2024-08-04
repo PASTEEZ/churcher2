@@ -126,7 +126,7 @@
                             <select class="niceSelect1 w-100 bb" name="class" id="class" id="class" required>
                                 <option data-display="@lang('common.class')" value="">@lang('common.class')</option>
                                 @foreach($classes as $class)
-                                    <option value="{{@$class->id}}" {{@$class->id == @$admission_query->class? 'selected':''}}>{{@$class->class_name}}</option>
+                                    <option value="{{@$class->id}}" {{@$class->id == @$admission_query->class? 'selected':''}}>{{@$class->age_group_name}}</option>
                                 @endforeach
                             </select>
                             <span class="text-danger" role="alert" id="classError"></span>
@@ -147,7 +147,7 @@
                     <div class="row">
                         @if(moduleStatusCheck('University'))
                             @includeIf('university::common.session_faculty_depart_academic_semester_level',['div'=>'col-lg-4', 'niceSelect' => 'niceSelect1', 'rowMt'=>'mt-25', 'hide'=>['USUB'], 'required' => ['USN','UF', 'UD', 'UA', 'US', 'USL']])
-                            <input type="hidden" name="un_academic_id" id="select_academic" value="{{getAcademicId()}}">
+                            <input type="hidden" name="un_church_year_id" id="select_academic" value="{{getAcademicId()}}">
                         @endif 
                     </div>
                 </div>

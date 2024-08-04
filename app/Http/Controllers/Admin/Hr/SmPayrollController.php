@@ -36,7 +36,7 @@ class SmPayrollController extends Controller
 
         try {
             $roles = InfixRole::where('active_status', '=', '1')->where('id', '!=', 1)->where('id', '!=', 2)->where('id', '!=', 3)->where('id', '!=', 10)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })
                 ->orderBy('name', 'asc')
                 ->get();
@@ -62,10 +62,10 @@ class SmPayrollController extends Controller
             $payroll_month = $request->payroll_month;
             $payroll_year = $request->payroll_year;
            
-            $staffs = SmStaff::where('active_status', '=', '1')->whereRole($role_id)->where('school_id', Auth::user()->school_id)->get();
+            $staffs = SmStaff::where('active_status', '=', '1')->whereRole($role_id)->where('church_id', Auth::user()->church_id)->get();
 
             $roles = InfixRole::where('active_status', '=', '1')->where('id', '!=', 1)->where('id', '!=', 2)->where('id', '!=', 3)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
             return view('backEnd.humanResource.payroll.index', compact('staffs', 'roles', 'payroll_month', 'payroll_year', 'role_id'));
         } catch (\Exception $e) {
@@ -82,10 +82,10 @@ class SmPayrollController extends Controller
             // return $staffDetails;
             $month = date('m', strtotime($payroll_month));
            
-            $attendances = SmStaffAttendence::where('staff_id', $id)->where('attendence_date', 'like', $payroll_year . '-' . $month . '%')->where('school_id', Auth::user()->school_id)->get();
+            $attendances = SmStaffAttendence::where('staff_id', $id)->where('attendence_date', 'like', $payroll_year . '-' . $month . '%')->where('church_id', Auth::user()->church_id)->get();
 
-            $staff_leaves = SmLeaveDefine::where('user_id', $staffDetails->user_id)->where('role_id', $staffDetails->role_id)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-            $staff_leave_deduct_days = SmLeaveDeductionInfo::where('staff_id', $id)->where('pay_year', $payroll_year)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get()->sum("extra_leave");
+            $staff_leaves = SmLeaveDefine::where('user_id', $staffDetails->user_id)->where('role_id', $staffDetails->role_id)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+            $staff_leave_deduct_days = SmLeaveDeductionInfo::where('staff_id', $id)->where('pay_year', $payroll_year)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get()->sum("extra_leave");
 
             // return $payroll_year;
             foreach ($staff_leaves as $staff_leave) {
@@ -102,7 +102,7 @@ class SmPayrollController extends Controller
 
             // return $extra_days;
 
-            // $approved_leave = SmLeaveRequest::where('staff_id', $id)->where('active_status',1)->where('approve_status','A')->where('school_id', Auth::user()->school_id)->get();
+            // $approved_leave = SmLeaveRequest::where('staff_id', $id)->where('active_status',1)->where('approve_status','A')->where('church_id', Auth::user()->church_id)->get();
             // return $extra_days;
             $p = 0;
             $l = 0;
@@ -165,11 +165,11 @@ class SmPayrollController extends Controller
             $payrollGenerate->net_salary = $request->net_salary;
             $payrollGenerate->payroll_status = 'G';
             $payrollGenerate->created_by = Auth()->user()->id;
-            $payrollGenerate->school_id = Auth::user()->school_id;
+            $payrollGenerate->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $payrollGenerate->un_academic_id = getAcademicId();
+                $payrollGenerate->un_church_year_id = getAcademicId();
             }else{
-                $payrollGenerate->academic_id = getAcademicId();
+                $payrollGenerate->church_year_id = getAcademicId();
             }
             $result = $payrollGenerate->save();
             $payrollGenerate->toArray();
@@ -183,11 +183,11 @@ class SmPayrollController extends Controller
                 $leave_deduct->pay_month = $request->payroll_month;
                 $leave_deduct->pay_year = $request->payroll_year;
                 $leave_deduct->created_by = Auth()->user()->id;
-                $leave_deduct->school_id = Auth::user()->school_id;
+                $leave_deduct->church_id = Auth::user()->church_id;
                 if(moduleStatusCheck('University')){
-                    $leave_deduct->un_academic_id = getAcademicId();
+                    $leave_deduct->un_church_year_id = getAcademicId();
                 }else{
-                    $leave_deduct->academic_id = getAcademicId();
+                    $leave_deduct->church_year_id = getAcademicId();
                 }
                 $leave_deduct->save();
             }
@@ -214,11 +214,11 @@ class SmPayrollController extends Controller
                         $payroll_earn_deducs->amount = $request->earningsValue[$i];
                         $payroll_earn_deducs->earn_dedc_type = 'E';
                         $payroll_earn_deducs->created_by = Auth()->user()->id;
-                        $payroll_earn_deducs->school_id = Auth::user()->school_id;
+                        $payroll_earn_deducs->church_id = Auth::user()->church_id;
                         if(moduleStatusCheck('University')){
-                            $payroll_earn_deducs->un_academic_id = getAcademicId();
+                            $payroll_earn_deducs->un_church_year_id = getAcademicId();
                         }else{
-                            $payroll_earn_deducs->academic_id = getAcademicId();
+                            $payroll_earn_deducs->church_year_id = getAcademicId();
                         }
                         $result = $payroll_earn_deducs->save();
                     }
@@ -234,11 +234,11 @@ class SmPayrollController extends Controller
                         $payroll_earn_deducs->type_name = $request->deductionstype[$i];
                         $payroll_earn_deducs->amount = $request->deductionsValue[$i];
                         $payroll_earn_deducs->earn_dedc_type = 'D';
-                        $payroll_earn_deducs->school_id = Auth::user()->school_id;
+                        $payroll_earn_deducs->church_id = Auth::user()->church_id;
                         if(moduleStatusCheck('University')){
-                            $payroll_earn_deducs->un_academic_id = getAcademicId();
+                            $payroll_earn_deducs->un_church_year_id = getAcademicId();
                         }else{
-                            $payroll_earn_deducs->academic_id = getAcademicId();
+                            $payroll_earn_deducs->church_year_id = getAcademicId();
                         }
                         $result = $payroll_earn_deducs->save();
                     }
@@ -259,16 +259,16 @@ class SmPayrollController extends Controller
     {
         try {
             $chart_of_accounts = SmChartOfAccount::where('type', 'E')
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             $payrollDetails = SmHrPayrollGenerate::find($id);
 
             $paymentMethods = SmPaymentMethhod::whereIn('method', ['Cash', 'Cheque', 'Bank'])
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
-            $account_id = SmBankAccount::where('school_id', Auth::user()->school_id)
+            $account_id = SmBankAccount::where('church_id', Auth::user()->church_id)
                 ->get();
 
             return view('backEnd.humanResource.payroll.paymentPayroll', compact('payrollDetails', 'paymentMethods', 'role_id', 'chart_of_accounts', 'account_id'));
@@ -295,9 +295,9 @@ class SmPayrollController extends Controller
             $payments->payroll_status = 'P';
             $payments->updated_by = Auth()->user()->id;
             if(moduleStatusCheck('University')){
-                $payments->un_academic_id = getAcademicId();
+                $payments->un_church_year_id = getAcademicId();
             }else{
-                $payments->academic_id = getAcademicId();
+                $payments->church_year_id = getAcademicId();
             }
             $result = $payments->update();
 
@@ -316,20 +316,20 @@ class SmPayrollController extends Controller
                     $store->account_id = $request->bank_id;
                 }
                 if(moduleStatusCheck('University')){
-                    $store->un_academic_id = getAcademicId();
+                    $store->un_church_year_id = getAcademicId();
                 }else{
-                    $store->academic_id = getAcademicId();
+                    $store->church_year_id = getAcademicId();
                 }
                 $store->date = Carbon::now();
                 $store->amount = $payments->net_salary;
                 $store->description = 'Staff Payroll Payment';
-                $store->school_id = Auth::user()->school_id;
+                $store->church_id = Auth::user()->church_id;
                 $store->save();
             }
 
             if ($request->payment_mode == 3) {
                 $bank = SmBankAccount::where('id', $request->bank_id)
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_id', Auth::user()->church_id)
                     ->first();
                 $after_balance = $bank->current_balance - $payments->net_salary;
 
@@ -341,7 +341,7 @@ class SmPayrollController extends Controller
                 $bank_statement->item_receive_id = $payments->id;
                 $bank_statement->payment_date = date('Y-m-d', strtotime($request->payment_date));
                 $bank_statement->bank_id = $request->bank_id;
-                $bank_statement->school_id = Auth::user()->school_id;
+                $bank_statement->church_id = Auth::user()->church_id;
                 $bank_statement->payment_method = $request->payment_method;
                 $bank_statement->save();
 
@@ -350,9 +350,9 @@ class SmPayrollController extends Controller
                 $current_balance->update();
             }
 
-            $staffs = SmStaff::where('active_status', '=', '1')->where('school_id', Auth::user()->school_id)->get();
+            $staffs = SmStaff::where('active_status', '=', '1')->where('church_id', Auth::user()->church_id)->get();
             $roles = InfixRole::where('active_status', '=', '1')->where('id', '!=', 1)->where('id', '!=', 2)->where('id', '!=', 3)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
             Toastr::success('Operation successful', 'Success');
             return view('backEnd.humanResource.payroll.index', compact('staffs', 'roles', 'payroll_month', 'payroll_year'));
@@ -366,12 +366,12 @@ class SmPayrollController extends Controller
     {
 
         try {
-            $schoolDetails = SmGeneralSettings::where('school_id', auth()->user()->school_id)->first();
+            $schoolDetails = SmGeneralSettings::where('church_id', auth()->user()->church_id)->first();
             $payrollDetails = SmHrPayrollGenerate::find($id);
 
-            $payrollEarnDetails = SmHrPayrollEarnDeduc::where('active_status', '=', '1')->where('payroll_generate_id', '=', $id)->where('earn_dedc_type', '=', 'E')->where('school_id', Auth::user()->school_id)->get();
+            $payrollEarnDetails = SmHrPayrollEarnDeduc::where('active_status', '=', '1')->where('payroll_generate_id', '=', $id)->where('earn_dedc_type', '=', 'E')->where('church_id', Auth::user()->church_id)->get();
 
-            $payrollDedcDetails = SmHrPayrollEarnDeduc::where('active_status', '=', '1')->where('payroll_generate_id', '=', $id)->where('earn_dedc_type', '=', 'D')->where('school_id', Auth::user()->school_id)->get();
+            $payrollDedcDetails = SmHrPayrollEarnDeduc::where('active_status', '=', '1')->where('payroll_generate_id', '=', $id)->where('earn_dedc_type', '=', 'D')->where('church_id', Auth::user()->church_id)->get();
 
             return view('backEnd.humanResource.payroll.viewPayslip', compact('payrollDetails', 'payrollEarnDetails', 'payrollDedcDetails', 'schoolDetails'));
         } catch (\Exception $e) {
@@ -384,12 +384,12 @@ class SmPayrollController extends Controller
     {
 
         try {
-            $schoolDetails = SmGeneralSettings::where('school_id', auth()->user()->school_id)->first();
+            $schoolDetails = SmGeneralSettings::where('church_id', auth()->user()->church_id)->first();
             $payrollDetails = SmHrPayrollGenerate::find($id);
 
-            $payrollEarnDetails = SmHrPayrollEarnDeduc::where('active_status', '=', '1')->where('payroll_generate_id', '=', $id)->where('earn_dedc_type', '=', 'E')->where('school_id', Auth::user()->school_id)->get();
+            $payrollEarnDetails = SmHrPayrollEarnDeduc::where('active_status', '=', '1')->where('payroll_generate_id', '=', $id)->where('earn_dedc_type', '=', 'E')->where('church_id', Auth::user()->church_id)->get();
 
-            $payrollDedcDetails = SmHrPayrollEarnDeduc::where('active_status', '=', '1')->where('payroll_generate_id', '=', $id)->where('earn_dedc_type', '=', 'D')->where('school_id', Auth::user()->school_id)->get();
+            $payrollDedcDetails = SmHrPayrollEarnDeduc::where('active_status', '=', '1')->where('payroll_generate_id', '=', $id)->where('earn_dedc_type', '=', 'D')->where('church_id', Auth::user()->church_id)->get();
 
             return view('backEnd.humanResource.payroll.payslip_print', compact('payrollDetails', 'payrollEarnDetails', 'payrollDedcDetails', 'schoolDetails'));
         } catch (\Exception $e) {
@@ -403,7 +403,7 @@ class SmPayrollController extends Controller
     {
         try {
             $roles = InfixRole::where('active_status', '=', '1')->where('id', '!=', 1)->where('id', '!=', 2)->where('id', '!=', 3)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })
                 ->orderBy('name', 'asc')
                 ->get();
@@ -439,19 +439,19 @@ class SmPayrollController extends Controller
                 $query .= "AND pg.payroll_year = '$request->payroll_year'";
             }
 
-            $school_id = Auth::user()->school_id;
+            $church_id = Auth::user()->church_id;
 
             $staffsPayroll = DB::select(DB::raw("SELECT pg.*, s.full_name, r.name, d.title
 												FROM sm_hr_payroll_generates pg
 												LEFT JOIN sm_staffs s ON pg.staff_id = s.id
 												LEFT JOIN roles r ON s.role_id = r.id
 												LEFT JOIN sm_designations d ON s.designation_id = d.id
-												WHERE pg.active_status AND pg.payroll_status='P' AND pg.school_id = '$school_id'
+												WHERE pg.active_status AND pg.payroll_status='P' AND pg.church_id = '$church_id'
 
 												$query"));
 
             $roles = InfixRole::where('active_status', '=', '1')->where('id', '!=', 1)->where('id', '!=', 2)->where('id', '!=', 3)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
             return view('backEnd.reports.payroll', compact('staffsPayroll', 'roles', 'payroll_month', 'payroll_year', 'role_id'));
         } catch (\Exception $e) {

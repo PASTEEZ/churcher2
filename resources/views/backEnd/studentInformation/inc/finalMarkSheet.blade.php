@@ -2,10 +2,10 @@
 $subjects = $record->assign_subject;
 $all_subject_ids = $subjects->pluck('subject_id')->toArray();
 $is_result_available = App\SmResultStore::where([
-                    ['class_id', $record->class], 
-                    ['section_id', $record->section], 
-                    ['student_id', $record->student]])
-                    ->where('school_id',Auth::user()->school_id)
+                    ['age_group_id', $record->class], 
+                    ['mgender_id', $record->section], 
+                    ['member_id', $record->student]])
+                    ->where('church_id',Auth::user()->church_id)
                     ->get();
 $studentDetails = $record;
 $record_id =  $record->id;
@@ -22,9 +22,9 @@ $record_id =  $record->id;
                         <div class="main-title d-flex ">
                             <h3 class="mb-30 flex-fill">
                               @if(moduleStatusCheck('University'))
-                                    {{$record->semesterLabel->name}} ({{$record->unSection->section_name}}) - {{@$record->unAcademic->name}}
+                                    {{$record->semesterLabel->name}} ({{$record->unSection->mgender_name}}) - {{@$record->unAcademic->name}}
                               @else 
-                                    {{$record->class->class_name}} ({{$record->section->section_name}}) 
+                                    {{$record->class->age_group_name}} ({{$record->section->mgender_name}}) 
                               @endif
                               @lang('exam.final_mark_sheet')
                             </h3>
@@ -39,11 +39,11 @@ $record_id =  $record->id;
                                             <div class="card-header">
                                                     <div class="d-flex">
                                                             <div class="col-lg-2">
-                                                            <img class="logo-img" src="{{ asset(generalSetting()->logo) }}" alt="{{generalSetting()->school_name}}">
+                                                            <img class="logo-img" src="{{ asset(generalSetting()->logo) }}" alt="{{generalSetting()->church_name}}">
                                                             </div>
                                                             <div class="col-lg-6 ml-30">
                                                                 <h3 class="text-white"> 
-                                                                    {{isset(generalSetting()->school_name)?generalSetting()->school_name:'Infix School Management ERP'}} 
+                                                                    {{isset(generalSetting()->church_name)?generalSetting()->church_name:'Infix School Management ERP'}} 
                                                                 </h3> 
                                                                 <p class="text-white mb-0">
                                                                     {{isset(generalSetting()->address)?generalSetting()->address:'Infix School Address'}} 
@@ -71,18 +71,18 @@ $record_id =  $record->id;
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <p class="mb-0">
-                                                                    @lang('common.academic_year') : &nbsp;<span class="primary-color fw-500">{{ @$studentDetails->academic->year }}</span>
+                                                                    @lang('common.church_year') : &nbsp;<span class="primary-color fw-500">{{ @$studentDetails->academic->year }}</span>
                                                                 </p>
                                                                 <p class="mb-0">
-                                                                    @lang('common.section') : &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="primary-color fw-500">{{ $studentDetails->section->section_name }}</span>
+                                                                    @lang('common.section') : &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="primary-color fw-500">{{ $studentDetails->section->mgender_name }}</span>
                                                                 </p>
                                                                 <p class="mb-0">
-                                                                    @lang('common.class') : &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="primary-color fw-500">{{ $studentDetails->class->class_name }}</span>
+                                                                    @lang('common.class') : &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="primary-color fw-500">{{ $studentDetails->class->age_group_name }}</span>
                                                                 </p>
                                                             </div>
                                                             <div class="col-lg-6">
                                                                 <p class="mb-0">
-                                                                    @lang('student.admission_no') : <span class="primary-color fw-500">{{$studentDetails->studentDetail->admission_no}}</span>
+                                                                    @lang('student.registration_no') : <span class="primary-color fw-500">{{$studentDetails->studentDetail->registration_no}}</span>
                                                                 </p>
                                                                 <p class="mb-0">
                                                                     @lang('student.roll') : &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span class="primary-color fw-500">{{$studentDetails->roll_no}}</span>

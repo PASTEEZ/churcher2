@@ -21,7 +21,7 @@ class CreateFmFeesInvoiceSettingsTable extends Migration
             $table->integer('section_limit')->nullable();
             $table->integer('admission_limit')->nullable();
             $table->string('weaver')->nullable();
-            $table->integer('school_id')->nullable();
+            $table->integer('church_id')->nullable();
             $table->timestamps();
         });
 
@@ -29,14 +29,14 @@ class CreateFmFeesInvoiceSettingsTable extends Migration
         $schools = SmSchool::get();
         foreach ($schools as $school) {
             $store = new FmFeesInvoiceSettings();
-            $store->invoice_positions = '[{"id":"prefix","text":"prefix"},{"id":"admission_no","text":"Admission No"},{"id":"class","text":"Class"},{"id":"section","text":"Section"}]';
+            $store->invoice_positions = '[{"id":"prefix","text":"prefix"},{"id":"registration_no","text":"Admission No"},{"id":"class","text":"Class"},{"id":"section","text":"Section"}]';
             $store->uniq_id_start = "0011";
             $store->prefix = 'infixEdu';
             $store->class_limit = 3;
             $store->section_limit = 1;
             $store->admission_limit = 3;
             $store->weaver = 'amount';
-            $store->school_id = $school->id;
+            $store->church_id = $school->id;
             $store->save();
         }
 
@@ -100,7 +100,7 @@ class CreateFmFeesInvoiceSettingsTable extends Migration
                 $feesInvoiceData->active_status = $data[9];
                 $feesInvoiceData->created_by = $data[10];
                 $feesInvoiceData->updated_by = $data[11];
-                $feesInvoiceData->school_id = $data[12];
+                $feesInvoiceData->church_id = $data[12];
                 $feesInvoiceData->created_at = $data[13];
                 $feesInvoiceData->updated_at = $data[14];
                 $feesInvoiceData->save();

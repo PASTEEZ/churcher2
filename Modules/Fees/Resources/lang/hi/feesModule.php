@@ -14,7 +14,7 @@ return  [
         'invoice_attribute'=>' Invoice Attribute',
         'class_limit'=>'Class Limit',
         'section_limit'=>'Section Limit',
-        'admission_no_limit'=>'Admission No Limit',
+        'registration_no_limit'=>'Admission No Limit',
         'invoice_number_position'=>'Invoice Number Position',
         'prefix'=>'Prefix',
         'uniq_id_start'=>'Unique Id Start',

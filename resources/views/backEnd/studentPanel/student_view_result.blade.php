@@ -102,7 +102,7 @@
                                                 <div class="dropdown-menu dropdown-menu-right">
 
                                                     @if($now >= $endTime)
-                                                    <a class=" dropdown-item btn btn-success modalLink" data-modal-size="modal-lg" title="@lang('exam.answer_script')"  href="{{route('student_answer_script', [@$result_view->online_exam_id, @$result_view->student_id])}}" >@lang('exam.answer_script')</a>
+                                                    <a class=" dropdown-item btn btn-success modalLink" data-modal-size="modal-lg" title="@lang('exam.answer_script')"  href="{{route('student_answer_script', [@$result_view->online_exam_id, @$result_view->member_id])}}" >@lang('exam.answer_script')</a>
                                                     <a class="dropdown-item" href="{{route("student-online-exam-question-view", [$result_view->online_exam_id])}}">@lang('exam.view_question')</a>
                                                     
                                                     @else

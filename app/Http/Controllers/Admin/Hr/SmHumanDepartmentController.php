@@ -47,7 +47,7 @@ class SmHumanDepartmentController extends Controller
         try {
             $department = new SmHumanDepartment();
             $department->name = $request->name;
-            $department->school_id = Auth::user()->school_id;
+            $department->church_id = Auth::user()->church_id;
             $result = $department->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {

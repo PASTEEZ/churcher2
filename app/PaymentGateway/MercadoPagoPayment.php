@@ -17,7 +17,7 @@ class MercadoPagoPayment{
     {
         try{
             $mercadoPagoDetails = SmPaymentGatewaySetting::where('gateway_name', '=', 'MercadoPago')
-                                ->where('school_id',auth()->user()->school_id)
+                                ->where('church_id',auth()->user()->church_id)
                                 ->select('mercado_pago_public_key', 'mercado_pago_acces_token')
                                 ->first();
 
@@ -82,14 +82,14 @@ class MercadoPagoPayment{
                 $transcationInfo = FmFeesTransaction::find($paymentResponse['trxID']);
                 $extendedController = new FeesExtendedController();
                 $extendedController->addFeesAmount($paymentResponse['trxID'], $paymentResponse['amount']);
-                $student = SmStudent::with('parents')->find($transcationInfo->student_id);
+                $student = SmStudent::with('parents')->find($transcationInfo->member_id);
 
                 sendNotification("Mercado Payment Done", null, 1, 1);
                 sendNotification("Mercado Payment Done", null, $student->user_id, 2);
                 sendNotification("Mercado Payment Done", null, $student->parents->user_id, 3);
 
                 Toastr::success('Operation successful', 'Success');
-                return response()->json(['target_url'=>route('fees.student-fees-list', $transcationInfo->student_id)]);
+                return response()->json(['target_url'=>route('fees.student-fees-list', $transcationInfo->member_id)]);
 
             }elseif($paymentResponse['type'] == 'Wallet'){
                 $user = User::find($paymentResponse['userId']);

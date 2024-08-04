@@ -85,22 +85,22 @@ class SmExamMarkRegisterController extends Controller
             if (moduleStatusCheck('University')) {
                 $data = [];
                 $un_section = null;
-                if ($request->un_section_id) {
-                    $un_section = SmSection::find($request->un_section_id);
+                if ($request->un_mgender_id) {
+                    $un_section = SmSection::find($request->un_mgender_id);
                 }
                 $un_session = UnSession::find($request->un_session_id);
                 $un_faculty = UnFaculty::find($request->un_faculty_id);
                 $un_department= UnDepartment::find($request->un_department_id);
-                $un_academic = UnAcademicYear::find($request->un_academic_id);
+                $un_academic = UnAcademicYear::find($request->un_church_year_id);
                 $un_semester = UnSemester::find($request->un_semester_id);
                 $un_semester_label = UnSemesterLabel::find($request->un_semester_label_id);
-                $un_section = SmSection::find($request->un_section_id);
+                $un_section = SmSection::find($request->un_mgender_id);
 
                 $SmExam = SmExam::query();
                 $sm_exam = universityFilter($SmExam, $request)
                             ->where('exam_type_id', $request->exam_type)
                             ->where('un_subject_id', $request->subject_id)
-                            ->orWhereNull('un_section_id')
+                            ->orWhereNull('un_mgender_id')
                             ->first();
 
 
@@ -117,7 +117,7 @@ class SmExamMarkRegisterController extends Controller
                                 })->get();
 
                 $exam_schedule = SmExamSchedule::where('exam_id', $sm_exam->id)
-                                ->where('academic_id', getAcademicId())
+                                ->where('church_year_id', getAcademicId())
                                 ->first();
 
                 $data['un_semester_label_id'] = $request->un_semester_label_id;
@@ -182,19 +182,19 @@ class SmExamMarkRegisterController extends Controller
             } else {
                 if ($request->section=='') {
 
-                    $classSections=SmAssignSubject::where('class_id', $request->class)
+                    $classSections=SmAssignSubject::where('age_group_id', $request->class)
                                                 ->where('subject_id', $request->subject)
-                                                ->where('school_id', auth()->user()->school_id)
-                                                ->where('academic_id', getAcademicId())
-                                                ->groupBy(['section_id','subject_id'])
-                                                ->get(['section_id']);
+                                                ->where('church_id', auth()->user()->church_id)
+                                                ->where('church_year_id', getAcademicId())
+                                                ->groupBy(['mgender_id','subject_id'])
+                                                ->get(['mgender_id']);
     
-                    $exam_attendance = SmExamAttendance::where('class_id', $request->class)
+                    $exam_attendance = SmExamAttendance::where('age_group_id', $request->class)
                                                         ->where('exam_id', $request->exam)
                                                         ->where('subject_id', $request->subject)
                                                         ->first();
                 } else {
-                    $exam_attendance = SmExamAttendance::where('class_id', $request->class)->where('section_id', $request->section)->where('exam_id', $request->exam)->where('subject_id', $request->subject)->first();
+                    $exam_attendance = SmExamAttendance::where('age_group_id', $request->class)->where('mgender_id', $request->section)->where('exam_id', $request->exam)->where('subject_id', $request->subject)->first();
                 }
 
                 if ($exam_attendance == "" && !isSkip('exam_attendance')) {
@@ -206,8 +206,8 @@ class SmExamMarkRegisterController extends Controller
                 $classes = SmClass::get();
                 $exam_types = SmExamType::get();
                 $exam_id = $request->exam;
-                $class_id = $request->class;
-                $section_id = $request->section;
+                $age_group_id = $request->class;
+                $mgender_id = $request->section;
                 $subject_id = $request->subject;
                 $subjectNames = SmSubject::where('id', $subject_id)->first();
     
@@ -216,33 +216,33 @@ class SmExamMarkRegisterController extends Controller
                 $section = SmSection::find($request->section);
     
                 $search_info['exam_name'] = $exam_type->title;
-                $search_info['class_name'] = $class->class_name;
+                $search_info['age_group_name'] = $class->age_group_name;
                 if ($request->section !='') {
-                    $search_info['section_name'] = $section->section_name;
+                    $search_info['mgender_name'] = $section->mgender_name;
                 } else {
-                    $search_info['section_name'] = 'All Sections';
+                    $search_info['mgender_name'] = 'All Sections';
                 }
 
                 $students = StudentRecord::with('class', 'section')
-                ->when($request->academic_year, function ($query) use ($request) {
-                    $query->where('academic_id', $request->academic_year);
+                ->when($request->church_year, function ($query) use ($request) {
+                    $query->where('church_year_id', $request->church_year);
                 })
                 ->whereHas('studentDetail', function ($q)  {
                     $q->where('active_status', 1);
                 })
                 ->when($request->class, function ($query) use ($request) {
-                    $query->where('class_id', $request->class);
+                    $query->where('age_group_id', $request->class);
                 })
                 ->when($request->section, function ($query) use ($request) {
-                    $query->where('section_id', $request->section);
+                    $query->where('mgender_id', $request->section);
                 })
-                ->when(!$request->academic_year, function ($query) use ($request) {
-                    $query->where('academic_id', getAcademicId());
-                })->where('school_id', auth()->user()->school_id)->where('is_promote', 0)->whereHas('studentDetail', function($q){
+                ->when(!$request->church_year, function ($query) use ($request) {
+                    $query->where('church_year_id', getAcademicId());
+                })->where('church_id', auth()->user()->church_id)->where('is_promote', 0)->whereHas('studentDetail', function($q){
                         $q->where('active_status', 1);
                     })->where('is_promote', 0)->get()->sortBy('roll_no');
 
-                $exam_schedule = SmExamSchedule::where('exam_id', $request->exam)->where('class_id', $request->class)->where('section_id', $request->section)->where('academic_id', getAcademicId())->first();
+                $exam_schedule = SmExamSchedule::where('exam_id', $request->exam)->where('age_group_id', $request->class)->where('mgender_id', $request->section)->where('church_year_id', getAcademicId())->first();
 
                 if ($students->count() < 1) {
                     Toastr::error('Student is not found in according this class and section!', 'Failed');
@@ -253,32 +253,32 @@ class SmExamMarkRegisterController extends Controller
                     $marks_entry_form = SmExamSetup::with('class','section')->where(
                         [
                             ['exam_term_id', $exam_id],
-                            ['class_id', $class_id],
-                            ['section_id', $section_id],
+                            ['age_group_id', $age_group_id],
+                            ['mgender_id', $mgender_id],
                             ['subject_id', $subject_id]
                         ]
-                        )->where('academic_id', getAcademicId())->get();
+                        )->where('church_year_id', getAcademicId())->get();
                     }else {
                         $marks_entry_form = SmExamSetup::with('class','section')->where(
                         [
                             ['exam_term_id', $exam_id],
-                            ['class_id', $class_id],                    
+                            ['age_group_id', $age_group_id],                    
                             ['subject_id', $subject_id]
                         ]
-                        )->whereIn('section_id',$classSections)->groupby(['subject_id','exam_title'])->where('academic_id', getAcademicId())->orderby('id','ASC')->get();
+                        )->whereIn('mgender_id',$classSections)->groupby(['subject_id','exam_title'])->where('church_year_id', getAcademicId())->orderby('id','ASC')->get();
                     }
 
 
                     if ($marks_entry_form->count() > 0) {
                         $number_of_exam_parts = count($marks_entry_form);
-                        return view('backEnd.examination.masks_register_create', compact('exams', 'classes', 'students', 'exam_id', 'class_id', 'section_id', 'subject_id', 'subjectNames', 'number_of_exam_parts', 'marks_entry_form', 'exam_types','search_info'));
+                        return view('backEnd.examination.masks_register_create', compact('exams', 'classes', 'students', 'exam_id', 'age_group_id', 'mgender_id', 'subject_id', 'subjectNames', 'number_of_exam_parts', 'marks_entry_form', 'exam_types','search_info'));
                     } else {
                         Toastr::error('No result found or exam setup is not done!', 'Failed');
                         return redirect()->back();
                         // return redirect()->back()->with('message-danger', 'No result found or exam setup is not done!');
                     }
                 
-                    return view('backEnd.examination.masks_register_create', compact('exams', 'classes', 'students',   'exam_id', 'class_id', 'section_id', 'marks_register_subjects', 'assign_subject_ids','search_info'));
+                    return view('backEnd.examination.masks_register_create', compact('exams', 'classes', 'students',   'exam_id', 'age_group_id', 'mgender_id', 'marks_register_subjects', 'assign_subject_ids','search_info'));
                 }
             }
         } catch (\Exception $e) {
@@ -303,7 +303,7 @@ class SmExamMarkRegisterController extends Controller
                     $sid = gv($record, 'student');
                     $marks = gv($record, 'marks', []);
                     $absent_students= array(gv($record, 'absent_students'));
-                    $admission_no   = gv($record, 'admission_no');
+                    $registration_no   = gv($record, 'registration_no');
                     $roll_no        = gv($record, 'roll_no');
 
                     if (!empty($marks)) {
@@ -321,16 +321,16 @@ class SmExamMarkRegisterController extends Controller
                                     ['exam_term_id', $exam_type_id],
                                     ['student_record_id', $record_id],
                                     ['exam_setup_id', $exam_setup_id],
-                                    ['student_id', $sid]
+                                    ['member_id', $sid]
                                 ])
-                                ->where('academic_id', getAcademicId())
+                                ->where('church_year_id', getAcademicId())
                                 ->first();
         
                             if ($previous_record == "" || $previous_record == null) {
                                 $marks_register = new SmMarkStore();
                                 $marks_register->exam_term_id = $exam_type_id;
                                 $marks_register->un_subject_id = $subject_id;
-                                $marks_register->student_id = $sid;
+                                $marks_register->member_id = $sid;
                                 $marks_register->student_record_id = $record_id;
                                 $marks_register->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
                                 $marks_register->total_marks = $mark_by_exam_part;
@@ -347,8 +347,8 @@ class SmExamMarkRegisterController extends Controller
                                 }
                                 $marks_register->teacher_remarks = gv($record, 'teacher_remarks');
                                 $marks_register->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
-                                $marks_register->school_id = Auth::user()->school_id;
-                                $marks_register->un_academic_id = getAcademicId();
+                                $marks_register->church_id = Auth::user()->church_id;
+                                $marks_register->un_church_year_id = getAcademicId();
                                 $marks_register->save();
                                 $marks_register->toArray();
                             } else {
@@ -377,8 +377,8 @@ class SmExamMarkRegisterController extends Controller
                         $mark_grade = SmMarksGrade::where([
                                             ['percent_from', '<=', $mark_by_persentage], 
                                             ['percent_upto', '>=', $mark_by_persentage]])
-                                            ->where('academic_id', getAcademicId())
-                                            ->where('school_id', Auth::user()->school_id)
+                                            ->where('church_year_id', getAcademicId())
+                                            ->where('church_id', Auth::user()->church_id)
                                             ->first();
                         $abc[] = $total_marks_persubject;
         
@@ -388,7 +388,7 @@ class SmExamMarkRegisterController extends Controller
                                                             ['un_subject_id', $subject_id],
                                                             ['exam_type_id', $exam_type_id],
                                                             ['student_record_id', $record_id],
-                                                            ['student_id', $sid]
+                                                            ['member_id', $sid]
                                                         ])->first();
         
                         
@@ -396,7 +396,7 @@ class SmExamMarkRegisterController extends Controller
                                 $result_record = new SmResultStore();
                                 $result_record->un_subject_id = $subject_id;
                                 $result_record->exam_type_id = $exam_type_id;
-                                $result_record->student_id = $sid;
+                                $result_record->member_id = $sid;
                                 $result_record->student_record_id = $record_id;
 
                                 $common = App::make(UnCommonRepositoryInterface::class);
@@ -414,8 +414,8 @@ class SmExamMarkRegisterController extends Controller
                             $result_record->total_gpa_grade        =   @$mark_grade->grade_name;
                             $result_record->teacher_remarks        =   gv($record, 'teacher_remarks');
                             $result_record->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
-                            $result_record->school_id = Auth::user()->school_id;
-                            $result_record->un_academic_id = getAcademicId();
+                            $result_record->church_id = Auth::user()->church_id;
+                            $result_record->un_church_year_id = getAcademicId();
                             $result_record->save();
                             $result_record->toArray();
                         } else {
@@ -440,9 +440,9 @@ class SmExamMarkRegisterController extends Controller
                 } //end student loop
             }else{
                 $abc = [];
-                $class_id = $request->class_id;
-                if ($request->section_id !='') {
-                    $section_id = $request->section_id;
+                $age_group_id = $request->age_group_id;
+                if ($request->mgender_id !='') {
+                    $mgender_id = $request->mgender_id;
                 }
                 $subject_id = $request->subject_id;
                 $exam_id = $request->exam_id;
@@ -453,10 +453,10 @@ class SmExamMarkRegisterController extends Controller
                     $marks          =   gv($record, 'marks', []);
                     $absent_students= array(gv($record, 'absent_students'));
                 
-                    if ($request->section_id=='') {
-                        $section_id = gv($record, 'section');
+                    if ($request->mgender_id=='') {
+                        $mgender_id = gv($record, 'section');
                     }
-                    $admission_no   = gv($record, 'admission_no');
+                    $registration_no   = gv($record, 'registration_no');
                     $roll_no        = gv($record, 'roll_no');
                     if (!empty($marks)) {
                         $exam_setup_count = 0;
@@ -469,24 +469,24 @@ class SmExamMarkRegisterController extends Controller
                             $exam_setup_id = gv($record, 'exam_Sids', [])[$exam_setup_count];
                                 
                             $previous_record = SmMarkStore::where([
-                                    ['class_id', $class_id],
-                                    ['section_id', $section_id],
+                                    ['age_group_id', $age_group_id],
+                                    ['mgender_id', $mgender_id],
                                     ['subject_id', $subject_id],
                                     ['exam_term_id', $exam_id],
                                     ['student_record_id', $record_id],
                                     ['exam_setup_id', $exam_setup_id],
-                                    ['student_id', $sid]
-                                ])->where('academic_id', getAcademicId())->first();
+                                    ['member_id', $sid]
+                                ])->where('church_year_id', getAcademicId())->first();
                                 // Is previous record exist ?
         
                             if ($previous_record == "" || $previous_record == null) {
         
                                 $marks_register = new SmMarkStore();
                                 $marks_register->exam_term_id           =       $exam_id;
-                                $marks_register->class_id               =       $class_id;
-                                $marks_register->section_id             =       $section_id;
+                                $marks_register->age_group_id               =       $age_group_id;
+                                $marks_register->mgender_id             =       $mgender_id;
                                 $marks_register->subject_id             =       $subject_id;
-                                $marks_register->student_id             =       $sid;
+                                $marks_register->member_id             =       $sid;
                                 $marks_register->student_record_id      =       $record_id;
                                 $marks_register->created_at             = YearCheck::getYear() . '-' . date('m-d h:i:s');
                                 $marks_register->total_marks            =       $mark_by_exam_part;
@@ -503,8 +503,8 @@ class SmExamMarkRegisterController extends Controller
         
         
                                     $marks_register->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
-                                    $marks_register->school_id = Auth::user()->school_id;
-                                    $marks_register->academic_id = getAcademicId();
+                                    $marks_register->church_id = Auth::user()->church_id;
+                                    $marks_register->church_year_id = getAcademicId();
         
                                     $marks_register->save();
                                     $marks_register->toArray();
@@ -531,37 +531,37 @@ class SmExamMarkRegisterController extends Controller
                                 $exam_setup_count++;
                         } // end part insertion
         
-                        $subject_full_mark = subjectFullMark($request->exam_id, $request->subject_id, $class_id, $section_id);
+                        $subject_full_mark = subjectFullMark($request->exam_id, $request->subject_id, $age_group_id, $mgender_id);
                         $student_obtained_mark = $total_marks_persubject;
                         $mark_by_persentage = subjectPercentageMark($student_obtained_mark, $subject_full_mark);
         
                             $mark_grade = SmMarksGrade::where([
                                             ['percent_from', '<=', $mark_by_persentage], 
                                             ['percent_upto', '>=', $mark_by_persentage]])
-                                            ->where('academic_id', getAcademicId())
-                                            ->where('school_id', Auth::user()->school_id)
+                                            ->where('church_year_id', getAcademicId())
+                                            ->where('church_id', Auth::user()->church_id)
                                             ->first();
                             
         
                             $abc[] = $total_marks_persubject;
         
                             $previous_result_record = SmResultStore::where([
-                                ['class_id', $class_id],
-                                ['section_id', $section_id],
+                                ['age_group_id', $age_group_id],
+                                ['mgender_id', $mgender_id],
                                 ['subject_id', $subject_id],
                                 ['exam_type_id', $exam_id],
                                 ['student_record_id', $record_id],
-                                ['student_id', $sid]
+                                ['member_id', $sid]
                             ])->first();
         
                         if ($previous_result_record == "" || $previous_result_record == null) {
                             //If not result exists, it will create
                                 $result_record = new SmResultStore();
-                                $result_record->class_id               =   $class_id;
-                                $result_record->section_id             =   $section_id;
+                                $result_record->age_group_id               =   $age_group_id;
+                                $result_record->mgender_id             =   $mgender_id;
                                 $result_record->subject_id             =   $subject_id;
                                 $result_record->exam_type_id           =   $exam_id;
-                                $result_record->student_id             =   $sid;
+                                $result_record->member_id             =   $sid;
                                 $result_record->student_record_id      =   $record_id;
         
                             if (isset($absent_students)) {
@@ -578,8 +578,8 @@ class SmExamMarkRegisterController extends Controller
                             $result_record->teacher_remarks        =   gv($record, 'teacher_remarks');
         
                             $result_record->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
-                            $result_record->school_id = Auth::user()->school_id;
-                            $result_record->academic_id = getAcademicId();
+                            $result_record->church_id = Auth::user()->church_id;
+                            $result_record->church_year_id = getAcademicId();
                             $result_record->save();
                             $result_record->toArray();
                         } else {                               //If already result exists, it will updated
@@ -626,10 +626,10 @@ class SmExamMarkRegisterController extends Controller
             $un_session = UnSession::find($request->un_session_id);
             $un_faculty = UnFaculty::find($request->un_faculty_id);
             $un_department= UnDepartment::find($request->un_department_id);
-            $un_academic = UnAcademicYear::find($request->un_academic_id);
+            $un_academic = UnAcademicYear::find($request->un_church_year_id);
             $un_semester = UnSemester::find($request->un_semester_id);
             $un_semester_label = UnSemesterLabel::find($request->un_semester_label_id);
-            $un_section = SmSection::find($request->un_section_id);
+            $un_section = SmSection::find($request->un_mgender_id);
 
             $exam_type = $request->exam_type;
             $subject_id = $request->subject_id;
@@ -701,17 +701,17 @@ class SmExamMarkRegisterController extends Controller
             $exam_types = SmExamType::get();
     
             $exam_id = $request->exam;
-            $class_id = $request->class;
-            $section_id = $request->section !=null ? $request->section : null;
+            $age_group_id = $request->class;
+            $mgender_id = $request->section !=null ? $request->section : null;
             $subject_id = $request->subject;
             $subjectNames = SmSubject::where('id', $subject_id)->first();
     
             $exam_attendance = SmExamAttendance::query();
             if ($request->class !=null) {
-                $exam_attendance->where('exam_id', $exam_id)->where('class_id', $class_id);
+                $exam_attendance->where('exam_id', $exam_id)->where('age_group_id', $age_group_id);
             }
             if ($request->section !=null) {
-                $exam_attendance->where('section_id', $request->section);
+                $exam_attendance->where('mgender_id', $request->section);
             }
     
             $exam_attendance= $exam_attendance->where('subject_id', $subject_id)->first();
@@ -727,23 +727,23 @@ class SmExamMarkRegisterController extends Controller
             }
         
             $students = StudentRecord::with('class', 'section')
-                    ->when($request->academic_year, function ($query) use ($request) {
-                        $query->where('academic_id', $request->academic_year);
+                    ->when($request->church_year, function ($query) use ($request) {
+                        $query->where('church_year_id', $request->church_year);
                     })
                     ->when($request->class, function ($query) use ($request) {
-                        $query->where('class_id', $request->class);
+                        $query->where('age_group_id', $request->class);
                     })
                     ->when($request->section, function ($query) use ($request) {
-                        $query->where('section_id', $request->section);
+                        $query->where('mgender_id', $request->section);
                     })
-                    ->when(!$request->academic_year, function ($query) use ($request) {
-                        $query->where('academic_id', getAcademicId());
-                    })->where('school_id', auth()->user()->school_id)->where('is_promote', 0)->whereHas('studentDetail', function($q){
+                    ->when(!$request->church_year, function ($query) use ($request) {
+                        $query->where('church_year_id', getAcademicId());
+                    })->where('church_id', auth()->user()->church_id)->where('is_promote', 0)->whereHas('studentDetail', function($q){
                             $q->where('active_status', 1);
                         })->get();
 
 
-                $exam_schedule = SmExamSchedule::where('exam_id', $request->exam)->where('class_id', $request->class)->where('section_id', $request->section)->where('academic_id', getAcademicId())->first();
+                $exam_schedule = SmExamSchedule::where('exam_id', $request->exam)->where('age_group_id', $request->class)->where('mgender_id', $request->section)->where('church_year_id', getAcademicId())->first();
             if ($students->count() == 0) {
                     Toastr::error('Sorry ! Student is not available Or exam schedule is not set yet.', 'Failed');
                     return redirect()->back();
@@ -751,17 +751,17 @@ class SmExamMarkRegisterController extends Controller
             } else {
                     $marks_entry_form = SmExamSetup::query();
                 if ($request->class !=null) {
-                        $marks_entry_form->where('exam_term_id', $exam_id)->where('class_id', $class_id);
+                        $marks_entry_form->where('exam_term_id', $exam_id)->where('age_group_id', $age_group_id);
                 }
                 if ($request->section !=null) {
-                    $marks_entry_form->where('section_id', $request->section);
+                    $marks_entry_form->where('mgender_id', $request->section);
                 }
-                $marks_entry_form = $marks_entry_form->where('subject_id', $subject_id)->where('academic_id', getAcademicId())->get();
+                $marks_entry_form = $marks_entry_form->where('subject_id', $subject_id)->where('church_year_id', getAcademicId())->get();
                 
 
                 if ($marks_entry_form->count() > 0) {
                         $number_of_exam_parts = count($marks_entry_form);
-                        return view('backEnd.examination.masks_register_search', compact('exams', 'classes', 'students', 'exam_id', 'class_id', 'section_id', 'subject_id', 'subjectNames', 'number_of_exam_parts', 'marks_entry_form', 'exam_types'));
+                        return view('backEnd.examination.masks_register_search', compact('exams', 'classes', 'students', 'exam_id', 'age_group_id', 'mgender_id', 'subject_id', 'subjectNames', 'number_of_exam_parts', 'marks_entry_form', 'exam_types'));
                 } else {
                         Toastr::error('Sorry ! Exam setup is not set yet.', 'Failed');
                         return redirect()->back();

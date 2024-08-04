@@ -21,7 +21,7 @@ class XenditPayment {
     {
         try{
            $xendit_config = SmPaymentGatewaySetting::where('gateway_name','Xendit')
-           ->where('school_id',auth()->user()->school_id)
+           ->where('church_id',auth()->user()->church_id)
            ->first('gateway_secret_key');
 
            if(!$xendit_config || !$xendit_config->gateway_secret_key){
@@ -60,8 +60,8 @@ class XenditPayment {
                         $addPayment->payment_method= "Xendit";
                         $addPayment->user_id= $user->id;
                         $addPayment->type= $data['wallet_type'];
-                        $addPayment->school_id= auth()->user()->school_id;
-                        $addPayment->academic_id= getAcademicId();
+                        $addPayment->church_id= auth()->user()->church_id;
+                        $addPayment->church_year_id= getAcademicId();
                         $addPayment->status = 'pending';
                         $addPayment->save();
 
@@ -76,7 +76,7 @@ class XenditPayment {
                     }
                 }elseif($data['type'] == "Fees"){
                     $email = "";
-                    $student = SmStudent::find($data['student_id']);
+                    $student = SmStudent::find($data['member_id']);
                     if(!($student->email)){
                         $parent = SmParent::find($student->parent_id);
                         $email =  $parent->guardians_email;
@@ -124,7 +124,7 @@ class XenditPayment {
 
                   $createInvoice = \Xendit\Invoice::create($params);
                   if($createInvoice && $createInvoice['status']  =="PENDING"){
-                    Session::put('student_id', $data['student_id']);
+                    Session::put('member_id', $data['member_id']);
                     Session::put('type', $data['type']);
                     Session::put('purchase_log_id', $data['purchase_log_id']);
                     Session::put('payment_method', $data['payment_method']);
@@ -158,7 +158,7 @@ class XenditPayment {
             $compact['full_name'] =  $user->full_name;
             $compact['method'] =  Session::get('payment_method');
             $compact['create_date'] =  date('Y-m-d');
-            $compact['school_name'] =  $gs->school_name;
+            $compact['church_name'] =  $gs->church_name;
             $compact['current_balance'] =  $user->wallet_balance;
             $compact['add_balance'] =  Session::get('amount');
             @send_mail($user->email, $user->full_name, "wallet_approve", $compact);
@@ -185,7 +185,7 @@ class XenditPayment {
                 Session::forget('payment_method');
             }
             Toastr::success('Operation successful', 'Success');
-            return redirect()->to(url('fees/student-fees-list',$transcation->student_id));
+            return redirect()->to(url('fees/student-fees-list',$transcation->member_id));
         }
        }catch(\Exception $e){
             Log::info($e->getMessage());
@@ -208,7 +208,7 @@ class XenditPayment {
 
                 }elseif(auth()->user()->role_id == 3){
                     Toastr::error('Payment failed', 'Failed');
-                    return redirect('parent-fees',$success_payment->student_id);
+                    return redirect('parent-fees',$success_payment->member_id);
                 }
             }    
        }

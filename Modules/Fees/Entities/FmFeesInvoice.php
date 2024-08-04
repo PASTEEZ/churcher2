@@ -25,7 +25,7 @@ class FmFeesInvoice extends Model
 
     public function studentInfo()
     {
-        return $this->belongsTo(SmStudent::class,'student_id','id');
+        return $this->belongsTo(SmStudent::class,'member_id','id');
     }
 
     public function invoiceDetails()

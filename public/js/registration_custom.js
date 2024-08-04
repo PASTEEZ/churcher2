@@ -89,7 +89,7 @@ $(document).ready(function() {
                         $("#select-section").append(
                             $("<option>", {
                                 value: className.id,
-                                text: className.section_name,
+                                text: className.mgender_name,
                             })
                         );
 
@@ -97,7 +97,7 @@ $(document).ready(function() {
                             "<li data-value='" +
                             className.id +
                             "' class='option'>" +
-                            className.section_name +
+                            className.mgender_name +
                             "</li>"
                         );
                     });
@@ -126,14 +126,14 @@ $(document).ready(function() {
     $("form#parent-registration #select-academic-year").on("change", function() {
         var url = $("#url").val();
         var i = 0;
-        var school_id = '';
+        var church_id = '';
         if ($("#select-school").length) {
-            school_id = $("#select-school").val();
+            church_id = $("#select-school").val();
         }
 
         var formData = {
             id: $(this).val(),
-            school_id: school_id,
+            church_id: church_id,
         };
         // get section for student
         $.ajax({
@@ -161,7 +161,7 @@ $(document).ready(function() {
                         $("#select-class").append(
                             $("<option>", {
                                 value: className.id,
-                                text: className.class_name,
+                                text: className.age_group_name,
                             })
                         );
 
@@ -169,7 +169,7 @@ $(document).ready(function() {
                             "<li data-value='" +
                             className.id +
                             "' class='option'>" +
-                            className.class_name +
+                            className.age_group_name +
                             "</li>"
                         );
                     });
@@ -228,7 +228,7 @@ $(document).ready(function() {
                             $("#select-class").append(
                                 $("<option>", {
                                     value: className.id,
-                                    text: className.class_name,
+                                    text: className.age_group_name,
                                 })
                             );
 
@@ -236,7 +236,7 @@ $(document).ready(function() {
                                 "<li data-value='" +
                                 className.id +
                                 "' class='option'>" +
-                                className.class_name +
+                                className.age_group_name +
                                 "</li>"
                             );
                         });
@@ -285,16 +285,16 @@ $(document).ready(function() {
                     $(this).val("");
                     return false;
                 } else {
-                    school_id = $("#select-school").val();
+                    church_id = $("#select-school").val();
                 }
             } else {
-                school_id = 1;
+                church_id = 1;
             }
         }
 
         var formData = {
             id: $(this).val(),
-            school_id: school_id,
+            church_id: church_id,
         };
         // get section for student
         $.ajax({
@@ -335,16 +335,16 @@ $(document).ready(function() {
                     $(this).val("");
                     return false;
                 } else {
-                    school_id = $("#select-school").val();
+                    church_id = $("#select-school").val();
                 }
             } else {
-                school_id = 1;
+                church_id = 1;
             }
         }
 
         var formData = {
             id: $(this).val(),
-            school_id: school_id,
+            church_id: church_id,
         };
         // get section for student
         $.ajax({
@@ -385,16 +385,16 @@ $(document).ready(function() {
                     $(this).val("");
                     return false;
                 } else {
-                    school_id = $("#select-school").val();
+                    church_id = $("#select-school").val();
                 }
             } else {
-                school_id = 1;
+                church_id = 1;
             }
         }
 
         var formData = {
             id: $(this).val(),
-            school_id: school_id,
+            church_id: church_id,
         };
         // get section for student
         $.ajax({
@@ -435,16 +435,16 @@ $(document).ready(function() {
                     $(this).val("");
                     return false;
                 } else {
-                    school_id = $("#select-school").val();
+                    church_id = $("#select-school").val();
                 }
             } else {
-                school_id = 1;
+                church_id = 1;
             }
         }
 
         var formData = {
             id: $(this).val(),
-            school_id: school_id,
+            church_id: church_id,
         };
         // get section for student
         $.ajax({

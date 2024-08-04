@@ -19,7 +19,7 @@ class SmItemStoreController extends Controller
     public function index(Request $request)
     {
         try{
-            $itemstores = SmItemStore::where('school_id',Auth::user()->school_id)->get();
+            $itemstores = SmItemStore::where('church_id',Auth::user()->church_id)->get();
             return view('backEnd.inventory.itemStoreList', compact('itemstores'));
         }catch (\Exception $e) {
            Toastr::error('Operation Failed', 'Failed');
@@ -34,11 +34,11 @@ class SmItemStoreController extends Controller
             $stores->store_name = $request->store_name;
             $stores->store_no = $request->store_no;
             $stores->description = $request->description;
-            $stores->school_id = Auth::user()->school_id;
+            $stores->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $stores->un_academic_id = getAcademicId();
+                $stores->un_church_year_id = getAcademicId();
             }else{
-                $stores->academic_id = getAcademicId();
+                $stores->church_year_id = getAcademicId();
             }
             $stores->save();
 
@@ -54,7 +54,7 @@ class SmItemStoreController extends Controller
     {
         try{
             $editData = SmItemStore::find($id);
-            $itemstores = SmItemStore::where('school_id',Auth::user()->school_id)->get();
+            $itemstores = SmItemStore::where('church_id',Auth::user()->church_id)->get();
             return view('backEnd.inventory.itemStoreList', compact('editData', 'itemstores'));
         }catch (\Exception $e) {
            Toastr::error('Operation Failed', 'Failed');
@@ -70,7 +70,7 @@ class SmItemStoreController extends Controller
             $stores->store_no = $request->store_no;
             $stores->description = $request->description;
             if(moduleStatusCheck('University')){
-                $stores->un_academic_id = getAcademicId();
+                $stores->un_church_year_id = getAcademicId();
             }
             $stores->update();
 

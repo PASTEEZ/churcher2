@@ -17,7 +17,7 @@ class UniqueSubject implements Rule
     public function passes($attribute, $value)
     {
         
-        $isExist= LibrarySubject::where('id','!=', $this->id)->where('school_id', Auth::user()->school_id)->where('subject_name', $value)->exists();
+        $isExist= LibrarySubject::where('id','!=', $this->id)->where('church_id', Auth::user()->church_id)->where('subject_name', $value)->exists();
         
         if ($isExist) {
             return false;

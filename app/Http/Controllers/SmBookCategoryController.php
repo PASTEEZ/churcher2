@@ -19,7 +19,7 @@ class SmBookCategoryController extends Controller
     public function index()
     {
         try{
-            $bookCategories = SmBookCategory::where('school_id',Auth::user()->school_id)->orderby('id','DESC')->get();
+            $bookCategories = SmBookCategory::where('church_id',Auth::user()->church_id)->orderby('id','DESC')->get();
             return view('backEnd.library.bookCategoryList', compact('bookCategories'));
         }catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -53,8 +53,8 @@ class SmBookCategoryController extends Controller
         try{
             $categories = new SmBookCategory();
             $categories->category_name = $request->category_name;
-            $categories->school_id = Auth::user()->school_id;
-            $categories->academic_id = getAcademicId();
+            $categories->church_id = Auth::user()->church_id;
+            $categories->church_year_id = getAcademicId();
             $results = $categories->save();
 
             if ($results) {
@@ -96,9 +96,9 @@ class SmBookCategoryController extends Controller
             if (checkAdmin()) {
                 $editData = SmBookCategory::find($id);
             }else{
-                $editData = SmBookCategory::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+                $editData = SmBookCategory::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
             }
-            $bookCategories = SmBookCategory::where('school_id',Auth::user()->school_id)->get();
+            $bookCategories = SmBookCategory::where('church_id',Auth::user()->church_id)->get();
             return view('backEnd.library.bookCategoryList', compact('bookCategories', 'editData'));
         }catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -124,7 +124,7 @@ class SmBookCategoryController extends Controller
              if (checkAdmin()) {
                 $categories = SmBookCategory::find($id);
             }else{
-                $categories = SmBookCategory::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
+                $categories = SmBookCategory::where('id',$id)->where('church_id',Auth::user()->church_id)->first();
             }
             $categories->category_name = $request->category_name;
             $results = $categories->update();
@@ -153,7 +153,7 @@ class SmBookCategoryController extends Controller
                 if (checkAdmin()) {
                     $result = SmBookCategory::destroy($id);
                 }else{
-                    $result = SmBookCategory::where('id',$id)->where('school_id',Auth::user()->school_id)->delete();
+                    $result = SmBookCategory::where('id',$id)->where('church_id',Auth::user()->church_id)->delete();
                 }
                 if ($result) {
                     Toastr::success('Operation successful', 'Success');
@@ -203,7 +203,7 @@ class SmBookCategoryController extends Controller
                  if (checkAdmin()) {
                     $result = SmBookCategory::destroy($id);
                 }else{
-                    $result = SmBookCategory::where('id',$id)->where('school_id',Auth::user()->school_id)->delete();
+                    $result = SmBookCategory::where('id',$id)->where('church_id',Auth::user()->church_id)->delete();
                 }
                 if ($result) {
                     Toastr::success('Operation successful', 'Success');

@@ -35,20 +35,20 @@ class SmExamRoutineController extends Controller
     public function examSchedule()
     {
         try {
-            $exam_types = SmExamType::where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $exam_types = SmExamType::where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
             if (teacherAccess()) {
                 $teacher_info = SmStaff::where('user_id', Auth::user()->id)->first();
-                $classes = SmAssignSubject::where('teacher_id', $teacher_info->id)->join('sm_classes', 'sm_classes.id', 'sm_assign_subjects.class_id')
-                    ->where('sm_assign_subjects.academic_id', getAcademicId())
+                $classes = SmAssignSubject::where('teacher_id', $teacher_info->id)->join('sm_classes', 'sm_classes.id', 'sm_assign_subjects.age_group_id')
+                    ->where('sm_assign_subjects.church_year_id', getAcademicId())
                     ->where('sm_assign_subjects.active_status', 1)
-                    ->where('sm_assign_subjects.school_id', Auth::user()->school_id)
-                    ->select('sm_classes.id', 'class_name')
+                    ->where('sm_assign_subjects.church_id', Auth::user()->church_id)
+                    ->select('sm_classes.id', 'age_group_name')
                     ->groupBy('sm_classes.id')
                     ->get();
             } else {
                 $classes = SmClass::where('active_status', 1)
-                    ->where('academic_id', getAcademicId())
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_year_id', getAcademicId())
+                    ->where('church_id', Auth::user()->church_id)
                     ->get();
             }
             return view('backEnd.examination.exam_schedule', compact('classes', 'exam_types'));
@@ -64,23 +64,23 @@ class SmExamRoutineController extends Controller
         try {
             if (teacherAccess()) {
                 $teacher_info = SmStaff::where('user_id', Auth::user()->id)->first();
-                $classes = SmAssignSubject::where('teacher_id', $teacher_info->id)->join('sm_classes', 'sm_classes.id', 'sm_assign_subjects.class_id')
-                    ->where('sm_assign_subjects.academic_id', getAcademicId())
+                $classes = SmAssignSubject::where('teacher_id', $teacher_info->id)->join('sm_classes', 'sm_classes.id', 'sm_assign_subjects.age_group_id')
+                    ->where('sm_assign_subjects.church_year_id', getAcademicId())
                     ->where('sm_assign_subjects.active_status', 1)
-                    ->where('sm_assign_subjects.school_id', Auth::user()->school_id)
-                    ->select('sm_classes.id', 'class_name')
+                    ->where('sm_assign_subjects.church_id', Auth::user()->church_id)
+                    ->select('sm_classes.id', 'age_group_name')
                     ->groupBy('sm_classes.id')
                     ->get();
             } else {
                 $classes = SmClass::where('active_status', 1)
-                    ->where('academic_id', getAcademicId())
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_year_id', getAcademicId())
+                    ->where('church_id', Auth::user()->church_id)
                     ->get();
             }
-            $sections = SmSection::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-            $subjects = SmSubject::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-            $exams = SmExam::where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-            $exam_types = SmExamType::where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $sections = SmSection::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+            $subjects = SmSubject::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+            $exams = SmExam::where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+            $exam_types = SmExamType::where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
             return view('backEnd.examination.exam_schedule_create', compact('classes', 'exams', 'exam_types'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
@@ -88,14 +88,14 @@ class SmExamRoutineController extends Controller
         }
     }
 
-    public function addExamRoutineModal($subject_id, $exam_period_id, $class_id, $section_id, $exam_term_id, $section_id_all)
+    public function addExamRoutineModal($subject_id, $exam_period_id, $age_group_id, $mgender_id, $exam_term_id, $mgender_id_all)
     {
         try {
             $rooms = SmClassRoom::where('active_status', 1)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
-            return view('backEnd.examination.add_exam_routine_modal', compact('subject_id', 'exam_period_id', 'class_id', 'section_id', 'exam_term_id', 'rooms', 'section_id_all'));
+            return view('backEnd.examination.add_exam_routine_modal', compact('subject_id', 'exam_period_id', 'age_group_id', 'mgender_id', 'exam_term_id', 'rooms', 'mgender_id_all'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -106,12 +106,12 @@ class SmExamRoutineController extends Controller
     {
 
         try {
-            $exam_period_check = SmExamSchedule::where('class_id', $request->class_id)
-                ->where('section_id', $request->section_id)
+            $exam_period_check = SmExamSchedule::where('age_group_id', $request->age_group_id)
+                ->where('mgender_id', $request->mgender_id)
                 ->where('exam_period_id', $request->exam_period_id)
                 ->where('exam_term_id', $request->exam_term_id)
                 ->where('date', date('Y-m-d', strtotime($request->date)))
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->first();
 
             return response()->json(['exam_period_check' => $exam_period_check]);
@@ -125,12 +125,12 @@ class SmExamRoutineController extends Controller
     {
 
         try {
-            $update_exam_period_check = SmExamSchedule::where('class_id', $request->class_id)
-                ->where('section_id', $request->section_id)
+            $update_exam_period_check = SmExamSchedule::where('age_group_id', $request->age_group_id)
+                ->where('mgender_id', $request->mgender_id)
                 ->where('exam_period_id', $request->exam_period_id)
                 ->where('exam_term_id', $request->exam_term_id)
                 ->where('date', date('Y-m-d', strtotime($request->date)))
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->first();
 
             return response()->json(['update_exam_period_check' => $update_exam_period_check]);
@@ -140,28 +140,28 @@ class SmExamRoutineController extends Controller
         }
     }
 
-    public function EditExamRoutineModal($subject_id, $exam_period_id, $class_id, $section_id, $exam_term_id, $assigned_id, $section_id_all)
+    public function EditExamRoutineModal($subject_id, $exam_period_id, $age_group_id, $mgender_id, $exam_term_id, $assigned_id, $mgender_id_all)
     {
 
         try {
             $rooms = SmClassRoom::where('active_status', 1)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             $assigned_exam = SmExamSchedule::find($assigned_id);
 
-            return view('backEnd.examination.add_exam_routine_modal', compact('subject_id', 'exam_period_id', 'class_id', 'section_id', 'exam_term_id', 'rooms', 'assigned_exam', 'section_id_all'));
+            return view('backEnd.examination.add_exam_routine_modal', compact('subject_id', 'exam_period_id', 'age_group_id', 'mgender_id', 'exam_term_id', 'rooms', 'assigned_exam', 'mgender_id_all'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
         }
     }
 
-    public function deleteExamRoutineModal($assigned_id, $section_id_all)
+    public function deleteExamRoutineModal($assigned_id, $mgender_id_all)
     {
 
         try {
-            return view('backEnd.examination.delete_exam_routine', compact('assigned_id', 'section_id_all'));
+            return view('backEnd.examination.delete_exam_routine', compact('assigned_id', 'mgender_id_all'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -173,12 +173,12 @@ class SmExamRoutineController extends Controller
 
         try {
             if ($request->assigned_id == "") {
-                $check_date = SmExamSchedule::where('class_id', $request->class_id)->where('section_id', $request->section_id)->where('exam_term_id', $request->exam_term_id)->where('date', date('Y-m-d', strtotime($request->date)))->where('exam_period_id', $request->exam_period_id)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+                $check_date = SmExamSchedule::where('age_group_id', $request->age_group_id)->where('mgender_id', $request->mgender_id)->where('exam_term_id', $request->exam_term_id)->where('date', date('Y-m-d', strtotime($request->date)))->where('exam_period_id', $request->exam_period_id)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
             } else {
-                $check_date = SmExamSchedule::where('id', '!=', $request->assigned_id)->where('class_id', $request->class_id)->where('section_id', $request->section_id)->where('exam_term_id', $request->exam_term_id)->where('date', date('Y-m-d', strtotime($request->date)))->where('exam_period_id', $request->exam_period_id)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+                $check_date = SmExamSchedule::where('id', '!=', $request->assigned_id)->where('age_group_id', $request->age_group_id)->where('mgender_id', $request->mgender_id)->where('exam_term_id', $request->exam_term_id)->where('date', date('Y-m-d', strtotime($request->date)))->where('exam_period_id', $request->exam_period_id)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
             }
 
-            $holiday_check = SmHoliday::where('from_date', '<=', date('Y-m-d', strtotime($request->date)))->where('to_date', '>=', date('Y-m-d', strtotime($request->date)))->where('school_id', Auth::user()->school_id)->first();
+            $holiday_check = SmHoliday::where('from_date', '<=', date('Y-m-d', strtotime($request->date)))->where('to_date', '>=', date('Y-m-d', strtotime($request->date)))->where('church_id', Auth::user()->church_id)->first();
 
             if ($holiday_check != "") {
                 $from_date = date('jS M, Y', strtotime($holiday_check->from_date));
@@ -209,12 +209,12 @@ class SmExamRoutineController extends Controller
         try {
             $assign_subjects = SmAssignSubject::query();
             if (!empty($request->section)) {
-                $assign_subjects->where('section_id', $request->section);
+                $assign_subjects->where('mgender_id', $request->section);
             }
-            $assign_subjects = $assign_subjects->where('class_id', $request->class)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
-                ->groupby(['section_id', 'subject_id'])
+            $assign_subjects = $assign_subjects->where('age_group_id', $request->class)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
+                ->groupby(['mgender_id', 'subject_id'])
                 ->get();
 
             if ($assign_subjects->count() == 0) {
@@ -225,33 +225,33 @@ class SmExamRoutineController extends Controller
 
             $assign_subjects = SmAssignSubject::query();
             if (!empty($request->section)) {
-                $assign_subjects->where('section_id', $request->section);
+                $assign_subjects->where('mgender_id', $request->section);
             }
-            $assign_subjects = $assign_subjects->where('class_id', $request->class)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
-                ->groupby(['section_id', 'subject_id'])
+            $assign_subjects = $assign_subjects->where('age_group_id', $request->class)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
+                ->groupby(['mgender_id', 'subject_id'])
                 ->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-            $exams = SmExam::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-            $class_id = $request->class;
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+            $exams = SmExam::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+            $age_group_id = $request->class;
             if (empty($request->section)) {
-                $section_id = 0;
+                $mgender_id = 0;
             } else {
-                $section_id = $request->section;
+                $mgender_id = $request->section;
             }
             $exam_id = $request->exam;
 
-            $exam_types = SmExamType::where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-            $exam_periods = SmClassTime::where('type', 'exam')->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $exam_types = SmExamType::where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+            $exam_periods = SmClassTime::where('type', 'exam')->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
             $exam_schedules = SmExamSchedule::query();
             if (!empty($request->section)) {
-                $exam_schedules->where('section_id', $request->section);
+                $exam_schedules->where('mgender_id', $request->section);
             }
             $exam_schedules = $exam_schedules->where('exam_term_id', $exam_id)
-                ->where('class_id', $request->class)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('age_group_id', $request->class)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             // return $exam_schedules;
@@ -259,12 +259,12 @@ class SmExamRoutineController extends Controller
             $exam_dates = [];
             foreach ($exam_schedules as $exam_schedule) {
                 $exam_dates['date'] = $exam_schedule->date;
-                $exam_dates['section_id'] = $exam_schedule->section_id;
+                $exam_dates['mgender_id'] = $exam_schedule->mgender_id;
             }
 
             $exam_dates = array_unique($exam_dates);
 
-            return view('backEnd.examination.exam_schedule_new', compact('classes', 'exams', 'exam_schedules', 'assign_subjects', 'class_id', 'section_id', 'exam_id', 'exam_types', 'exam_periods', 'exam_dates'));
+            return view('backEnd.examination.exam_schedule_new', compact('classes', 'exams', 'exam_schedules', 'assign_subjects', 'age_group_id', 'mgender_id', 'exam_id', 'exam_types', 'exam_periods', 'exam_dates'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -298,26 +298,26 @@ class SmExamRoutineController extends Controller
         ]);
 
         try {
-            $assign_subjects = SmAssignSubject::where('class_id', $request->class)->where('section_id', $request->section)->where('school_id', Auth::user()->school_id)->get();
+            $assign_subjects = SmAssignSubject::where('age_group_id', $request->class)->where('mgender_id', $request->section)->where('church_id', Auth::user()->church_id)->get();
 
             if ($assign_subjects->count() == 0) {
                 Toastr::success('No Subject Assigned. Please assign subjects in this class.', 'Success');
                 return redirect('exam-schedule-create');
             }
 
-            $assign_subjects = SmAssignSubject::where('class_id', $request->class)->where('section_id', $request->section)->where('school_id', Auth::user()->school_id)->get();
+            $assign_subjects = SmAssignSubject::where('age_group_id', $request->class)->where('mgender_id', $request->section)->where('church_id', Auth::user()->church_id)->get();
 
-            $classes = SmClass::where('active_status', 1)->where('school_id', Auth::user()->school_id)->get();
-            $exams = SmExam::where('active_status', 1)->where('school_id', Auth::user()->school_id)->get();
+            $classes = SmClass::where('active_status', 1)->where('church_id', Auth::user()->church_id)->get();
+            $exams = SmExam::where('active_status', 1)->where('church_id', Auth::user()->church_id)->get();
 
-            $class_id = $request->class;
-            $section_id = $request->section;
+            $age_group_id = $request->class;
+            $mgender_id = $request->section;
             $exam_id = $request->exam;
 
             $exam_types = SmExamType::all();
-            $exam_periods = SmClassTime::where('type', 'exam')->where('school_id', Auth::user()->school_id)->get();
+            $exam_periods = SmClassTime::where('type', 'exam')->where('church_id', Auth::user()->church_id)->get();
 
-            return view('backEnd.examination.exam_schedule', compact('classes', 'exams', 'assign_subjects', 'class_id', 'section_id', 'exam_id', 'exam_types', 'exam_periods'));
+            return view('backEnd.examination.exam_schedule', compact('classes', 'exams', 'assign_subjects', 'age_group_id', 'mgender_id', 'exam_id', 'exam_types', 'exam_periods'));
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -329,23 +329,23 @@ class SmExamRoutineController extends Controller
         try {
             $assign_subjects = SmAssignSubject::query();
 
-            if ($request->section_id != 0) {
-                $assign_subjects->where('section_id', $request->section_id);
+            if ($request->mgender_id != 0) {
+                $assign_subjects->where('mgender_id', $request->mgender_id);
             }
-            $assign_subjects = $assign_subjects->where('class_id', $request->class_id)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
-                ->groupby(['section_id', 'subject_id'])
+            $assign_subjects = $assign_subjects->where('age_group_id', $request->age_group_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
+                ->groupby(['mgender_id', 'subject_id'])
                 ->get();
 
             $exam_periods = SmClassTime::where('type', 'exam')
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
-            $academic_year = SmAcademicYear::find(getAcademicId());
+            $church_year = SmAcademicYear::find(getAcademicId());
 
-            $class_id = $request->class_id;
+            $age_group_id = $request->age_group_id;
             $exam_id = $request->exam_id;
 
             $pdf = PDF::loadView(
@@ -353,9 +353,9 @@ class SmExamRoutineController extends Controller
                 [
                     'assign_subjects' => $assign_subjects,
                     'exam_periods' => $exam_periods,
-                    'class_id' => $request->class_id,
-                    'academic_year' => $academic_year,
-                    'section_id' => $request->section_id,
+                    'age_group_id' => $request->age_group_id,
+                    'church_year' => $church_year,
+                    'mgender_id' => $request->mgender_id,
                     'exam_id' => $request->exam_id,
                 ]
             )->setPaper('A4', 'landscape');
@@ -370,8 +370,8 @@ class SmExamRoutineController extends Controller
     {
 
         try {
-            $exam_types = SmExamType::where('school_id', Auth::user()->school_id)->where('academic_id', getAcademicId())->get();
-            $classes = SmClass::where('active_status', 1)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $exam_types = SmExamType::where('church_id', Auth::user()->church_id)->where('church_year_id', getAcademicId())->get();
+            $classes = SmClass::where('active_status', 1)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
             return view('backEnd.reports.exam_routine_report', compact('classes', 'exam_types'));
         } catch (\Exception $e) {
@@ -384,9 +384,9 @@ class SmExamRoutineController extends Controller
     {
 
         try {
-            $exam_types = SmExamType::where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-            $exam_periods = SmClassTime::where('type', 'exam')->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-            $exam_routines = SmExamSchedule::where('exam_term_id', $request->exam)->orderBy('date', 'ASC')->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $exam_types = SmExamType::where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+            $exam_periods = SmClassTime::where('type', 'exam')->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+            $exam_routines = SmExamSchedule::where('exam_term_id', $request->exam)->orderBy('date', 'ASC')->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
             $exam_term_id = $request->exam;
 
@@ -401,11 +401,11 @@ class SmExamRoutineController extends Controller
     {
 
         try {
-            $exam_types = SmExamType::where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-            $exam_periods = SmClassTime::where('type', 'exam')->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-            $exam_routines = SmExamSchedule::where('exam_term_id', $exam_id)->orderBy('date', 'ASC')->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $exam_types = SmExamType::where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+            $exam_periods = SmClassTime::where('type', 'exam')->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+            $exam_routines = SmExamSchedule::where('exam_term_id', $exam_id)->orderBy('date', 'ASC')->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
             $exam_routines = $exam_routines->groupBy('date');
-            $academic_year = SmAcademicYear::find(getAcademicId());
+            $church_year = SmAcademicYear::find(getAcademicId());
 
             $exam_term_id = $exam_id;
 
@@ -416,7 +416,7 @@ class SmExamRoutineController extends Controller
                     'exam_routines' => $exam_routines,
                     'exam_periods' => $exam_periods,
                     'exam_term_id' => $exam_term_id,
-                    'academic_year' => $academic_year,
+                    'church_year' => $church_year,
                 ]
             )->setPaper('A4', 'landscape');
             return $pdf->stream('exam_routine.pdf');
@@ -441,20 +441,20 @@ class SmExamRoutineController extends Controller
             $assign_subjects = SmAssignSubject::query();
 
             if ($request->class != null) {
-                $assign_subjects->where('class_id', $request->class);
-                $subject_ids->where('class_id', $request->class);
+                $assign_subjects->where('age_group_id', $request->class);
+                $subject_ids->where('age_group_id', $request->class);
             }
 
             if ($request->section != null) {
-                $assign_subjects->where('section_id', $request->section);
-                $subject_ids->where('section_id', $request->section);
+                $assign_subjects->where('mgender_id', $request->section);
+                $subject_ids->where('mgender_id', $request->section);
             }
 
-            $assign_subjects = $assign_subjects->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+            $assign_subjects = $assign_subjects->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
-            $subject_ids = $subject_ids->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+            $subject_ids = $subject_ids->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->pluck('id')->toArray();
 
             if ($assign_subjects->count() == 0) {
@@ -466,59 +466,59 @@ class SmExamRoutineController extends Controller
                 $teacher_info = SmStaff::where('user_id', Auth::user()->id)->first();
 
                 $classes = SmAssignSubject::where('teacher_id', $teacher_info->id)
-                    ->join('sm_classes', 'sm_classes.id', 'sm_assign_subjects.class_id')
-                    ->where('sm_assign_subjects.academic_id', getAcademicId())
+                    ->join('sm_classes', 'sm_classes.id', 'sm_assign_subjects.age_group_id')
+                    ->where('sm_assign_subjects.church_year_id', getAcademicId())
                     ->where('sm_assign_subjects.active_status', 1)
-                    ->where('sm_assign_subjects.school_id', Auth::user()->school_id)
-                    ->select('sm_classes.id', 'class_name')
+                    ->where('sm_assign_subjects.church_id', Auth::user()->church_id)
+                    ->select('sm_classes.id', 'age_group_name')
                     ->groupBy('sm_classes.id')
                     ->get();
             } else {
                 $classes = SmClass::where('active_status', 1)
-                    ->where('academic_id', getAcademicId())
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_year_id', getAcademicId())
+                    ->where('church_id', Auth::user()->church_id)
                     ->get();
             }
 
-            $class_id = $request->class;
-            $section_id = $request->section != null ? $request->section : 0;
+            $age_group_id = $request->class;
+            $mgender_id = $request->section != null ? $request->section : 0;
             $exam_type_id = $request->exam_type;
-            $exam_types = SmExamType::where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+            $exam_types = SmExamType::where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             $exam_schedule = SmExamSchedule::query();
             if ($request->class) {
-                $exam_schedule->where('class_id', $request->class);
+                $exam_schedule->where('age_group_id', $request->class);
             }
             if ($request->section) {
-                $exam_schedule->where('section_id', $request->section);
+                $exam_schedule->where('mgender_id', $request->section);
             }
             $exam_schedule = $exam_schedule->where('exam_term_id', $request->exam_type)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             $subjects = SmSubject::whereIn('id', $subject_ids)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get(['id', 'subject_name']);
 
             $teachers = SmStaff::where('role_id', 4)->where('active_status', 1)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get(['id', 'user_id', 'full_name']);
 
-            $rooms = SmClassRoom::where('active_status', 1)->where('school_id', Auth::user()->school_id)
+            $rooms = SmClassRoom::where('active_status', 1)->where('church_id', Auth::user()->church_id)
                 ->get(['id', 'room_no']);
 
             $examName = SmExamType::where('id', $request->exam_type)->where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)->first()->title;
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)->first()->title;
 
             $search_current_class = SmClass::find($request->class);
             $search_current_section = SmSection::find($request->section);
 
-            return view('backEnd.examination.exam_schedule_new_update', compact('classes', 'subjects', 'exam_schedule', 'class_id', 'section_id', 'exam_type_id', 'exam_types', 'teachers', 'rooms', 'examName', 'search_current_class', 'search_current_section'));
+            return view('backEnd.examination.exam_schedule_new_update', compact('classes', 'subjects', 'exam_schedule', 'age_group_id', 'mgender_id', 'exam_type_id', 'exam_types', 'teachers', 'rooms', 'examName', 'search_current_class', 'search_current_section'));
         } catch (\Exception $e) {          
             Toastr::error('Operation Failed', 'Failed');
             return redirect()->back();
@@ -534,15 +534,15 @@ class SmExamRoutineController extends Controller
 
         try {
             $exam_schedule = SmExamSchedule::query();
-            if ($request->class_id) {
-                $exam_schedule->where('class_id', $request->class_id);
+            if ($request->age_group_id) {
+                $exam_schedule->where('age_group_id', $request->age_group_id);
             }
-            if ($request->section_id != 0) {
-                $exam_schedule->where('section_id', $request->section);
+            if ($request->mgender_id != 0) {
+                $exam_schedule->where('mgender_id', $request->section);
             }
             $exam_schedule = $exam_schedule->where('exam_term_id', $request->exam_type_id)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->delete();
 
             foreach ($request->routine as $routine_data) {
@@ -554,9 +554,9 @@ class SmExamRoutineController extends Controller
                         'start_time' => date('H:i:s', strtotime(gv($routine_data, 'start_time'))),
                         'end_time' => date('H:i:s', strtotime(gv($routine_data, 'end_time'))),
                         'room_id' => gv($routine_data, 'room'),
-                        'class_id' => $request->class_id,
-                        'section_id' => gv($routine_data, 'section'),
-                    ])->where('school_id', Auth::user()->school_id)->first();
+                        'age_group_id' => $request->age_group_id,
+                        'mgender_id' => gv($routine_data, 'section'),
+                    ])->where('church_id', Auth::user()->church_id)->first();
 
                 if ($is_exist) {
                     continue;
@@ -564,27 +564,27 @@ class SmExamRoutineController extends Controller
 
                 $exam_routine = new SmExamSchedule();
                 $exam_routine->exam_term_id = $request->exam_type_id;
-                $exam_routine->class_id = $request->class_id;
-                $exam_routine->section_id = gv($routine_data, 'section');
+                $exam_routine->age_group_id = $request->age_group_id;
+                $exam_routine->mgender_id = gv($routine_data, 'section');
                 $exam_routine->subject_id = gv($routine_data, 'subject');
                 $exam_routine->teacher_id = gv($routine_data, 'teacher_id');
                 $exam_routine->date = date('Y-m-d', strtotime(gv($routine_data, 'date')));
                 $exam_routine->start_time = date('H:i:s', strtotime(gv($routine_data, 'start_time')));
                 $exam_routine->end_time = date('H:i:s', strtotime(gv($routine_data, 'end_time')));
                 $exam_routine->room_id = gv($routine_data, 'room');
-                $exam_routine->school_id = Auth::user()->school_id;
-                $exam_routine->academic_id = getAcademicId();
+                $exam_routine->church_id = Auth::user()->church_id;
+                $exam_routine->church_year_id = getAcademicId();
                 $exam_routine->save();
 
             }
 
             Toastr::success('Exam routine has been assigned successfully', 'Success');
 
-            $class_id = $request->class_id;
-            $section_id = $request->section_id == 0 ? 0 : $request->section_id;
+            $age_group_id = $request->age_group_id;
+            $mgender_id = $request->mgender_id == 0 ? 0 : $request->mgender_id;
             $exam_term_id = $request->exam_type_id;
 
-            return redirect('exam-routine-view/' . $class_id . '/' . $section_id . '/' . $exam_term_id);
+            return redirect('exam-routine-view/' . $age_group_id . '/' . $mgender_id . '/' . $exam_term_id);
 
         } catch (\Exception $e) {
 
@@ -593,72 +593,72 @@ class SmExamRoutineController extends Controller
         }
     }
 
-    public function examRoutineView($class_id, $section_id, $exam_term_id)
+    public function examRoutineView($age_group_id, $mgender_id, $exam_term_id)
     {
 
         try {
 
             $subject_ids = SmExamSetup::query();
 
-            if ($class_id != null) {
-                $subject_ids->where('class_id', $class_id);
+            if ($age_group_id != null) {
+                $subject_ids->where('age_group_id', $age_group_id);
             }
 
-            if ($section_id != 0) {
+            if ($mgender_id != 0) {
 
-                $subject_ids->where('section_id', $section_id);
+                $subject_ids->where('mgender_id', $mgender_id);
             }
 
-            $subject_ids = $subject_ids->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+            $subject_ids = $subject_ids->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->pluck('id')->toArray();
 
             $classes = SmClass::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
             $exams = SmExam::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             $exam_type_id = $exam_term_id;
 
-            $exam_types = SmExamType::where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+            $exam_types = SmExamType::where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
             $exam_periods = SmClassTime::where('type', 'exam')
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
             $rooms = SmClassRoom::where('active_status', 1)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             $subjects = SmSubject::whereIn('id', $subject_ids)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get(['id', 'subject_name']);
 
             $teachers = SmStaff::where('role_id', 4)->where('active_status', 1)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get(['id', 'user_id', 'full_name']);
 
-            $search_current_class = SmClass::find($class_id);
-            $search_current_section = SmSection::find($section_id);
+            $search_current_class = SmClass::find($age_group_id);
+            $search_current_section = SmSection::find($mgender_id);
 
-            if ($section_id == 0) {
-                $exam_schedule = SmExamSchedule::where('class_id', $class_id)->where('exam_term_id', $exam_type_id)->get();
+            if ($mgender_id == 0) {
+                $exam_schedule = SmExamSchedule::where('age_group_id', $age_group_id)->where('exam_term_id', $exam_type_id)->get();
             } else {
-                $exam_schedule = SmExamSchedule::where('class_id', $class_id)->where('section_id', $section_id)
+                $exam_schedule = SmExamSchedule::where('age_group_id', $age_group_id)->where('mgender_id', $mgender_id)
                     ->where('exam_term_id', $exam_type_id)->get();
             }
 
             $examName = SmExamType::where('id', $exam_type_id)->where('active_status', 1)
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->first()->title;
 
-            return view('backEnd.examination.exam_schedule_new_update', compact('classes', 'subjects', 'exam_schedule', 'exams', 'class_id', 'section_id', 'exam_type_id', 'exam_types', 'teachers', 'rooms', 'examName', 'search_current_class', 'search_current_section'));
+            return view('backEnd.examination.exam_schedule_new_update', compact('classes', 'subjects', 'exam_schedule', 'exams', 'age_group_id', 'mgender_id', 'exam_type_id', 'exam_types', 'teachers', 'rooms', 'examName', 'search_current_class', 'search_current_section'));
         } catch (\Exception $e) {
 
             Toastr::error('Operation Failed', 'Failed');
@@ -666,34 +666,34 @@ class SmExamRoutineController extends Controller
         }
     }
 
-    public function examRoutinePrint($class_id, $section_id, $exam_term_id)
+    public function examRoutinePrint($age_group_id, $mgender_id, $exam_term_id)
     {
 
         try {
 
             $exam_type_id = $exam_term_id;
             $exam_type = SmExamType::find($exam_type_id)->title;
-            $academic_id = SmExamType::find($exam_type_id)->academic_id;
-            $academic_year = SmAcademicYear::find($academic_id);
-            $class_name = SmClass::find($class_id)->class_name;
-            $section_name = $section_id != 0 ? SmSection::find($section_id)->section_name : 'All Sections';
+            $church_year_id = SmExamType::find($exam_type_id)->church_year_id;
+            $church_year = SmAcademicYear::find($church_year_id);
+            $age_group_name = SmClass::find($age_group_id)->age_group_name;
+            $mgender_name = $mgender_id != 0 ? SmSection::find($mgender_id)->mgender_name : 'All Sections';
 
-            if ($section_id == 0) {
+            if ($mgender_id == 0) {
 
-                $exam_schedules = SmExamSchedule::where('class_id', $class_id)->where('exam_term_id', $exam_type_id)->orderBy('date', 'ASC')->get();
+                $exam_schedules = SmExamSchedule::where('age_group_id', $age_group_id)->where('exam_term_id', $exam_type_id)->orderBy('date', 'ASC')->get();
 
             } else {
 
-                $exam_schedules = SmExamSchedule::where('class_id', $class_id)->where('section_id', $section_id)
+                $exam_schedules = SmExamSchedule::where('age_group_id', $age_group_id)->where('mgender_id', $mgender_id)
                     ->where('exam_term_id', $exam_type_id)->orderBy('date', 'ASC')->get();
             }
 
              return view('backEnd.examination.exam_schedule_print', [
                  'exam_schedules' => $exam_schedules,
                  'exam_type' => $exam_type,
-                 'class_name' => $class_name,
-                 'academic_year' => $academic_year,
-                 'section_name' => $section_name,
+                 'age_group_name' => $age_group_name,
+                 'church_year' => $church_year,
+                 'mgender_name' => $mgender_name,
              ]);
 
         } catch (\Exception $e) {

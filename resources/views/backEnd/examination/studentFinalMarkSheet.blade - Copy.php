@@ -174,14 +174,14 @@
                                     </div>
 
                                     <div class="col-lg-3 mt-30" id="select_un_student_div">
-                                        {{ Form::select('student_id',[""=>__('common.select_student').'*'], null , ['class' => 'niceSelect w-100 bb form-control'. ($errors->has('student_id') ? ' is-invalid' : ''), 'id'=>'select_un_student']) }}
+                                        {{ Form::select('member_id',[""=>__('common.select_student').'*'], null , ['class' => 'niceSelect w-100 bb form-control'. ($errors->has('member_id') ? ' is-invalid' : ''), 'id'=>'select_un_student']) }}
                                         <span class="focus-border"></span>
                                         <div class="pull-right loader loader_style" id="select_un_student_loader">
                                             <img class="loader_img_style" src="{{asset('public/backEnd/img/demo_wait.gif')}}" alt="loader">
                                         </div>
-                                        @if ($errors->has('student_id'))
+                                        @if ($errors->has('member_id'))
                                             <span class="invalid-feedback custom-error-message" role="alert">
-                                                {{ @$errors->first('student_id') }}
+                                                {{ @$errors->first('member_id') }}
                                             </span>
                                         @endif
                                     </div>
@@ -195,7 +195,7 @@
                                         *
                                     </option>
                                     @foreach($classes as $class)
-                                        <option value="{{$class->id}}" {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{$class->class_name}}</option>
+                                        <option value="{{$class->id}}" {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{$class->age_group_name}}</option>
                                     @endforeach
                                 </select>
                                 @if ($errors->has('class'))
@@ -261,9 +261,9 @@
                             <div class="print_button pull-right">
                                 {{ Form::open(['class' => 'form-horizontal', 'files' => true, 'route' => 'progress-card/print', 'method' => 'POST', 'enctype' => 'multipart/form-data', 'id' => 'search_student', 'target' => '_blank']) }}
 
-                                <input type="hidden" name="class_id" value="{{$class_id}}">
-                                <input type="hidden" name="section_id" value="{{$section_id}}">
-                                <input type="hidden" name="student_id" value="{{$student_id}}">
+                                <input type="hidden" name="age_group_id" value="{{$age_group_id}}">
+                                <input type="hidden" name="mgender_id" value="{{$mgender_id}}">
+                                <input type="hidden" name="member_id" value="{{$member_id}}">
                                 
                                 <button type="submit" class="primary-btn small fix-gr-bg"><i class="ti-printer"> </i> @lang('common.print')
                                 </button>
@@ -280,11 +280,11 @@
                                             <div class="card-header">
                                                     <div class="d-flex">
                                                             <div class="col-lg-2">
-                                                            <img class="logo-img" src="{{ generalSetting()->logo }}" alt="{{generalSetting()->school_name}}">
+                                                            <img class="logo-img" src="{{ generalSetting()->logo }}" alt="{{generalSetting()->church_name}}">
                                                             </div>
                                                             <div class="col-lg-6 ml-30">
                                                                 <h3 class="text-white"> 
-                                                                    {{isset(generalSetting()->school_name)?generalSetting()->school_name:'Infix School Management ERP'}} 
+                                                                    {{isset(generalSetting()->church_name)?generalSetting()->church_name:'Infix School Management ERP'}} 
                                                                 </h3> 
                                                                 <p class="text-white mb-0">
                                                                     {{isset(generalSetting()->address)?generalSetting()->address:'Infix School Address'}} 
@@ -312,18 +312,18 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <p class="mb-0">
-                                                                    @lang('common.academic_year') : &nbsp;<span class="primary-color fw-500">{{ @$studentDetails->academic->year }}</span>
+                                                                    @lang('common.church_year') : &nbsp;<span class="primary-color fw-500">{{ @$studentDetails->academic->year }}</span>
                                                                 </p>
                                                                 <p class="mb-0">
-                                                                    @lang('common.section') : &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="primary-color fw-500">{{ $studentDetails->section->section_name }}</span>
+                                                                    @lang('common.section') : &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="primary-color fw-500">{{ $studentDetails->section->mgender_name }}</span>
                                                                 </p>
                                                                 <p class="mb-0">
-                                                                    @lang('common.class') : &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="primary-color fw-500">{{ $studentDetails->class->class_name }}</span>
+                                                                    @lang('common.class') : &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="primary-color fw-500">{{ $studentDetails->class->age_group_name }}</span>
                                                                 </p>
                                                             </div>
                                                             <div class="col-lg-6">
                                                                 <p class="mb-0">
-                                                                    @lang('student.admission_no') : <span class="primary-color fw-500">{{$studentDetails->studentDetail->admission_no}}</span>
+                                                                    @lang('student.registration_no') : <span class="primary-color fw-500">{{$studentDetails->studentDetail->registration_no}}</span>
                                                                 </p>
                                                                 <p class="mb-0">
                                                                     @lang('student.roll') : &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span class="primary-color fw-500">{{$studentDetails->roll_no}}</span>
@@ -409,13 +409,13 @@
                                                                 $totalSubjectFail = 0;
                                                                 $TotalSum = 0;
                                                                 foreach($assinged_exam_types as $assinged_exam_type){
-                                                                $mark_parts = App\SmAssignSubject::getNumberOfPart($data->subject_id, $class_id, $section_id, $assinged_exam_type);
-                                                                $result = App\SmResultStore::GetResultBySubjectId($class_id, $section_id, $data->subject_id, $assinged_exam_type, $student_id);
+                                                                $mark_parts = App\SmAssignSubject::getNumberOfPart($data->subject_id, $age_group_id, $mgender_id, $assinged_exam_type);
+                                                                $result = App\SmResultStore::GetResultBySubjectId($age_group_id, $mgender_id, $data->subject_id, $assinged_exam_type, $member_id);
                                                                 
                                                                 if (!empty($result)) {
-                                                                    $final_results = App\SmResultStore::GetFinalResultBySubjectId($class_id, $section_id, $data->subject_id, $assinged_exam_type, $student_id);
+                                                                    $final_results = App\SmResultStore::GetFinalResultBySubjectId($age_group_id, $mgender_id, $data->subject_id, $assinged_exam_type, $member_id);
 
-                                                                    $term_base = App\SmResultStore::termBaseMark($class_id, $section_id, $data->subject_id, $assinged_exam_type, $student_id);
+                                                                    $term_base = App\SmResultStore::termBaseMark($age_group_id, $mgender_id, $data->subject_id, $assinged_exam_type, $member_id);
                                                                 }
                                                                 $total_subject += $assinged_exam_type;
                                                                 $subject_full_mark = subjectFullMark($assinged_exam_type, $data->subject_id);
@@ -508,27 +508,27 @@
                                                             @foreach($assinged_exam_types as $assinged_exam_type)
                                                                 @php
                                                                     $exam_type = App\SmExamType::examType($assinged_exam_type);
-                                                                    $term_base_gpa=termWiseGpa($assinged_exam_type, $student_id);
+                                                                    $term_base_gpa=termWiseGpa($assinged_exam_type, $member_id);
                                                                     $with_percent_average_gpa +=$term_base_gpa;
 
-                                                                    $term_base_full_mark=termWiseTotalMark($assinged_exam_type, $student_id);
+                                                                    $term_base_full_mark=termWiseTotalMark($assinged_exam_type, $member_id);
                                                                     $average_gpa+=$term_base_full_mark;
 
                                                                     if($optional_subject_setup!='' && $student_optional_subject!=''){
 
-                                                                        $optional_subject_gpa = optionalSubjectFullMark($assinged_exam_type,$student_id,@$optional_subject_setup->gpa_above,"optional_sub_gpa");
+                                                                        $optional_subject_gpa = optionalSubjectFullMark($assinged_exam_type,$member_id,@$optional_subject_setup->gpa_above,"optional_sub_gpa");
                                                                         $optional_subject_total_gpa += $optional_subject_gpa;
 
-                                                                        $optional_subject_above_gpa = optionalSubjectFullMark($assinged_exam_type,$student_id,@$optional_subject_setup->gpa_above,"with_optional_sub_gpa");
+                                                                        $optional_subject_above_gpa = optionalSubjectFullMark($assinged_exam_type,$member_id,@$optional_subject_setup->gpa_above,"with_optional_sub_gpa");
                                                                         $optional_subject_total_above_gpa += $optional_subject_above_gpa;
 
-                                                                        $without_subject_gpa = optionalSubjectFullMark($assinged_exam_type,$student_id,@$optional_subject_setup->gpa_above,"without_optional_sub_gpa");
+                                                                        $without_subject_gpa = optionalSubjectFullMark($assinged_exam_type,$member_id,@$optional_subject_setup->gpa_above,"without_optional_sub_gpa");
                                                                         $without_additional_subject_total_gpa += $without_subject_gpa;
 
-                                                                        $with_additional_subject_gpa = termWiseAddOptionalMark($assinged_exam_type,$student_id,@$optional_subject_setup->gpa_above);
+                                                                        $with_additional_subject_gpa = termWiseAddOptionalMark($assinged_exam_type,$member_id,@$optional_subject_setup->gpa_above);
                                                                         $with_additional_subject_addition += $with_additional_subject_gpa;
 
-                                                                    $with_optional_percentages=termWiseGpa($assinged_exam_type, $student_id,$with_optional_subject_extra_gpa);
+                                                                    $with_optional_percentages=termWiseGpa($assinged_exam_type, $member_id,$with_optional_subject_extra_gpa);
                                                                     $total_with_optional_percentage += $with_optional_percentages;
                                                                 }
                                                             @endphp
@@ -604,7 +604,7 @@
                                                             @else
                                                                 <td colspan="{{$colspan / $col_for_result + 9}}"
                                                                     class="text-center" style="padding:10px;">
-                                                                    {{gradeName(number_format(termWiseFullMark($assinged_exam_types,$student_id),2,'.',''))}}
+                                                                    {{gradeName(number_format(termWiseFullMark($assinged_exam_types,$member_id),2,'.',''))}}
                                                                 </td>
                                                             @endif
                                                         </tr>
@@ -624,7 +624,7 @@
                                                                 <td colspan="{{$colspan / $col_for_result + 9}}"
                                                                     class="text-center"
                                                                     style="padding:10px; font-weight:bold">
-                                                                    {{number_format(termWiseFullMark($assinged_exam_types,$student_id),2,'.','')}}
+                                                                    {{number_format(termWiseFullMark($assinged_exam_types,$member_id),2,'.','')}}
                                                                 </td>
                                                             @endif
                                                         </tr>
@@ -639,7 +639,7 @@
                                                             @else
                                                                 <td colspan="{{$colspan / $col_for_result - 1}}" class="text-center">@lang('reports.remarks')</td>
                                                                 <td colspan="{{$colspan / $col_for_result + 9}}" class="text-center" style="padding:10px; font-weight:bold">
-                                                                    {{remarks(number_format(termWiseFullMark($assinged_exam_types,$student_id),2,'.',''))}}
+                                                                    {{remarks(number_format(termWiseFullMark($assinged_exam_types,$member_id),2,'.',''))}}
                                                                 </td>
                                                             @endif
                                                         </tr>
@@ -694,7 +694,7 @@
                     var url = $("#url").val();
                     var i = 0;
                     let semester_id = $(this).val();
-                    let academic_id = $('#select_academic').val();  
+                    let church_year_id = $('#select_academic').val();  
                     let session_id = $('#select_session').val();
                     let faculty_id = $('#select_faculty').val();
                     let department_id = $('#select_dept').val();
@@ -733,7 +733,7 @@
 
                         return ;
                     }
-                    if (academic_id =='') {
+                    if (church_year_id =='') {
                         setTimeout(function() {
                             toastr.error(
                             "Academic Not Found",
@@ -754,7 +754,7 @@
 
                     var formData = {
                         semester_id : semester_id,
-                        academic_id : academic_id,
+                        church_year_id : church_year_id,
                         session_id : session_id,
                         faculty_id : faculty_id,
                         department_id : department_id,

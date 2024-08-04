@@ -27,7 +27,7 @@ class SmExpenseHeadController extends Controller
     {
 
         try{
-            $expense_heads = SmExpenseHead::where('school_id',Auth::user()->school_id)->get();
+            $expense_heads = SmExpenseHead::where('church_id',Auth::user()->church_id)->get();
             return view('backEnd.accounts.expense_head', compact('expense_heads'));
         }catch (\Exception $e) {
            Toastr::error('Operation Failed', 'Failed');
@@ -46,8 +46,8 @@ class SmExpenseHeadController extends Controller
             $expense_head = new SmExpenseHead();
             $expense_head->name = $request->name;
             $expense_head->description = $request->description;
-            $expense_head->school_id = Auth::user()->school_id;
-            $expense_head->academic_id = getAcademicId();
+            $expense_head->church_id = Auth::user()->church_id;
+            $expense_head->church_year_id = getAcademicId();
             $result = $expense_head->save();
             if($result){
                 Toastr::success('Operation successful', 'Success');
@@ -70,7 +70,7 @@ class SmExpenseHeadController extends Controller
 
         try{
             $expense_head = SmExpenseHead::find($id);
-            $expense_heads = SmExpenseHead::where('school_id',Auth::user()->school_id)->get();
+            $expense_heads = SmExpenseHead::where('church_id',Auth::user()->church_id)->get();
             return view('backEnd.accounts.expense_head', compact('expense_heads', 'expense_head'));
         }catch (\Exception $e) {
            Toastr::error('Operation Failed', 'Failed');

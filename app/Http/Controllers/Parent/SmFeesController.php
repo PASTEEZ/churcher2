@@ -32,24 +32,24 @@ class SmFeesController extends Controller
         try {
             $student = SmStudent::where('id', $id)->first();
             $records = studentRecords(null, $student->id)->with('fees.feesGroupMaster', 'class', 'section')->get();
-            $fees_assigneds = SmFeesAssign::where('student_id', $student->id)->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
-            $fees_discounts = SmFeesAssignDiscount::where('student_id', $student->id)
+            $fees_assigneds = SmFeesAssign::where('member_id', $student->id)->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
+            $fees_discounts = SmFeesAssignDiscount::where('member_id', $student->id)
                             ->where('record_id', $records->pluck('id')->toArray())
-                            ->where('academic_id', getAcademicId())
-                            ->where('school_id', Auth::user()->school_id)
+                            ->where('church_year_id', getAcademicId())
+                            ->where('church_id', Auth::user()->church_id)
                             ->get();
 
-            $applied_discount = SmFeesPayment::where('active_status',1)->where('record_id', $records->pluck('id')->toArray())->whereIn('fees_discount_id', $fees_discounts->pluck('id')->toArray())->where('student_id', $student->id)
-                ->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->pluck('id')->toArray();
+            $applied_discount = SmFeesPayment::where('active_status',1)->where('record_id', $records->pluck('id')->toArray())->whereIn('fees_discount_id', $fees_discounts->pluck('id')->toArray())->where('member_id', $student->id)
+                ->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->pluck('id')->toArray();
 
-            $stripe_info = SmPaymentGatewaySetting::where('gateway_name', 'stripe')->where('school_id', Auth::user()->school_id)->first();
-            // $data['bank_info'] = DB::table('sm_payment_methhods')->where('method', 'Bank')->where('school_id', Auth::user()->school_id)->get();
-            $data['bank_info'] = SmPaymentMethhod::where('method', 'Bank')->where('school_id', Auth::user()->school_id)->first();
-            $data['cheque_info'] = SmPaymentMethhod::where('method', 'Cheque')->where('school_id', Auth::user()->school_id)->first();
-            $is_RazorPay = DB::table('sm_payment_methhods')->where('method', 'RazorPay')->where('active_status', 1)->where('school_id', Auth::user()->school_id)->first();
-            $is_paystack = DB::table('sm_payment_methhods')->where('method','Paystack')->where('active_status',1)->where('school_id', Auth::user()->school_id)->first();
-            $is_stripe = DB::table('sm_payment_methhods')->where('method','Stripe')->where('active_status',1)->where('school_id', Auth::user()->school_id)->first();
-            $razorpay_info = DB::table('sm_payment_gateway_settings')->where('gateway_name', 'RazorPay')->where('school_id', Auth::user()->school_id)->first();
+            $stripe_info = SmPaymentGatewaySetting::where('gateway_name', 'stripe')->where('church_id', Auth::user()->church_id)->first();
+            // $data['bank_info'] = DB::table('sm_payment_methhods')->where('method', 'Bank')->where('church_id', Auth::user()->church_id)->get();
+            $data['bank_info'] = SmPaymentMethhod::where('method', 'Bank')->where('church_id', Auth::user()->church_id)->first();
+            $data['cheque_info'] = SmPaymentMethhod::where('method', 'Cheque')->where('church_id', Auth::user()->church_id)->first();
+            $is_RazorPay = DB::table('sm_payment_methhods')->where('method', 'RazorPay')->where('active_status', 1)->where('church_id', Auth::user()->church_id)->first();
+            $is_paystack = DB::table('sm_payment_methhods')->where('method','Paystack')->where('active_status',1)->where('church_id', Auth::user()->church_id)->first();
+            $is_stripe = DB::table('sm_payment_methhods')->where('method','Stripe')->where('active_status',1)->where('church_id', Auth::user()->church_id)->first();
+            $razorpay_info = DB::table('sm_payment_gateway_settings')->where('gateway_name', 'RazorPay')->where('church_id', Auth::user()->church_id)->first();
             $payment_gateway = SmPaymentMethhod::first();
       
             return view('backEnd.parentPanel.childrenFees', compact('student','records','is_paystack','is_stripe','razorpay_info', 'razorpay_info', 'is_RazorPay', 'fees_assigneds', 'fees_discounts', 'applied_discount', 'stripe_info', 'data','payment_gateway'));
@@ -94,10 +94,10 @@ class SmFeesController extends Controller
             $payment->note = $request->note;
             $payment->slip = $fileName;
             $payment->fees_type_id = $request->fees_type_id;
-            $payment->student_id = $request->student_id;
+            $payment->member_id = $request->member_id;
             $payment->payment_mode = $request->payment_mode;
-            $payment->school_id = Auth::user()->school_id;
-            $payment->academic_id = getAcademicId();
+            $payment->church_id = Auth::user()->church_id;
+            $payment->church_year_id = getAcademicId();
             $payment->save();
 
             Toastr::success('Operation successful', 'Success');
@@ -119,19 +119,19 @@ class SmFeesController extends Controller
         return view('backEnd.feesCollection.view_bank_payment', compact('fees_payment'));
     }
 
-    public function feesGenerateModalChildEdit(Request $request, $amount, $student_id, $type, $id)
+    public function feesGenerateModalChildEdit(Request $request, $amount, $member_id, $type, $id)
     {
 
         try {
 
             $amount = $amount;
             $fees_type_id = $type;
-            $student_id = $student_id;
-            $discounts = SmFeesAssignDiscount::where('student_id', $student_id)->where('school_id', Auth::user()->school_id)->get();
+            $member_id = $member_id;
+            $discounts = SmFeesAssignDiscount::where('member_id', $member_id)->where('church_id', Auth::user()->church_id)->get();
 
             $applied_discount = [];
             foreach ($discounts as $fees_discount) {
-                $fees_payment = SmFeesPayment::where('active_status',1)->select('fees_discount_id')->where('fees_discount_id', $fees_discount->id)->where('school_id', Auth::user()->school_id)->first();
+                $fees_payment = SmFeesPayment::where('active_status',1)->select('fees_discount_id')->where('fees_discount_id', $fees_discount->id)->where('church_id', Auth::user()->church_id)->first();
                 if (isset($fees_payment->fees_discount_id)) {
                     $applied_discount[] = $fees_payment->fees_discount_id;
                 }
@@ -145,13 +145,13 @@ class SmFeesController extends Controller
                 $data['amount'] = $amount;
                 $data['discounts'] = $discounts;
                 $data['fees_type_id'] = $fees_type_id;
-                $data['student_id'] = $student_id;
+                $data['member_id'] = $member_id;
                 $data['applied_discount'] = $applied_discount;
                 return ApiBaseMethod::sendResponse($data, null);
             }
 
 
-            return view('backEnd.feesCollection.fees_generate_modal_child', compact('amount', 'discounts', 'fees_type_id', 'student_id', 'applied_discount', 'fees_payment'));
+            return view('backEnd.feesCollection.fees_generate_modal_child', compact('amount', 'discounts', 'fees_type_id', 'member_id', 'applied_discount', 'fees_payment'));
 
         } catch (\Exception $e) {
             Toastr::error('Operation Failed', 'Failed');

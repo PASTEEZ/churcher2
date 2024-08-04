@@ -212,7 +212,7 @@
                                         *
                                     </option>
                                     @foreach($classes as $class)
-                                        <option value="{{$class->id}}" {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{$class->class_name}}</option>
+                                        <option value="{{$class->id}}" {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{$class->age_group_name}}</option>
                                     @endforeach
                                 </select>
                                 @if ($errors->has('class'))
@@ -278,9 +278,9 @@
                             <div class="print_button pull-right">
                                 {{ Form::open(['class' => 'form-horizontal', 'files' => true, 'route' => 'progress-card/print', 'method' => 'POST', 'enctype' => 'multipart/form-data', 'id' => 'search_student', 'target' => '_blank']) }}
 
-                                <input type="hidden" name="class_id" value="{{$class_id}}">
-                                <input type="hidden" name="section_id" value="{{$section_id}}">
-                                <input type="hidden" name="student_id" value="{{$studentDetails->id}}">
+                                <input type="hidden" name="age_group_id" value="{{$age_group_id}}">
+                                <input type="hidden" name="mgender_id" value="{{$mgender_id}}">
+                                <input type="hidden" name="member_id" value="{{$studentDetails->id}}">
                                 <input type="hidden" name="custom_mark_report" value="{{@$custom_mark_report}}">
 
                                 <button type="submit" class="primary-btn small fix-gr-bg"><i class="ti-printer"> </i> @lang('common.print')
@@ -298,11 +298,11 @@
                                             <div class="card-header">
                                                     <div class="d-flex">
                                                             <div class="col-lg-2">
-                                                            <img class="logo-img" src="{{ generalSetting()->logo }}" alt="{{generalSetting()->school_name}}">
+                                                            <img class="logo-img" src="{{ generalSetting()->logo }}" alt="{{generalSetting()->church_name}}">
                                                             </div>
                                                             <div class="col-lg-8 text-center">
                                                                 <h3 class="text-white" style="font-size: 30px; margin-bottom: 0px;">
-                                                                    {{isset(generalSetting()->school_name)?generalSetting()->school_name:'Infix School Management ERP'}}
+                                                                    {{isset(generalSetting()->church_name)?generalSetting()->church_name:'Infix School Management ERP'}}
                                                                 </h3>
                                                                 <p class="text-white mb-0" style="font-size: 16px;">
                                                                     {{isset(generalSetting()->address)?generalSetting()->address:'Infix School Address'}}
@@ -326,19 +326,19 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <p class="mb-0">
-                                                                    @lang('common.academic_year') : <span class="primary-color fw-500">{{ @$studentDetails->academic->year }}</span>
+                                                                    @lang('common.church_year') : <span class="primary-color fw-500">{{ @$studentDetails->academic->year }}</span>
                                                                 </p>
                                                                 <p class="mb-0">
-                                                                    @lang('student.admission_no') : <span class="primary-color fw-500">{{$studentDetails->studentDetail->admission_no}}</span>
+                                                                    @lang('student.registration_no') : <span class="primary-color fw-500">{{$studentDetails->studentDetail->registration_no}}</span>
                                                                 </p>
                                                                 <p class="mb-0">
                                                                     @lang('student.roll') :<span class="primary-color fw-500">{{$studentDetails->roll_no}}</span>
                                                                 </p>
                                                                 <p class="mb-0">
-                                                                    @lang('common.class') :<span class="primary-color fw-500">{{ $studentDetails->class->class_name }}</span>
+                                                                    @lang('common.class') :<span class="primary-color fw-500">{{ $studentDetails->class->age_group_name }}</span>
                                                                 </p>
                                                                 <p class="mb-0">
-                                                                    @lang('common.section') :<span class="primary-color fw-500">{{ $studentDetails->section->section_name }}</span>
+                                                                    @lang('common.section') :<span class="primary-color fw-500">{{ $studentDetails->section->mgender_name }}</span>
                                                                 </p>
 
                                                             </div>
@@ -430,16 +430,16 @@
                                                                 $totalSubjectFail = 0;
                                                                 $TotalSum = 0;
                                                                 foreach($assinged_exam_types as $assinged_exam_type){
-                                                                $mark_parts = App\SmAssignSubject::getNumberOfPart($data->subject_id, $class_id, $section_id, $assinged_exam_type);
-                                                                $result = App\SmResultStore::GetResultBySubjectId($class_id, $section_id, $data->subject_id, $assinged_exam_type, $studentDetails->id);
+                                                                $mark_parts = App\SmAssignSubject::getNumberOfPart($data->subject_id, $age_group_id, $mgender_id, $assinged_exam_type);
+                                                                $result = App\SmResultStore::GetResultBySubjectId($age_group_id, $mgender_id, $data->subject_id, $assinged_exam_type, $studentDetails->id);
 
                                                                 if (!empty($result)) {
-                                                                    $final_results = App\SmResultStore::GetFinalResultBySubjectId($class_id, $section_id, $data->subject_id, $assinged_exam_type, $studentDetails->id);
+                                                                    $final_results = App\SmResultStore::GetFinalResultBySubjectId($age_group_id, $mgender_id, $data->subject_id, $assinged_exam_type, $studentDetails->id);
 
-                                                                    $term_base = App\SmResultStore::termBaseMark($class_id, $section_id, $data->subject_id, $assinged_exam_type, $studentDetails->id);
+                                                                    $term_base = App\SmResultStore::termBaseMark($age_group_id, $mgender_id, $data->subject_id, $assinged_exam_type, $studentDetails->id);
                                                                 }
                                                                 $total_subject += $assinged_exam_type;
-                                                                $subject_full_mark = subjectFullMark($assinged_exam_type, $data->subject_id, $class_id, $section_id);
+                                                                $subject_full_mark = subjectFullMark($assinged_exam_type, $data->subject_id, $age_group_id, $mgender_id);
                                                                 $total_additional_subject_gpa += @$optional_subject_setup->gpa_above;
                                                                 if($result->count() > 0){
                                                                 ?>
@@ -635,7 +635,7 @@
                                                                 @else
                                                                     <td colspan="{{$colspan / $col_for_result - 1}}">@lang('reports.position')</td>
                                                                     <td colspan="{{$colspan / $col_for_result + 6}}" style="padding:10px; font-weight:bold">
-                                                                        {{getStudentAllExamMeritPosition($class_id, $section_id, $studentDetails->id)}}
+                                                                        {{getStudentAllExamMeritPosition($age_group_id, $mgender_id, $studentDetails->id)}}
                                                                     </td>
                                                                 @endif
                                                             </tr>

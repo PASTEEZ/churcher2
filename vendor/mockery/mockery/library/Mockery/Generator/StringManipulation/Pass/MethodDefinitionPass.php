@@ -135,10 +135,10 @@ BODY;
         // in case more parameters are passed in than the function definition
         // says - eg varargs.
         $class = $method->getDeclaringClass();
-        $class_name = strtolower($class->getName());
+        $age_group_name = strtolower($class->getName());
         $overrides = $config->getParameterOverrides();
-        if (isset($overrides[$class_name][$method->getName()])) {
-            $params = array_values($overrides[$class_name][$method->getName()]);
+        if (isset($overrides[$age_group_name][$method->getName()])) {
+            $params = array_values($overrides[$age_group_name][$method->getName()]);
             $paramCount = count($params);
             for ($i = 0; $i < $paramCount; ++$i) {
                 $param = $params[$i];

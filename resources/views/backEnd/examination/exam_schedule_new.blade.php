@@ -62,7 +62,7 @@
                                             value="">@lang('common.select_class') *
                                     </option>
                                     @foreach($classes as $class)
-                                        <option value="{{@$class->id}}" {{isset($class_id) ? ($class_id == $class->id? 'selected':''):''}}>{{@$class->class_name}}</option>
+                                        <option value="{{@$class->id}}" {{isset($age_group_id) ? ($age_group_id == $class->id? 'selected':''):''}}>{{@$class->age_group_name}}</option>
                                     @endforeach
                                 </select>
                                 @if ($errors->has('class'))
@@ -107,8 +107,8 @@
                         <h3 class="mb-0">@lang('exam.exam_routine')| 
                                                         <small>
                                      @lang('exam.exam'): {{@$examName != '' ? $examName :' '}},
-                                     @lang('common.class'): {{@$search_current_class != '' ? $search_current_class->class_name :' '}}, 
-                                     @lang('common.section'): {{@$search_current_section !='' ? $search_current_section->section_name : 'All Sections'}},
+                                     @lang('common.class'): {{@$search_current_class != '' ? $search_current_class->age_group_name :' '}}, 
+                                     @lang('common.section'): {{@$search_current_section !='' ? $search_current_section->mgender_name : 'All Sections'}},
                                       
                                     </small>
                                 </h3>
@@ -117,7 +117,7 @@
                 <div class="col-lg-6 pull-right">
                     <div class="main-title">
                         <div class="print_button pull-right mb-30">
-                            <a href="{{route('exam-routine-print', [$class_id, $section_id,$exam_type_id])}}" class="primary-btn small fix-gr-bg pull-left" target="_blank"><i class="ti-printer"> </i> @lang('common.print')</a>
+                            <a href="{{route('exam-routine-print', [$age_group_id, $mgender_id,$exam_type_id])}}" class="primary-btn small fix-gr-bg pull-left" target="_blank"><i class="ti-printer"> </i> @lang('common.print')</a>
                         </div>
                     </div>
                 </div>
@@ -148,7 +148,7 @@
                                 <td>
                                   <strong> {{ $exam_routine->subject ? $exam_routine->subject->subject_name :'' }} </strong>  {{ $exam_routine->subject ? '('.$exam_routine->subject->subject_code .')':'' }}
                                 </td>
-                                <td>{{ $exam_routine->class ? $exam_routine->class->class_name :'' }} {{ $exam_routine->section ? '('. $exam_routine->section->section_name .')':'' }}</td>
+                                <td>{{ $exam_routine->class ? $exam_routine->class->age_group_name :'' }} {{ $exam_routine->section ? '('. $exam_routine->section->mgender_name .')':'' }}</td>
                                 <td>{{ $exam_routine->teacher ? $exam_routine->teacher->full_name :'' }}</td>
                                
                                 <td> {{ date('h:i A', strtotime(@$exam_routine->start_time))  }} - {{ date('h:i A', strtotime(@$exam_routine->end_time))  }} </td>

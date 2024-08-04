@@ -63,7 +63,7 @@ Route::group(['middleware' => ['XSS','subscriptionAccessUrl']], function () {
 
         Route::view('/admin-setup', 'frontEnd.admin_setup');
         Route::view('/general-setting', 'frontEnd.general_setting');
-        Route::view('/student-id', 'frontEnd.student_id');
+        Route::view('/student-id', 'frontEnd.member_id');
         Route::view('/add-homework', 'frontEnd.add_homework');
         // Route::view('/fees-collection-invoice', 'frontEnd.fees_collection_invoice');
         Route::view('/exam-promotion-naim', 'frontEnd.exam_promotion');
@@ -192,14 +192,14 @@ Route::group(['middleware' => ['XSS','subscriptionAccessUrl']], function () {
         Route::get('subject-attendance-average-report', 'Admin\StudentInfo\SmSubjectAttendanceController@subjectAttendanceAverageReport');
         Route::post('subject-attendance-average-report', 'Admin\StudentInfo\SmSubjectAttendanceController@subjectAttendanceAverageReportSearch');
 
-        // Route::get('subject-attendance-report/print/{class_id}/{section_id}/{month}/{year}', 'Admin\StudentInfo\SmSubjectAttendanceController@subjectAttendanceReportPrint');
-        Route::get('subject-attendance-average/print/{class_id}/{section_id}/{month}/{year}', 'Admin\StudentInfo\SmSubjectAttendanceController@subjectAttendanceReportAveragePrint')->name('subject-average-attendance/print')->middleware('userRolePermission:536');
+        // Route::get('subject-attendance-report/print/{age_group_id}/{mgender_id}/{month}/{year}', 'Admin\StudentInfo\SmSubjectAttendanceController@subjectAttendanceReportPrint');
+        Route::get('subject-attendance-average/print/{age_group_id}/{mgender_id}/{month}/{year}', 'Admin\StudentInfo\SmSubjectAttendanceController@subjectAttendanceReportAveragePrint')->name('subject-average-attendance/print')->middleware('userRolePermission:536');
 
         // for university module
 
         Route::get('un-subject-attendance-average/print/{semester_label_id}/{month}/{year}', 'Admin\StudentInfo\SmSubjectAttendanceController@unSubjectAttendanceReportAveragePrint')->name('un-subject-average-attendance/print')->middleware('userRolePermission:536');
 
-        Route::get('subject-attendance/print/{class_id}/{section_id}/{month}/{year}', 'Admin\StudentInfo\SmSubjectAttendanceController@subjectAttendanceReportPrint')->name('subject-attendance/print')->middleware('userRolePermission:536');
+        Route::get('subject-attendance/print/{age_group_id}/{mgender_id}/{month}/{year}', 'Admin\StudentInfo\SmSubjectAttendanceController@subjectAttendanceReportPrint')->name('subject-attendance/print')->middleware('userRolePermission:536');
         //*********************************************** END SUBJECT WISE ATTENDANCE ****************************************************** */
 
 
@@ -208,7 +208,7 @@ Route::group(['middleware' => ['XSS','subscriptionAccessUrl']], function () {
         Route::get('member-attendance-report', ['as' => 'student_attendance_report', 'uses' => 'Admin\StudentInfo\SmStudentAttendanceReportController@index'])->middleware('userRolePermission:70');
         Route::post('member-attendance-report-search', ['as' => 'student_attendance_report_search', 'uses' => 'Admin\StudentInfo\SmStudentAttendanceReportController@search']);
         Route::get('member-attendance-report-search', 'Admin\StudentInfo\SmStudentAttendanceReportController@index');
-        Route::get('member-attendance/print/{class_id}/{section_id}/{month}/{year}', 'Admin\StudentInfo\SmStudentAttendanceReportController@print')->name('student-attendance-print');
+        Route::get('member-attendance/print/{age_group_id}/{mgender_id}/{month}/{year}', 'Admin\StudentInfo\SmStudentAttendanceReportController@print')->name('student-attendance-print');
 
 
         // for university module
@@ -256,7 +256,7 @@ Route::group(['middleware' => ['XSS','subscriptionAccessUrl']], function () {
 
 
         Route::post('class-routine-new', 'Admin\Academics\SmClassRoutineNewController@classRoutineSearch')->name('class_routine_new');
-        Route::get('add-new-routine/{class_time_id}/{day}/{class_id}/{section_id}', 'Admin\Academics\SmClassRoutineNewController@addNewClassRoutine')->name('add-new-routine')->middleware('userRolePermission:247');
+        Route::get('add-new-routine/{class_time_id}/{day}/{age_group_id}/{mgender_id}', 'Admin\Academics\SmClassRoutineNewController@addNewClassRoutine')->name('add-new-routine')->middleware('userRolePermission:247');
 
         Route::post('add-new-class-routine-store', 'Admin\Academics\SmClassRoutineNewController@addNewClassRoutineStore')->name('add-new-class-routine-store');
 
@@ -264,11 +264,11 @@ Route::group(['middleware' => ['XSS','subscriptionAccessUrl']], function () {
         Route::get('get-class-teacher-ajax', 'Admin\Academics\SmClassRoutineNewController@getClassTeacherAjax');
         Route::get('add-new-class-routine-store', 'Admin\Academics\SmClassRoutineNewController@classRoutineSearch');
 
-        Route::get('edit-class-routine/{class_time_id}/{day}/{class_id}/{section_id}/{subject_id}/{room_id}/{assigned_id}/{teacher_id}', 'Admin\Academics\SmClassRoutineNewController@addNewClassRoutineEdit')->name('edit-class-routine')->middleware('userRolePermission:248');
+        Route::get('edit-class-routine/{class_time_id}/{day}/{age_group_id}/{mgender_id}/{subject_id}/{room_id}/{assigned_id}/{teacher_id}', 'Admin\Academics\SmClassRoutineNewController@addNewClassRoutineEdit')->name('edit-class-routine')->middleware('userRolePermission:248');
 
         Route::get('delete-class-routine-modal/{id}', 'Admin\Academics\SmClassRoutineNewController@deleteClassRoutineModal')->name('delete-class-routine-modal')->middleware('userRolePermission:249');
         Route::get('delete-class-routine/{id}', 'Admin\Academics\SmClassRoutineNewController@deleteClassRoutine')->name('delete-class-routine')->middleware('userRolePermission:249');
-        Route::get('class-routine-new/{class_id}/{section_id}', 'Admin\Academics\SmClassRoutineNewController@classRoutineRedirect');
+        Route::get('class-routine-new/{age_group_id}/{mgender_id}', 'Admin\Academics\SmClassRoutineNewController@classRoutineRedirect');
         Route::post('delete-class-routine', 'Admin\Academics\SmClassRoutineNewController@destroyClassRoutine')->name('destroy-class-routine')->middleware('userRolePermission:249');
         //Student Panel
 
@@ -372,7 +372,7 @@ Route::group(['middleware' => ['XSS','subscriptionAccessUrl']], function () {
         Route::post('fees-discount-assign-store', 'Admin\FeesCollection\SmFeesDiscountController@feesDiscountAssignStore');
         Route::post('directfees/fees-discount-assign-store', 'Admin\FeesCollection\SmFeesDiscountController@directFeesDiscountAssignStore')->name('directFees.fees-discount-assign-store');
 
-        Route::get('fees-generate-modal/{amount}/{student_id}/{type}/{master}/{assign_id}/{record_id}', 'Admin\FeesCollection\SmFeesController@feesGenerateModal')->name('fees-generate-modal')->middleware('userRolePermission:111');
+        Route::get('fees-generate-modal/{amount}/{member_id}/{type}/{master}/{assign_id}/{record_id}', 'Admin\FeesCollection\SmFeesController@feesGenerateModal')->name('fees-generate-modal')->middleware('userRolePermission:111');
         Route::get('fees-discount-amount-search', 'Admin\FeesCollection\SmFeesDiscountController@feesDiscountAmountSearch');
         //delete fees payment
         Route::post('fees-payment-delete', 'Admin\FeesCollection\SmFeesController@feesPaymentDelete')->name('fees-payment-delete');
@@ -476,7 +476,7 @@ Route::group(['middleware' => ['XSS','subscriptionAccessUrl']], function () {
         // merit list Report
         Route::get('merit-list-report', ['as' => 'merit_list_report', 'uses' => 'Admin\Examination\SmExaminationController@meritListReport'])->middleware('userRolePermission:388');
         Route::post('merit-list-report', ['as' => 'merit_list_report', 'uses' => 'Admin\Examination\SmExaminationController@meritListReportSearch']);
-        Route::get('merit-list/print/{exam_id}/{class_id}/{section_id}',  'Admin\Examination\SmExaminationController@meritListPrint')->name('merit-list/print');
+        Route::get('merit-list/print/{exam_id}/{age_group_id}/{mgender_id}',  'Admin\Examination\SmExaminationController@meritListPrint')->name('merit-list/print');
 
 
         //tabulation sheet report
@@ -523,7 +523,7 @@ Route::group(['middleware' => ['XSS','subscriptionAccessUrl']], function () {
         // mark sheet Report
         Route::get('mark-sheet-report', ['as' => 'mark_sheet_report', 'uses' => 'Admin\Examination\SmExaminationController@markSheetReport']);
         Route::post('mark-sheet-report', ['as' => 'mark_sheet_report', 'uses' => 'Admin\Examination\SmExaminationController@markSheetReportSearch']);
-        Route::get('mark-sheet-report/print/{exam_id}/{class_id}/{section_id}/{student_id}', ['as' => 'mark_sheet_report_print', 'uses' => 'Admin\Examination\SmExaminationController@markSheetReportStudentPrint']);
+        Route::get('mark-sheet-report/print/{exam_id}/{age_group_id}/{mgender_id}/{member_id}', ['as' => 'mark_sheet_report_print', 'uses' => 'Admin\Examination\SmExaminationController@markSheetReportStudentPrint']);
 
 
         //mark sheet report student
@@ -776,8 +776,8 @@ Route::group(['middleware' => ['XSS','subscriptionAccessUrl']], function () {
         Route::post('exam-schedule-report-search', ['as' => 'exam_schedule_report_search', 'uses' => 'Admin\Examination\SmExamRoutineController@examScheduleReportSearch']);
 
         Route::get('exam-schedule-report-search', ['as' => 'exam_schedule_report_search', 'uses' => 'Admin\Examination\SmExamRoutineController@examSchedule']);
-        Route::get('exam-schedule/print/{exam_id}/{class_id}/{section_id}', ['as' => 'exam_schedule_print', 'uses' => 'Admin\Examination\SmExamRoutineController@examSchedulePrint']);
-        Route::get('view-exam-schedule/{class_id}/{section_id}/{exam_id}', ['as' => 'view_exam_schedule', 'uses' => 'Admin\Examination\SmExaminationController@viewExamSchedule']);
+        Route::get('exam-schedule/print/{exam_id}/{age_group_id}/{mgender_id}', ['as' => 'exam_schedule_print', 'uses' => 'Admin\Examination\SmExamRoutineController@examSchedulePrint']);
+        Route::get('view-exam-schedule/{age_group_id}/{mgender_id}/{exam_id}', ['as' => 'view_exam_schedule', 'uses' => 'Admin\Examination\SmExaminationController@viewExamSchedule']);
 
 
         //Exam Schedule create
@@ -785,23 +785,23 @@ Route::group(['middleware' => ['XSS','subscriptionAccessUrl']], function () {
         Route::post('exam-schedule-create', ['as' => 'exam_schedule_create', 'uses' => 'Admin\Examination\SmExamRoutineController@examScheduleSearch'])->middleware('userRolePermission:218');
 
 
-        Route::get('add-exam-routine-modal/{subject_id}/{exam_period_id}/{class_id}/{section_id}/{exam_term_id}/{section_id_all}', 'Admin\Examination\SmExamRoutineController@addExamRoutineModal')->name('add-exam-routine-modal')->middleware('userRolePermission:219');
+        Route::get('add-exam-routine-modal/{subject_id}/{exam_period_id}/{age_group_id}/{mgender_id}/{exam_term_id}/{mgender_id_all}', 'Admin\Examination\SmExamRoutineController@addExamRoutineModal')->name('add-exam-routine-modal')->middleware('userRolePermission:219');
 
-        Route::get('delete-exam-routine-modal/{assigned_id}/{section_id_all}', 'Admin\Examination\SmExamRoutineController@deleteExamRoutineModal')->name('delete-exam-routine-modal');
+        Route::get('delete-exam-routine-modal/{assigned_id}/{mgender_id_all}', 'Admin\Examination\SmExamRoutineController@deleteExamRoutineModal')->name('delete-exam-routine-modal');
         Route::post('delete-exam-routine', 'SmExamRoutineController@deleteExamRoutine')->name('delete-exam-routine');/* delete exam rouitne for update =abunayem */
 
         Route::get('check-exam-routine-period', 'Admin\Examination\SmExamRoutineController@checkExamRoutinePeriod');
         Route::get('update-exam-routine-period', 'Admin\Examination\SmExamRoutineController@updateExamRoutinePeriod');
 
-        Route::get('edit-exam-routine-modal/{subject_id}/{exam_period_id}/{class_id}/{section_id}/{exam_term_id}/{assigned_id}/{section_id_all}', 'Admin\Examination\SmExamRoutineController@EditExamRoutineModal')->name('edit-exam-routine-modal');
+        Route::get('edit-exam-routine-modal/{subject_id}/{exam_period_id}/{age_group_id}/{mgender_id}/{exam_term_id}/{assigned_id}/{mgender_id_all}', 'Admin\Examination\SmExamRoutineController@EditExamRoutineModal')->name('edit-exam-routine-modal');
 
 
         Route::post('add-exam-routine-store', 'Admin\Examination\SmExamRoutineController@addExamRoutineStore')->name('add-exam-routine-store');
 
         Route::get('check-exam-routine-date', 'Admin\Examination\SmExamRoutineController@checkExamRoutineDate');
 
-        Route::get('exam-routine-view/{class_id}/{section_id}/{exam_period_id}', 'Admin\Examination\SmExamRoutineController@examRoutineView');
-        Route::get('exam-routine-print/{class_id}/{section_id}/{exam_period_id}', 'Admin\Examination\SmExamRoutineController@examRoutinePrint')->name('exam-routine-print');
+        Route::get('exam-routine-view/{age_group_id}/{mgender_id}/{exam_period_id}', 'Admin\Examination\SmExamRoutineController@examRoutineView');
+        Route::get('exam-routine-print/{age_group_id}/{mgender_id}/{exam_period_id}', 'Admin\Examination\SmExamRoutineController@examRoutinePrint')->name('exam-routine-print');
 
         //view exam status
         Route::get('view-exam-status/{exam_id}', ['as' => 'view_exam_status', 'uses' => 'Admin\Examination\SmExaminationController@viewExamStatus']);
@@ -1337,7 +1337,7 @@ Route::group(['middleware' => ['XSS','subscriptionAccessUrl']], function () {
         // Student Attendance
         Route::get('member-attendance', ['as' => 'student_attendance', 'uses' => 'Admin\StudentInfo\SmStudentAttendanceController@index'])->middleware('userRolePermission:68');
         Route::post('member-search', 'Admin\StudentInfo\SmStudentAttendanceController@studentSearch')->name('student-search');
-        Route::any('ajax-member-attendance-search/{class_id}/{section}/{date}', 'DatatableQueryController@AjaxStudentSearch');
+        Route::any('ajax-member-attendance-search/{age_group_id}/{section}/{date}', 'DatatableQueryController@AjaxStudentSearch');
         Route::get('member-search', 'Admin\StudentInfo\SmStudentAttendanceController@index');
 
         Route::post('member-attendance-store', 'Admin\StudentInfo\SmStudentAttendanceController@studentAttendanceStore')->name('student-attendance-store')->middleware('userRolePermission:69');
@@ -1536,9 +1536,9 @@ Route::group(['middleware' => ['XSS','subscriptionAccessUrl']], function () {
         Route::get('homework-delete/{id}', ['as' => 'homework_delete', 'uses' => 'Admin\Homework\SmHomeworkController@homeworkDelete'])->middleware('userRolePermission:283');
         Route::get('add-homeworks', ['as' => 'add-homeworks', 'uses' => 'Admin\Homework\SmHomeworkController@addHomework'])->middleware('userRolePermission:278');
         Route::post('save-homework-data', ['as' => 'saveHomeworkData', 'uses' => 'Admin\Homework\SmHomeworkController@saveHomeworkData'])->middleware('userRolePermission:279');
-        Route::get('download-uploaded-content-admin/{id}/{student_id}', 'Admin\Homework\SmHomeworkController@downloadHomeworkData')->name('download-uploaded-content-admin');
-        //Route::get('evaluation-homework/{class_id}/{section_id}', 'Admin\Homework\SmHomeworkController@evaluationHomework');
-        Route::get('evaluation-homework/{class_id}/{section_id}/{homework_id}', 'Admin\Homework\SmHomeworkController@evaluationHomework')->name('evaluation-homework')->middleware('userRolePermission:281');
+        Route::get('download-uploaded-content-admin/{id}/{member_id}', 'Admin\Homework\SmHomeworkController@downloadHomeworkData')->name('download-uploaded-content-admin');
+        //Route::get('evaluation-homework/{age_group_id}/{mgender_id}', 'Admin\Homework\SmHomeworkController@evaluationHomework');
+        Route::get('evaluation-homework/{age_group_id}/{mgender_id}/{homework_id}', 'Admin\Homework\SmHomeworkController@evaluationHomework')->name('evaluation-homework')->middleware('userRolePermission:281');
         Route::get('university/evaluation-homework/{sem_label_id}/{homework_id}', 'Admin\Homework\SmHomeworkController@unEvaluationHomework')->name('university.unevaluation-homework')->middleware('userRolePermission:281');
         Route::post('save-homework-evaluation-data', ['as' => 'save-homework-evaluation-data', 'uses' => 'Admin\Homework\SmHomeworkController@saveHomeworkEvaluationData']);
         Route::get('evaluation-report', 'Admin\Homework\SmHomeworkController@EvaluationReport')->name('evaluation-report')->middleware('userRolePermission:284');
@@ -1887,11 +1887,11 @@ Route::group(['middleware' => ['XSS','subscriptionAccessUrl']], function () {
         //Route::post('stripe_post', 'SmSmsTestController@stripePost');
 
         //Collect fees By Online Payment Gateway(Paypal)
-        Route::get('collect-fees-gateway/{amount}/{student_id}/{type}', 'SmCollectFeesByPaymentGateway@collectFeesByGateway');
+        Route::get('collect-fees-gateway/{amount}/{member_id}/{type}', 'SmCollectFeesByPaymentGateway@collectFeesByGateway');
         Route::post('payByPaypal', 'SmCollectFeesByPaymentGateway@payByPaypal')->name('payByPaypal');
 
         //Collect fees By Online Payment Gateway(Stripe)
-        Route::get('collect-fees-stripe/{amount}/{student_id}/{type}', 'SmCollectFeesByPaymentGateway@collectFeesStripe');
+        Route::get('collect-fees-stripe/{amount}/{member_id}/{type}', 'SmCollectFeesByPaymentGateway@collectFeesStripe');
         Route::post('collect-fees-stripe-strore', 'SmCollectFeesByPaymentGateway@stripeStore')->name('collect-fees-stripe-strore');
 
         // To Do list
@@ -2094,7 +2094,7 @@ Route::group(['middleware' => ['XSS','subscriptionAccessUrl']], function () {
     Route::get('ajax-get-academic','Admin\StudentInfo\SmStudentAdmissionController@getSchool')
     ->name('get-school')->middleware('userRolePermission:527');
     Route::post('student/record-store', 'Admin\StudentInfo\SmStudentAdmissionController@recordStore')->name('student.record.store');
-    Route::get('student/assign-edit/{student_id}/{record_id}', 'Admin\StudentInfo\SmStudentAdmissionController@recordEdit')->name('student_assign_edit');
+    Route::get('student/assign-edit/{member_id}/{record_id}', 'Admin\StudentInfo\SmStudentAdmissionController@recordEdit')->name('student_assign_edit');
     Route::post('student/record-update', 'Admin\StudentInfo\SmStudentAdmissionController@recordUpdate')->name('student.record.update');
     Route::get('student/check-exit', 'Admin\StudentInfo\SmStudentAdmissionController@checkExitStudent');
 
@@ -2136,12 +2136,12 @@ Route::group(['middleware' => ['XSS','subscriptionAccessUrl']], function () {
 
     // Unassigned Student
     Route::get('unassigned-member', ['as' => 'unassigned_student', 'uses' => 'SmStudentAdmissionController@unassignedStudent'])->middleware('userRolePermission:15209');
-    Route::get('sorting-member-list/{class_id}', ['as' => 'sorting_student_list', 'uses' => 'SmStudentAdmissionController@sortingStudent'])->middleware('userRolePermission:83');
-    Route::get('sorting-member-status-list/{class_id}/{section_id}', ['as' => 'sorting_student_list_section', 'uses' => 'SmStudentAdmissionController@sortingSectionStudent'])->middleware('userRolePermission:83');
+    Route::get('sorting-member-list/{age_group_id}', ['as' => 'sorting_student_list', 'uses' => 'SmStudentAdmissionController@sortingStudent'])->middleware('userRolePermission:83');
+    Route::get('sorting-member-status-list/{age_group_id}/{mgender_id}', ['as' => 'sorting_student_list_section', 'uses' => 'SmStudentAdmissionController@sortingSectionStudent'])->middleware('userRolePermission:83');
 
     Route::get('multi-membership-type', 'Admin\StudentInfo\StudentMultiRecordController@multiRecord')->name('student.multi-class-student')->middleware('userRolePermission:15201');
 
-    Route::get('member-multi-record/{student_id}', 'Admin\StudentInfo\StudentMultiRecordController@studentMultiRecord')->name('student.student-multi-record');
+    Route::get('member-multi-record/{member_id}', 'Admin\StudentInfo\StudentMultiRecordController@studentMultiRecord')->name('student.student-multi-record');
 
     Route::post('member-record-delete', 'Admin\StudentInfo\StudentMultiRecordController@studentRecordDelete')->name('student.multi-record-delete');
 

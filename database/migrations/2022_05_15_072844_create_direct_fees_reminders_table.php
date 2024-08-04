@@ -19,9 +19,9 @@ class CreateDirectFeesRemindersTable extends Migration
             $table->id();
             $table->integer('due_date_before');
             $table->string('notification_types');
-            $table->integer('academic_id')->nullable()->default(1)->unsigned();
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_year_id')->nullable()->default(1)->unsigned();
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
             $table->timestamps();
         });
 
@@ -30,7 +30,7 @@ class CreateDirectFeesRemindersTable extends Migration
         foreach($schools as $school){
             $data = new DirectFeesReminder();
             $data->due_date_before = 5;
-            $data->school_id = $school->id;
+            $data->church_id = $school->id;
             $data->notification_types = '["system"]';
             $data->save();
         }

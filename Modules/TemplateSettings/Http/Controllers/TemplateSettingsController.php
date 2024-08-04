@@ -48,7 +48,7 @@ class TemplateSettingsController extends Controller
 
     public function emailTemplate()
     {
-        $emailTempletes = SmsTemplate::where('type', 'email')->where('school_id', auth()->user()->school_id)->get();
+        $emailTempletes = SmsTemplate::where('type', 'email')->where('church_id', auth()->user()->church_id)->get();
 
         return view('templatesettings::emailTemplate', compact('emailTempletes'));
     }
@@ -66,7 +66,7 @@ class TemplateSettingsController extends Controller
             $updateData->subject = $request->subject;
             $updateData->body = $request->body;
             $updateData->status = ($request->status)? $request->status: 0;
-            $updateData->school_id = Auth::user()->school_id;
+            $updateData->church_id = Auth::user()->church_id;
             $updateData->update();
             Toastr::success('Operation success', 'Success');
             return redirect()->route('templatesettings.email-template');
@@ -80,7 +80,7 @@ class TemplateSettingsController extends Controller
     {
         try {
             $smsTemplates = SmsTemplate::where('type','sms')
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
 
             return view('templatesettings::smsTemplate', compact('smsTemplates'));
@@ -96,7 +96,7 @@ class TemplateSettingsController extends Controller
             $updateData->type = 'sms';
             $updateData->body = $request->body;
             $updateData->status = $request->status? 1 : 0;
-            $updateData->school_id = Auth::user()->school_id;
+            $updateData->church_id = Auth::user()->church_id;
             $updateData->update();
             Toastr::success('Operation success', 'Success');
             return redirect()->route('templatesettings.sms-template');

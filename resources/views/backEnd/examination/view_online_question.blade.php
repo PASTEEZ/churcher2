@@ -38,7 +38,7 @@
                                         <div class="col-lg-7 mt-20">
                                             <h3>@lang('exam.exam_name') : {{@$online_exam->title}}</h3>
                                                         <h4><strong>@lang('common.subject') : </strong>{{@$online_exam->subject !=""?@$online_exam->subject->subject_name:""}}</h4>
-                                                        <h4><strong>@lang('common.class_Sec') : </strong>{{@$online_exam->class !=""?@$online_exam->class->class_name:""}} ({{@$online_exam->section !=""?@$online_exam->section->section_name:""}})</h4>
+                                                        <h4><strong>@lang('common.class_Sec') : </strong>{{@$online_exam->class !=""?@$online_exam->class->age_group_name:""}} ({{@$online_exam->section !=""?@$online_exam->section->mgender_name:""}})</h4>
                                                         <h4 class="mb-20"><strong>@lang('exam.total_marks') : </strong>
                                                         @php
                                                         @$total_marks = 0;

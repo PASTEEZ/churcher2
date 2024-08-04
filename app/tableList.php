@@ -22,8 +22,8 @@ class tableList extends Model
 			$tables = '';
 
 			foreach ($table_list as $row) {
-				$data_test = DB::table($row->TABLE_NAME)->select('*')->where($colunm_name_id, $id)->when(Schema::hasColumn($row->TABLE_NAME, 'school_id'), function ($q){
-                    $q->where('school_id', Auth::user()->school_id);
+				$data_test = DB::table($row->TABLE_NAME)->select('*')->where($colunm_name_id, $id)->when(Schema::hasColumn($row->TABLE_NAME, 'church_id'), function ($q){
+                    $q->where('church_id', Auth::user()->church_id);
                 })->first();
 				if($data_test != ""){
 

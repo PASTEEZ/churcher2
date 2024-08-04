@@ -15,16 +15,16 @@ class SmLessonPlansTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run($school_id, $academic_id, $count)
+    public function run($church_id, $church_year_id, $count)
     {
         //
-        $days = SmWeekend::where('school_id', $school_id)->get();
-        $lesson_id = SmLesson::where('school_id', $school_id)
-                                ->where('academic_id', $academic_id)
+        $days = SmWeekend::where('church_id', $church_id)->get();
+        $lesson_id = SmLesson::where('church_id', $church_id)
+                                ->where('church_year_id', $church_year_id)
                                 ->value('id');
         $topic_id = SmLessonTopicDetail::where('lesson_id', $lesson_id)
-                                        ->where('school_id', $school_id)
-                                        ->where('academic_id', $academic_id)
+                                        ->where('church_id', $church_id)
+                                        ->where('church_year_id', $church_year_id)
                                         ->value('topic_id');
         foreach($days as $day) {
             $lessonPlanner = new LessonPlanner;
@@ -33,8 +33,8 @@ class SmLessonPlansTableSeeder extends Seeder
             $lessonPlanner->lesson_id = $lesson_id;
             $lessonPlanner->topic_id = $topic_id;
             $lessonPlanner->sub_topic = $day->name;
-            $lessonPlanner->school_id=$school_id;
-            $lessonPlanner->academic_id=$academic_id;
+            $lessonPlanner->church_id=$church_id;
+            $lessonPlanner->church_year_id=$church_year_id;
             $lessonPlanner->save();
         }
 

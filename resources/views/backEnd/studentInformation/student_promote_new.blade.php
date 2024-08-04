@@ -32,8 +32,8 @@
                             <div class="row">
                                 <div class="col-lg-3">
                                    
-                                    <select class="niceSelect w-100 bb form-control{{ $errors->has('current_session') ? ' is-invalid' : '' }}" name="current_session" id="academic_year">
-                                        <option data-display="@lang('student.select_academic_year') *" value="">@lang('student.select_academic_year') *</option>
+                                    <select class="niceSelect w-100 bb form-control{{ $errors->has('current_session') ? ' is-invalid' : '' }}" name="current_session" id="church_year">
+                                        <option data-display="@lang('student.select_church_year') *" value="">@lang('student.select_church_year') *</option>
                                         @foreach($sessions as $session)
                                         <option value="{{$session->id}}" {{isset($current_session)? ($current_session == $session->id? 'selected':''):''}}>{{$session->year}} [{{$session->title}}]</option>
                                         @endforeach
@@ -47,7 +47,7 @@
                                 <div class="col-lg-3">
                                    
                                     <select class="niceSelect w-100 bb form-control{{ $errors->has('promote_session') ? ' is-invalid' : '' }}" name="promote_session" >
-                                        <option data-display="@lang('student.promote_academic_year') *" value="">@lang('student.promote_academic_year') *</option>
+                                        <option data-display="@lang('student.promote_church_year') *" value="">@lang('student.promote_church_year') *</option>
                                         @foreach($sessions as $session)
                                         <option value="{{$session->id}}" {{isset($promote_session)? ($promote_session == $session->id? 'selected':''):''}}>{{$session->year}} [{{$session->title}}]</option>
                                         @endforeach
@@ -64,7 +64,7 @@
                                         <option data-display="@lang('student.select_current_class') *" value="">@lang('student.select_current_class') *</option>
                                         @if(isset($currrent_academic_class))
                                             @foreach($currrent_academic_class as $class)
-                                            <option value="{{$class->id}}" {{isset($current_class)? ($current_class == $class->id? 'selected':''):''}}>{{$class->class_name}}</option>
+                                            <option value="{{$class->id}}" {{isset($current_class)? ($current_class == $class->id? 'selected':''):''}}>{{$class->age_group_name}}</option>
                                             @endforeach
                                         @endif
                                     </select>
@@ -82,7 +82,7 @@
                                         <option data-display="@lang('student.select_section')" value="">@lang('student.select_section')</option>
                                        @isset($sections) 
                                         @foreach($sections as $section)
-                                         <option  value="{{$section->sectionName !='' ?  $section->sectionName->id : ''}}" {{isset($current_section)? ($current_section == ($section->sectionName !='' ? $section->sectionName->id :'')? 'selected':''):''}} >{{$section->sectionName->section_name}}</option>
+                                         <option  value="{{$section->sectionName !='' ?  $section->sectionName->id : ''}}" {{isset($current_section)? ($current_section == ($section->sectionName !='' ? $section->sectionName->id :'')? 'selected':''):''}} >{{$section->sectionName->mgender_name}}</option>
                                          @endforeach
                                        @endisset
                                     </select>
@@ -123,10 +123,10 @@
                             <div class="main-title">
                                 <h3 class="mb-30">@lang('student.promote') | 
                                     <small>
-                                        @lang('student.academic_year') : {{ $search_current_academic_year !='' ? $search_current_academic_year->year .'['. $search_current_academic_year->title .']' :'' }},
-                                        @lang('common.class'): {{$search_current_class != '' ? $search_current_class->class_name :' '}}, 
-                                        @lang('common.section'): {{$search_current_section !='' ? $search_current_section->section_name : ' '}},
-                                        <strong> @lang('student.promote_academic_year') </strong>: {{ $search_promote_academic_year !='' ? $search_promote_academic_year->year .'['. $search_promote_academic_year->title .']' :''}} 
+                                        @lang('student.church_year') : {{ $search_current_church_year !='' ? $search_current_church_year->year .'['. $search_current_church_year->title .']' :'' }},
+                                        @lang('common.class'): {{$search_current_class != '' ? $search_current_class->age_group_name :' '}}, 
+                                        @lang('common.section'): {{$search_current_section !='' ? $search_current_section->mgender_name : ' '}},
+                                        <strong> @lang('student.promote_church_year') </strong>: {{ $search_promote_church_year !='' ? $search_promote_church_year->year .'['. $search_promote_church_year->title .']' :''}} 
                                     </small>
                                 </h3>
                             </div>
@@ -192,7 +192,7 @@
                                                     <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }} promote_class" id="promote_class" data-key="{{ $key }}" name="promote[{{$student->id}}][class]">
                                                         <option data-display="@lang('student.select_class') *" value="">@lang('student.select_class') *</option>
                                                         @foreach($classes as $class)
-                                                            <option value="{{ @$class->id}}"  {{ ( ($next_class && $next_class->id == $class->id) ? "selected":"")}}>{{ $class->class_name}}</option>
+                                                            <option value="{{ @$class->id}}"  {{ ( ($next_class && $next_class->id == $class->id) ? "selected":"")}}>{{ $class->age_group_name}}</option>
                                                         @endforeach
                                                     </select>
                                                     @if ($errors->has('class'))
@@ -216,7 +216,7 @@
                                                         </option>
                                                         @if($next_sections)
                                                             @foreach ($next_sections as $section)
-                                                                <option  value="{{ $section->sectionWithoutGlobal->id }}">{{ $section->sectionWithoutGlobal->section_name }}</option>
+                                                                <option  value="{{ $section->sectionWithoutGlobal->id }}">{{ $section->sectionWithoutGlobal->mgender_name }}</option>
                                                             @endforeach
                                                         @endif
                                                     </select>
@@ -277,17 +277,17 @@
 
         $(document).on('keyup', '.promote_roll_number', function () {
                 var url          = $("#url").val();
-                var class_id     =  $(this).closest('tr').find('.promote_class').val();
-                var section_id   =  $(this).closest('tr').find('.promote_section').val();
+                var age_group_id     =  $(this).closest('tr').find('.promote_class').val();
+                var mgender_id   =  $(this).closest('tr').find('.promote_section').val();
                 var promote_roll_number   =  $(this).closest('tr').find('.promote_roll_number').val();
 
-              if(class_id ==''){
+              if(age_group_id ==''){
 
                  var class_error_msg='Please select Class';
                 $(this).closest('tr').find('.errorExitRoll').delay(3000).fadeOut('slow').html(class_error_msg);
               
               }
-               if(section_id ==''){
+               if(mgender_id ==''){
             
                 var class_error_msg='Please select Section';
                 $(this).closest('tr').find('.errorExitRoll').delay(3000).fadeOut('slow').html(class_error_msg);
@@ -295,8 +295,8 @@
               }
 
               var formData = {
-                   class_id : class_id,
-                   section_id : section_id,
+                   age_group_id : age_group_id,
+                   mgender_id : mgender_id,
                    promote_roll_number : promote_roll_number,
                  };
 

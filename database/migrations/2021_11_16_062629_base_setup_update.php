@@ -21,14 +21,14 @@ class BaseSetupUpdate extends Migration
     {
         //
         $schools = SmSchool::where('id','!=', 1)->get();
-        $base_setups = SmBaseSetup::where('school_id', 1)->get();
+        $base_setups = SmBaseSetup::where('church_id', 1)->get();
 
         foreach($schools as $school){
             foreach($base_setups as $setup){
-                $exit = SmBaseSetup::where('base_setup_name',$setup->base_setup_name)->where('base_group_id',$setup->base_group_id)->where('school_id', $school->id)->first();
+                $exit = SmBaseSetup::where('base_setup_name',$setup->base_setup_name)->where('base_group_id',$setup->base_group_id)->where('church_id', $school->id)->first();
                 if(!$exit){
                     $new_setup = $setup->replicate();
-                    $new_setup->school_id = $school->id;
+                    $new_setup->church_id = $school->id;
                     $new_setup->save();
     
                     $this->update($new_setup, $setup);
@@ -41,14 +41,14 @@ class BaseSetupUpdate extends Migration
     public function update($new_setup, $old_setup){
         if($new_setup->base_group_id == 1){
             $column = 'gender_id';
-            SmStaff::where('gender_id', $old_setup->id)->where('school_id', $new_setup->school_id)->update([$column => $new_setup->id]);
+            SmStaff::where('gender_id', $old_setup->id)->where('church_id', $new_setup->church_id)->update([$column => $new_setup->id]);
         } else if($new_setup->base_group_id == 2){
             $column = 'religion_id';
         } else{
             $column = 'bloodgroup_id';
         }
         
-        SmStudent::where($column, $old_setup->id)->where('school_id', $new_setup->school_id)->update([$column => $new_setup->id]);
+        SmStudent::where($column, $old_setup->id)->where('church_id', $new_setup->church_id)->update([$column => $new_setup->id]);
     }
 
     /**

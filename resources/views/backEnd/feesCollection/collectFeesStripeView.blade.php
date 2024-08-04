@@ -63,7 +63,7 @@
                         <div class="">
                             <input type="hidden" name="url" id="url" value="{{URL::to('/')}}">
                             <input type="hidden" name="real_amount" id="real_amount" value="{{$amount}}">
-                            <input type="hidden" name="student_id" value="{{$student_id}}">
+                            <input type="hidden" name="member_id" value="{{$member_id}}">
                             <input type="hidden" name="fees_type_id" value="{{$fees_type_id}}">
 
 

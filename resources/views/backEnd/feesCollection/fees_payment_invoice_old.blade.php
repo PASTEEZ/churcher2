@@ -37,7 +37,7 @@
                         <img src="{{url($setting->logo)}}" alt="{{url($setting->logo)}}"> 
                     </td> 
                     <td  style="width: 70%">  
-                        <h3>{{$setting->school_name}}</h3>
+                        <h3>{{$setting->church_name}}</h3>
                         <h4>{{$setting->address}}</h4>
                     </td> 
                 </tr> 
@@ -54,13 +54,13 @@
                     <td> Father's Name</td>
                     <td>{{$student->parents->fathers_name}}</td>
                     <td>Class</td>
-                    <td>{{$student->class->class_name}}</td>
+                    <td>{{$student->class->age_group_name}}</td>
                 </tr>
                 <tr>
                     <td> Section</td>
-                    <td>{{$student->section->section_name}}</td>
+                    <td>{{$student->section->mgender_name}}</td>
                     <td>Admission Number</td>
-                    <td>{{$student->admission_no}}</td>
+                    <td>{{$student->registration_no}}</td>
                 </tr>
             </table>
 
@@ -103,16 +103,16 @@
                         @endphp
 
                         @php
-                            $discount_amount = App\SmFeesAssign::discountSum($fees_assigned->student_id, $fees_assigned->feesGroupMaster->feesTypes->id, 'discount_amount');
+                            $discount_amount = App\SmFeesAssign::discountSum($fees_assigned->member_id, $fees_assigned->feesGroupMaster->feesTypes->id, 'discount_amount');
                             $total_discount += $discount_amount;
-                            $student_id = $fees_assigned->student_id;
+                            $member_id = $fees_assigned->member_id;
                         @endphp
                         @php
-                            $paid = App\SmFeesAssign::discountSum($fees_assigned->student_id, $fees_assigned->feesGroupMaster->feesTypes->id, 'amount');
+                            $paid = App\SmFeesAssign::discountSum($fees_assigned->member_id, $fees_assigned->feesGroupMaster->feesTypes->id, 'amount');
                             $total_grand_paid += $paid;
                         @endphp
                         @php
-                            $fine = App\SmFeesAssign::discountSum($fees_assigned->student_id, $fees_assigned->feesGroupMaster->feesTypes->id, 'fine');
+                            $fine = App\SmFeesAssign::discountSum($fees_assigned->member_id, $fees_assigned->feesGroupMaster->feesTypes->id, 'fine');
                             $total_fine += $fine;
                         @endphp
                             
@@ -161,7 +161,7 @@
                         </td>
                     </tr>
                         @php 
-                            $payments = App\SmFeesAssign::feesPayment($fees_assigned->feesGroupMaster->feesTypes->id, $fees_assigned->student_id);
+                            $payments = App\SmFeesAssign::feesPayment($fees_assigned->feesGroupMaster->feesTypes->id, $fees_assigned->member_id);
                             $i = 0;
                         @endphp
 
@@ -227,7 +227,7 @@
                             <img src="{{url($setting->logo)}}" alt="{{url($setting->logo)}}"> 
                         </td> 
                         <td  style="width: 70%">  
-                            <h3>{{$setting->school_name}}</h3>
+                            <h3>{{$setting->church_name}}</h3>
                             <h4>{{$setting->address}}</h4>
                         </td> 
                     </tr> 
@@ -244,13 +244,13 @@
                     <td> Father's Name</td>
                     <td>{{$student->parents->fathers_name}}</td>
                     <td>Class</td>
-                    <td>{{$student->class->class_name}}</td>
+                    <td>{{$student->class->age_group_name}}</td>
                 </tr>
                 <tr>
                     <td> Section</td>
-                    <td>{{$student->section->section_name}}</td>
+                    <td>{{$student->section->mgender_name}}</td>
                     <td>Admission Number</td>
-                    <td>{{$student->admission_no}}</td>
+                    <td>{{$student->registration_no}}</td>
                 </tr>
             </table>
         
@@ -293,16 +293,16 @@
                         @endphp
         
                         @php
-                            $discount_amount = App\SmFeesAssign::discountSum($fees_assigned->student_id, $fees_assigned->feesGroupMaster->feesTypes->id, 'discount_amount');
+                            $discount_amount = App\SmFeesAssign::discountSum($fees_assigned->member_id, $fees_assigned->feesGroupMaster->feesTypes->id, 'discount_amount');
                             $total_discount += $discount_amount;
-                            $student_id = $fees_assigned->student_id;
+                            $member_id = $fees_assigned->member_id;
                         @endphp
                         @php
-                            $paid = App\SmFeesAssign::discountSum($fees_assigned->student_id, $fees_assigned->feesGroupMaster->feesTypes->id, 'amount');
+                            $paid = App\SmFeesAssign::discountSum($fees_assigned->member_id, $fees_assigned->feesGroupMaster->feesTypes->id, 'amount');
                             $total_grand_paid += $paid;
                         @endphp
                         @php
-                            $fine = App\SmFeesAssign::discountSum($fees_assigned->student_id, $fees_assigned->feesGroupMaster->feesTypes->id, 'fine');
+                            $fine = App\SmFeesAssign::discountSum($fees_assigned->member_id, $fees_assigned->feesGroupMaster->feesTypes->id, 'fine');
                             $total_fine += $fine;
                         @endphp
                             
@@ -354,7 +354,7 @@
                         </td>
                     </tr>
                         @php 
-                            $payments = App\SmFeesAssign::feesPayment($fees_assigned->feesGroupMaster->feesTypes->id, $fees_assigned->student_id);
+                            $payments = App\SmFeesAssign::feesPayment($fees_assigned->feesGroupMaster->feesTypes->id, $fees_assigned->member_id);
                             $i = 0;
                         @endphp
         
@@ -421,7 +421,7 @@
                             <img src="{{url($setting->logo)}}" alt="{{url($setting->logo)}}"> 
                         </td> 
                         <td  style="width: 70%">  
-                            <h3>{{$setting->school_name}}</h3>
+                            <h3>{{$setting->church_name}}</h3>
                             <h4>{{$setting->address}}</h4>
                         </td> 
                     </tr> 
@@ -438,13 +438,13 @@
                     <td> Father's Name</td>
                     <td>{{$student->parents->fathers_name}}</td>
                     <td>Class</td>
-                    <td>{{$student->class->class_name}}</td>
+                    <td>{{$student->class->age_group_name}}</td>
                 </tr>
                 <tr>
                     <td> Section</td>
-                    <td>{{$student->section->section_name}}</td>
+                    <td>{{$student->section->mgender_name}}</td>
                     <td>Admission Number</td>
-                    <td>{{$student->admission_no}}</td>
+                    <td>{{$student->registration_no}}</td>
                 </tr>
             </table>
         
@@ -487,16 +487,16 @@
                         @endphp
         
                         @php
-                            $discount_amount = App\SmFeesAssign::discountSum($fees_assigned->student_id, $fees_assigned->feesGroupMaster->feesTypes->id, 'discount_amount');
+                            $discount_amount = App\SmFeesAssign::discountSum($fees_assigned->member_id, $fees_assigned->feesGroupMaster->feesTypes->id, 'discount_amount');
                             $total_discount += $discount_amount;
-                            $student_id = $fees_assigned->student_id;
+                            $member_id = $fees_assigned->member_id;
                         @endphp
                         @php
-                            $paid = App\SmFeesAssign::discountSum($fees_assigned->student_id, $fees_assigned->feesGroupMaster->feesTypes->id, 'amount');
+                            $paid = App\SmFeesAssign::discountSum($fees_assigned->member_id, $fees_assigned->feesGroupMaster->feesTypes->id, 'amount');
                             $total_grand_paid += $paid;
                         @endphp
                         @php
-                            $fine = App\SmFeesAssign::discountSum($fees_assigned->student_id, $fees_assigned->feesGroupMaster->feesTypes->id, 'fine');
+                            $fine = App\SmFeesAssign::discountSum($fees_assigned->member_id, $fees_assigned->feesGroupMaster->feesTypes->id, 'fine');
                             $total_fine += $fine;
                         @endphp
                             
@@ -548,7 +548,7 @@
                         </td>
                     </tr>
                         @php 
-                            $payments = App\SmFeesAssign::feesPayment($fees_assigned->feesGroupMaster->feesTypes->id, $fees_assigned->student_id);
+                            $payments = App\SmFeesAssign::feesPayment($fees_assigned->feesGroupMaster->feesTypes->id, $fees_assigned->member_id);
                             $i = 0;
                         @endphp
         

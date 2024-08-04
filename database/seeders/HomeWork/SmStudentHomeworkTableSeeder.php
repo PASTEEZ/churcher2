@@ -21,8 +21,8 @@ class SmStudentHomeworkTableSeeder extends Seeder
             $subject_list = SmAssignSubject::all();
             foreach ($subject_list as $subject) {
                 $store = new SmHomework();
-                $store->class_id = $subject->class_id;
-                $store->section_id = $subject->section_id;
+                $store->age_group_id = $subject->age_group_id;
+                $store->mgender_id = $subject->mgender_id;
                 $store->subject_id = $subject->subject_id;
                 $store->homework_date = $faker->dateTime()->format('Y-m-d');
                 $store->submission_date = $faker->dateTime()->format('Y-m-d');;

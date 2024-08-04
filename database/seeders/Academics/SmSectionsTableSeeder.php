@@ -12,11 +12,11 @@ class SmSectionsTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run($school_id = 1, $academic_id = null, $count = 5)
+    public function run($church_id = 1, $church_year_id = null, $count = 5)
     {
         SmSection::factory()->times($count)->create([
-            'school_id' => $school_id,
-            'academic_id' => $academic_id
+            'church_id' => $church_id,
+            'church_year_id' => $church_year_id
         ]);
     }
 }

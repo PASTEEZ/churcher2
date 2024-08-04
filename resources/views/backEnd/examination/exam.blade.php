@@ -373,7 +373,7 @@
                                         @if (moduleStatusCheck('University'))
                                             <th>@lang('common.session')</th>
                                             <th>@lang('university::un.faculty_department')</th>
-                                            <th>@lang('common.academic_year')</th>
+                                            <th>@lang('common.church_year')</th>
                                             <th>@lang('university::un.semester')</th>
                                         @else
                                             <th>@lang('common.class')</th>
@@ -402,8 +402,8 @@
                                                 <td>{{ $exam->academicYearDetails->name }}</td>
                                                 <td>{{ $exam->semesterDetails->name }}</td>
                                             @else
-                                                <td>{{ $exam->class != '' ? $exam->class->class_name : '' }}</td>
-                                                <td>{{ $exam->section != '' ? $exam->section->section_name : '' }}</td>
+                                                <td>{{ $exam->class != '' ? $exam->class->age_group_name : '' }}</td>
+                                                <td>{{ $exam->section != '' ? $exam->section->mgender_name : '' }}</td>
                                             @endif
                                             <td>{{ $exam->subject != '' ? $exam->subject->subject_name : '' }}</td>
                                             <td>{{ $exam->exam_mark }}</td>

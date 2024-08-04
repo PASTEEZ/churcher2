@@ -64,7 +64,7 @@
                                                         value="">@lang('common.select_class') *
                                                 </option>
                                                 @foreach($classes as $class)
-                                                    <option value="{{ @$class->id}}" {{( old('class') == @$class->id ? "selected":"")}}>{{ @$class->class_name}}</option>
+                                                    <option value="{{ @$class->id}}" {{( old('class') == @$class->id ? "selected":"")}}>{{ @$class->age_group_name}}</option>
                                                 @endforeach
                                             </select>
                                             @if ($errors->has('class'))
@@ -253,8 +253,8 @@
                                     <tr>
                                         <td>{{$count++}}</td>
 
-                                        <td>{{$data->class !=""?$data->class->class_name:""}}</td>
-                                        <td>{{$data->section !=""?$data->section->section_name:""}}</td>
+                                        <td>{{$data->class !=""?$data->class->age_group_name:""}}</td>
+                                        <td>{{$data->section !=""?$data->section->mgender_name:""}}</td>
                                         <td>{{$data->subject !=""?$data->subject->subject_name:""}}</td>
                                         <td>{{$data->lesson !=""?$data->lesson->lesson_title:""}} </td>
 

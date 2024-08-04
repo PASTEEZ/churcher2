@@ -36,8 +36,8 @@ class UserController extends Controller
     }
     public function userLog(Request $request){
         try{
-            $user_logs = SmUserLog::where('academic_id', getAcademicId())
-            ->where('school_id',Auth::user()->school_id)
+            $user_logs = SmUserLog::where('church_year_id', getAcademicId())
+            ->where('church_id',Auth::user()->church_id)
             ->orderBy('id', 'desc')
             ->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {

@@ -15,7 +15,7 @@
     </style>
 @endsection
 @section('mainContent')
-@php  $setting = App\SmGeneralSettings::where('school_id', Auth::user()->school_id)->first();  if(!empty($setting->currency_symbol)){ $currency = $setting->currency_symbol; }else{ $currency = '$'; }   @endphp 
+@php  $setting = App\SmGeneralSettings::where('church_id', Auth::user()->church_id)->first();  if(!empty($setting->currency_symbol)){ $currency = $setting->currency_symbol; }else{ $currency = '$'; }   @endphp 
 
 <section class="sms-breadcrumb mb-40 white-box">
     <div class="container-fluid">

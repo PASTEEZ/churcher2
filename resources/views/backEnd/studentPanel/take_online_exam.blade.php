@@ -39,7 +39,7 @@
                                         <td colspan="2" class="pt-4 pb-3 px-sm-5">
                                             <h1>@lang('exam.exam_name') : {{@$online_exam->title}}</h1>
                                             <h2><strong>@lang('common.subject') : </strong>{{@$online_exam->subject !=""?@$online_exam->subject->subject_name:""}}</h2>
-                                            <h6><strong>@lang('common.class_Sec') : </strong>{{@$online_exam->class !=""?@$online_exam->class->class_name:""}} ({{@$online_exam->section !=""?@$online_exam->section->section_name:""}})</h6>
+                                            <h6><strong>@lang('common.class_Sec') : </strong>{{@$online_exam->class !=""?@$online_exam->class->age_group_name:""}} ({{@$online_exam->section !=""?@$online_exam->section->mgender_name:""}})</h6>
                                             <h3 class="mb-20"><strong>@lang('exam.total_marks') : </strong>
                                             @php
                                             @$total_marks = 0;
@@ -65,10 +65,10 @@
                                     @php $j=0; @endphp
                                     @foreach($assigned_questions as $question)
                                     @php
-                                    $student_id=Auth::user()->student->id;
-                                        $submited_answer=App\OnlineExamStudentAnswerMarking::StudentGivenAnswer($question->online_exam_id,$question->question_bank_id,$student_id);
+                                    $member_id=Auth::user()->student->id;
+                                        $submited_answer=App\OnlineExamStudentAnswerMarking::StudentGivenAnswer($question->online_exam_id,$question->question_bank_id,$member_id);
                                         if ($question->questionBank->type=='MI') {
-                                            $submited_answer=App\OnlineExamStudentAnswerMarking::StudentImageAnswer($question->online_exam_id,$question->question_bank_id,$student_id);
+                                            $submited_answer=App\OnlineExamStudentAnswerMarking::StudentImageAnswer($question->online_exam_id,$question->question_bank_id,$member_id);
                                             
                                         }
                                     @endphp

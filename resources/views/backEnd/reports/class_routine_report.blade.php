@@ -38,7 +38,7 @@
                                     <select class="w-100 bb niceSelect form-control {{ $errors->has('class') ? ' is-invalid' : '' }}" id="select_class" name="class">
                                         <option data-display="@lang('common.select_class') *" value="">@lang('common.select_class') *</option>
                                         @foreach($classes as $class)
-                                        <option value="{{$class->id}}"  {{isset($class_id)? ($class_id == $class->id?'selected':''):''}}>{{$class->class_name}}</option>
+                                        <option value="{{$class->id}}"  {{isset($age_group_id)? ($age_group_id == $class->id?'selected':''):''}}>{{$class->age_group_name}}</option>
                                         @endforeach
                                     </select>
                                     @if ($errors->has('class'))
@@ -87,9 +87,9 @@
             </div>
             <div class="col-lg-8 pull-right mb-30">
                 @if(moduleStatusCheck('University'))
-                <a href="{{route('university.academics.classRoutinePrint', [$un_semester_label_id, $un_section_id])}}" class="primary-btn small fix-gr-bg pull-right" target="_blank"><i class="ti-printer"> </i> @lang('reports.print')</a>
+                <a href="{{route('university.academics.classRoutinePrint', [$un_semester_label_id, $un_mgender_id])}}" class="primary-btn small fix-gr-bg pull-right" target="_blank"><i class="ti-printer"> </i> @lang('reports.print')</a>
                 @else
-                <a href="{{route('classRoutinePrint', [$class_id, $section_id])}}" class="primary-btn small fix-gr-bg pull-right" target="_blank"><i class="ti-printer"> </i> @lang('reports.print')</a>
+                <a href="{{route('classRoutinePrint', [$age_group_id, $mgender_id])}}" class="primary-btn small fix-gr-bg pull-right" target="_blank"><i class="ti-printer"> </i> @lang('reports.print')</a>
                 @endif 
             </div>
         </div>
@@ -106,7 +106,7 @@
                             @endphp
                         @foreach($sm_weekends as $sm_weekend)
                         @php
-                        $count = $sm_weekend->classRoutine()->where('class_id', $class_id)->where('section_id', $section_id)->count();
+                        $count = $sm_weekend->classRoutine()->where('age_group_id', $age_group_id)->where('mgender_id', $mgender_id)->count();
                         @endphp
                           
                             @if( $count >$height)
@@ -130,7 +130,7 @@
                 
                     $i = 0;
                 @endphp
-                    @foreach($sm_weekend->classRoutine()->where('class_id', $class_id)->where('section_id', $section_id)->get() as $routine)
+                    @foreach($sm_weekend->classRoutine()->where('age_group_id', $age_group_id)->where('mgender_id', $mgender_id)->get() as $routine)
                         @php
                         if(!in_array($routine->id, $used)){
 

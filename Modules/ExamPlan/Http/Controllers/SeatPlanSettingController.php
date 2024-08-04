@@ -23,11 +23,11 @@ class SeatPlanSettingController extends Controller
     public function setting()
     {
         try{
-            $setting = SeatPlanSetting::where('school_id', Auth::user()->school_id)->where('academic_id', getAcademicId())->first();
+            $setting = SeatPlanSetting::where('church_id', Auth::user()->church_id)->where('church_year_id', getAcademicId())->first();
             if(!$setting){
-                $oldSetting = SeatPlanSetting::where('school_id', Auth::user()->school_id)->latest()->first();
+                $oldSetting = SeatPlanSetting::where('church_id', Auth::user()->church_id)->latest()->first();
                 $setting = $oldSetting->replicate();
-                $setting->academic_id = getAcademicId();
+                $setting->church_year_id = getAcademicId();
                 $setting->save();
             }
             return view('examplan::setting.seatplanSetting',compact('setting'));
@@ -41,20 +41,20 @@ class SeatPlanSettingController extends Controller
     public function settingUpdate(Request $request){
 
         try{
-            $setting = SeatPlanSetting::where('school_id', Auth::user()->school_id)->where('academic_id', getAcademicId())->first();
+            $setting = SeatPlanSetting::where('church_id', Auth::user()->church_id)->where('church_year_id', getAcademicId())->first();
             if(!$setting){
-                $oldSetting = SeatPlanSetting::where('school_id', Auth::user()->school_id)->latest()->first();
+                $oldSetting = SeatPlanSetting::where('church_id', Auth::user()->church_id)->latest()->first();
                 $setting = $oldSetting->replicate();
-                $setting->academic_id = getAcademicId();
+                $setting->church_year_id = getAcademicId();
             }
-            $setting->school_name = $request->school_name ;
+            $setting->church_name = $request->church_name ;
             $setting->student_photo = $request->student_photo ;
-            $setting->student_name = $request->student_name ;
+            $setting->member_name = $request->member_name ;
             $setting->roll_no = $request->roll_no ;
-            $setting->admission_no = $request->admission_no ;
+            $setting->registration_no = $request->registration_no ;
             $setting->class_section = $request->class_section ;
             $setting->exam_name = $request->exam_name ;
-            $setting->academic_year = $request->academic_year ;
+            $setting->church_year = $request->church_year ;
             $setting->save();
             Toastr::success('Update Successfully','success');
             return redirect()->back();
@@ -71,10 +71,10 @@ class SeatPlanSettingController extends Controller
     {
         try{
             $exams = SmExamType::where('active_status', 1)
-                ->where('academic_id', getAcademicId())
-                ->where('school_id', Auth::user()->school_id)
+                ->where('church_year_id', getAcademicId())
+                ->where('church_id', Auth::user()->church_id)
                 ->get();
-            $classes = SmClass::where('academic_id',getAcademicId())->where('school_id',auth()->user()->school_id)->get();
+            $classes = SmClass::where('church_year_id',getAcademicId())->where('church_id',auth()->user()->church_id)->get();
             return view('examplan::seatPlan',compact('exams','classes'));
         }
         catch(\Exception $e){
@@ -106,23 +106,23 @@ class SeatPlanSettingController extends Controller
 
             $exam = SmExamSchedule::query();
             $exam_id = $request->exam;
-            $class_id = $request->class;
-            $exam->where('school_id',auth()->user()->school_id)->where('academic_id',getAcademicId());
+            $age_group_id = $request->class;
+            $exam->where('church_id',auth()->user()->church_id)->where('church_year_id',getAcademicId());
             if ($request->exam != "") {
                 $exam->where('exam_term_id', $request->exam);
             }
             if ($request->class != "") {
-                $exam->where('class_id', $request->class);
+                $exam->where('age_group_id', $request->class);
             }
             if ($request->section != "") {
-                $exam->where('section_id', $request->section);
+                $exam->where('mgender_id', $request->section);
             }
             $exam_routine = $exam->get();
             if($exam_routine){
 
                 $seat_plans = SeatPlan::where('exam_type_id', $request->exam)
-                    ->where('school_id', Auth::user()->school_id)
-                    ->where('academic_id',getAcademicId())
+                    ->where('church_id', Auth::user()->church_id)
+                    ->where('church_year_id',getAcademicId())
                     ->get(['student_record_id']);
 
                 $seat_plan_ids = [];
@@ -130,26 +130,26 @@ class SeatPlanSettingController extends Controller
                     $seat_plan_ids[] =  $seatPlan->student_record_id;
                 }
                 $student_records = StudentRecord::query();
-                $student_records->where('school_id',auth()->user()->school_id)
-                    ->where('academic_id',getAcademicId())
+                $student_records->where('church_id',auth()->user()->church_id)
+                    ->where('church_year_id',getAcademicId())
                     ->where('is_promote',0);
                 if ($request->class != "") {
-                    $student_records->where('class_id', $request->class);
+                    $student_records->where('age_group_id', $request->class);
                 }
                 if ($request->section != "") {
-                    $student_records->where('section_id', $request->section);
+                    $student_records->where('mgender_id', $request->section);
                 }
 
                 $records = $student_records->get();
 
                 $exams = SmExamType::where('active_status', 1)
-                    ->where('academic_id', getAcademicId())
-                    ->where('school_id', Auth::user()->school_id)
+                    ->where('church_year_id', getAcademicId())
+                    ->where('church_id', Auth::user()->church_id)
                     ->get();
-                $classes = SmClass::where('academic_id',getAcademicId())
-                    ->where('school_id',auth()->user()->school_id)
+                $classes = SmClass::where('church_year_id',getAcademicId())
+                    ->where('church_id',auth()->user()->church_id)
                     ->get();
-                return view('examplan::seatPlan',compact('exams','classes','records','exam_id','class_id','seat_plan_ids'));
+                return view('examplan::seatPlan',compact('exams','classes','records','exam_id','age_group_id','seat_plan_ids'));
             }else{
                 Toastr::warning('Exam shedule is not ready','warning');
                 return redirect()->back();
@@ -186,22 +186,22 @@ class SeatPlanSettingController extends Controller
                         $new_seat->student_record_id = $record;
                         $new_seat->exam_type_id = $request->exam_type_id;
                         $new_seat->created_by = Auth::id();
-                        $new_seat->school_id =Auth::user()->school_id;
-                        $new_seat->academic_id = getAcademicId();
+                        $new_seat->church_id =Auth::user()->church_id;
+                        $new_seat->church_year_id = getAcademicId();
                         $new_seat->save();
-                        $student_id = StudentRecord::find($record)->student_id;
-                        $student = SmStudent::find($student_id);
+                        $member_id = StudentRecord::find($record)->member_id;
+                        $student = SmStudent::find($member_id);
                         $exam_type = SmExamType::find($request->exam_type_id);
                     }
 
                 }
-                $seat_plans = SeatPlan::with('studentRecord.studentDetail')->where('exam_type_id',$request->exam_type_id)->where('school_id',Auth::user()->school_id)->where('academic_id',getAcademicId())->whereIn('student_record_id', $student_records)->get();
+                $seat_plans = SeatPlan::with('studentRecord.studentDetail')->where('exam_type_id',$request->exam_type_id)->where('church_id',Auth::user()->church_id)->where('church_year_id',getAcademicId())->whereIn('student_record_id', $student_records)->get();
 
-                $setting = SeatPlanSetting::where('school_id', Auth::user()->school_id)->where('academic_id', getAcademicId())->first();
+                $setting = SeatPlanSetting::where('church_id', Auth::user()->church_id)->where('church_year_id', getAcademicId())->first();
                 if(!$setting){
-                    $oldSetting = SeatPlanSetting::where('school_id', Auth::user()->school_id)->latest()->first();
+                    $oldSetting = SeatPlanSetting::where('church_id', Auth::user()->church_id)->latest()->first();
                     $setting = $oldSetting->replicate();
-                    $setting->academic_id = getAcademicId();
+                    $setting->church_year_id = getAcademicId();
                     $setting->save();
                 }
 

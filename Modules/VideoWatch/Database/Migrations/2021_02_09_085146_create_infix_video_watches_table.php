@@ -16,7 +16,7 @@ class CreateInfixVideoWatchesTable extends Migration
         Schema::create('infix_video_watches', function (Blueprint $table) {
             $table->id();
             $table->integer('study_material_id')->nullable();
-            $table->integer('student_id')->nullable();
+            $table->integer('member_id')->nullable();
             $table->string('time')->nullable();
             $table->timestamps();
         });

@@ -35,7 +35,7 @@
                                 <select class="niceSelect new_test w-100 bb form-control {{ @$errors->has('role') ? ' is-invalid' : '' }}" name="role" id="role_id">
                                     <option data-display="@lang('admin.select_role') *" value="">@lang('admin.select_role') *</option>
                                     @foreach($roles as $role)
-                                    <option value="{{@$role->id}}" {{isset($class_id)? ($class_id == $class->id? 'selected':''):''}}>{{@$role->name}}</option>
+                                    <option value="{{@$role->id}}" {{isset($age_group_id)? ($age_group_id == $class->id? 'selected':''):''}}>{{@$role->name}}</option>
                                     @endforeach
                                 </select>
                                
@@ -119,7 +119,7 @@
                                         <input type="checkbox" id="checkAll" class="common-checkbox generate-id-card-print-all" name="checkAll" value="">
                                         <label for="checkAll">@lang('admin.all')</label>
                                     </th>
-                                    <th>@lang('studentInfo.admission_no')</th>
+                                    <th>@lang('studentInfo.registration_no')</th>
                                     <th>@lang('common.name')</th>
                                     <th>@lang('admin.class_Sec')</th>
                                     <th>@lang('common.father_name')</th>
@@ -137,10 +137,10 @@
                                             <label for="student.{{@$student->id}}"></label>
                                         </td>
                                     <td>
-                                        {{@$student->admission_no}}
+                                        {{@$student->registration_no}}
                                     </td>
                                     <td>{{@$student->full_name}}</td>
-                                    <td>{{@$student->class !=""?@$student->class->class_name:""}} ({{@$student->section!=""?@$student->section->section_name:""}})</td>
+                                    <td>{{@$student->class !=""?@$student->class->age_group_name:""}} ({{@$student->section!=""?@$student->section->mgender_name:""}})</td>
                                     <td>{{@$student->parents !=""?@$student->parents->fathers_name:""}}</td>
                                     <td> 
                                         {{@$student->date_of_birth != ""? dateConvert(@$student->date_of_birth):''}}

@@ -37,11 +37,11 @@ class SmClassController extends Controller
         try {
             $sections = SmSection::query();
             if(moduleStatusCheck('University')){
-            $data = $sections->where('un_academic_id',getAcademicId());
+            $data = $sections->where('un_church_year_id',getAcademicId());
             }else{
-                $data = $sections->where('academic_id',getAcademicId());
+                $data = $sections->where('church_year_id',getAcademicId());
             }
-            $sections = $data->where('school_id',auth()->user()->school_id)->get();
+            $sections = $data->where('church_id',auth()->user()->church_id)->get();
             $classes = SmClass::with('groupclassSections')->withCount('records')->get();
         
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -72,22 +72,22 @@ class SmClassController extends Controller
 
             try {
                         $class = new SmClass();
-                        $class->class_name = $request->name;
+                        $class->age_group_name = $request->name;
                         $class->pass_mark = $request->pass_mark;
                         $class->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
                         $class->created_by=auth()->user()->id;
-                        $class->school_id = Auth::user()->school_id;
-                        $class->academic_id = getAcademicId();
+                        $class->church_id = Auth::user()->church_id;
+                        $class->church_year_id = getAcademicId();
                         $class->save();
                         $class->toArray();
 
                         foreach ($request->section as $section) {
                             $smClassSection = new SmClassSection();
-                            $smClassSection->class_id = $class->id;
-                            $smClassSection->section_id = $section;
+                            $smClassSection->age_group_id = $class->id;
+                            $smClassSection->mgender_id = $section;
                             $smClassSection->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
-                            $smClassSection->school_id = Auth::user()->school_id;
-                            $smClassSection->academic_id = getAcademicId();
+                            $smClassSection->church_id = Auth::user()->church_id;
+                            $smClassSection->church_year_id = getAcademicId();
                             $smClassSection->save();
                         }
                     
@@ -113,15 +113,15 @@ class SmClassController extends Controller
 
         try {
             $classById = SmCLass::find($id);
-            $sectionByNames = SmClassSection::select('section_id')->where('class_id', '=', $classById->id)->get();
+            $sectionByNames = SmClassSection::select('mgender_id')->where('age_group_id', '=', $classById->id)->get();
             $sectionId = array();
             foreach ($sectionByNames as $sectionByName) {
-                $sectionId[] = $sectionByName->section_id;
+                $sectionId[] = $sectionByName->mgender_id;
             }
 
-            $sections = SmSection::where('active_status', '=', 1)->where('created_at', 'LIKE', '%' . $this->date . '%')->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $sections = SmSection::where('active_status', '=', 1)->where('created_at', 'LIKE', '%' . $this->date . '%')->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
-            $classes = SmClass::where('active_status', '=', 1)->orderBy('id', 'desc')->where('academic_id', getAcademicId())->where('school_id', Auth::user()->school_id)->get();
+            $classes = SmClass::where('active_status', '=', 1)->orderBy('id', 'desc')->where('church_year_id', getAcademicId())->where('church_id', Auth::user()->church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -153,7 +153,7 @@ class SmClassController extends Controller
         // }
 
 
-        SmCLassSection::where('class_id', $request->id)->delete();
+        SmCLassSection::where('age_group_id', $request->id)->delete();
 
 
 
@@ -161,18 +161,18 @@ class SmClassController extends Controller
 
         try {
             $class = SmCLass::find($request->id);
-            $class->class_name = $request->name;
+            $class->age_group_name = $request->name;
             $class->pass_mark = $request->pass_mark;
             $class->save();
             $class->toArray();
             try {
                 foreach ($request->section as $section) {
                     $smClassSection = new SmClassSection();
-                    $smClassSection->class_id = $class->id;
-                    $smClassSection->section_id = $section;
+                    $smClassSection->age_group_id = $class->id;
+                    $smClassSection->mgender_id = $section;
                     $smClassSection->created_at = YearCheck::getYear() . '-' . date('m-d h:i:s');
-                    $smClassSection->school_id = Auth::user()->school_id;
-                    $smClassSection->academic_id = getAcademicId();
+                    $smClassSection->church_id = Auth::user()->church_id;
+                    $smClassSection->church_year_id = getAcademicId();
                     $smClassSection->save();
                 }
 
@@ -201,14 +201,14 @@ class SmClassController extends Controller
     public function delete(Request $request, $id)
     {
         try {
-            $tables = tableList::getTableList('class_id', $id);
+            $tables = tableList::getTableList('age_group_id', $id);
 
             if($tables == null || $tables == "Class sections, ") {
                 
                 DB::beginTransaction();
 
-                // $class_sections = SmClassSection::where('class_id', $id)->get();
-                  $class_sections = SmClassSection::where('class_id', $id)->get();
+                // $class_sections = SmClassSection::where('age_group_id', $id)->get();
+                  $class_sections = SmClassSection::where('age_group_id', $id)->get();
                     foreach ($class_sections as $key => $class_section) {
                         SmClassSection::destroy($class_section->id);
                     }

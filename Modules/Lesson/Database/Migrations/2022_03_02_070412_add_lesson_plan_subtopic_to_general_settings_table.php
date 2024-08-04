@@ -20,7 +20,7 @@ class AddLessonPlanSubtopicToGeneralSettingsTable extends Migration
             }
         });
 
-        $sql = ("INSERT INTO `infix_module_infos` (`id`, `module_id`, `parent_id`, `type`, `is_saas`, `name`, `route`, `lang_name`, `icon_class`, `active_status`, `created_by`, `updated_by`, `school_id`, `created_at`, `updated_at`) VALUES
+        $sql = ("INSERT INTO `infix_module_infos` (`id`, `module_id`, `parent_id`, `type`, `is_saas`, `name`, `route`, `lang_name`, `icon_class`, `active_status`, `created_by`, `updated_by`, `church_id`, `created_at`, `updated_at`) VALUES
         (835, 29, 800, '1', 0,'Lesson Plan Setting','lesson.lesson-planner.settomg','lesson_plan','',1, 1, 1, 1, '2019-07-25 02:21:21', '2019-07-25 04:24:22');
          ");
         DB::insert($sql);

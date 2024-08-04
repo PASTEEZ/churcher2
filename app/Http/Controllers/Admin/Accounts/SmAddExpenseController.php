@@ -53,17 +53,17 @@ class SmAddExpenseController extends Controller
             $add_expense->amount = $request->amount;
             $add_expense->file = fileUpload($request->file,$destination);
             $add_expense->description = $request->description;
-            $add_expense->school_id = Auth::user()->school_id;
+            $add_expense->church_id = Auth::user()->church_id;
             if(moduleStatusCheck('University')){
-                $add_expense->un_academic_id = getAcademicId();
+                $add_expense->un_church_year_id = getAcademicId();
             }else{
-                $add_expense->academic_id = getAcademicId();
+                $add_expense->church_year_id = getAcademicId();
             }
             $result = $add_expense->save();
 
             if(paymentMethodName($request->payment_method)){
                 $bank=SmBankAccount::where('id',$request->accounts)
-                ->where('school_id',Auth::user()->school_id)
+                ->where('church_id',Auth::user()->church_id)
                 ->first();
                 $after_balance= $bank->current_balance - $request->amount;
 
@@ -75,7 +75,7 @@ class SmAddExpenseController extends Controller
                 $bank_statement->item_receive_id= $add_expense->id;
                 $bank_statement->payment_date= date('Y-m-d',strtotime($request->date));
                 $bank_statement->bank_id= $request->accounts;
-                $bank_statement->school_id=Auth::user()->school_id;
+                $bank_statement->church_id=Auth::user()->church_id;
                 $bank_statement->payment_method= $request->payment_method;
                 $bank_statement->save();
 
@@ -115,7 +115,7 @@ class SmAddExpenseController extends Controller
              if (checkAdmin()) {
                     $add_expense = SmAddExpense::find($request->id);
                 }else{
-                    $add_expense = SmAddExpense::where('id',$request->id)->where('school_id',Auth::user()->school_id)->first();
+                    $add_expense = SmAddExpense::where('id',$request->id)->where('church_id',Auth::user()->church_id)->first();
             }
             $add_expense->name = $request->name;
             $add_expense->expense_head_id = $request->expense_head;
@@ -126,21 +126,21 @@ class SmAddExpenseController extends Controller
             }
             $add_expense->amount = $request->amount;
             $add_expense->file = fileUpdate($add_expense->file,$request->file,$destination);
-            $add_expense->school_id = Auth::user()->school_id;
+            $add_expense->church_id = Auth::user()->church_id;
             $add_expense->description = $request->description;
             if(moduleStatusCheck('University')){
-                $add_expense->un_academic_id = getAcademicId();
+                $add_expense->un_church_year_id = getAcademicId();
             }else{
-                $add_expense->academic_id = getAcademicId();
+                $add_expense->church_year_id = getAcademicId();
             }
             $result = $add_expense->save();
 
             if(paymentMethodName($request->payment_method)){
                 SmBankStatement::where('item_receive_id', $request->id)
-                                    ->where('school_id',Auth::user()->school_id)
+                                    ->where('church_id',Auth::user()->church_id)
                                     ->delete();
                 $bank=SmBankAccount::where('id',$request->accounts)
-                                ->where('school_id',Auth::user()->school_id)
+                                ->where('church_id',Auth::user()->church_id)
                                 ->first();
                 $after_balance= $bank->current_balance - $request->amount;
 
@@ -152,7 +152,7 @@ class SmAddExpenseController extends Controller
                 $bank_statement->item_receive_id= $add_expense->id;
                 $bank_statement->payment_date= date('Y-m-d',strtotime($request->date));
                 $bank_statement->bank_id= $request->accounts;
-                $bank_statement->school_id= Auth::user()->school_id;
+                $bank_statement->church_id= Auth::user()->church_id;
                 $bank_statement->payment_method= $request->payment_method;
                 $bank_statement->save();
 
@@ -179,11 +179,11 @@ class SmAddExpenseController extends Controller
             DB::statement('SET FOREIGN_KEY_CHECKS=0;');
             if(paymentMethodName($add_expense->payment_method_id)){
                 $reset_balance = SmBankStatement::where('item_receive_id',$add_expense->account_id)
-                                ->where('school_id',Auth::user()->school_id)
+                                ->where('church_id',Auth::user()->church_id)
                                 ->sum('amount');
 
                 $bank=SmBankAccount::where('id',$add_expense->account_id)
-                                ->where('school_id',Auth::user()->school_id)
+                                ->where('church_id',Auth::user()->church_id)
                                 ->first();
                 $after_balance= $bank->current_balance + $reset_balance;
 
@@ -192,7 +192,7 @@ class SmAddExpenseController extends Controller
                 $current_balance->update();
 
                 SmBankStatement::where('item_receive_id',$id)
-                                ->where('school_id',Auth::user()->school_id)
+                                ->where('church_id',Auth::user()->church_id)
                                 ->delete();
             }
             $add_expense->delete();

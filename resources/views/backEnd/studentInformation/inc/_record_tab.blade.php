@@ -42,13 +42,13 @@
                             </td>
                         @else
                             <td class="{{ $div }}">
-                                {{ $record->class->class_name }}
+                                {{ $record->class->age_group_name }}
                                 @if ($record->is_default)
                                     <span class="badge fix-gr-bg">{{ __('common.default') }}</span>
                                 @endif
                             </td>
                             <td class="{{ $div }}">
-                                {{ $record->section->section_name }}
+                                {{ $record->section->mgender_name }}
                             </td>
                         @endif
 
@@ -61,7 +61,7 @@
                                     title="@if (moduleStatusCheck('University')) @lang('university::un.assign_faculty_department')
                                     @else 
                                         @lang('student.assign_class') @endif"
-                                    href="{{ route('student_assign_edit', [@$record->student_id, @$record->id]) }}"><span
+                                    href="{{ route('student_assign_edit', [@$record->member_id, @$record->id]) }}"><span
                                         class="ti-pencil"></span></a>
                                 <a href="#" class="primary-btn icon-only fix-gr-bg" data-toggle="modal"
                                     data-target="#deleteRecord_{{ $record->id }}">
@@ -91,7 +91,7 @@
                                         <label
                                             for="record{{ @$record->id }}">{{ __('student.Skip the trash and permanently delete the record') }}</label>
 
-                                        <input type="hidden" name="student_id" value="{{ $record->student_id }}">
+                                        <input type="hidden" name="member_id" value="{{ $record->member_id }}">
                                         <input type="hidden" name="record_id" value="{{ $record->id }}">
                                         <div class="mt-40 d-flex justify-content-between">
                                             <button type="button" class="primary-btn tr-bg"

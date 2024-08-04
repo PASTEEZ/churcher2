@@ -25,8 +25,4 @@ function getStorageFile($file_name)
 
 </html>
 
-<?php
 
-if (isset($_GET['phpinfo'])) {
-    phpinfo();
-}

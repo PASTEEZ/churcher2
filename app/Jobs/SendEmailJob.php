@@ -38,7 +38,7 @@ class SendEmailJob implements ShouldQueue
     public function handle(Mailer $mailer)
     {
             $mailer->send('backEnd.emails.mail', ['data'=> $this->data], function ($message) {
-                $message->from($this->data['system_email'], $this->data['school_name']);
+                $message->from($this->data['system_email'], $this->data['church_name']);
                 $message->to($this->details)->subject($this->data['email_sms_title']);
             });
     }

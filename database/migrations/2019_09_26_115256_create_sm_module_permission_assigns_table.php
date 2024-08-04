@@ -31,8 +31,8 @@ $table->integer('created_by')->nullable()->default(1)->unsigned();
 
             $table->integer('updated_by')->nullable()->default(1)->unsigned();
 
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
         });
 
 
@@ -74,7 +74,7 @@ $table->integer('created_by')->nullable()->default(1)->unsigned();
         // }
 
 
-        $sql = "INSERT INTO `sm_module_permission_assigns` (`id`, `active_status`, `created_at`, `updated_at`, `module_id`, `role_id`, `created_by`, `updated_by`, `school_id`) VALUES
+        $sql = "INSERT INTO `sm_module_permission_assigns` (`id`, `active_status`, `created_at`, `updated_at`, `module_id`, `role_id`, `created_by`, `updated_by`, `church_id`) VALUES
                 (1, 1, '2019-11-18 08:14:09', '2019-11-18 08:14:09', 1, 1, 1, 1, 1),
                 (2, 1, '2019-11-18 08:14:09', '2019-11-18 08:14:09', 2, 1, 1, 1, 1),
                 (3, 1, '2019-11-18 08:14:09', '2019-11-18 08:14:09', 3, 1, 1, 1, 1),

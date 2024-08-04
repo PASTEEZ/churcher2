@@ -411,7 +411,7 @@ abstract class AbstractPhpProcess
             $exception = new SyntheticError(
                 sprintf(
                     '%s: %s',
-                    $exceptionArray['_PHP_Incomplete_Class_Name'],
+                    $exceptionArray['_PHP_Incomplete_age_group_name'],
                     $exceptionArray['message'],
                 ),
                 $exceptionArray['code'],

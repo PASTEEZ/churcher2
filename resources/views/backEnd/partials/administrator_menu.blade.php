@@ -133,7 +133,7 @@
             </li>
         
             {{-- <li>
-                <a href="{{url('academic-year')}}">@lang('common.academic_year')</a>
+                <a href="{{url('academic-year')}}">@lang('common.church_year')</a>
             </li> --}}
         
             {{-- <li>

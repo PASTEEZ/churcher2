@@ -42,18 +42,18 @@
                             <div class="row mb-30">
                                 <div class="col-lg-4">
                                     <div class="input-effect sm2_mb_20 md_mb_20">
-                                        <select class="niceSelect w-100 bb form-control{{ $errors->has('class_id') ? ' is-invalid' : '' }}"
-                                                name="class_id" id="classSelectStudentHomeWork">
+                                        <select class="niceSelect w-100 bb form-control{{ $errors->has('age_group_id') ? ' is-invalid' : '' }}"
+                                                name="age_group_id" id="classSelectStudentHomeWork">
                                             <option data-display="@lang('common.select_class') *"
                                                     value="">@lang('common.select')</option>
                                             @foreach($classes as $key=>$value)
-                                                <option value="{{$value->id}}" {{old('class_id') != ""? 'selected':''}}>{{$value->class_name}}</option>
+                                                <option value="{{$value->id}}" {{old('age_group_id') != ""? 'selected':''}}>{{$value->age_group_name}}</option>
                                             @endforeach
                                         </select>
                                         <span class="focus-border"></span>
-                                        @if ($errors->has('class_id'))
+                                        @if ($errors->has('age_group_id'))
                                             <span class="invalid-feedback invalid-select" role="alert">
-                                    <strong>{{ $errors->first('class_id') }}</strong>
+                                    <strong>{{ $errors->first('age_group_id') }}</strong>
                                 </span>
                                         @endif
                                     </div>
@@ -79,7 +79,7 @@
                                 </div>
                                 <div class="col-lg-4">
                                     {{-- <div class="input-effect" id="m_select_subject_section_div">
-                                        <select class="niceSelect w-100 bb form-control{{ $errors->has('section_id') ? ' is-invalid' : '' }} m_select_subject_section" name="m_select_subject_section" id="sectionSelectStudent">
+                                        <select class="niceSelect w-100 bb form-control{{ $errors->has('mgender_id') ? ' is-invalid' : '' }} m_select_subject_section" name="m_select_subject_section" id="sectionSelectStudent">
                                              <option data-display="@lang('common.select_section')" value="">@lang('common.section')</option>
                                              <option  value="all_section"> @lang('homework.all_section')</option>
                                          </select>
@@ -87,24 +87,24 @@
                                             <img class="loader_img_style" src="{{asset('public/backEnd/img/demo_wait.gif')}}" alt="loader">
                                         </div>
                                          <span class="focus-border"></span>
-                                         @if ($errors->has('section_id'))
+                                         @if ($errors->has('mgender_id'))
                                          <span class="invalid-feedback invalid-select" role="alert">
-                                            <strong>{{ $errors->first('section_id') }}</strong>
+                                            <strong>{{ $errors->first('mgender_id') }}</strong>
                                         </span>
                                         @endif
                                     </div> --}}
                                     <div class="col-lg-12 " id="selectSectionsDiv" style="margin-top: -25px;">
                                         <label for="checkbox" class="mb-2">@lang('common.section') *</label>
-                                            <select multiple id="selectSectionss" name="section_id[]" style="width:300px">
+                                            <select multiple id="selectSectionss" name="mgender_id[]" style="width:300px">
                                               
                                             </select>
                                             <div class="">
                                             <input type="checkbox" id="checkbox_section" class="common-checkbox homework-section">
                                             <label for="checkbox_section" class="mt-3">@lang('homework.select_all')</label>
                                             </div>
-                                            @if ($errors->has('section_id'))
+                                            @if ($errors->has('mgender_id'))
                                                 <span class="invalid-feedback invalid-select" role="alert" style="display:block">
-                                                    <strong style="top:-25px">{{ $errors->first('section_id') }}</strong>
+                                                    <strong style="top:-25px">{{ $errors->first('mgender_id') }}</strong>
                                                 </span>
                                             @endif
                                     </div>

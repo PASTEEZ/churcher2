@@ -22,7 +22,7 @@ class SaasVehicleController extends Controller
         try {
             $input =$request->all();
             $validator = Validator::make($input, [
-                'school_id' => "required|integer",
+                'church_id' => "required|integer",
             ]);
     
             if ($validator->fails()) {
@@ -31,8 +31,8 @@ class SaasVehicleController extends Controller
                 }
     
             }
-            $drivers = SmStaff::where([['active_status', 1], ['role_id', 9],['school_id',$request->school_id]])->get();
-            $assign_vehicles = SmVehicle::where('school_id',$request->school_id)->get();
+            $drivers = SmStaff::where([['active_status', 1], ['role_id', 9],['church_id',$request->church_id]])->get();
+            $assign_vehicles = SmVehicle::where('church_id',$request->church_id)->get();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
@@ -55,7 +55,7 @@ class SaasVehicleController extends Controller
             'vehicle_model' => "required|max:200",
             'year_made' => "sometimes|nullable|max:10",
             'driver_id' => "required",
-            'school_id' => "required",
+            'church_id' => "required",
             'created_by' => "required",
         ]);
 
@@ -76,7 +76,7 @@ class SaasVehicleController extends Controller
             $assign_vehicle->created_by = $request->created_by;
             // $assign_vehicle->driver_contact = $request->driver_contact;
             $assign_vehicle->note = $request->note;
-            $assign_vehicle->school_id = $request->school_id;
+            $assign_vehicle->church_id = $request->church_id;
             $result = $assign_vehicle->save();
 
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
@@ -98,8 +98,8 @@ class SaasVehicleController extends Controller
         try {
             //$drivers = SmStaff::where('active_status', 1)->get();
             $assign_vehicle = SmVehicle::find($id);
-            $drivers = SmStaff::where([['active_status', 1], ['role_id', 9],['school_id',$request->school_id]])->get();
-            $assign_vehicles = SmVehicle::where('school_id',$request->school_id)->get();
+            $drivers = SmStaff::where([['active_status', 1], ['role_id', 9],['church_id',$request->church_id]])->get();
+            $assign_vehicles = SmVehicle::where('church_id',$request->church_id)->get();
             if (ApiBaseMethod::checkUrl($request->fullUrl())) {
                 $data = [];
                 $data['route'] = $drivers->toArray();

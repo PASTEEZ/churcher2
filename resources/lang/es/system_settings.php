@@ -238,17 +238,17 @@ return [
 
 "assign_optional_subject" => "Asignar un asunto opcional",
 
-"edit_academic_year" => "Editar año académico",
+"edit_church_year" => "Editar año académico",
 
-"add_academic_year" => "Añadir año académico",
+"add_church_year" => "Añadir año académico",
 
-"delete_academic_year" => "Suprimir año académico",
+"delete_church_year" => "Suprimir año académico",
 
-"academic_year_list" => "Lista del año académico",
+"church_year_list" => "Lista del año académico",
 
-"academic_year_delete_confirmation" => "Confirmación de supresión de año académico",
+"church_year_delete_confirmation" => "Confirmación de supresión de año académico",
 
-"copy_with_academic_year" => "Copia Con Año Académico",
+"copy_with_church_year" => "Copia Con Año Académico",
 
 "holiday_list" => "Lista de vacaciones",
 
@@ -646,9 +646,9 @@ return [
 
 "confirm_password" => "Confirmar contraseña",
 
-"school_name" => "Nombre escolar",
+"church_name" => "Nombre escolar",
 
-"school_code" => "Código Escolar",
+"church_code" => "Código Escolar",
 
 "setup" => "Configuración",
 
@@ -658,7 +658,7 @@ return [
 
 "check_update" => "Comprobar actualización",
 
-"academic_year" => "Año académico",
+"church_year" => "Año académico",
 
 "language" => "Lengua",
 

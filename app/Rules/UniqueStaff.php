@@ -19,7 +19,7 @@ class UniqueStaff implements Rule
 
     public function passes($attribute, $value)
     {
-        $isExist = SmDesignation::where('school_id', Auth::user()->school_id)->where('title', $this->title)->where('id', '!=', $this->id)->first();
+        $isExist = SmDesignation::where('church_id', Auth::user()->church_id)->where('title', $this->title)->where('id', '!=', $this->id)->first();
         if ($isExist) {
             return false;
         }

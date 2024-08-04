@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@lang('exam.final_mark_sheet') {{@$student_detail->admission_no}}</title>
+    <title>@lang('exam.final_mark_sheet') {{@$student_detail->registration_no}}</title>
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
       body{
@@ -447,10 +447,10 @@
                             <td style="padding: 0">
                                 <div class="logo_img">
                                     <div class="thumb_logo">
-                                        <img  src="{{asset('/')}}{{generalSetting()->logo }}" alt="{{generalSetting()->school_name}}">
+                                        <img  src="{{asset('/')}}{{generalSetting()->logo }}" alt="{{generalSetting()->church_name}}">
                                     </div>
                                     <div class="company_info">
-                                        <h3>{{isset(generalSetting()->school_name)? generalSetting()->school_name:'Infix School Management ERP'}} </h3>
+                                        <h3>{{isset(generalSetting()->church_name)? generalSetting()->church_name:'Infix School Management ERP'}} </h3>
                                         <h5>{{isset(generalSetting()->address)? generalSetting()->address:'Infix School Address'}}</h5>
                                         <h5>
                                             @lang('common.email'): {{isset(generalSetting()->email)?generalSetting()->email:'admin@infixedu.com'}} 
@@ -489,7 +489,7 @@
                                          <td>
                                               <p class="line_grid">
                                                 <span>
-                                                      <span>@lang('common.student_name')</span>
+                                                      <span>@lang('common.member_name')</span>
                                                       <span>:</span>
                                                   </span>
                                                   {{$student_detail->full_name}}
@@ -500,7 +500,7 @@
                                          <td>
                                               <p class="line_grid" >
                                                   <span>
-                                                      <span>@lang('common.academic_year')</span>
+                                                      <span>@lang('common.church_year')</span>
                                                       <span>:</span>
                                                   </span>
                                                   {{ @$studentDetails->academic->year }}
@@ -512,7 +512,7 @@
                                                       <span>@lang('common.class')</span>
                                                       <span>:</span>
                                                   </span>
-                                                  {{@$studentDetails->class->class_name}}
+                                                  {{@$studentDetails->class->age_group_name}}
                                               </p>
                                           </td>
                                      </tr>
@@ -534,7 +534,7 @@
                                                       <span>@lang('common.section')</span>
                                                       <span>:</span>
                                                   </span>
-                                                  {{ $studentDetails->section->section_name }}
+                                                  {{ $studentDetails->section->mgender_name }}
                                               </p>
                                               <p class="line_grid" >
                                                 <span>
@@ -550,10 +550,10 @@
                                           <td>
                                               <p class="line_grid" >
                                                   <span>
-                                                      <span>@lang('student.admission_no')</span>
+                                                      <span>@lang('student.registration_no')</span>
                                                       <span>:</span>
                                                   </span>
-                                                  {{$student_detail->admission_no}}
+                                                  {{$student_detail->registration_no}}
                                               </p>
                                           </td>
                                           <td>

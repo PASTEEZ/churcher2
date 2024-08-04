@@ -33,9 +33,9 @@ class SmLeaveDefineController extends Controller
         try{
             $leave_types = SmLeaveType::where('active_status', 1)->get();
             $roles = InfixRole::where('active_status', '=', '1')->where('id', '!=', 1)->where('id', '!=', 3)->where('id', '!=', 10)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
-            $classes = SmClass::get(['id','class_name']);
+            $classes = SmClass::get(['id','age_group_name']);
             return view('backEnd.humanResource.leave_define', compact('leave_types', 'roles','classes'));
         }catch (\Exception $e) {
            Toastr::error('Operation Failed', 'Failed');
@@ -61,13 +61,13 @@ class SmLeaveDefineController extends Controller
                     $leave_define->role_id = $request->member_type;
                     $leave_define->type_id = $request->leave_type;
                     $leave_define->days = $request->days;
-                    $leave_define->school_id = Auth::user()->school_id;
+                    $leave_define->church_id = Auth::user()->church_id;
                     if(moduleStatusCheck('University')){
-                        $leave_define->un_academic_id = getAcademicId();
+                        $leave_define->un_church_year_id = getAcademicId();
                     }else{
-                        $leave_define->academic_id = getAcademicId();
+                        $leave_define->church_year_id = getAcademicId();
                     }
-                    $leave_define->academic_id = getAcademicId();
+                    $leave_define->church_year_id = getAcademicId();
                     if(is_numeric($request->student)){
                         $leave_define->user_id = $request->student;
                     }
@@ -82,7 +82,7 @@ class SmLeaveDefineController extends Controller
             }else{
                 if(moduleStatusCheck('University')){
                     $student_records = StudentRecord::where('un_semester_label_id',$request->un_semester_label_id)
-                                    ->groupBy('student_id')->with('student')->get();
+                                    ->groupBy('member_id')->with('student')->get();
 
                     if( count($student_records) > 0)  {
                         foreach($student_records as $record){
@@ -90,10 +90,10 @@ class SmLeaveDefineController extends Controller
                             $leave_define->role_id = $record->student->role_id;
                             $leave_define->type_id = $request->leave_type;
                             $leave_define->days = $request->days;
-                            $leave_define->school_id = Auth::user()->school_id;
+                            $leave_define->church_id = Auth::user()->church_id;
                             $leave_define->user_id = $record->student->user_id;
                             $leave_define->un_semester_label_id = $request->un_semester_label_id;
-                            $leave_define->un_academic_id = getAcademicId();
+                            $leave_define->un_church_year_id = getAcademicId();
                             $leave_define->save();
                         }
                     } 
@@ -101,7 +101,7 @@ class SmLeaveDefineController extends Controller
                     Toastr::success('Operation successful', 'Success');
                     return redirect()->back();
                 }
-                $allUsers = User::where('school_id',Auth::user()->school_id)
+                $allUsers = User::where('church_id',Auth::user()->church_id)
                                         ->where('role_id',$request->member_type)
                                         ->where('selected_session', getAcademicId())
                                         ->where('active_status',1)
@@ -113,11 +113,11 @@ class SmLeaveDefineController extends Controller
                         $leave_define->role_id = $user->role_id;
                         $leave_define->type_id = $request->leave_type;
                         $leave_define->days = $request->days;
-                        $leave_define->school_id = Auth::user()->school_id;
+                        $leave_define->church_id = Auth::user()->church_id;
                         if(moduleStatusCheck('University')){
-                            $leave_define->un_academic_id = getAcademicId();
+                            $leave_define->un_church_year_id = getAcademicId();
                         }else{
-                            $leave_define->academic_id = getAcademicId();
+                            $leave_define->church_year_id = getAcademicId();
                         }
                         $leave_define->user_id = $user->id;
                         $leave_define->save();
@@ -139,7 +139,7 @@ class SmLeaveDefineController extends Controller
             $data = [];
             $leave_types = SmLeaveType::where('active_status', 1)->get();
             $roles = InfixRole::where('active_status', 1)->where(function ($q) {
-                $q->where('school_id', Auth::user()->school_id)->orWhere('type', 'System');
+                $q->where('church_id', Auth::user()->church_id)->orWhere('type', 'System');
             })->get();
             $leave_defines = SmLeaveDefine::get();
             $leave_define = SmLeaveDefine::find($id);
@@ -149,9 +149,9 @@ class SmLeaveDefineController extends Controller
             $staff = null;
             if($leave_define->role_id == 2){
                 $smStudent = SmStudent::where('user_id',$user->id)->first();
-                $student = StudentRecord::where('student_id', $smStudent->id)
-                    ->where('academic_id', getAcademicId())
-                    ->where('school_id', auth()->user()->school_id)
+                $student = StudentRecord::where('member_id', $smStudent->id)
+                    ->where('church_year_id', getAcademicId())
+                    ->where('church_id', auth()->user()->church_id)
                     ->first();
             } else{
                 $staff = SmStaff::where('user_id',$user->id)->first();
@@ -160,7 +160,7 @@ class SmLeaveDefineController extends Controller
 
 
 
-            $classes = SmClass::get(['id','class_name']);
+            $classes = SmClass::get(['id','age_group_name']);
             $data['leave_types'] = $leave_types; 
             $data['leave_types'] = $leave_types; 
             $data['leave_defines'] = $leave_defines; 
@@ -188,12 +188,12 @@ class SmLeaveDefineController extends Controller
             if (checkAdmin()) {
                 $leave_define = SmLeaveDefine::find($request->id);
             }else{
-                $leave_define = SmLeaveDefine::where('id',$request->id)->where('school_id',Auth::user()->school_id)->first();
+                $leave_define = SmLeaveDefine::where('id',$request->id)->where('church_id',Auth::user()->church_id)->first();
             }
             $leave_define->type_id = $request->leave_type;
             $leave_define->days = $request->days;
             if(moduleStatusCheck('University')){
-                $leave_define->un_academic_id = getAcademicId();
+                $leave_define->un_church_year_id = getAcademicId();
             }
             $leave_define->save();
 
@@ -227,7 +227,7 @@ class SmLeaveDefineController extends Controller
                     if (checkAdmin()) {
                         SmLeaveDefine::destroy($id);
                     }else{
-                        SmLeaveDefine::where('id',$id)->where('school_id',Auth::user()->school_id)->delete();
+                        SmLeaveDefine::where('id',$id)->where('church_id',Auth::user()->church_id)->delete();
                     }
 
                     Toastr::success('Operation successful', 'Success');
@@ -264,7 +264,7 @@ class SmLeaveDefineController extends Controller
             if (checkAdmin()) {
                 $leave_define = SmLeaveDefine::find($request->id);
             }else{
-                $leave_define = SmLeaveDefine::where('id',$request->id)->where('school_id',Auth::user()->school_id)->first();
+                $leave_define = SmLeaveDefine::where('id',$request->id)->where('church_id',Auth::user()->church_id)->first();
             }
             $leave_define->days = $request->days;
             $leave_define->save();

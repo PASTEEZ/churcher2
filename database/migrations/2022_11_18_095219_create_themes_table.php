@@ -30,8 +30,8 @@ class CreateThemesTable extends Migration
             $table->boolean('is_default')->default(false);
             $table->boolean('is_system')->default(false);
             $table->integer('created_by')->nullable();
-            $table->integer('school_id')->nullable()->default(1)->unsigned();
-            $table->foreign('school_id')->references('id')->on('sm_schools')->onDelete('cascade');
+            $table->integer('church_id')->nullable()->default(1)->unsigned();
+            $table->foreign('church_id')->references('id')->on('sm_schools')->onDelete('cascade');
             $table->timestamps();
         });
 
@@ -43,7 +43,7 @@ class CreateThemesTable extends Migration
             foreach($default_themes as $key=>$item) {
                 $theme = Theme::updateOrCreate([
                     'title'=>$item,
-                    'school_id'=>$school->id
+                    'church_id'=>$school->id
                 ]);
                 if($item == 'Lawn Green') {
                     $theme->path_main_style = 'lawngreen_version/style.css';
@@ -60,7 +60,7 @@ class CreateThemesTable extends Migration
                 $theme->background_image = asset('/public/backEnd/img/body-bg.jpg');
                 $theme->is_system = true;
                 $theme->created_by = 1;
-                $theme->school_id = $school->id;
+                $theme->church_id = $school->id;
                 $theme->save();                
             }                
             
